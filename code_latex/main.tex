@@ -1,4 +1,4 @@
-\documentclass[a4paper]{report}
+\documentclass[a4paper]{report} % Changé de 'article' à 'report'
 
 %% Language and font encodings
 \usepackage[english, french]{babel}
@@ -7,11 +7,11 @@
 
 %% Sets page size and margins
 \usepackage{geometry}
-\usepackage{lipsum}               % Pour du texte d'exemple (facultatif)
+\usepackage{lipsum}              % Pour du texte d'exemple (facultatif)
 
 %% Useful packages
 \usepackage{amsmath, amssymb}
-\usepackage{amssymb}
+\usepackage{amssymb} % Redundant if amsmath is used, but kept as in original
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=black]{hyperref}
 
@@ -20,33 +20,40 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.14}
 
-
-\geometry{inner=1cm, outer=1cm, top=1cm, bottom=0cm}
+%% Added packages for new layout
+\usepackage{fancyhdr} % For custom headers and footers
 
 \newcommand\fillin[1]{\makebox[#1]{\dotfill}}
 
 
 \begin{document}
+% La page de garde
+\begin{titlepage} % Utiliser l'environnement titlepage pour la page de garde
+% Définir une géométrie spécifique pour la page de titre pour éviter le débordement
+\newgeometry{inner=1cm, outer=1cm, top=1cm, bottom=0.5cm, includefoot=false, includehead=false}
+\pagenumbering{roman} % La numérotation commence ici si désiré pour les pages liminaires
+\thispagestyle{empty} % La page de garde ne doit pas avoir d'en-tête/pied de page
 
-\thispagestyle{empty}
-
+% --- START OF FIRST PAGE CONTENT (Logos d'origine rétablis) ---
 \begin{tikzpicture}[remember picture, overlay]
+% IMPORTANT: Ensure these image files exist in the 'images' subfolder and are valid!
+% Logos d'origine de la première page
 \node[xshift=-7cm, yshift=-3.1cm] at (current page.north) {\includegraphics[scale=0.11]{images/logo_ida.png}};
 \node[below = 0.5cm] at (current page.north) {\includegraphics[scale = 0.11]{images/ucbl.jpg}};
-\node[xshift=6.8cm, yshift=-3.3cm] at (current page.north) {\includegraphics[scale=0.11]{images/logoISFAlong.jpg}};
+\node[xshift=6.8cm, yshift=-3.3cm] at (current page.north) {\includegraphics[scale=0.11]{images/isfa_logo.jpg}};
 \end{tikzpicture}
 
-\vspace*{3.5cm}
+\vspace*{2.5cm} % Réduction de l'espace vertical
 
 {\Large
-{\bfseries 
+{\bfseries
 \begin{center}
 Mémoire présenté le : \\[0.3cm]
 pour l'obtention du Diplôme Universitaire d'actuariat de l'ISFA \\
 et l'admission à l'Institut des Actuaires
 \end{center}
 }
-\vspace*{0.7cm}
+\vspace*{0.5cm} % Réduction de l'espace vertical
 
 \noindent Par : Gaylord LEGRIS \\[0.3cm]
 \noindent Titre : Analyse de Sensibilités sur des Portefeuilles de Passifs en Assurance Vie selon les indicateurs Solvabilité 2 : Approche par Générations et Agrégations des portefeuilles
@@ -63,13 +70,13 @@ et l'admission à l'Institut des Actuaires
 \fillin{6cm} & \\[0.8cm]
 \fillin{6cm} & \\[0.8cm]
 \fillin{6cm} & \\[0.8cm]
-\textit{Membres présents du jury de l'ISFA} & \\[1.2cm] 
+\textit{Membres présents du jury de l'ISFA} & \\[1.2cm]
 \fillin{6cm} & \\[0.8cm]
 \fillin{6cm} & \\[0.8cm]
 \fillin{6cm} & \\[0.8cm]
 \end{tabular}
-\rule{0mm}{4.6cm}
-\end{minipage}
+\rule{0mm}{4.6cm} % Ensure minipage height
+\end{minipage}%
 \begin{minipage}{0.4\textwidth}
 \textit{Entreprise :} \\
 \textit{Nom :} \\[0.3cm]
@@ -86,15 +93,60 @@ Signature du responsable entreprise \\
 Signature du candidat \\
 \framebox[7cm]{\rule{0mm}{1.5cm}}
 \end{minipage}
+}
+% --- END OF FIRST PAGE CONTENT ---
+\end{titlepage}
+\restoregeometry % Restaurer la géométrie précédente avant de la redéfinir pour le reste du document.
 
+% Redéfinir la géométrie pour le reste du document après la page de garde
+\newgeometry{top=2cm, bottom=4cm, left=2cm, right=2cm}
+% Augmenter headheight pour accommoder des logos plus grands
+\setlength{\headheight}{50pt} % Ajusté pour des logos de 1.6cm de hauteur
+
+% Configurer fancyhdr pour les en-têtes et pieds de page personnalisés
+\pagestyle{fancy}
+\fancyhf{} % Effacer tous les champs d'en-tête et de pied de page
+
+% En-têtes des pages suivantes avec les logos demandés (taille doublée)
+% IMPORTANT: Assurez-vous que images/accenture_logo.png existe !
+\fancyhead[L]{\includegraphics[height=1.6cm]{images/accenture_logo.png}} % Logo Accenture à gauche
+\fancyhead[R]{\includegraphics[height=1.6cm]{images/isfa_logo.jpg}}   % Logo ISFA à droite
+
+\fancyfoot[C]{\sffamily \thepage}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Redéfinir le style 'plain' pour qu'il soit identique à 'fancy' afin que les logos apparaissent sur les premières pages de chapitre (taille doublée)
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[L]{\includegraphics[height=1.6cm]{images/accenture_logo.png}}% Logo Accenture à gauche
+  \fancyhead[R]{\includegraphics[height=1.6cm]{images/isfa_logo.jpg}}%   Logo ISFA à droite
+  \fancyfoot[C]{\sffamily \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
 }
 
-\newgeometry{a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm} % Redéfinir les marges pour le reste du document
-\tableofcontents                  % Table des matières
-\include{chapitres/chapitre1}     % Inclure le premier chapitre
-\include{chapitres/chapitre2}  
-\include{chapitres/chapitre3}     % Inclure le troisième chapitre
-\include{chapitres/chapitre4}     % Inclure le quatrième chapitre
-\include{chapitres/chapitre5}     % Inclure le cinquième chapitre
-\include{chapitres/chapitre6}     % Inclure le sixième chapitre
+
+% Contenu principal en une seule colonne
+\tableofcontents
+
+% IMPORTANT: Ensure all included .tex files exist in the specified paths
+% and do not contain LaTeX errors themselves!
+\include{1_preambule/0_resume}
+\include{1_preambule/1_abstract}
+\include{1_preambule/2_remerciements}
+\include{1_preambule/3_synthese}
+\include{1_preambule/4_synthesis}
+\include{1_preambule/5_introduction}
+
+\clearpage
+\pagenumbering{arabic}
+
+\include{2_chapitres/chapitre1}
+\include{2_chapitres/chapitre2}
+\include{2_chapitres/chapitre3}
+\include{2_chapitres/chapitre4}
+\include{2_chapitres/chapitre5}
+
 \end{document}

@@ -1,0 +1,105 @@
+\chapter{Introduction au contexte réglementaire et à la modélisation ALM}
+Ceci est le contenu du premier chapitre. Vous pouvez écrire ici votre texte ou ajouter des sections et sous-sections.
+
+% Fichier: 1_1_specificites_assurance_vie.tex
+% Section: 1.1 Spécificités de l'assurance vie
+
+\section{Spécificités de l'assurance vie}
+\label{sec:specificites_assurance_vie}
+
+L'assurance vie demeure un pilier central de la stratégie patrimoniale des Français. En effet, elle représente le placement le plus important en valeur, totalisant 1989 milliards d’euros d’encours sur les différents contrats à fin décembre 2024. Avec un capital moyen excédant 100\,000 euros par souscripteur, son rôle prépondérant dans l'épargne nationale est indéniable. Cette popularité s'explique par une combinaison unique d'utilités et de caractéristiques qui façonnent sa gestion et sa modélisation. Comprendre ces spécificités est fondamental avant d'aborder le cadre réglementaire de Solvabilité II et les subtilités de la modélisation Actif-Passif (ALM) qui sont l'objet de ce mémoire.
+
+\subsection{Utilité de l'assurance vie}
+\label{subsec:utilite_assurance_vie}
+L'assurance vie répond à une multitude d'objectifs patrimoniaux, ce qui explique son attrait constant :
+\begin{itemize}
+    \item \textbf{Constitution d'une épargne à long terme :} C'est un outil privilégié pour se constituer un capital progressivement, en vue de financer des projets futurs (retraite, études des enfants, acquisition immobilière) ou simplement pour valoriser un capital existant.
+    \item \textbf{Transmission du patrimoine :} L'assurance vie offre un cadre fiscal avantageux pour la transmission d'un capital à des bénéficiaires désignés, que ce soit en ligne directe ou non. Les abattements spécifiques et la possibilité de désigner librement les bénéficiaires en font un instrument de planification successorale efficace.
+    \item \textbf{Protection des proches :} En cas de décès de l'assuré, le versement d'un capital ou d'une rente aux bénéficiaires permet de les protéger financièrement et de faire face aux conséquences pécuniaires de la disparition.
+    \item \textbf{Recherche de rendement et diversification :} Avec une gamme de supports allant des \textbf{fonds en euros} sécurisés aux \textbf{unités de compte (UC)} plus dynamiques, l'assurance vie permet d'adapter son investissement à son profil de risque et à ses objectifs de rendement, tout en offrant des possibilités de diversification.
+    \item \textbf{Avantages fiscaux :} Outre la transmission, l'assurance vie bénéficie d'une fiscalité allégée sur les plus-values en cas de rachat après une certaine durée de détention (notamment après 8 ans), ce qui renforce son attractivité comme placement de long terme.
+\end{itemize}
+Cette polyvalence fait de l'assurance vie un produit incontournable, mais engendre également une complexité dans sa gestion pour les assureurs.
+
+\subsection{Dualité du produit : Épargne et Prévoyance}
+\label{subsec:dualite_produit}
+Au-delà de ses utilités multiples, l'une des premières spécificités de l'assurance vie réside dans sa nature hybride. Elle combine à la fois une dimension d'épargne à long terme et une composante de prévoyance. 
+\begin{itemize}
+    \item \textbf{Volet Épargne :} Les contrats d'assurance vie permettent aux souscripteurs de se constituer un capital sur la durée, en bénéficiant potentiellement de rendements attractifs et d'un cadre fiscal avantageux, notamment en cas de rachat après une certaine période de détention ou pour la transmission du capital.
+    \item \textbf{Volet Prévoyance :} En cas de décès de l'assuré, le capital constitué (ou un capital garanti) est versé à un ou plusieurs bénéficiaires désignés, leur offrant ainsi une protection financière. Cette dimension de couverture du risque de décès est inhérente à de nombreux contrats.
+\end{itemize}
+Cette dualité engendre des flux financiers complexes et des engagements de long terme pour l'assureur, nécessitant une gestion prudente et prospective. C'est pourquoi il met en place des moyens de calculer les montants qu'il doit
+
+\subsection{La garantie du capital et le taux minimum garanti (TMG)}
+\label{subsec:garantie_capital_tmg}
+Historiquement, de nombreux contrats d'assurance vie en euros se sont distingués par la \textbf{garantie du capital} investi par l'assuré. L'assureur s'engage à restituer au minimum les sommes versées, nettes de frais. 
+À cela s'ajoute souvent la notion de \textbf{Taux Minimum Garanti (TMG)}, qui est un rendement plancher que l'assureur s'engage à servir annuellement sur le capital. Bien que la tendance réglementaire et les conditions de marché aient conduit à une baisse, voire une disparition des TMG élevés sur les nouveaux contrats, cette caractéristique a un impact majeur sur les engagements passés et la gestion des actifs en couverture. Les assureurs doivent en effet générer des rendements financiers suffisants pour honorer ces garanties, ce qui influence directement leur politique d'investissement et leur exposition aux risques de marché.
+
+\subsection{La participation aux bénéfices (PB)}
+\label{subsec:participation_benefices}
+Au-delà du TMG, les assurés bénéficient de la \textbf{participation aux bénéfices (PB)}. Les assureurs ont l'obligation de redistribuer une partie des bénéfices techniques et financiers qu'ils réalisent sur la gestion des contrats d'assurance vie. Cette redistribution vient s'ajouter au TMG pour former le rendement global servi à l'assuré. La politique de PB est un levier important pour l'assureur, lui permettant de lisser les rendements dans le temps et de gérer les attentes des assurés, tout en respectant les contraintes réglementaires (provision pour participation aux excédents - PPE). La gestion de la PB est un élément central de la stratégie ALM.
+
+\subsection{Liquidité et faculté de rachat}
+\label{subsec:liquidite_rachat}
+Les contrats d'assurance vie offrent généralement une grande \textbf{liquidité} aux souscripteurs, qui disposent d'une \textbf{faculté de rachat} total ou partiel de leur épargne à tout moment (souvent après une période initiale et sous conditions fiscales). Cette caractéristique, bien qu'avantageuse pour l'assuré, représente un risque pour l'assureur :
+\begin{itemize}
+    \item \textbf{Risque de rachat massif (risque de ``bank run'' ou de ``surrender'') :} En cas de crise de confiance, de forte hausse des taux d'intérêt alternatifs ou d'autres événements défavorables, les assureurs pourraient faire face à une vague de rachats importante, les contraignant à liquider des actifs dans des conditions potentiellement défavorables.
+    \item \textbf{Antisélection :} Les comportements de rachat peuvent dépendre des conditions de marché et de la situation individuelle des assurés, introduisant un biais dans les flux de sortie.
+\end{itemize}
+La modélisation des comportements de rachat est donc un enjeu crucial pour l'évaluation des passifs et la gestion ALM.
+
+\subsection{Horizon de gestion à long terme}
+\label{subsec:horizon_long_terme}
+Les engagements en assurance vie s'inscrivent typiquement sur un \textbf{horizon de long, voire très long terme}. Les contrats peuvent durer plusieurs décennies, et les prestations (rachats, décès) s'étalent dans le temps. Cette perspective temporelle impose aux assureurs :
+\begin{itemize}
+    \item Une adéquation entre la duration des actifs et celle des passifs.
+    \item Une prise en compte des évolutions futures des taux d'intérêt, de l'inflation, de la mortalité et des comportements des assurés.
+    \item Une capacité à anticiper les changements réglementaires et économiques sur de longues périodes.
+\end{itemize}
+Cette caractéristique est au cœur de la problématique ALM et justifie l'utilisation de modèles de projection stochastiques.
+
+\subsection{Diversité des supports : Fonds en euros et Unités de Compte (UC)}
+\label{subsec:fonds_euros_uc}
+Le marché de l'assurance vie se segmente principalement entre :
+\begin{itemize}
+    \item \textbf{Les fonds en euros :} Majoritairement investis en obligations, ils offrent une garantie du capital et un rendement (TMG + PB). Le risque financier est principalement porté par l'assureur.
+    \item \textbf{Les unités de compte (UC) :} Investies sur des supports plus dynamiques (actions, immobilier, OPCVM diversifiés), la valeur des UC fluctue en fonction des marchés financiers. Le risque financier est ici porté par l'assuré, l'assureur garantissant un nombre de parts et non une valeur en euros.
+\end{itemize}
+La part croissante des UC dans les nouveaux contrats modifie le profil de risque des assureurs et des assurés, et complexifie la modélisation des passifs, notamment en ce qui concerne les garanties optionnelles (garanties plancher en cas de décès sur UC, par exemple) et les frais prélevés. Votre mémoire se concentre sur les passifs, et ces deux types de support impliquent des passifs avec des caractéristiques et des risques très différents pour l'assureur.
+
+\bigskip % Ajoute un peu d'espace vertical avant la transition vers la section suivante
+
+Ces spécificités, interdépendantes, créent un environnement complexe pour les assureurs vie. Elles soulignent l'importance d'une modélisation ALM robuste et d'une analyse fine des sensibilités aux différents facteurs de risque, notamment dans le cadre exigeant de Solvabilité II que nous aborderons dans la section suivante.
+
+
+\section{La réglementation Solvabilité 2}
+\subsection{Différents piliers}
+\subsubsection{Pilier 1 : Exigences quantitatives}
+\subsubsection{Pilier 2 : Exigences qualitatives}
+\subsubsection{Pilier 3 : Transparence et reporting}
+
+\subsection{Formule interne vs formule standard}
+\subsubsection{Formule standard}
+\subsubsection{Formule interne}
+\subsubsection{Comparaison des deux approches}
+
+\section{Définitions et enjeux de l’ALM}
+\subsection{Définition de l’ALM}
+\subsection{Enjeux pour les assureurs}
+
+\section{Présentation du modèle ALM (pour plus tard)}
+
+\section{Les générateurs de scénarios économiques}
+\subsection{Définition et rôle}
+\subsection{Exemples de générateurs utilisés}
+
+\section{Qu’est ce qu’un model point et pourquoi on les utilise ?}
+\subsection{Définition des model points}
+\subsection{Utilisation dans la modélisation ALM}
+
+\section{Impact des Réglementations sur les Portefeuilles (A mettre plus tard)}
+\subsection{Analyse de l'impact des réglementations sur les structures de portefeuilles de passifs}
+\subsection{Quelles sont les réglementations existantes concernant l’agrégation en MP}
+\subsection{Études de cas illustrant les contraintes réglementaires}
+
+
