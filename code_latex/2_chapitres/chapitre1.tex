@@ -1,5 +1,5 @@
 \chapter{Introduction au contexte réglementaire et à la modélisation ALM}
-Ceci est le contenu du premier chapitre. Vous pouvez écrire ici votre texte ou ajouter des sections et sous-sections.
+
 
 % Fichier: 1_1_specificites_assurance_vie.tex
 % Section: 1.1 Spécificités de l'assurance vie
@@ -65,7 +65,7 @@ Le marché de l'assurance vie se segmente principalement entre :
     \item \textbf{Les fonds en euros :} Majoritairement investis en obligations, ils offrent une garantie du capital et un rendement (TMG + PB). Le risque financier est principalement porté par l'assureur.
     \item \textbf{Les unités de compte (UC) :} Investies sur des supports plus dynamiques (actions, immobilier, OPCVM diversifiés), la valeur des UC fluctue en fonction des marchés financiers. Le risque financier est ici porté par l'assuré, l'assureur garantissant un nombre de parts et non une valeur en euros.
 \end{itemize}
-La part croissante des UC dans les nouveaux contrats modifie le profil de risque des assureurs et des assurés, et complexifie la modélisation des passifs, notamment en ce qui concerne les garanties optionnelles (garanties plancher en cas de décès sur UC, par exemple) et les frais prélevés. Votre mémoire se concentre sur les passifs, et ces deux types de support impliquent des passifs avec des caractéristiques et des risques très différents pour l'assureur.
+La part croissante des UC dans les nouveaux contrats modifie le profil de risque des assureurs et des assurés, et complexifie la modélisation des passifs, notamment en ce qui concerne les garanties optionnelles (garanties plancher en cas de décès sur UC, par exemple) et les frais prélevés. Ces deux types de support impliquent des passifs avec des caractéristiques et des risques très différents pour l'assureur.
 
 \bigskip % Ajoute un peu d'espace vertical avant la transition vers la section suivante
 
@@ -73,15 +73,32 @@ Ces spécificités, interdépendantes, créent un environnement complexe pour le
 
 
 \section{La réglementation Solvabilité 2}
+
+La réglementation Solvabilité 2 (S2) est un cadre prudentiel harmonisé au niveau de l'Union Européenne, dont l'objectif principal est de renforcer la protection des assurés et bénéficiaires, d'accroître la compétitivité des assureurs européens et de mettre en place une évaluation économique du bilan des entreprises d'assurance et de réassurance. Entrée en vigueur le 1er janvier 2016, elle vise à assurer la pérennité et la solvabilité des organismes face aux risques inhérents à leur activité.
+
 \subsection{Différents piliers}
+La directive Solvabilité 2 repose sur trois piliers interdépendants couvrant des sujets liés à la quantification des risques, à la gouvernance et à la transparence.
+
 \subsubsection{Pilier 1 : Exigences quantitatives}
+Le Pilier 1 définit les exigences de fonds propres que les assureurs et réassureurs doivent détenir pour couvrir les risques liés à leurs opérations. Il détaille la méthodologie de calcul du capital réglementaire, ainsi que l'évaluation des actifs et des passifs en valeur de marché. Les provisions techniques, par exemple, sont définies comme la combinaison du Best Estimate (BE) et de la Risk Margin (RM). Le calcul du SCR (Solvency Capital Requirement) est également au cœur de ce pilier.
+\textbf{IL FAUT QUE JE PARLE DAVANTAGE DE CETTE PARTIE CAR ELLE EST SUPER IMPORTANTE POUR LA SUITE DU MEMOIRE ET POUR SON UTILITE EN ALM}
 \subsubsection{Pilier 2 : Exigences qualitatives}
+Le Pilier 2 complète les exigences quantitatives par des exigences qualitatives en matière de gestion des risques et de gouvernance. Il requiert notamment la mise en place d'un système de gouvernance clair et bien défini, des mécanismes de contrôle interne adaptés à l'activité, et des processus efficaces pour évaluer, gérer et reporter les risques. L'évaluation interne des risques et de la solvabilité (ORSA - Own Risk and Solvency Assessment) constitue la pièce maîtresse de ce dispositif, visant à une identification globale et coordonnée des risques auxquels l'entreprise est exposée.
+
 \subsubsection{Pilier 3 : Transparence et reporting}
+Le Pilier 3 concerne la communication externe de l'assureur, imposant la transparence au travers de la publication de rapports qualitatifs (SFCR - Solvency and Financial Conditions Report, et RSR - Regulatory Solvency Report) et de rapports quantitatifs (QRT - Quantitative Reporting Templates) destinés au superviseur et parfois au public.
 
 \subsection{Formule interne vs formule standard}
+Pour le calcul du Solvency Capital Requirement (SCR), la réglementation Solvabilité 2 offre aux assureurs deux approches principales : la formule standard et le modèle interne.
+
 \subsubsection{Formule standard}
+La formule standard est une méthode prédéfinie par les régulateurs (EIOPA) qui prend en compte divers sous-modules de risques tels que le risque de marché, le risque de souscription en assurance vie et non-vie, le risque de contrepartie, etc.. Le SCR est calculé en appliquant des chocs de stress sur le scénario central pour mesurer l'impact sur le bilan (NAV). Les différents sous-modules de SCR sont agrégés à l'aide d'une matrice de corrélation fournie par le régulateur. Cette méthode est privilégiée car elle est la plus représentative de la globalité du marché.
+
 \subsubsection{Formule interne}
+Avec l'approbation des régulateurs, les entreprises peuvent développer leurs propres modèles statistiques et économétriques pour évaluer leur SCR, en fonction de leur profil de risque spécifique. Cette approche permet une mesure plus fine des risques et une allocation de capital potentiellement plus optimisée, car elle est adaptée aux spécificités de l'entreprise.
+
 \subsubsection{Comparaison des deux approches}
+Le choix entre la formule standard et le modèle interne dépend de la complexité de l'entreprise, de son profil de risque et de sa capacité à développer et à maintenir un modèle interne robuste et validé par les autorités de contrôle. La formule standard offre une approche simplifiée et harmonisée, tandis que le modèle interne permet une personnalisation et une optimisation plus poussées de l'exigence en capital. Toutefois, le développement et la validation d'un modèle interne sont des processus lourds et coûteux.
 
 \section{Définitions et enjeux de l’ALM}
 \subsection{Définition de l’ALM}
