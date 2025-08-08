@@ -1,122 +1,204 @@
-\chapter{Introduction au contexte réglementaire et à la modélisation ALM}
+\chapter{Contexte réglementaire et modélisation en assurance vie}
+\label{chap:contexte}
 
+\section{Les spécificités des produits d'assurance vie épargne}
+\label{sec:spec_av}
 
-% Fichier: 1_1_specificites_assurance_vie.tex
-% Section: 1.1 Spécificités de l'assurance vie
-
-\section{Spécificités de l'assurance vie}
-\label{sec:specificites_assurance_vie}
-
-L'assurance vie demeure un pilier central de la stratégie patrimoniale des Français. En effet, elle représente le placement le plus important en valeur, totalisant 1989 milliards d’euros d’encours sur les différents contrats à fin décembre 2024. Avec un capital moyen excédant 100\,000 euros par souscripteur, son rôle prépondérant dans l'épargne nationale est indéniable. Cette popularité s'explique par une combinaison unique d'utilités et de caractéristiques qui façonnent sa gestion et sa modélisation. Comprendre ces spécificités est fondamental avant d'aborder le cadre réglementaire de Solvabilité II et les subtilités de la modélisation Actif-Passif (ALM) qui sont l'objet de ce mémoire.
-
-\subsection{Utilité de l'assurance vie}
-\label{subsec:utilite_assurance_vie}
-L'assurance vie répond à une multitude d'objectifs patrimoniaux, ce qui explique son attrait constant :
+\subsection{Principes fondamentaux du contrat d'assurance vie}
 \begin{itemize}
-    \item \textbf{Constitution d'une épargne à long terme :} C'est un outil privilégié pour se constituer un capital progressivement, en vue de financer des projets futurs (retraite, études des enfants, acquisition immobilière) ou simplement pour valoriser un capital existant.
-    \item \textbf{Transmission du patrimoine :} L'assurance vie offre un cadre fiscal avantageux pour la transmission d'un capital à des bénéficiaires désignés, que ce soit en ligne directe ou non. Les abattements spécifiques et la possibilité de désigner librement les bénéficiaires en font un instrument de planification successorale efficace.
-    \item \textbf{Protection des proches :} En cas de décès de l'assuré, le versement d'un capital ou d'une rente aux bénéficiaires permet de les protéger financièrement et de faire face aux conséquences pécuniaires de la disparition.
-    \item \textbf{Recherche de rendement et diversification :} Avec une gamme de supports allant des \textbf{fonds en euros} sécurisés aux \textbf{unités de compte (UC)} plus dynamiques, l'assurance vie permet d'adapter son investissement à son profil de risque et à ses objectifs de rendement, tout en offrant des possibilités de diversification.
-    \item \textbf{Avantages fiscaux :} Outre la transmission, l'assurance vie bénéficie d'une fiscalité allégée sur les plus-values en cas de rachat après une certaine durée de détention (notamment après 8 ans), ce qui renforce son attractivité comme placement de long terme.
-\end{itemize}
-Cette polyvalence fait de l'assurance vie un produit incontournable, mais engendre également une complexité dans sa gestion pour les assureurs.
+    \item \textbf{Définition et aléa actuariel :} L'assurance vie est une convention par laquelle un assureur, en contrepartie du versement d'une prime, s'engage à verser un capital ou une rente lorsque survient un événement incertain lié à la durée de la vie humaine de l'assuré. \newline{}
+    Cet événement, qui constitue l'aléa au cœur du contrat, peut être le décès de l'assuré avant une date donnée ou, à l'inverse, sa survie jusqu'à cette date. \newline{}
+    Ce mécanisme repose sur un \textbf{cycle de production inversé} : l'assureur perçoit les primes bien avant de devoir potentiellement régler les prestations, ce qui l'amène à investir ces sommes sur des horizons de temps longs.
 
-\subsection{Dualité du produit : Épargne et Prévoyance}
-\label{subsec:dualite_produit}
-Au-delà de ses utilités multiples, l'une des premières spécificités de l'assurance vie réside dans sa nature hybride. Elle combine à la fois une dimension d'épargne à long terme et une composante de prévoyance. 
+    \item \textbf{Nature des engagements :} Les contrats couvrent différents types de risques et répondent à des objectifs variés.
+    \begin{itemize}
+        \item \textbf{En cas de vie :} Versement d'un capital ou d'une rente à une date prévue si l'assuré est en vie. Ce type de contrat est souvent utilisé pour se constituer un complément de retraite ou une épargne de précaution.
+        \item \textbf{En cas de décès :} Versement d'un capital ou d'une rente au(x) bénéficiaire(s) désigné(s) au décès de l'assuré. Cette garantie est fréquemment souscrite pour protéger ses proches, couvrir un emprunt ou anticiper les droits de succession.
+        \item \textbf{Mixte :} Combinaison des deux garanties précédentes, permettant de constituer une épargne tout en assurant la transmission d'un capital en cas de décès.
+    \end{itemize}
+
+    \item \textbf{Fonctionnement par capitalisation et duration longue :} Les contrats fonctionnent par \textbf{capitalisation}, c'est-à-dire que les primes versées par l'assuré sont investies pour financer sa propre couverture future. \newline{}
+    De par leur nature, ces contrats induisent des engagements sur une période très longue, conférant au passif de l'assureur une duration élevée, souvent estimée autour de 10 ans.
+
+    \item \textbf{Liquidité, option de rachat et fiscalité :} Une caractéristique fondamentale de l'assurance vie est sa liquidité. L'assuré dispose de la possibilité de récupérer son épargne à tout moment, avant le terme prévu, via un \textbf{rachat} qui peut être partiel ou total. \newline{}
+    Cette faculté de rachat constitue une option dont la valeur et le risque doivent être gérés par l'assureur, car elle a un impact direct sur la duration et les besoins de liquidité du portefeuille. \newline{}
+    La \textbf{fiscalité} joue un rôle incitatif majeur : les plus-values générées sont imposées plus lourdement si le rachat intervient avant la huitième année du contrat, encourageant ainsi l'épargne de long terme.
+\end{itemize}
+\newpage{}
+\subsection{Les principaux supports d'investissement}
 \begin{itemize}
-    \item \textbf{Volet Épargne :} Les contrats d'assurance vie permettent aux souscripteurs de se constituer un capital sur la durée, en bénéficiant potentiellement de rendements attractifs et d'un cadre fiscal avantageux, notamment en cas de rachat après une certaine période de détention ou pour la transmission du capital.
-    \item \textbf{Volet Prévoyance :} En cas de décès de l'assuré, le capital constitué (ou un capital garanti) est versé à un ou plusieurs bénéficiaires désignés, leur offrant ainsi une protection financière. Cette dimension de couverture du risque de décès est inhérente à de nombreux contrats.
+    \item \textbf{Le fonds en euros :} Support historique et sécuritaire, il constitue le pilier de l'assurance vie traditionnelle.\newline{}
+    \begin{itemize}
+        \item \textbf{Transfert du risque à l'assureur :} Le risque financier est intégralement porté par l'assureur, qui garantit à tout moment le capital investi par l'épargnant. En conséquence, la politique d'investissement est prudente, majoritairement orientée vers des actifs peu risqués comme les obligations d'État et d'entreprises. \newline{}
+        \item \textbf{Garanties et revalorisation :} Le fonds en euros est défini par deux garanties majeures. D'une part, le \textit{Taux Minimum Garanti} (TMG), fixé contractuellement, assure une revalorisation minimale. D'autre part, l'effet "cliquet" garantit que les revalorisations annuelles sont définitivement acquises et intégrées dans le montant de Provision Mathématiques (PM) et ne peuvent être remises en cause par des performances futures négatives.\newline{}
+        \item \textbf{Participation aux Bénéfices (PB) :} Au-delà du TMG, l'assureur a l'obligation de redistribuer une part significative de ses bénéfices techniques et financiers. Pour lisser les performances dans le temps, une partie de cette PB peut être mise en réserve dans une \textit{Provision pour Participation aux Bénéfices} (PPB) ou également \textit{Provision pour Participation aux Excedents} (PPE), qui doit être redistribuée aux assurés dans un délai maximal de 8 ans.\newline{}
+    \end{itemize}
+    \item \textbf{Les unités de compte (UC) :} Support alternatif offrant une exposition directe aux marchés financiers.\newline{}
+    \begin{itemize}
+        \item \textbf{Transfert du risque à l'assuré :} Contrairement au fonds en euros, le risque d'investissement est entièrement porté par l'assuré. L'assureur ne garantit pas la valeur du capital, mais un nombre de parts d'actifs (OPCVM, actions, SCPI, etc.).\newline{}
+        \item \textbf{Potentiel de rendement et volatilité :} La valeur de l'épargne fluctue quotidiennement au gré des marchés financiers. Ce mécanisme offre un potentiel de rendement supérieur à long terme, mais expose également à un risque de perte en capital.\newline{}
+    \end{itemize}
 \end{itemize}
-Cette dualité engendre des flux financiers complexes et des engagements de long terme pour l'assureur, nécessitant une gestion prudente et prospective. C'est pourquoi il met en place des moyens de calculer les montants qu'il doit
+\newpage{}
+\section{Le cadre prudentiel Solvabilité II}
+\label{sec:s2}
 
-\subsection{La garantie du capital et le taux minimum garanti (TMG)}
-\label{subsec:garantie_capital_tmg}
-Historiquement, de nombreux contrats d'assurance vie en euros se sont distingués par la \textbf{garantie du capital} investi par l'assuré. L'assureur s'engage à restituer au minimum les sommes versées, nettes de frais. 
-À cela s'ajoute souvent la notion de \textbf{Taux Minimum Garanti (TMG)}, qui est un rendement plancher que l'assureur s'engage à servir annuellement sur le capital. Bien que la tendance réglementaire et les conditions de marché aient conduit à une baisse, voire une disparition des TMG élevés sur les nouveaux contrats, cette caractéristique a un impact majeur sur les engagements passés et la gestion des actifs en couverture. Les assureurs doivent en effet générer des rendements financiers suffisants pour honorer ces garanties, ce qui influence directement leur politique d'investissement et leur exposition aux risques de marché.
-
-\subsection{La participation aux bénéfices (PB)}
-\label{subsec:participation_benefices}
-Au-delà du TMG, les assurés bénéficient de la \textbf{participation aux bénéfices (PB)}. Les assureurs ont l'obligation de redistribuer une partie des bénéfices techniques et financiers qu'ils réalisent sur la gestion des contrats d'assurance vie. Cette redistribution vient s'ajouter au TMG pour former le rendement global servi à l'assuré. La politique de PB est un levier important pour l'assureur, lui permettant de lisser les rendements dans le temps et de gérer les attentes des assurés, tout en respectant les contraintes réglementaires (provision pour participation aux excédents - PPE). La gestion de la PB est un élément central de la stratégie ALM.
-
-\subsection{Liquidité et faculté de rachat}
-\label{subsec:liquidite_rachat}
-Les contrats d'assurance vie offrent généralement une grande \textbf{liquidité} aux souscripteurs, qui disposent d'une \textbf{faculté de rachat} total ou partiel de leur épargne à tout moment (souvent après une période initiale et sous conditions fiscales). Cette caractéristique, bien qu'avantageuse pour l'assuré, représente un risque pour l'assureur :
+\subsection{Objectifs et structure de la norme}
 \begin{itemize}
-    \item \textbf{Risque de rachat massif (risque de ``bank run'' ou de ``surrender'') :} En cas de crise de confiance, de forte hausse des taux d'intérêt alternatifs ou d'autres événements défavorables, les assureurs pourraient faire face à une vague de rachats importante, les contraignant à liquider des actifs dans des conditions potentiellement défavorables.
-    \item \textbf{Antisélection :} Les comportements de rachat peuvent dépendre des conditions de marché et de la situation individuelle des assurés, introduisant un biais dans les flux de sortie.
+    \item \textbf{Harmonisation et protection :} L'objectif principal de Solvabilité II est d'harmoniser le régime de solvabilité des assureurs au sein de l'Union Européenne, afin d'optimiser la protection des assurés et des bénéficiaires. \newline{}
+    \item \textbf{Approche par les risques :} La norme instaure une approche économique et prospective, fondée sur une évaluation fine des risques auxquels un assureur est exposé. \newline{}
+    \item \textbf{Structure en trois piliers :} Cette approche se décline en trois piliers interdépendants qui couvrent l'ensemble des aspects de la gestion d'une compagnie d'assurance.
 \end{itemize}
-La modélisation des comportements de rachat est donc un enjeu crucial pour l'évaluation des passifs et la gestion ALM.
 
-\subsection{Horizon de gestion à long terme}
-\label{subsec:horizon_long_terme}
-Les engagements en assurance vie s'inscrivent typiquement sur un \textbf{horizon de long, voire très long terme}. Les contrats peuvent durer plusieurs décennies, et les prestations (rachats, décès) s'étalent dans le temps. Cette perspective temporelle impose aux assureurs :
+\subsection{Le Pilier 1 : Les exigences quantitatives}
+Le Pilier 1 définit les règles de calcul des provisions techniques et du capital de solvabilité. Il impose une valorisation des actifs et des passifs en vision \textit{market-consistent}, c'est-à-dire cohérente avec leur valeur de marché.
 \begin{itemize}
-    \item Une adéquation entre la duration des actifs et celle des passifs.
-    \item Une prise en compte des évolutions futures des taux d'intérêt, de l'inflation, de la mortalité et des comportements des assurés.
-    \item Une capacité à anticiper les changements réglementaires et économiques sur de longues périodes.
-\end{itemize}
-Cette caractéristique est au cœur de la problématique ALM et justifie l'utilisation de modèles de projection stochastiques.
+    \item \textbf{Le Best Estimate (BE) :} Aussi appelé Best Estimate Liability, il représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs nécessaires pour faire face aux engagements d'assurance. Il est calculé en \textit{run-off}, c'est à dire dans l'hypothèse où le portefeuille d'engagements est en ne prend pas de nouveau contrat (ou \textit{New Business}) et donc qu'on écoule tous les contrats actuels. Son calcul est stochastique, réalisé dans un univers risque neutre, et s'obtient en faisant la moyenne des flux actualisés sur un grand nombre de simulations économiques. Il se calcule de la manière suivante :
+    \begin{equation}
+        BEL = \frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{T}\frac{CF_{i}(j)}{(1+r_{i,j})^{j}}
+    \end{equation}
+    Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent pour l'année $j$ dans la simulation $i$.\newline{}
 
-\subsection{Diversité des supports : Fonds en euros et Unités de Compte (UC)}
-\label{subsec:fonds_euros_uc}
-Le marché de l'assurance vie se segmente principalement entre :
+    \item \textbf{La Marge de Risque (Risk Margin - RM) :} C'est une provision qui vient s'ajouter en plus du Best Estimate. Elle sert à représenter les risques non financiers portés au bilan. Elle se calcule selon une approche "Coût du Capital" (\textit{Cost of Capital ou CoC}), cela signifie qu'elle est définie par la valeur actuelle de l'immobilisation du capital sur chaque période au CoC :
+    \begin{equation}
+        RM = CoC_{rate} \times \sum_{j=0}^{T} \frac{SCR(j)}{(1+r_{j+1})^{j+1}}
+    \end{equation}
+    Où $CoC_{rate}$ est le coût du capital (fixé à 6\%), $SCR(j)$ est le SCR de l'année $j$ en hypothèse de portefeuille en extinction (\textit{run-off}), et $r_{j+1}$ est le taux sans risque à l'échéance $j+1$.\newline{}
+
+    \item \textbf{Le Solvency Capital Requirement (SCR) :} Il s'agit du montant de fonds propres (ou $NAV$, \textit{Net Asset Value}) nécessaire pour faire face à une perte inattendue et sévère, avec une probabilité de ruine de 0,5\% à horizon un an (correspondant à une Value-at-Risk à 99,5\%). Le calcul en formule standard suit une approche modulaire :
+    \begin{itemize}
+        \item \textbf{Calcul par chocs :} Le SCR pour un risque élémentaire $x$ est défini comme la perte de fonds propres ($NAV$) résultant de l'application d'un choc calibré et prédéfini par le régulateur.
+        \begin{equation}
+            SCR_{x} = NAV_{central} - NAV_{choc}
+        \end{equation}
+        En partant de l'équation de bilan simplifiée $Actifs_{VM} = BE + RM + NAV$, et en supposant la Marge de Risque (RM) constante lors du choc, on peut montrer que la perte de NAV est égale à la variation du surplus des actifs sur le BE :
+        \begin{equation*}
+            SCR_{x} = (Actifs_{VM}^{central} - BE^{central}) - (Actifs_{VM}^{choc} - BE^{choc})
+        \end{equation*}
+        Pour les risques de passif purs (mortalité, longévité, rachat), le choc n'affecte par définition que les flux de passif. Dans ce cas, la valeur des actifs reste inchangée ($Actifs_{VM}^{central} = Actifs_{VM}^{choc}$), et la formule se simplifie :
+        \begin{equation*}
+            SCR_{passif} = BE^{choc} - BE^{central} = \Delta BE
+        \end{equation*}
+        Pour ces risques, le SCR correspond donc bien à la variation du Best Estimate. En revanche, pour les risques de marché, le choc affecte à la fois les actifs et le passif (via les taux d'actualisation), et il est indispensable de calculer la variation de la NAV dans sa totalité.\newline{}
+
+        \item \textbf{Agrégation des modules :} Les SCR des risques élémentaires sont ensuite agrégés pour former des modules de risque (marché, souscription, etc.) en utilisant des matrices de corrélation. Par exemple, pour le risque de marché :
+        \begin{equation}
+            SCR_{marché} = \sqrt{\sum_{(i,j)} \rho_{ij} \times SCR_i \times SCR_j}
+        \end{equation}
+        Où $\rho_{ij}$ est le coefficient de corrélation entre les sous-modules de risques de marché $i$ et $j$.\newline{}
+        \item \textbf{Calcul du SCR total :} Les principaux modules de risque sont à leur tour agrégés pour former le SCR de base (BSCR), qui, ajusté de la capacité d'absorption des impôts et augmenté du risque opérationnel, donne le SCR final.
+        \begin{gather}
+            BSCR = \sqrt{\sum_{(i,j)} \rho_{i,j} \times SCR_{i} \times SCR_{j}} + SCR_{intangible} \\
+            SCR = BSCR - Adj + SCR_{op}
+        \end{gather}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Les Piliers 2 et 3 : Gouvernance et Transparence}
+Au-delà des exigences quantitatives, Solvabilité II impose un cadre qualitatif et de communication rigoureux.
 \begin{itemize}
-    \item \textbf{Les fonds en euros :} Majoritairement investis en obligations, ils offrent une garantie du capital et un rendement (TMG + PB). Le risque financier est principalement porté par l'assureur.
-    \item \textbf{Les unités de compte (UC) :} Investies sur des supports plus dynamiques (actions, immobilier, OPCVM diversifiés), la valeur des UC fluctue en fonction des marchés financiers. Le risque financier est ici porté par l'assuré, l'assureur garantissant un nombre de parts et non une valeur en euros.
+    \item \textbf{Pilier 2 - Exigences qualitatives :} Ce pilier se concentre sur la supervision des risques et la gouvernance interne des organismes d'assurance.
+    \begin{itemize}
+        \item \textbf{Système de gouvernance :} L'assureur doit mettre en place une structure organisationnelle transparente et un système de contrôle interne efficace. \newline{} Cela inclut la mise en place de politiques écrites et la définition de quatre fonctions clés indépendantes : la fonction actuarielle, la gestion des risques, l'audit interne et la conformité.
+        \item \textbf{L'ORSA (\textit{Own Risk and Solvency Assessment})} : Il s'agit de l'élément central du Pilier 2. L'ORSA est un processus interne prospectif par lequel l'assureur évalue, sur un horizon de moyen terme (généralement 3 à 5 ans), l'adéquation entre son profil de risque spécifique, ses limites de tolérance au risque et ses besoins globaux en solvabilité, au regard de sa stratégie d'entreprise. \newline{} C'est un outil de pilotage stratégique qui va au-delà des exigences du Pilier 1, en considérant des scénarios et des risques propres à l'entreprise.
+    \end{itemize}
+    \item \textbf{Pilier 3 - Exigences de reporting :} Ce pilier vise à assurer la transparence et l'harmonisation de l'information financière à destination du public et des autorités de contrôle.
+    \begin{itemize}
+        \item \textbf{Communication publique :} Les assureurs doivent publier annuellement un rapport sur leur solvabilité et leur situation financière, le \textit{Solvency and Financial Condition Report} (SFCR). Ce document public détaille la performance, le système de gouvernance, le profil de risque, ainsi que les méthodes de valorisation et de gestion du capital.
+        \item \textbf{Reporting au superviseur :} Les assureurs doivent remettre périodiquement (trimestriellement et annuellement) des informations quantitatives détaillées aux autorités de contrôle via des formats standardisés, les \textit{Quantitative Reporting Templates} (QRT). \newline{} Ils soumettent également un rapport narratif plus détaillé et confidentiel, le \textit{Regular Supervisory Report} (RSR), ainsi que le rapport issu de leur processus ORSA.
+    \end{itemize}
 \end{itemize}
-La part croissante des UC dans les nouveaux contrats modifie le profil de risque des assureurs et des assurés, et complexifie la modélisation des passifs, notamment en ce qui concerne les garanties optionnelles (garanties plancher en cas de décès sur UC, par exemple) et les frais prélevés. Ces deux types de support impliquent des passifs avec des caractéristiques et des risques très différents pour l'assureur.
-
-\bigskip % Ajoute un peu d'espace vertical avant la transition vers la section suivante
-
-Ces spécificités, interdépendantes, créent un environnement complexe pour les assureurs vie. Elles soulignent l'importance d'une modélisation ALM robuste et d'une analyse fine des sensibilités aux différents facteurs de risque, notamment dans le cadre exigeant de Solvabilité II que nous aborderons dans la section suivante.
 
 
-\section{La réglementation Solvabilité 2}
+\section{La gestion Actif-Passif (ALM) : définitions et enjeux}
+\label{sec:alm}
 
-La réglementation Solvabilité 2 (S2) est un cadre prudentiel harmonisé au niveau de l'Union Européenne, dont l'objectif principal est de renforcer la protection des assurés et bénéficiaires, d'accroître la compétitivité des assureurs européens et de mettre en place une évaluation économique du bilan des entreprises d'assurance et de réassurance. Entrée en vigueur le 1er janvier 2016, elle vise à assurer la pérennité et la solvabilité des organismes face aux risques inhérents à leur activité.
+\subsection{Définition et objectifs}
+\begin{itemize}
+    \item La gestion Actif-Passif, ou \textit{Asset-Liability Management} (ALM), est le processus continu de formulation, de mise en œuvre, de suivi et de révision des stratégies liées à l'actif et au passif afin d'atteindre les objectifs financiers d'un assureur, pour un ensemble donné de tolérances et de contraintes en matière de risque. \newline{}
+    \item L'enjeu fondamental de l'ALM provient du \textbf{cycle de production inversé} de l'assurance : les primes sont collectées et investies bien avant que les prestations futures ne soient versées. Cette particularité crée un décalage temporel et une asymétrie de risque entre les actifs détenus par l'assureur et ses engagements de passif. \newline{}
+    \item L'objectif principal est donc de piloter le bilan de manière coordonnée pour s'assurer que les flux financiers générés par les actifs seront suffisants, en toute circonstance, pour honorer les flux de prestations promis aux assurés, tout en optimisant la rentabilité et en respectant les exigences réglementaires.
+\end{itemize}
 
-\subsection{Différents piliers}
-La directive Solvabilité 2 repose sur trois piliers interdépendants couvrant des sujets liés à la quantification des risques, à la gouvernance et à la transparence.
+\subsection{La dynamique ALM en assurance vie}
+\begin{itemize}
+    \item Le processus ALM peut être schématisé comme une boucle dynamique. Un montant initial, provenant des primes, est alloué à un portefeuille d'actifs diversifiés (obligations, actions, immobilier, etc.). Ces investissements génèrent des rendements (coupons, dividendes, plus-values) qui viennent abonder le capital initial. Ce montant total est ensuite utilisé pour payer les prestations de l'année (rachats, sinistres décès, rentes). Le solde est réinvesti, et le processus se répète sur toute la durée de vie du portefeuille. \newline{}
+    \item Le cœur du problème ALM réside dans la gestion de \textbf{l'inadéquation} (\textit{mismatch}) entre les caractéristiques de l'actif et du passif. Les passifs d'assurance vie sont souvent de longue durée, parfois assortis de garanties de taux ou de capital, et leur comportement peut être sensible à des facteurs économiques et comportementaux. Les actifs, quant à eux, sont sujets à la volatilité des marchés financiers. \newline{}
+    \item L'ALM vise donc à gérer activement les risques découlant de cette inadéquation, notamment :
+    \begin{itemize}
+        \item Le \textbf{risque de taux d'intérêt}, qui affecte la valeur des obligations à l'actif et le coût des garanties au passif.
+        \item Le \textbf{risque de liquidité}, lié à la capacité de faire face à une vague de rachats imprévue.
+        \item Les \textbf{risques de marché} (actions, immobilier, crédit), qui impactent directement la valeur du portefeuille d'actifs.
+    \end{itemize}
+\end{itemize}
 
-\subsubsection{Pilier 1 : Exigences quantitatives}
-Le Pilier 1 définit les exigences de fonds propres que les assureurs et réassureurs doivent détenir pour couvrir les risques liés à leurs opérations. Il détaille la méthodologie de calcul du capital réglementaire, ainsi que l'évaluation des actifs et des passifs en valeur de marché. Les provisions techniques, par exemple, sont définies comme la combinaison du Best Estimate (BE) et de la Risk Margin (RM). Le calcul du SCR (Solvency Capital Requirement) est également au cœur de ce pilier.
-\textbf{IL FAUT QUE JE PARLE DAVANTAGE DE CETTE PARTIE CAR ELLE EST SUPER IMPORTANTE POUR LA SUITE DU MEMOIRE ET POUR SON UTILITE EN ALM}
-\subsubsection{Pilier 2 : Exigences qualitatives}
-Le Pilier 2 complète les exigences quantitatives par des exigences qualitatives en matière de gestion des risques et de gouvernance. Il requiert notamment la mise en place d'un système de gouvernance clair et bien défini, des mécanismes de contrôle interne adaptés à l'activité, et des processus efficaces pour évaluer, gérer et reporter les risques. L'évaluation interne des risques et de la solvabilité (ORSA - Own Risk and Solvency Assessment) constitue la pièce maîtresse de ce dispositif, visant à une identification globale et coordonnée des risques auxquels l'entreprise est exposée.
+\subsection{Les modèles ALM, outils de pilotage stratégique}
+\begin{itemize}
+    \item Pour mettre en œuvre des stratégies ALM, les assureurs s'appuient sur des modèles de projection sophistiqués. Ces modèles simulent l'évolution conjointe de l'actif et du passif sur des horizons de temps longs (40 ans ou plus), sous une multitude de scénarios économiques. \newline{}
+    \item Un modèle ALM intègre typiquement : les scénarios économiques issus d'un GSE (Générateur de Scénarios Économiques), les caractéristiques du portefeuille d'actifs et sa stratégie d'investissement, les caractéristiques du portefeuille de passifs (soit les contrats d'assurance vie ou les Model Points associés à des contrats), les lois de comportement du passif (rachats, mortalité), ainsi que les règles de gestion de l'assureur (politique de participation aux bénéfices, stratégie de couverture). \newline{}
+    \item Ces projections permettent de calculer la distribution future d'indicateurs clés de risque et de rentabilité (SCR, NAV, PVFP, etc.) et ainsi d'évaluer l'impact de différentes stratégies d'allocation d'actifs ou de conception de produits, devenant un outil indispensable au pilotage et à la prise de décision stratégique.
+\end{itemize}
 
-\subsubsection{Pilier 3 : Transparence et reporting}
-Le Pilier 3 concerne la communication externe de l'assureur, imposant la transparence au travers de la publication de rapports qualitatifs (SFCR - Solvency and Financial Conditions Report, et RSR - Regulatory Solvency Report) et de rapports quantitatifs (QRT - Quantitative Reporting Templates) destinés au superviseur et parfois au public.
 
-\subsection{Formule interne vs formule standard}
-Pour le calcul du Solvency Capital Requirement (SCR), la réglementation Solvabilité 2 offre aux assureurs deux approches principales : la formule standard et le modèle interne.
+\section{Les Générateurs de Scénarios Économiques (GSE)}
+\label{sec:gse}
 
-\subsubsection{Formule standard}
-La formule standard est une méthode prédéfinie par les régulateurs (EIOPA) qui prend en compte divers sous-modules de risques tels que le risque de marché, le risque de souscription en assurance vie et non-vie, le risque de contrepartie, etc.. Le SCR est calculé en appliquant des chocs de stress sur le scénario central pour mesurer l'impact sur le bilan (NAV). Les différents sous-modules de SCR sont agrégés à l'aide d'une matrice de corrélation fournie par le régulateur. Cette méthode est privilégiée car elle est la plus représentative de la globalité du marché.
+\subsection{Rôle et fonctionnement}
+\begin{itemize}
+    \item Un Générateur de Scénarios Économiques (GSE) est un outil mathématique et informatique qui permet de simuler de multiples trajectoires futures cohérentes pour un ensemble de variables économiques et financières (taux d'intérêt, cours des actions, indices immobiliers, inflation, etc.). \newline{}
+    \item Il constitue le moteur des modèles ALM, en fournissant les environnements économiques dans lesquels le bilan de l'assureur est projeté. La qualité des projections ALM dépend donc directement de la robustesse et du bon calibrage du GSE. \newline{}
+    \item Le calibrage du GSE s'appuie sur des données de marché à une date donnée (courbe des taux, volatilités implicites des options) ainsi que sur des données historiques pour estimer les paramètres des modèles stochastiques sous-jacents.
+\end{itemize}
 
-\subsubsection{Formule interne}
-Avec l'approbation des régulateurs, les entreprises peuvent développer leurs propres modèles statistiques et économétriques pour évaluer leur SCR, en fonction de leur profil de risque spécifique. Cette approche permet une mesure plus fine des risques et une allocation de capital potentiellement plus optimisée, car elle est adaptée aux spécificités de l'entreprise.
+\subsection{Les deux cadres de projection : Risque Neutre vs Monde Réel}
+\begin{itemize}
+    \item \textbf{L'univers Risque Neutre ($\mathbb{Q}$)} : Il s'agit d'un cadre de valorisation théorique, indispensable pour les calculs réglementaires sous Solvabilité II.
+    \begin{itemize}
+        \item \textbf{Objectif :} Assurer une valorisation \textit{market-consistent}, c'est-à-dire que les prix des instruments financiers calculés par le modèle doivent correspondre aux prix observés sur le marché.
+        \item \textbf{Hypothèses clés :} Absence d'opportunité d'arbitrage (AOA) et complétude des marchés. Sous ces hypothèses, il existe une probabilité unique, dite "risque neutre", sous laquelle le rendement espéré de tout actif financier est égal au taux d'intérêt sans risque.
+        \item \textbf{Propriété fondamentale :} Les prix actualisés des actifs sont des martingales sous la probabilité $\mathbb{Q}$. Cela signifie que la meilleure estimation de la valeur future actualisée d'un actif est sa valeur actuelle.
+    \end{itemize}
+    \item \textbf{L'univers Monde Réel ($\mathbb{P}$)} : Ce cadre vise à représenter les anticipations réelles de l'évolution de l'économie.
+    \begin{itemize}
+        \item \textbf{Objectif :} Servir au pilotage stratégique de l'entreprise, à la définition du \textit{business plan} et à l'analyse de la rentabilité économique future.
+        \item \textbf{Hypothèses clés :} Les rendements espérés des actifs intègrent des primes de risque (prime de risque action, prime de crédit, etc.) pour rémunérer les investisseurs du risque qu'ils portent. Ces primes sont estimées à partir de données historiques ou d'anticipations d'experts.
+        \item \textbf{Utilisation :} Les projections en monde réel permettent de construire des visions centrales et des scénarios de stress pour l'exercice ORSA.
+    \end{itemize}
+\end{itemize}
 
-\subsubsection{Comparaison des deux approches}
-Le choix entre la formule standard et le modèle interne dépend de la complexité de l'entreprise, de son profil de risque et de sa capacité à développer et à maintenir un modèle interne robuste et validé par les autorités de contrôle. La formule standard offre une approche simplifiée et harmonisée, tandis que le modèle interne permet une personnalisation et une optimisation plus poussées de l'exigence en capital. Toutefois, le développement et la validation d'un modèle interne sont des processus lourds et coûteux.
 
-\section{Définitions et enjeux de l’ALM}
-\subsection{Définition de l’ALM}
-\subsection{Enjeux pour les assureurs}
 
-\section{Présentation du modèle ALM (pour plus tard)}
+\section{La représentation du passif : le concept de \textit{Model Point}}
+\label{sec:mp}
 
-\section{Les générateurs de scénarios économiques}
 \subsection{Définition et rôle}
-\subsection{Exemples de générateurs utilisés}
+\begin{itemize}
+    \item Un \textit{Model Point} (MP) est un agrégat de contrats d'assurance qui partagent des caractéristiques similaires. Il constitue une représentation synthétique et fidèle d'un sous-ensemble du portefeuille de passif. \newline{}
+    \item Son rôle est de permettre la modélisation de portefeuilles de grande taille en réduisant la complexité et le volume des données à traiter, tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet.
+\end{itemize}
 
-\section{Qu’est ce qu’un model point et pourquoi on les utilise ?}
-\subsection{Définition des model points}
-\subsection{Utilisation dans la modélisation ALM}
+\subsection{La nécessité de l'agrégation : de la police au Model Point}
+\begin{itemize}
+    \item Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices individuelles. Une modélisation "police à police" est techniquement possible mais informatiquement irréalisable pour des calculs stochastiques complexes. \newline{}
+    \item La charge de calcul deviendrait prohibitive, notamment pour les projections ALM qui requièrent des milliers de simulations sur des horizons de plusieurs décennies. Le besoin de simplification est donc une contrainte opérationnelle fondamentale. \newline{}
+    \item Les \textit{Model Points} sont la réponse à cette contrainte : ils permettent de passer d'une vision granulaire à une vision agrégée et maniable, rendant les calculs de provisions et de capital réalisables dans des temps acceptables.
+\end{itemize}
 
-\section{Impact des Réglementations sur les Portefeuilles (A mettre plus tard)}
-\subsection{Analyse de l'impact des réglementations sur les structures de portefeuilles de passifs}
-\subsection{Quelles sont les réglementations existantes concernant l’agrégation en MP}
-\subsection{Études de cas illustrant les contraintes réglementaires}
+\subsection{Principes de construction}
+\begin{itemize}
+    \item L'objectif de la modélisation par MP est de créer des groupes de contrats les plus homogènes possible. La qualité de la représentation dépend directement de la pertinence des critères de regroupement. \newline{}
+    \item Les critères de segmentation utilisés pour créer les MPs sont multiples et visent à capturer les principaux facteurs de risque du passif :
+    \begin{itemize}
+        \item \textbf{Caractéristiques du produit :} type de support (fonds euros, UC), niveau du Taux Minimum Garanti (TMG), présence de garanties optionnelles.
+        \item \textbf{Caractéristiques de l'assuré :} âge, génération (pour capturer les différences de tables de mortalité), sexe.
+        \item \textbf{Caractéristiques du contrat :} ancienneté fiscale, durée résiduelle, montant des provisions mathématiques.
+    \end{itemize}
+    \item Des techniques de classification statistique (clustering) sont souvent employées pour optimiser la création de ces groupes homogènes.
+\end{itemize}
 
-
+\subsection{Du Model Point à la problématique du mémoire}
+\begin{itemize}
+    \item L'utilisation des \textit{Model Points} constitue la première étape, universellement acceptée, de l'agrégation du passif. C'est une simplification nécessaire pour rendre les modèles ALM opérationnels. \newline{}
+    \item La problématique centrale de ce mémoire est donc de définir une méthode d'agrégation optimale de ces \textit{Model Points}. L'objectif est de construire la meilleure simplification possible, c'est-à-dire celle qui garantit la plus grande stabilité des indicateurs Solvabilité II (SCR, Marge de Risque, NAV) lors du calcul des différentes sensibilités réglementaires. \newline{}
+    \item Cette section introductive sur les MPs pose donc les fondations de notre analyse, en établissant que la simplification est une pratique inhérente à la modélisation ALM et qu'il est légitime de s'interroger sur les limites et les impacts de cette démarche.
+\end{itemize}
