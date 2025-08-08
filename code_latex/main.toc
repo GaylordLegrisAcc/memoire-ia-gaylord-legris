@@ -1,0 +1,62 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{Résumé}{iii}{chapter*.2}%
+\contentsline {chapter}{Abstract}{iv}{chapter*.3}%
+\contentsline {chapter}{Remerciements}{v}{chapter*.4}%
+\contentsline {chapter}{Synthèse}{vi}{chapter*.5}%
+\contentsline {chapter}{Synthesis}{vii}{chapter*.6}%
+\contentsline {chapter}{Introduction}{viii}{chapter*.7}%
+\contentsline {chapter}{\numberline {1}Contexte réglementaire et modélisation en assurance vie}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Les spécificités des produits d'assurance vie épargne}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Principes fondamentaux du contrat d'assurance vie}{1}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Les principaux supports d'investissement}{1}{subsection.1.1.2}%
+\contentsline {section}{\numberline {1.2}Le cadre prudentiel Solvabilité II}{2}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Objectifs et structure de la norme}{2}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Le Pilier 1 : Exigences quantitatives}{2}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Le Pilier 2 : Exigences qualitatives et gouvernance}{3}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Le Pilier 3 : Exigences de reporting et transparence}{4}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.3}La gestion Actif-Passif (ALM) : définitions et enjeux}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Les Générateurs de Scénarios Économiques (GSE)}{4}{section.1.4}%
+\contentsline {section}{\numberline {1.5}La représentation du passif : le concept de \textit {Model Point}}{5}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}La nécessité de l'agrégation}{5}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Du Model Point à la problématique du mémoire}{5}{subsection.1.5.2}%
+\contentsline {chapter}{\numberline {2}Contraintes techniques et création d'outils}{6}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Nécessité du générateur de portefeuille passif}{6}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Besoin de générer des données pour simuler un nouveau produit}{6}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Simuler différentes évolutions du business mix pour orienter politique de souscription/politique commerciale.}{6}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Simuler un portefeuille représentatif du marché ou composé des principaux concurrents pour se positionner.}{6}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Contraintes techniques associées}{6}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Mise à jour sur des outils plus récents}{6}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}langage open source, permet de s'écarter des problématiques financières (coût de licence).}{6}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Travail sur des outils mis à jour fréquemment (Python, Polars).}{6}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Développement du Modèle ALM en Python}{6}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Présentation du modèle ALM développé pour Accenture}{6}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Fonctionnement du modèle et apprentissage personnel.}{6}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Limites du modèle à l’heure actuelle.}{6}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Générateur de portefeuille de passif}{6}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Description des contraintes techniques rencontrées}{6}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Description du générateur de modèle point}{6}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Importance pour un cabinet de conseil et rassurance des clients.}{6}{subsection.2.4.3}%
+\contentsline {chapter}{\numberline {3}Agrégations des portefeuilles de passifs}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Méthodes d'Agrégation}{7}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Description des Méthodes}{7}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Optimisation du Nombre de Model Points}{7}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Tests et Analyse des Résultats}{7}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Présentation des Portefeuilles}{7}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Analyse des Résultats}{7}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Choix d'un Modèle}{7}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Compatibilité avec les Architectures Modernes}{7}{subsection.3.2.4}%
+\contentsline {chapter}{\numberline {4}Tests de Sensibilités}{8}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Création de Portefeuilles de Passif Test}{8}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Description des modifications apportées au portefeuille}{8}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Agrégation des portefeuilles par la méthode précédemment choisie}{8}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Analyse des Sensibilités}{8}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Interprétation des Résultats}{8}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Conclusion}{9}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{9}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{9}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation et des contraintes réglementaires sur les portefeuilles de passifs}{9}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{9}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{9}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{9}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{9}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion générale}{9}{section.5.3}%
