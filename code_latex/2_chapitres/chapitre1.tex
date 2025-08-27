@@ -8,15 +8,17 @@
 
 L'assurance vie est une convention par laquelle un assureur, en contrepartie du versement de primes, s'engage à verser un capital ou une rente à la survenance d'un événement incertain lié à la durée de la vie humaine. Cet événement, qui constitue l'aléa au cœur du contrat, peut être le décès de l'assuré avant une date donnée ou, à l'inverse, sa survie jusqu'à cette date. Ce mécanisme repose sur un cycle de production inversé : l'assureur perçoit les primes bien avant de devoir potentiellement régler les prestations, ce qui l'amène à investir ces sommes sur des horizons de temps longs pour honorer ses engagements futurs.
 
-\bigskip
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre1/cycle-de-production.jpg}
+    \caption{Cycle de production inversé en assurance vie \textbf{(graphique temporaire)}}
+    \label{fig:cycle_production_inverse}
+\end{figure}
 
 La nature de ces engagements répond à des objectifs variés. Les contrats en cas de vie prévoient le versement d'un capital ou d'une rente à une échéance prévue si l'assuré est en vie ; ils sont typiquement utilisés pour se constituer un complément de retraite ou une épargne de précaution. À l'opposé, les contrats en cas de décès garantissent le versement d'un capital ou d'une rente au(x) bénéficiaire(s) désigné(s) au décès de l'assuré, souvent pour protéger des proches ou anticiper des droits de succession. Il existe également des contrats mixtes qui combinent ces deux garanties.
 
-\bigskip
 
 Le fonctionnement de ces contrats repose sur la capitalisation : les primes versées sont investies pour financer la propre couverture future de l'assuré. De par leur nature, ces engagements s'étendent sur de très longues périodes, conférant au passif de l'assureur une duration élevée, souvent supérieure à huit ans notamment pour des questions de fiscalité.
-
-\bigskip
 
 Une caractéristique fondamentale de l'assurance vie française est sa liquidité. L'assuré dispose de la possibilité de récupérer son épargne à tout moment via un rachat, qui peut être partiel ou total. Cette faculté de rachat constitue une option dont la valeur et le risque doivent être finement gérés par l'assureur, car son exercice a un impact direct sur la duration et les besoins de liquidité du portefeuille. La fiscalité joue un rôle incitatif majeur, les plus-values étant imposées plus lourdement si le rachat intervient avant la huitième année du contrat, encourageant ainsi l'épargne de long terme.
 
@@ -24,7 +26,6 @@ Une caractéristique fondamentale de l'assurance vie française est sa liquidit�
 
 L'épargne des assurés peut être investie sur deux principaux types de supports aux profils de risque distincts, qui peuvent être combinés au sein de différents types de contrats.
 
-\bigskip
 
 
 Le \textbf{fonds en euros} est le support historique et sécuritaire de l'assurance vie française. Le risque financier y est intégralement porté par l'assureur, qui s'appuie sur une politique d'investissement prudente, majoritairement orientée vers des actifs obligataires. La sécurité de ce support repose sur un ensemble de garanties contractuelles et réglementaires :
@@ -37,19 +38,20 @@ Le \textbf{fonds en euros} est le support historique et sécuritaire de l'assura
 \end{itemize}
 
 
-\bigskip
-
 Les \textbf{unités de compte (UC)} offrent une exposition directe aux marchés financiers. Contrairement au fonds en euros, le risque d'investissement est entièrement porté par l'assuré. L'assureur ne garantit pas la valeur du capital, mais un nombre de parts d'actifs (OPCVM, actions, SCPI, etc.). La valeur de l'épargne fluctue ainsi au gré des marchés, offrant un potentiel de rendement supérieur à long terme, mais exposant également à un risque de perte en capital. Pour l'assureur, ce support est plus simple à gérer car il n'implique pas de garanties financières particulières.
 
-\bigskip
 
 Ces supports sont proposés via deux grandes familles de contrats. Les contrats monosupports permettent d'investir sur un seul type de fonds (soit en euros, soit en UC). Les contrats multisupports sont les plus répandus, quant à eux, combinent au moins un fonds en euros et plusieurs supports en unités de compte, permettant à l'épargnant de répartir son investissement selon son profil de risque. Dans le cadre de cette étude, le portefeuille analysé se compose de contrats multisupports avec une répartition représentative du marché français, soit approximativement 60\% en fonds euros et 40\% en unités de compte.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre1/assurance-vie-stats.png}
+    \caption{Le marché de l'assurance vie en France en 2024 \textbf{(graphique temporaire)}}
+    \label{fig:marches_assurance_vie}
+\end{figure}
 
 \subsection{Contexte économique et enjeux actuels}
 
 La gestion de ces produits d'épargne est devenue particulièrement complexe dans l'environnement économique récent. Après une longue période de taux d'intérêt historiquement bas, le secteur de l'assurance a dû s'adapter à un nouveau paradigme marqué par une volatilité accrue et des taux durablement plus élevés.
-
-\bigskip
 
 Cette transition a mis les assureurs en difficulté. Leurs portefeuilles obligataires, constitués en grande partie d'anciennes obligations à faible rendement, présentent une forte inertie. Face à ce stock historique, il leur est difficile de générer des rendements suffisants pour offrir des taux de revalorisation attractifs sur les fonds en euros, capables de concurrencer les nouveaux produits de marché. Cet enjeu de compétitivité, couplé aux exigences de rentabilité et de solvabilité, place la gestion actif-passif au cœur des problématiques actuelles, justifiant pleinement l'introduction du cadre réglementaire qui suit.
 
@@ -90,7 +92,7 @@ Le \textbf{Best Estimate (BE)}, ou \textit{Best Estimate Liability} (BEL), repr�
 \end{equation}
 Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent. Le BE se subdivise en \textit{Best Estimate Garanti} (BEG) pour les engagements contractuels minimaux et en \textit{Future Discretionary Benefits} (FDB) pour la part de participation aux bénéfices future et discrétionnaire.
 
-\bigskip
+
 
 La \textbf{Marge de Risque (Risk Margin - RM)} s'ajoute au Best Estimate. Elle correspond au coût qu'un autre assureur exigerait pour reprendre le portefeuille de passif, rémunérant ainsi l'immobilisation du capital nécessaire pour couvrir les risques non-financiers jusqu'à leur extinction. Elle est calculée selon une approche "Coût du Capital" (\textit{Cost of Capital} - CoC) :
 \begin{equation}
@@ -109,7 +111,7 @@ Où $\text{CoC}_{\text{rate}}$ est le coût du capital (fixé à 6\%), et $\text
 \subsubsection{Les Exigences de Capital (SCR et MCR)}
 
 Solvabilité II définit deux niveaux d'exigence de capital.
-\bigskip
+
 
 Le \textbf{Solvency Capital Requirement (SCR)} est le montant de fonds propres nécessaire pour faire face à une perte inattendue et sévère, calibré pour correspondre à une \textbf{Value-at-Risk (VaR) à 99,5\%}\\ à un horizon d'un an. En cas de non-respect, l'assureur fait l'objet d'un suivi renforcé par le régulateur (l'ACPR en France). En formule standard, son calcul suit une approche modulaire. Pour un risque élémentaire $x$, le SCR est la perte de NAV résultant d'un choc calibré~:
 \begin{equation}
@@ -117,7 +119,7 @@ Le \textbf{Solvency Capital Requirement (SCR)} est le montant de fonds propres n
 \end{equation}
 Pour les risques de passif purs (mortalité, rachat), la formule se simplifie en une variation de Best Estimate ($SCR_{\text{passif}} = \Delta BE$). Les SCR des risques élémentaires sont ensuite agrégés à l'aide de matrices de corrélation pour former le SCR final.
 
-\bigskip
+
 
 \begin{figure}[H]
     \centering
@@ -135,18 +137,18 @@ Le \textbf{Minimum Capital Requirement (MCR)} est le seuil minimal absolu de fon
 
 Ce pilier se concentre sur la supervision, la gestion des risques et la gouvernance interne. Il impose aux assureurs de mettre en place un \textbf{système de gouvernance} sain, prudent et proportionné. Cela inclut une structure organisationnelle transparente, des politiques écrites claires, et un système de contrôle interne robuste. La direction doit être assurée par au moins deux dirigeants effectifs (\textbf{principe des 4 yeux}) qui doivent répondre à des exigences de compétence et d'honorabilité (\textit{fit and proper}).
 
-\bigskip
+
 
 Ce système s'articule autour de quatre \textbf{fonctions clés} indépendantes : la fonction actuarielle, la gestion des risques, l'audit interne et la conformité.
 
-\bigskip
+
 
 L'élément central du Pilier 2 est l'\textbf{ORSA} (\textit{Own Risk and Solvency Assessment}). Il s'agit d'un processus interne par lequel l'assureur évalue, sur un horizon de 3 à 5 ans, l'adéquation entre son profil de risque spécifique, ses limites de tolérance et ses besoins globaux en solvabilité. C'est un outil de pilotage stratégique qui permet d'aller au-delà des hypothèses standards pour refléter la stratégie propre de l'entreprise.
 \subsection{Le Pilier 3 : Exigences de reporting et transparence}
 
 Le Pilier 3 vise à assurer la transparence et l'harmonisation de l'information financière à destination du public et des autorités de contrôle. Il définit les rapports et leur fréquence de production (annuelle et trimestrielle).
 
-\bigskip
+
 
 Les documents clés incluent :
 \begin{itemize}
@@ -315,15 +317,56 @@ Le tableau suivant résume les caractéristiques et les usages des deux univers 
 \section{La gestion Actif-Passif (ALM) : définitions et enjeux}
 \label{sec:alm}
 
-La gestion Actif-Passif, ou \textit{Asset-Liability Management} (ALM), est la discipline qui vise à piloter de manière coordonnée l'actif et le passif du bilan d'un assureur. L'enjeu fondamental de l'ALM découle directement du \textbf{cycle de production inversé} : les primes sont collectées et investies bien avant que les prestations ne soient versées. Ce décalage temporel crée une \textbf{inadéquation} (\textit{mismatch}) structurelle entre les caractéristiques des actifs (soumis à la volatilité des marchés) et celles des passifs (de longue durée et parfois assortis de garanties).
+\subsection{Le cycle de production inversé, origine de l'inadéquation Actif-Passif}
 
-\bigskip
+La gestion Actif-Passif (ALM) trouve son origine dans une particularité fondamentale du secteur de l'assurance que l'on a énoncé dans le début de ce chapitre : le \textbf{cycle de production inversé}. Contrairement à une entreprise classique qui vend un produit avant d'en percevoir le revenu, un assureur collecte des primes aujourd'hui en échange de la promesse de verser des prestations dans un futur lointain et incertain. Ce décalage temporel est au cœur du modèle économique de l'assurance vie.
 
-L'objectif de l'ALM est donc de gérer activement les risques découlant de cette inadéquation, notamment le \textbf{risque de taux d'intérêt}, le \textbf{risque de liquidité} (lié aux rachats) et les \textbf{risques de marché} (actions, crédit), afin de s'assurer que les flux générés par les actifs seront suffisants pour honorer les engagements, tout en optimisant la rentabilité et en respectant les contraintes réglementaires.
+Ce mécanisme engendre une inadéquation structurelle (\textit{mismatch}) entre les deux côtés du bilan. D'une part, le passif est constitué d'engagements de longue durée, dont l'échéance et le montant sont soumis à des aléas (mortalité, comportement de rachat des assurés). D'autre part, pour couvrir ces engagements, l'assureur investit les primes sur les marchés financiers, constituant un actif dont la valeur et les flux sont, par nature, volatiles et dépendants du contexte économique.
 
-\bigskip
+Cette inadéquation est renforcée par une interdépendance dynamique et complexe entre l'actif et le passif.
 
-Pour ce faire, les assureurs s'appuient sur des \textbf{modèles ALM} sophistiqués. Ces modèles simulent l'évolution conjointe de l'actif et du passif sur des horizons de temps longs (40 ans ou plus), sous une multitude de scénarios économiques. Ils intègrent les caractéristiques des portefeuilles, les lois de comportement des assurés (rachats, mortalité) et les règles de gestion de l'assureur (politique de PB, stratégie de couverture). Ces projections permettent d'évaluer l'impact de différentes stratégies et constituent un outil indispensable à la prise de décision.
+\begin{itemize}
+    \item \textbf{Le passif influe sur l'actif :} Le versement des prestations (rachats, décès) contraint l'assureur à liquider une partie de ses actifs, parfois dans des conditions de marché défavorables.
+        \item \textbf{L'actif influe sur le passif :} La performance des actifs financiers a un impact direct sur le niveau des engagements. C'est notamment le cas de la \textbf{Participation aux Bénéfices (PB)}, qui dépend des résultats financiers générés par l'assureur. Le Code des assurances impose une redistribution minimale aux assurés, calculée comme suit :
+        \begin{equation}
+            \label{eq:pb_minReg}
+            \text{PB}_{\text{minReg}} = 85\% \times \max(\text{RésFi.}, 0) + 
+            \begin{cases}
+                90\% \times \text{RésTech.} & \text{si RésTech.} \ge 0 \\
+                100\% \times \text{RésTech.} & \text{si RésTech.} < 0
+            \end{cases}
+        \end{equation}
+        Où le Résultat Financier (Rés. Fin.) est directement issu de la performance des actifs et le Résultat Technique (Rés. Tech.) des risques de mortalité et de rachat.
+\end{itemize}
+La gestion Actif-Passif est donc la discipline qui vise à piloter les risques nés de cette interdépendance afin d'assurer la solvabilité et d'optimiser la rentabilité de l'acteur.
+
+\subsection{Objectifs et périmètre de l'ALM}
+
+% À COMPLÉTER :
+% Expliquer ici les trois grands objectifs de l'ALM :
+% 1. Maîtriser les risques (taux, marché, liquidité...).
+% 2. Assurer la solvabilité réglementaire (respect du SCR).
+% 3. Optimiser la rentabilité (maximiser le rendement pour un risque donné).
+
+
+\subsection{Le modèle ALM : un outil de simulation prospective}
+
+% À COMPLÉTER :
+% Décrire ici le rôle du modèle ALM comme outil de prise de décision.
+% - Principe : simulation conjointe de l'actif et du passif sur le long terme.
+% - Inputs principaux : GSE, lois de comportement, portefeuille, règles de gestion.
+% - Mentionner que vous utilisez un tel outil dans le cadre de votre mémoire, sans pour autant faire une étude ALM complète.
+
+
+\subsection{Principaux indicateurs de pilotage ALM}
+
+% À COMPLÉTER :
+% Lister et décrire brièvement quelques indicateurs clés issus des modèles ALM.
+% - Projection de la NAV (fonds propres prudentiels).
+% - Évolution du ratio de couverture SCR.
+% - Analyses de sensibilité et stress tests (impact d'un choc de taux, actions, etc.).
+
+
 
 \section{La représentation du passif : le concept de \textit{Model Point}}
 \label{sec:mp}
@@ -332,7 +375,7 @@ Pour ce faire, les assureurs s'appuient sur des \textbf{modèles ALM} sophistiqu
 
 Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices. Une modélisation "police à police" est techniquement possible mais informatiquement irréalisable pour des calculs stochastiques complexes comme ceux requis par les modèles ALM. La charge de calcul deviendrait prohibitive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle fondamentale.
 
-\bigskip
+
 
 La réponse standard à cette contrainte est la création de \textbf{\textit{Model Points}} (MP). Un MP est un contrat synthétique représentant un agrégat de polices partageant des caractéristiques homogènes. L'objectif est de réduire drastiquement le volume de données à traiter tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet. La qualité de la représentation dépend directement de la pertinence des critères de regroupement (caractéristiques du produit, de l'assuré, du contrat), souvent optimisés par des techniques de classification statistique (\textit{clustering}).
 
@@ -340,6 +383,6 @@ La réponse standard à cette contrainte est la création de \textbf{\textit{Mod
 
 L'utilisation des \textit{Model Points} constitue la méthode standard pour agréger le passif et rendre les modèles ALM opérationnels. Cependant, la manière dont ces groupes de contrats sont formés à partir des polices individuelles a un impact direct et significatif sur la valorisation des indicateurs réglementaires et leur sensibilité aux chocs.
 
-\bigskip
+
 
 La problématique centrale de ce mémoire est donc d'optimiser cette étape fondamentale de l'agrégation. En partant du portefeuille granulaire "police à police", nous cherchons à définir, comparer et tester différentes méthodes de regroupement pour créer des \textit{Model Points}. L'objectif est de construire une méthodologie de simplification optimale, c'est-à-dire celle qui minimise l'erreur d'agrégation tout en garantissant la plus grande stabilité des indicateurs Solvabilité II (SCR, Marge de Risque, NAV) lors du calcul des différentes sensibilités. Cette section introductive pose donc les fondations de notre analyse : la simplification étant une nécessité, comment s'assurer que la méthode de regroupement choisie est la plus fidèle et la plus robuste possible ?
