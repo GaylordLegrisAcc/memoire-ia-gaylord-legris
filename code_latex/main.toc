@@ -1,0 +1,78 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{Résumé}{v}{chapter*.2}%
+\contentsline {chapter}{Abstract}{vi}{chapter*.3}%
+\contentsline {chapter}{Remerciements}{vii}{chapter*.4}%
+\contentsline {chapter}{Synthèse}{viii}{chapter*.5}%
+\contentsline {chapter}{Synthesis}{ix}{chapter*.6}%
+\contentsline {chapter}{Introduction}{x}{chapter*.7}%
+\contentsline {chapter}{\numberline {1}Contexte réglementaire et modélisation en assurance vie}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Les spécificités des produits d'assurance vie épargne}{2}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Principes fondamentaux du contrat d'assurance vie}{2}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Les principaux supports d'investissement}{2}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Contexte économique et enjeux actuels}{3}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}Le cadre prudentiel Solvabilité II}{4}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}L'approche stochastique et la valorisation économique}{4}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Le Pilier 1 : Exigences quantitatives}{5}{subsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.2.1}Le Bilan Prudentiel Solvabilité II}{5}{subsubsection.1.2.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2.2}Les Provisions Techniques (BE et RM)}{5}{subsubsection.1.2.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.2.3}Les Exigences de Capital (SCR et MCR)}{6}{subsubsection.1.2.2.3}%
+\contentsline {subsection}{\numberline {1.2.3}Le Pilier 2 : Exigences qualitatives et gouvernance}{7}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Le Pilier 3 : Exigences de reporting et transparence}{8}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.3}Les Générateurs de Scénarios Économiques (GSE)}{8}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}L'univers Risque Neutre ($\mathbb {Q}$) : un cadre pour la valorisation}{9}{subsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.1.1}Modélisation des taux d'intérêt : le modèle de Hull \& White}{9}{subsubsection.1.3.1.1}%
+\contentsline {subsubsection}{\numberline {1.3.1.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}{10}{subsubsection.1.3.1.2}%
+\contentsline {subsection}{\numberline {1.3.2}L'univers Monde Réel ($\mathbb {P}$) : un outil de pilotage stratégique}{11}{subsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.2.1}Modélisation des taux d'intérêt : le modèle de Vasicek}{11}{subsubsection.1.3.2.1}%
+\contentsline {subsubsection}{\numberline {1.3.2.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes avec prime de risque}{11}{subsubsection.1.3.2.2}%
+\contentsline {subsection}{\numberline {1.3.3}Synthèse des deux univers}{12}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}La gestion Actif-Passif (ALM) : définitions et enjeux}{12}{section.1.4}%
+\contentsline {section}{\numberline {1.5}La représentation du passif : le concept de \textit {Model Point}}{13}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}La nécessité de l'agrégation}{13}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Du Model Point à la problématique du mémoire}{13}{subsection.1.5.2}%
+\contentsline {chapter}{\numberline {2}Modernisation de l'Environnement de Modélisation ALM (ou sinon : Fondements Techniques et Outils de Modélisation}{14}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Nécessité du générateur de portefeuille de passifs}{15}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Générer des données pour la simulation d'un nouveau produit}{15}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Simuler l'évolution du business mix pour orienter les politiques commerciale et de souscription}{16}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Simuler un portefeuille représentatif du marché pour l'analyse concurrentielle}{16}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Description des contraintes techniques rencontrées}{16}{subsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.1.5}Méthodologie de génération des portefeuilles}{16}{subsection.2.1.5}%
+\contentsline {subsection}{\numberline {2.1.6}Présentation de l'outil développé}{17}{subsection.2.1.6}%
+\contentsline {section}{\numberline {2.2}Développement du Modèle ALM en Python}{17}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Présentation du modèle ALM développé pour Accenture}{17}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Fonctionnement du modèle ALM}{18}{subsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.1}Fonctionnement général du modèle}{18}{subsubsection.2.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2.2}Fonctionnement du passif}{18}{subsubsection.2.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.3}Fonctionnement de l'actif}{18}{subsubsection.2.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.2.4}Fonctionnement de la stratégie d'investissement}{19}{subsubsection.2.2.2.4}%
+\contentsline {subsubsection}{\numberline {2.2.2.5}Fonctionnement de la stratégie ALM et de la politique de PB}{19}{subsubsection.2.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.3}Limites actuelles du modèle}{19}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Choix technologiques et environnement de développement}{19}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Migration vers des technologies modernes}{19}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Avantages d'un langage open-source}{20}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Utilisation d'un écosystème dynamique}{20}{subsection.2.3.3}%
+\contentsline {chapter}{\numberline {3}Agrégations des portefeuilles de passifs}{21}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Méthodes d'Agrégation}{22}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Description des Méthodes}{22}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Optimisation du Nombre de Model Points}{22}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Tests et Analyse des Résultats}{22}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Présentation des Portefeuilles}{22}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Analyse des Résultats}{22}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Choix d'un Modèle}{22}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Compatibilité avec les Architectures Modernes}{22}{subsection.3.2.4}%
+\contentsline {chapter}{\numberline {4}Tests de Sensibilités}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Création de Portefeuilles de Passif Test}{24}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Description des modifications apportées au portefeuille}{24}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Agrégation des portefeuilles par la méthode précédemment choisie}{24}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Analyse des Sensibilités}{24}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Interprétation des Résultats}{24}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Conclusion}{25}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{26}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{26}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation et des contraintes réglementaires sur les portefeuilles de passifs}{26}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{26}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{26}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{26}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{26}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion générale}{26}{section.5.3}%
+\contentsline {chapter}{Bibliographie}{27}{section.5.3}%

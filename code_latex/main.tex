@@ -23,32 +23,62 @@
 \usepackage{parskip}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=8pt, topsep=2pt} % Applique ces réglages à toutes les listes itemize
 \setcounter{secnumdepth}{3} %pour que le niveau 3 (subsubsection soit numeroté)
 \setcounter{tocdepth}{2} %pour que le niveau 2 (subsection apparaisse dans la table des matieres)
 % Personnalisation des titres de chapitres
 % Met le mot "Chapitre" et son numéro en gras et très grand (\Huge)
 % et le titre du chapitre également en \Huge
-\titleformat{\chapter}[display]
-  {\normalfont\Huge\bfseries}
-  {\chaptertitlename\ \thechapter}
-  {25pt}
-  {\Huge}
+% Redéfinition complète du format des pages de chapitre
 
-% Personnalisation des titres de sections
-% Met le numéro et le titre en gras et grand (\LARGE)
+
+% --- 1. Apparence des titres (police, taille, gras...) ---
+
+\titleformat{\chapter}[display]
+  {\normalfont\Huge\bfseries} % Apparence générale : gras et centré
+  {\vspace*{50pt}\chaptertitlename\ \thechapter} % Espace au-dessus + Texte "Chapitre X"
+  {25pt} % Espace vertical entre "Chapitre X" et le titre du chapitre
+  {\Huge} % Taille de la police pour le titre du chapitre
+  [\vfill\newpage] % Reste de la page vide et saut de page
+
 \titleformat{\section}
-  {\normalfont\LARGE\bfseries}
+  {\normalfont\LARGE\bfseries} % Police grande et en gras
   {\thesection}
   {1em}
   {}
 
-% Personnalisation des titres de sous-sections
-% Met le numéro et le titre en gras et un peu plus grand que la normale (\large)
 \titleformat{\subsection}
-  {\normalfont\large\bfseries}
+  {\normalfont\large\bfseries} % Police "large" et en gras
   {\thesubsection}
   {1em}
   {}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries} % Police normale et en gras
+  {\thesubsubsection}
+  {1em}
+  {}
+
+
+% --- 2. Espacement avant et après les titres ---
+
+% Syntaxe : \titlespacing*{commande}{gauche}{AVANT}{APRES}
+
+\titlespacing*{\section}
+  {0pt}      % gauche
+  {10ex}      % avant (l'espace que vous vouliez ajouter)
+  {3ex}    % après
+
+\titlespacing*{\subsection}
+  {0pt}      % gauche
+  {6ex}    % avant
+  {2.5ex}    % après
+
+\titlespacing*{\subsubsection}
+  {0pt}      % gauche
+  {4ex}   % avant
+  {2.5ex}    % après
 
 \pgfplotsset{compat=1.14}
 
