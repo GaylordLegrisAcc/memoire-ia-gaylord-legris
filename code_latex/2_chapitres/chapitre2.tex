@@ -1,101 +1,79 @@
-\chapter{Fondements Techniques et Outils de Modélisation}
+\chapter{Construction d'un Générateur de Portefeuilles de Passifs Réaliste}
 
-La réalisation des analyses de sensibilités, cœur de ce mémoire, s'est heurtée à plusieurs défis techniques nécessitant le développement d'outils spécifiques et la modernisation de l'environnement de modélisation existant. Historiquement, le modèle ALM (Asset Liability Management) utilisé au sein d'Accenture reposait sur une architecture en VBA (Visual Basic for Applications). Or, pour des impératifs de performance, de maintenabilité et de flexibilité, la décision a été prise de développer un nouveau modèle en Python. Cette migration a été l'occasion de repenser l'architecture du modèle pour mieux répondre aux exigences de calcul complexes.
+\section{Objectifs Stratégiques et Contraintes Techniques}
+    \subsection{Besoins métiers : simulation de nouveaux produits et analyse concurrentielle}
+    % Votre texte ici...
+    \subsection{Défis de la modélisation : réalisme, volumétrie et flexibilité}
+    % Votre texte ici...
 
-Parallèlement, un besoin fondamental est apparu : celui de disposer d'une grande variété de portefeuilles de passifs pour tester la robustesse du modèle et la pertinence des analyses. Pour un cabinet de conseil, l'accès aux données des clients n'est pas toujours possible et la capacité à générer des portefeuilles synthétiques, mais représentatifs du marché, est un atout stratégique majeur. C'est dans ce contexte qu'un générateur de portefeuilles de passifs a été conçu et développé.
+\section{Méthodologie de Génération et Modélisation Statistique}
+    \subsection{Approche stochastique par lois de probabilité}
+    % Votre texte ici...
+    \subsection{Calibration des distributions marginales à partir des données de marché}
+    % Votre texte ici...
+    \subsection{Perspective : modélisation des dépendances par la théorie des copules}
+    % Votre texte ici...
 
-Ce chapitre a donc pour vocation de présenter ces deux outils essentiels. Nous aborderons en premier lieu la conception du générateur de portefeuilles, en détaillant les besoins auxquels il répond et sa méthodologie. Dans un second temps, nous décrirons le nouveau modèle ALM en Python, son architecture, son fonctionnement et ses limites actuelles.
+\section{Présentation de l'Outil et du Portefeuille de Référence Généré}
+    \subsection{Architecture de l'application en Python et choix technologiques}
+    % Votre texte ici...
+    \subsection{Description des paramètres d'entrée et des formats de sortie}
+    % Votre texte ici...
+    \subsection{Analyse descriptive du portefeuille de référence}
+    % Votre texte ici...
 
-\section{Nécessité du générateur de portefeuille de passifs}
 
-Un générateur de portefeuille de passifs est un outil permettant de créer des portefeuilles d'assurance vie synthétiques en simulant les caractéristiques des assurés et de leurs contrats. Le développement d'un tel outil s'est imposé comme une nécessité pour plusieurs raisons stratégiques et analytiques, tant pour un cabinet de conseil que pour un organisme d'assurance.
 
-\subsection{Générer des données pour la simulation d'un nouveau produit}
 
-Le lancement d'un nouveau produit d'assurance vie est une décision stratégique majeure pour un assureur. Avant sa commercialisation, il est impératif d'évaluer ses impacts potentiels sur le profil de risque et la rentabilité de l'entreprise. Le générateur de portefeuille permet de simuler l'intégration de ce nouveau produit au sein d'un portefeuille existant. En générant des milliers de polices virtuelles conformes aux caractéristiques du nouveau produit, il devient possible de projeter leur comportement dans le temps et d'analyser leur effet sur les indicateurs clés de Solvabilité 2, tels que le \textit{Best Estimate} (BE) et le \textit{Solvency Capital Requirement} (SCR). Cet outil offre ainsi un laboratoire virtuel pour tester et ajuster les caractéristiques d'un produit avant même sa mise sur le marché.
 
-\subsection{Simuler l'évolution du business mix pour orienter les politiques commerciale et de souscription}
+% La capacité à tester la robustesse des modèles et la pertinence des analyses de sensibilité repose sur un prérequis fondamental : la disponibilité de données de passif variées et réalistes. Pour un cabinet de conseil, où l'accès aux portefeuilles des clients n'est pas systématique, la faculté de générer des portefeuilles synthétiques, mais représentatifs du marché, constitue un atout stratégique majeur. C'est dans ce contexte qu'un générateur de portefeuilles de passifs a été conçu et développé.
 
-La stratégie d'un assureur peut évoluer, l'amenant à modifier son \textit{business mix}, c'est-à-dire la répartition de son portefeuille entre différents types de produits (épargne, prévoyance, etc.). Le générateur de portefeuille est un outil précieux pour la prise de décision stratégique. Il permet de simuler divers scénarios d'évolution du portefeuille : Quel serait l'impact d'une politique commerciale plus agressive sur les produits en unités de compte ? Comment une modification de la politique de souscription affecterait-elle la sinistralité et la rentabilité à long terme ? En générant des portefeuilles correspondant à ces différentes hypothèses, la direction peut visualiser les conséquences sur le bilan et le compte de résultat prévisionnels, et ainsi orienter plus efficacement ses politiques commerciale et de souscription.
+% Ce chapitre a pour vocation de présenter cet outil essentiel. Nous détaillerons les besoins stratégiques et analytiques auxquels il répond, la méthodologie de génération retenue, les contraintes techniques rencontrées, et enfin l'environnement technologique moderne dans lequel il a été implémenté.
 
-\subsection{Simuler un portefeuille représentatif du marché pour l'analyse concurrentielle}
+% \section{Nécessité du générateur de portefeuille de passifs}
 
-Pour une compagnie d'assurance, la capacité à se positionner par rapport au marché et à analyser la concurrence est fondamentale. Ne disposant pas des portefeuilles détaillés de ses concurrents, il est peut s'avérer nécessaire de pouvoir reconstituer des portefeuilles représentatifs. Grâce à des données publiques ou sectorielles, le générateur peut créer un portefeuille "moyen" du marché français, ou simuler le portefeuille d'un concurrent principal. Ces portefeuilles synthétiques servent de base pour des analyses comparatives (\textit{benchmarking}), permettant d'évaluer la performance relative d'un concurrent, d'identifier les meilleures pratiques ou d'anticiper les stratégies des autres acteurs du marché.
+% Un générateur de portefeuille de passifs est un outil permettant de créer des portefeuilles d'assurance vie synthétiques en simulant les caractéristiques des assurés et de leurs contrats. Le développement d'un tel outil s'est imposé comme une nécessité pour plusieurs raisons stratégiques et analytiques, tant pour un cabinet de conseil que pour un organisme d'assurance.
 
-\subsection{Description des contraintes techniques rencontrées}
+% \subsection{Générer des données pour la simulation d'un nouveau produit}
 
-La conception du générateur a soulevé plusieurs contraintes techniques. La première fut de garantir le réalisme des portefeuilles générés. Il ne s'agit pas simplement de créer des données aléatoires, mais de reproduire les corrélations observées dans la réalité (par exemple, entre l'âge de l'assuré et le montant des primes). Une autre contrainte était liée à la volumétrie : l'outil devait être capable de générer des portefeuilles de plusieurs millions de lignes de manière performante. Enfin, la flexibilité était un critère essentiel ; l'outil devait permettre de paramétrer finement les caractéristiques des produits à simuler et les lois de comportement (rachat, mortalité) associées.
+% Le lancement d'un nouveau produit d'assurance vie est une décision stratégique majeure pour un assureur. Avant sa commercialisation, il est impératif d'évaluer ses impacts potentiels sur le profil de risque et la rentabilité de l'entreprise. Le générateur de portefeuille permet de simuler l'intégration de ce nouveau produit au sein d'un portefeuille existant. En générant des milliers de polices virtuelles conformes aux caractéristiques du nouveau produit, il devient possible de projeter leur comportement dans le temps et d'analyser leur effet sur les indicateurs clés de Solvabilité 2, tels que le \textit{Best Estimate} (BE) et le \textit{Solvency Capital Requirement} (SCR). Cet outil offre ainsi un laboratoire virtuel pour tester et ajuster les caractéristiques d'un produit avant même sa mise sur le marché.
 
-\subsection{Méthodologie de génération des portefeuilles}
+% \subsection{Simuler l'évolution du business mix pour orienter les politiques commerciale et de souscription}
 
-La méthodologie adoptée repose sur une approche stochastique. Pour chaque caractéristique clé d'un contrat (âge de l'assuré, montant de la provision mathématique, type de support, etc.), une loi de probabilité a été définie et calibrée à partir de données de marché. L'outil génère ensuite, ligne par ligne, des assurés virtuels en tirant aléatoirement des valeurs selon ces distributions. Pour modéliser les dépendances entre les variables, des techniques de copules ont été envisagées afin de garantir la cohérence et le réalisme des profils générés. Le résultat est un portefeuille granulaire, au contrat près, qui peut ensuite être agrégé en \textit{model points} pour être utilisé dans le modèle de projection ALM. \textbf{Il faut que je parle plus en détail de la méthodologie de génération des portefeuilles, notamment sur les lois statistiques utilisées et les techniques de copules. Cela pourrait être une sous-section assez grosse à part entière. A l'heure actuelle, aucune méthode utilisant des copules n'est implémentée, si ce n'est pas trop complexe il faut que je la programme. Sinon, il faut que je dise que je ne le fais pas à l'heure actuelle mais que c'est une piste d'amélioration pertinente.}
+% La stratégie d'un assureur peut évoluer, l'amenant à modifier son \textit{business mix}, c'est-à-dire la répartition de son portefeuille entre différents types de produits (épargne, prévoyance, etc.). Le générateur de portefeuille est un outil précieux pour la prise de décision stratégique. Il permet de simuler divers scénarios d'évolution du portefeuille : Quel serait l'impact d'une politique commerciale plus agressive sur les produits en unités de compte ? Comment une modification de la politique de souscription affecterait-elle la sinistralité et la rentabilité à long terme ? En générant des portefeuilles correspondant à ces différentes hypothèses, la direction peut visualiser les conséquences sur le bilan et le compte de résultat prévisionnels, et ainsi orienter plus efficacement ses politiques commerciale et de souscription.
 
-\subsection{Présentation de l'outil développé}
+% \subsection{Simuler un portefeuille représentatif du marché pour l'analyse concurrentielle}
 
-L'outil final se présente comme une application développée en Python, dotée d'une interface permettant à l'utilisateur de paramétrer la simulation. Les entrées principales sont :
-\begin{itemize}
-    \item Les caractéristiques du ou des produits à simuler (type de garantie, chargements, etc.).
-    \item Les paramètres des lois statistiques pour chaque variable (âge, sexe, montant, etc.).
-    \item La taille du portefeuille souhaité.
-    \item Les lois de comportement (tables de mortalité, formules de rachat).
-\end{itemize}
-En sortie, l'outil produit un fichier standardisé contenant le portefeuille de passifs généré, directement exploitable par le modèle ALM.
+% Pour une compagnie d'assurance, la capacité à se positionner par rapport au marché et à analyser la concurrence est fondamentale. Ne disposant pas des portefeuilles détaillés de ses concurrents, il est peut s'avérer nécessaire de pouvoir reconstituer des portefeuilles représentatifs. Grâce à des données publiques ou sectorielles, le générateur peut créer un portefeuille "moyen" du marché français, ou simuler le portefeuille d'un concurrent principal. Ces portefeuilles synthétiques servent de base pour des analyses comparatives (\textit{benchmarking}), permettant d'évaluer la performance relative d'un concurrent, d'identifier les meilleures pratiques ou d'anticiper les stratégies des autres acteurs du marché.
 
-\section{Développement du Modèle ALM en Python}
+% \subsection{Description des contraintes techniques rencontrées}
 
-La transition d'un modèle ALM de VBA vers Python a été motivée par la recherche de performance, de maintenabilité et de modularité. Le langage Python, avec son écosystème de librairies scientifiques comme \textit{NumPy}, \textit{Pandas} ou \textit{Polars}, offre un cadre de développement beaucoup plus robuste et performant pour des calculs actuariels intensifs.
+% La conception du générateur a soulevé plusieurs contraintes techniques. La première fut de garantir le réalisme des portefeuilles générés. Il ne s'agit pas simplement de créer des données aléatoires, mais de reproduire les corrélations observées dans la réalité (par exemple, entre l'âge de l'assuré et le montant des primes). Une autre contrainte était liée à la volumétrie : l'outil devait être capable de générer des portefeuilles de plusieurs millions de lignes de manière performante. Enfin, la flexibilité était un critère essentiel ; l'outil devait permettre de paramétrer finement les caractéristiques des produits à simuler et les lois de comportement (rachat, mortalité) associées.
 
-\subsection{Présentation du modèle ALM développé pour Accenture}
+% \subsection{Méthodologie de génération des portefeuilles}
 
-Le modèle ALM a pour objectif principal de projeter l'ensemble des actifs et des passifs d'un assureur sur un horizon de long terme (typiquement 40 à 60 ans), sous un grand nombre de scénarios économiques stochastiques. Ces projections permettent de calculer les indicateurs prudentiels requis par la directive Solvabilité 2, notamment le BE et le SCR. Le modèle se veut un outil de pilotage stratégique, capable de simuler l'impact de différentes stratégies de gestion d'actifs, de politiques de souscription ou de participation aux bénéfices.
+% La méthodologie adoptée repose sur une approche stochastique. Pour chaque caractéristique clé d'un contrat (âge de l'assuré, montant de la provision mathématique, type de support, etc.), une loi de probabilité a été définie et calibrée à partir de données de marché. L'outil génère ensuite, ligne par ligne, des assurés virtuels en tirant aléatoirement des valeurs selon ces distributions. Pour modéliser les dépendances entre les variables, des techniques de copules ont été envisagées afin de garantir la cohérence et le réalisme des profils générés. Le résultat est un portefeuille granulaire, au contrat près, qui peut ensuite être agrégé en \textit{model points} pour être utilisé dans le modèle de projection ALM.
 
-\subsection{Fonctionnement du modèle ALM}
+% \subsection{Présentation de l'outil développé}
 
-\subsubsection{Fonctionnement général du modèle}
-Le modèle opère de manière itérative, année par année, pour chaque scénario économique. À chaque pas de temps, il simule l'ensemble des flux financiers et des opérations de bilan. Le processus global peut être résumé comme suit :
-\begin{enumerate}
-    \item \textbf{Entrées :} Le modèle prend en entrée le portefeuille de passifs (issu du générateur ou d'un client), le portefeuille d'actifs, un set de scénarios économiques (ESG), et les règles de gestion (stratégie d'investissement, politique de PB, etc.).
-    \item \textbf{Moteur de projection :} Pour chaque année et chaque scénario, le moteur calcule les flux de passifs, les flux d'actifs, et applique les décisions de gestion.
-    \item \textbf{Sorties :} En fin de projection, le modèle génère des comptes de résultat et des bilans prévisionnels pour chaque scénario, qui sont ensuite utilisés pour calculer les indicateurs S2 par agrégation et analyse statistique.
-\end{enumerate}
+% L'outil final se présente comme une application développée en Python, dotée d'une interface permettant à l'utilisateur de paramétrer la simulation. Les entrées principales sont :
+% \begin{itemize}
+% \item Les caractéristiques du ou des produits à simuler (type de garantie, chargements, etc.).
+% \item Les paramètres des lois statistiques pour chaque variable (âge, sexe, montant, etc.).
+% \item La taille du portefeuille souhaité.
+% \item Les lois de comportement (tables de mortalité, formules de rachat).
+% \end{itemize}
+% En sortie, l'outil produit un fichier standardisé contenant le portefeuille de passifs généré, directement exploitable par le modèle ALM.
 
-\subsubsection{Fonctionnement du passif}
-La projection du passif consiste à simuler l'évolution du portefeuille de contrats. À chaque pas de temps, le modèle calcule :
-\begin{itemize}
-    \item Les primes encaissées.
-    \item Les prestations versées (décès, rachats, rentes).
-    \item Les chargements et frais prélevés.
-    \item L'évolution des provisions mathématiques, en tenant compte de la revalorisation issue de la participation aux bénéfices.
-\end{itemize}
-Les flux de prestations sont déterminés par l'application des lois de comportement (mortalité, rachat) sur le portefeuille des assurés survivants.
+% \section{Choix technologiques et environnement de développement}
 
-\subsubsection{Fonctionnement de l'actif}
-Simultanément, le modèle projette la valeur du portefeuille d'actifs. Pour chaque classe d'actifs (actions, obligations, immobilier, etc.), il calcule :
-\begin{itemize}
-    \item L'évolution de la valeur de marché, en fonction des indices fournis par le scénario économique.
-    \item Les revenus générés (dividendes, coupons, loyers).
-\end{itemize}
-Le modèle gère également le réinvestissement des flux de trésorerie et les opérations d'achat/vente décidées par la stratégie d'investissement.
+% Le passage de VBA à un écosystème Python n'est pas anodin ; il reflète une orientation stratégique vers des technologies plus modernes, ouvertes et performantes, mieux adaptées aux défis du "Big Data" et des calculs intensifs en actuariat.
 
-\subsubsection{Fonctionnement de la stratégie d'investissement}
-La stratégie d'investissement est un ensemble de règles qui dictent la manière dont l'actif est géré. Le modèle implémente une allocation stratégique cible (\textit{Strategic Asset Allocation} - SAA). Chaque année, il compare l'allocation réelle du portefeuille à l'allocation cible et déclenche des opérations d'achat ou de vente pour réduire l'écart, dans le respect des contraintes de liquidité et de transaction.
+% \subsection{Migration vers des technologies modernes}
+% L'environnement Excel/VBA, bien que très répandu, montre ses limites face à la complexité et à la volumétrie des modèles ALM modernes. La migration vers Python a permis de s'affranchir des limitations de mémoire et de performance d'Excel, tout en bénéficiant d'un langage structuré favorisant la qualité du code, la modularité et les tests automatisés, ce qui est un gage de maintenabilité et de fiabilité à long terme.
 
-\subsubsection{Fonctionnement de la stratégie ALM et de la politique de PB}
-Le cœur du modèle ALM est l'interaction entre l'actif et le passif. Le résultat financier généré par l'actif est utilisé pour déterminer la revalorisation servie aux assurés. La politique de Participation aux Bénéfices (PB) est une fonction clé qui répartit la performance financière entre l'assureur et les assurés, dans le respect des engagements contractuels et réglementaires. Le modèle simule la constitution et la reprise de la Provision pour Participation aux Bénéfices (PPB), qui permet de lisser les taux servis dans le temps.
+% \subsection{Avantages d'un langage open-source}
+% Le choix de Python, un langage \textit{open-source}, présente des avantages considérables. D'un point de vue financier, il élimine les coûts de licence associés à de nombreux logiciels propriétaires. Plus important encore, il donne accès à une communauté mondiale de développeurs et de scientifiques, qui contribuent à un écosystème de librairies extrêmement riche et en constante évolution. Cette effervescence garantit un accès permanent aux algorithmes et aux techniques les plus récents.
 
-\subsection{Limites actuelles du modèle}
-Malgré sa robustesse, le modèle actuel présente certaines limites. Les règles de gestion, notamment la stratégie d'investissement, sont encore modélisées de manière relativement statique et ne réagissent pas toujours de façon dynamique aux conditions de marché extrêmes. De plus, la granularité de certains modules pourrait être affinée, notamment en ce qui concerne la modélisation des frais ou des impôts. Enfin, bien que les performances aient été grandement améliorées par rapport à la version VBA, les temps de calcul pour des portefeuilles très volumineux sur des milliers de scénarios restent un défi et une piste d'optimisation continue.
-
-\section{Choix technologiques et environnement de développement}
-
-Le passage de VBA à un écosystème Python n'est pas anodin ; il reflète une orientation stratégique vers des technologies plus modernes, ouvertes et performantes, mieux adaptées aux défis du "Big Data" et des calculs intensifs en actuariat.
-
-\subsection{Migration vers des technologies modernes}
-L'environnement Excel/VBA, bien que très répandu, montre ses limites face à la complexité et à la volumétrie des modèles ALM modernes. La migration vers Python a permis de s'affranchir des limitations de mémoire et de performance d'Excel, tout en bénéficiant d'un langage structuré favorisant la qualité du code, la modularité et les tests automatisés, ce qui est un gage de maintenabilité et de fiabilité à long terme.
-
-\subsection{Avantages d'un langage open-source}
-Le choix de Python, un langage \textit{open-source}, présente des avantages considérables. D'un point de vue financier, il élimine les coûts de licence associés à de nombreux logiciels propriétaires. Plus important encore, il donne accès à une communauté mondiale de développeurs et de scientifiques, qui contribuent à un écosystème de librairies extrêmement riche et en constante évolution. Cette effervescence garantit un accès permanent aux algorithmes et aux techniques les plus récents.
-
-\subsection{Utilisation d'un écosystème dynamique}
-Le projet s'est appuyé sur des librairies de pointe pour la manipulation de données et le calcul scientifique. En particulier, l'utilisation de la librairie \textit{Polars} (ou alternativement \textit{Pandas}), écrite en Rust, a permis d'atteindre des niveaux de performance très élevés pour le traitement de grands volumes de données, dépassant de loin les capacités des outils traditionnels. Le fait que ces outils soient mis à jour très fréquemment par la communauté garantit que le modèle bénéficie en permanence des dernières optimisations et fonctionnalités.
-
+% \subsection{Utilisation d'un écosystème dynamique}
+% Le projet s'est appuyé sur des librairies de pointe pour la manipulation de données et le calcul scientifique. En particulier, l'utilisation de la librairie \textit{Polars} (ou alternativement \textit{Pandas}), écrite en Rust, a permis d'atteindre des niveaux de performance très élevés pour le traitement de grands volumes de données, dépassant de loin les capacités des outils traditionnels. Le fait que ces outils soient mis à jour très fréquemment par la communauté garantit que le modèle bénéficie en permanence des dernières optimisations et fonctionnalités.

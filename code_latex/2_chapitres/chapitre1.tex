@@ -314,58 +314,7 @@ Le tableau suivant résume les caractéristiques et les usages des deux univers 
     \end{tabularx}
 \end{table}
 
-\section{La gestion Actif-Passif (ALM) : définitions et enjeux}
-\label{sec:alm}
-
-\subsection{Le cycle de production inversé, origine de l'inadéquation Actif-Passif}
-
-La gestion Actif-Passif (ALM) trouve son origine dans une particularité fondamentale du secteur de l'assurance que l'on a énoncé dans le début de ce chapitre : le \textbf{cycle de production inversé}. Contrairement à une entreprise classique qui vend un produit avant d'en percevoir le revenu, un assureur collecte des primes aujourd'hui en échange de la promesse de verser des prestations dans un futur lointain et incertain. Ce décalage temporel est au cœur du modèle économique de l'assurance vie.
-
-Ce mécanisme engendre une inadéquation structurelle (\textit{mismatch}) entre les deux côtés du bilan. D'une part, le passif est constitué d'engagements de longue durée, dont l'échéance et le montant sont soumis à des aléas (mortalité, comportement de rachat des assurés). D'autre part, pour couvrir ces engagements, l'assureur investit les primes sur les marchés financiers, constituant un actif dont la valeur et les flux sont, par nature, volatiles et dépendants du contexte économique.
-
-Cette inadéquation est renforcée par une interdépendance dynamique et complexe entre l'actif et le passif.
-
-\begin{itemize}
-    \item \textbf{Le passif influe sur l'actif :} Le versement des prestations (rachats, décès) contraint l'assureur à liquider une partie de ses actifs, parfois dans des conditions de marché défavorables.
-        \item \textbf{L'actif influe sur le passif :} La performance des actifs financiers a un impact direct sur le niveau des engagements. C'est notamment le cas de la \textbf{Participation aux Bénéfices (PB)}, qui dépend des résultats financiers générés par l'assureur. Le Code des assurances impose une redistribution minimale aux assurés, calculée comme suit :
-        \begin{equation}
-            \label{eq:pb_minReg}
-            \text{PB}_{\text{minReg}} = 85\% \times \max(\text{RésFi.}, 0) + 
-            \begin{cases}
-                90\% \times \text{RésTech.} & \text{si RésTech.} \ge 0 \\
-                100\% \times \text{RésTech.} & \text{si RésTech.} < 0
-            \end{cases}
-        \end{equation}
-        Où le Résultat Financier (Rés. Fin.) est directement issu de la performance des actifs et le Résultat Technique (Rés. Tech.) des risques de mortalité et de rachat.
-\end{itemize}
-La gestion Actif-Passif est donc la discipline qui vise à piloter les risques nés de cette interdépendance afin d'assurer la solvabilité et d'optimiser la rentabilité de l'acteur.
-
-\subsection{Objectifs et périmètre de l'ALM}
-
-% À COMPLÉTER :
-% Expliquer ici les trois grands objectifs de l'ALM :
-% 1. Maîtriser les risques (taux, marché, liquidité...).
-% 2. Assurer la solvabilité réglementaire (respect du SCR).
-% 3. Optimiser la rentabilité (maximiser le rendement pour un risque donné).
-
-
-\subsection{Le modèle ALM : un outil de simulation prospective}
-
-% À COMPLÉTER :
-% Décrire ici le rôle du modèle ALM comme outil de prise de décision.
-% - Principe : simulation conjointe de l'actif et du passif sur le long terme.
-% - Inputs principaux : GSE, lois de comportement, portefeuille, règles de gestion.
-% - Mentionner que vous utilisez un tel outil dans le cadre de votre mémoire, sans pour autant faire une étude ALM complète.
-
-
-\subsection{Principaux indicateurs de pilotage ALM}
-
-% À COMPLÉTER :
-% Lister et décrire brièvement quelques indicateurs clés issus des modèles ALM.
-% - Projection de la NAV (fonds propres prudentiels).
-% - Évolution du ratio de couverture SCR.
-% - Analyses de sensibilité et stress tests (impact d'un choc de taux, actions, etc.).
-
+Pour la suite de ce mémoire, je vais me concentrer sur l'univers risque neutre $\mathbb{Q}$, car il est le plus pertinent pour les calculs prudentiels et la gestion Actif-Passif dans le cadre de Solvabilité II.
 
 
 \section{La représentation du passif : le concept de \textit{Model Point}}
@@ -379,7 +328,7 @@ Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, vo
 
 La réponse standard à cette contrainte est la création de \textbf{\textit{Model Points}} (MP). Un MP est un contrat synthétique représentant un agrégat de polices partageant des caractéristiques homogènes. L'objectif est de réduire drastiquement le volume de données à traiter tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet. La qualité de la représentation dépend directement de la pertinence des critères de regroupement (caractéristiques du produit, de l'assuré, du contrat), souvent optimisés par des techniques de classification statistique (\textit{clustering}).
 
-\subsection{Du Model Point à la problématique du mémoire}
+\subsection{Les impacts de l'agrégation en MP sur les indicateurs S2}
 
 L'utilisation des \textit{Model Points} constitue la méthode standard pour agréger le passif et rendre les modèles ALM opérationnels. Cependant, la manière dont ces groupes de contrats sont formés à partir des polices individuelles a un impact direct et significatif sur la valorisation des indicateurs réglementaires et leur sensibilité aux chocs.
 
