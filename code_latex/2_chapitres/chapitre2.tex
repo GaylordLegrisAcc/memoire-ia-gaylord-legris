@@ -34,9 +34,20 @@ Cependant, une approche déterministe ne peut à elle seule capturer l'éventail
 
 Chaque scénario économique généré sert alors d'input pour une projection complète du modèle ALM. En agrégeant les résultats de ces multiples projections via la \textbf{méthode de Monte Carlo}, l'assureur obtient non plus une seule valeur, mais une distribution des résultats possibles. L'objectif final est de disposer, pour chaque trajectoire, du détail des flux financiers à la maille la plus fine. Cette granularité permet une analyse statistique approfondie des risques, comme le calcul de quantiles (Value at Risk à 99.5\%) pour déterminer le capital de solvabilité requis (SCR) sous Solvabilité 2. Ces modèles stochastiques sont donc au cœur de l'évaluation des risques et de la prise de décision stratégique, et constituent le fondement du modèle de simulation qui sera détaillé dans la suite de ce chapitre.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre2/alm_det.png}
+    \caption{Fonctionnement d'un modèle ALM \textbf{(graphique temporaire)}}
+    \label{fig:alm_det}
+\end{figure}
+
 
 
 \section{Architecture et Fonctionnement du Modèle de Projection}
+Dans cette partie, le fonctionnement détaillé du modèle ALM développé en Python pour Accenture sera présenté. Ce modèle vise à projeter de manière conjointe l'actif et le passif d'un assureur vie sur un horizon de long terme, en intégrant les interactions complexes entre les deux, ainsi que les stratégies de gestion d'actifs et de participation aux bénéfices. Le modèle est structuré autour de plusieurs modules clés, chacun responsable d'une composante spécifique de la projection.
+
+Cette partie n'est pour le moment pas encore terminée. Il sera question de détailler les mécanismes de projection du passif, de projection de l'actif, ainsi que l'interaction entre les deux ainsi que les limitations actuelles du modèle. Dans cette partie je vais également expliquer en détail comment sont calculer BE, SCR et PVFP qui sont les pierres angulaires dans les analyses de ce mémoire.
+
     \subsection{Projection du Passif}
     % Votre texte ici...
     \subsection{Projection de l'Actif}
@@ -45,7 +56,7 @@ Chaque scénario économique généré sert alors d'input pour une projection co
     % Votre texte ici...
 
 \section{Limites Actuelles du modèle}
-    % Votre texte ici...
+A date, les fonds propres ne sont pas modélisés dans le modèle ALM. En effet, le modèle se concentre sur la projection de l'actif et du passif, ainsi que sur les interactions entre les deux, mais n'intègre pas encore la dynamique des fonds propres. Cette limitation est importante car les fonds propres jouent un rôle crucial dans la solvabilité et la résilience financière de l'assureur. Leur modélisation permettrait de mieux évaluer l'impact des stratégies de gestion sur la solidité financière globale de l'entreprise. L'absence des fonds propres nous empêche de calculer des indicateurs cruciaux tels que le ratio de solvabilité.
 
 % \chapter{La Gestion Actif-Passif et développement d'un modèle ALM en Python}
 % \section{La gestion Actif-Passif (ALM) : définitions et enjeux}
