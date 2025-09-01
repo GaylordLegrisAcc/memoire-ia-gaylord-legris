@@ -3,81 +3,82 @@
 \contentsline {chapter}{Abstract}{vii}{chapter*.3}%
 \contentsline {chapter}{Remerciements}{viii}{chapter*.4}%
 \contentsline {chapter}{Synthèse}{ix}{chapter*.5}%
-\contentsline {chapter}{Synthesis}{x}{chapter*.6}%
-\contentsline {chapter}{Introduction}{xi}{chapter*.7}%
-\contentsline {chapter}{\numberline {1}Contexte réglementaire et modélisation en assurance vie}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Les spécificités des produits d'assurance vie épargne}{2}{section.1.1}%
-\contentsline {subsection}{\numberline {1.1.1}Principes fondamentaux du contrat d'assurance vie}{2}{subsection.1.1.1}%
-\contentsline {subsection}{\numberline {1.1.2}Les principaux supports d'investissement}{3}{subsection.1.1.2}%
-\contentsline {subsection}{\numberline {1.1.3}Contexte économique et enjeux actuels}{4}{subsection.1.1.3}%
-\contentsline {section}{\numberline {1.2}Le cadre prudentiel Solvabilité II}{4}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}L'approche stochastique et la valorisation économique}{5}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Le Pilier 1 : Exigences quantitatives}{5}{subsection.1.2.2}%
-\contentsline {subsubsection}{\numberline {1.2.2.1}Le Bilan Prudentiel Solvabilité II}{6}{subsubsection.1.2.2.1}%
-\contentsline {subsubsection}{\numberline {1.2.2.2}Les Provisions Techniques (BE et RM)}{6}{subsubsection.1.2.2.2}%
-\contentsline {subsubsection}{\numberline {1.2.2.3}Les Exigences de Capital (SCR et MCR)}{7}{subsubsection.1.2.2.3}%
-\contentsline {subsection}{\numberline {1.2.3}Le Pilier 2 : Exigences qualitatives et gouvernance}{8}{subsection.1.2.3}%
-\contentsline {subsection}{\numberline {1.2.4}Le Pilier 3 : Exigences de reporting et transparence}{9}{subsection.1.2.4}%
-\contentsline {section}{\numberline {1.3}Les Générateurs de Scénarios Économiques (GSE)}{9}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}L'univers Risque Neutre ($\mathbb {Q}$) : un cadre pour la valorisation}{10}{subsection.1.3.1}%
-\contentsline {subsubsection}{\numberline {1.3.1.1}Modélisation des taux d'intérêt : le modèle de Hull \& White}{11}{subsubsection.1.3.1.1}%
-\contentsline {subsubsection}{\numberline {1.3.1.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}{11}{subsubsection.1.3.1.2}%
-\contentsline {subsection}{\numberline {1.3.2}L'univers Monde Réel ($\mathbb {P}$) : un outil de pilotage stratégique}{12}{subsection.1.3.2}%
-\contentsline {subsubsection}{\numberline {1.3.2.1}Modélisation des taux d'intérêt : le modèle de Vasicek}{12}{subsubsection.1.3.2.1}%
-\contentsline {subsubsection}{\numberline {1.3.2.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes avec prime de risque}{13}{subsubsection.1.3.2.2}%
-\contentsline {subsection}{\numberline {1.3.3}Synthèse des deux univers}{13}{subsection.1.3.3}%
-\contentsline {section}{\numberline {1.4}La représentation du passif : le concept de \textit {Model Point}}{13}{section.1.4}%
-\contentsline {subsection}{\numberline {1.4.1}La nécessité de l'agrégation}{14}{subsection.1.4.1}%
-\contentsline {subsection}{\numberline {1.4.2}Les impacts de l'agrégation en MP sur les indicateurs S2}{14}{subsection.1.4.2}%
-\contentsline {chapter}{\numberline {2}Construction d'un Générateur de Portefeuilles de Passifs Réaliste}{15}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Objectifs Stratégiques et Contraintes Techniques}{16}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Définition du générateur de portefeuilles de passifs}{16}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}Besoins métiers : simulation de nouveaux produits et analyse concurrentielle}{16}{subsection.2.1.2}%
-\contentsline {subsection}{\numberline {2.1.3}Défis de la modélisation : réalisme, volumétrie et flexibilité}{18}{subsection.2.1.3}%
-\contentsline {section}{\numberline {2.2}Méthodologie de Génération et Modélisation Statistique}{18}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Approche stochastique par lois de probabilité}{19}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Calibration des distributions marginales à partir des données de marché}{20}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Perspective : modélisation des dépendances par la théorie des copules}{22}{subsection.2.2.3}%
-\contentsline {section}{\numberline {2.3}Présentation de l'Outil et du Portefeuille de Référence Généré}{22}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Architecture de l'application en Python et choix technologiques}{23}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Description des paramètres d'entrée et des formats de sortie}{23}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Analyse descriptive du portefeuille de référence}{23}{subsection.2.3.3}%
-\contentsline {chapter}{\numberline {3}La Gestion Actif-Passif et le Modèle de Simulation en Python}{24}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Principes et Enjeux de la Gestion Actif-Passif (ALM)}{25}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Architecture et Fonctionnement du Modèle de Projection}{25}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Projection du Passif}{26}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Projection de l'Actif}{26}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Interaction Actif-Passif : Stratégie d'Investissement et Politique de Participation aux Bénéfices (PB)}{26}{subsection.3.2.3}%
-\contentsline {section}{\numberline {3.3}Limites Actuelles du modèle}{26}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}{28}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Présentation des Méthodes d'Agrégation candidates}{29}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Approches par clustering (K-means, DBSCAN/HDBSCAN)}{29}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Autres approches (MP par âge, MP Amine, etc.)}{29}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Définition du Protocole de Test Comparatif}{29}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Constitution des portefeuilles de test}{30}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}{30}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}Analyse Comparative et Choix de la Méthode Optimale}{30}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Synthèse des performances pour chaque méthode candidate}{31}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Justification du choix de la méthode retenue pour l'analyse de sensibilité}{31}{subsection.4.3.2}%
-\contentsline {chapter}{\numberline {5}Analyse de Sensibilité des Indicateurs S2 aux Caractéristiques du Passif}{32}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Définition des Scénarios de Sensibilité}{33}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Création des portefeuilles de test via le générateur}{33}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Description des chocs sur les variables clés (âge, montant de la PM, etc.)}{33}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Scénario d'intégration d'un nouveau produit dans le portefeuille}{33}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}{33}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}{34}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}{34}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Interprétation des Résultats et Validation de l'Approche}{34}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Validation de la performance de la chaîne de modélisation (Générateur - Agrégation - Modèle ALM)}{35}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Enseignements sur la sensibilité des portefeuilles aux modifications de caractéristiques du passif}{35}{subsection.5.3.2}%
-\contentsline {chapter}{\numberline {6}Conclusion}{36}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Résumé des résultats}{37}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}Synthèse des principaux résultats obtenus}{37}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{37}{subsection.6.1.2}%
-\contentsline {section}{\numberline {6.2}Perspectives d'amélioration}{37}{section.6.2}%
-\contentsline {subsection}{\numberline {6.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{38}{subsection.6.2.1}%
-\contentsline {subsection}{\numberline {6.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{38}{subsection.6.2.2}%
-\contentsline {subsection}{\numberline {6.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{38}{subsection.6.2.3}%
-\contentsline {section}{\numberline {6.3}Conclusion générale}{38}{section.6.3}%
-\contentsline {chapter}{Annexes}{41}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{46}{chapter*.8}%
+\contentsline {chapter}{Synthesis}{1}{chapter*.6}%
+\contentsline {chapter}{Introduction}{2}{chapter*.7}%
+\contentsline {chapter}{\numberline {1}Contexte réglementaire et modélisation en assurance vie}{4}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Les spécificités des produits d'assurance vie épargne}{5}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Principes fondamentaux du contrat d'assurance vie}{5}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Les principaux supports d'investissement}{6}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Contexte économique et enjeux actuels}{7}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}Le cadre prudentiel Solvabilité II}{7}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}L'approche stochastique et la valorisation économique}{8}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Le Pilier 1 : Exigences quantitatives}{8}{subsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.2.1}Le Bilan Prudentiel Solvabilité II}{9}{subsubsection.1.2.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2.2}Les Provisions Techniques (BE et RM)}{9}{subsubsection.1.2.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.2.3}Les Exigences de Capital (SCR et MCR)}{10}{subsubsection.1.2.2.3}%
+\contentsline {subsection}{\numberline {1.2.3}Le Pilier 2 : Exigences qualitatives et gouvernance}{11}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Le Pilier 3 : Exigences de reporting et transparence}{12}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.3}Les Générateurs de Scénarios Économiques (GSE)}{12}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}L'univers Risque Neutre ($\mathbb {Q}$) : un cadre pour la valorisation}{13}{subsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.1.1}Modélisation des taux d'intérêt : le modèle de Hull \& White}{14}{subsubsection.1.3.1.1}%
+\contentsline {subsubsection}{\numberline {1.3.1.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}{14}{subsubsection.1.3.1.2}%
+\contentsline {subsection}{\numberline {1.3.2}L'univers Monde Réel ($\mathbb {P}$) : un outil de pilotage stratégique}{15}{subsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.2.1}Modélisation des taux d'intérêt : le modèle de Vasicek}{15}{subsubsection.1.3.2.1}%
+\contentsline {subsubsection}{\numberline {1.3.2.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes avec prime de risque}{16}{subsubsection.1.3.2.2}%
+\contentsline {subsection}{\numberline {1.3.3}Synthèse des deux univers}{16}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}La représentation du passif : le concept de \textit {Model Point}}{16}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}La nécessité de l'agrégation}{17}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Les impacts de l'agrégation en MP sur les indicateurs S2}{17}{subsection.1.4.2}%
+\contentsline {chapter}{\numberline {2}Construction d'un Générateur de Portefeuilles de Passifs Réaliste}{18}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Objectifs Stratégiques et Contraintes Techniques}{19}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Définition du générateur de portefeuilles de passifs}{19}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Besoins métiers : simulation de nouveaux produits et analyse concurrentielle}{19}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Défis de la modélisation : réalisme, volumétrie et flexibilité}{21}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Méthodologie de Génération et Modélisation Statistique}{21}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Approche stochastique par lois de probabilité}{22}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Calibration des distributions marginales à partir des données de marché}{23}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Perspective : modélisation des dépendances par la théorie des copules}{24}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Présentation de l'Outil et du Portefeuille de Référence Généré}{25}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Architecture de l'application en Python et choix technologiques}{26}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Description des paramètres d'entrée et des formats de sortie}{26}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Analyse descriptive du portefeuille de référence}{26}{subsection.2.3.3}%
+\contentsline {chapter}{\numberline {3}La Gestion Actif-Passif et le Modèle de Simulation en Python}{27}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Principes et Enjeux de la Gestion Actif-Passif (ALM)}{28}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Le modèle ALM, outil de simulation de l'interdépendance Actif-Passif}{28}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Architecture et Fonctionnement du Modèle de Projection}{29}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Projection du Passif}{30}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Projection de l'Actif}{30}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Interaction Actif-Passif : Stratégie d'Investissement et Politique de Participation aux Bénéfices (PB)}{30}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Limites Actuelles du modèle}{30}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}{32}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Présentation des Méthodes d'Agrégation candidates}{33}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Approches par clustering (K-means, DBSCAN/HDBSCAN)}{33}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Autres approches (MP par âge, MP Amine, etc.)}{33}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Définition du Protocole de Test Comparatif}{33}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Constitution des portefeuilles de test}{34}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}{34}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Analyse Comparative et Choix de la Méthode Optimale}{34}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Synthèse des performances pour chaque méthode candidate}{35}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Justification du choix de la méthode retenue pour l'analyse de sensibilité}{35}{subsection.4.3.2}%
+\contentsline {chapter}{\numberline {5}Analyse de Sensibilité des Indicateurs S2 aux Caractéristiques du Passif}{36}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Définition des Scénarios de Sensibilité}{37}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Création des portefeuilles de test via le générateur}{37}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Description des chocs sur les variables clés (âge, montant de la PM, etc.)}{37}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Scénario d'intégration d'un nouveau produit dans le portefeuille}{37}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}{37}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}{38}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}{38}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Interprétation des Résultats et Validation de l'Approche}{38}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Validation de la performance de la chaîne de modélisation (Générateur - Agrégation - Modèle ALM)}{39}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Enseignements sur la sensibilité des portefeuilles aux modifications de caractéristiques du passif}{39}{subsection.5.3.2}%
+\contentsline {chapter}{\numberline {6}Conclusion}{40}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Résumé des résultats}{41}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Synthèse des principaux résultats obtenus}{41}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{41}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2}Perspectives d'amélioration}{41}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{42}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{42}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{42}{subsection.6.2.3}%
+\contentsline {section}{\numberline {6.3}Conclusion générale}{42}{section.6.3}%
+\contentsline {chapter}{Annexes}{45}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{50}{chapter*.8}%

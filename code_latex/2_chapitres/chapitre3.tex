@@ -1,7 +1,41 @@
 \chapter{La Gestion Actif-Passif et le Modèle de Simulation en Python}
 
 \section{Principes et Enjeux de la Gestion Actif-Passif (ALM)}
-    % Votre texte ici...
+La gestion Actif-Passif (ALM) trouve son origine dans une particularité fondamentale du secteur de l'assurance énoncé précédemment dans le mémoire : le \textbf{cycle de production inversé}. Contrairement à une entreprise classique qui vend un produit avant d'en percevoir le revenu, un assureur collecte des primes aujourd'hui en échange de la promesse de verser des prestations dans un futur lointain et incertain. Ce décalage temporel est au cœur du modèle économique de l'assurance vie.
+
+Ce mécanisme engendre une inadéquation structurelle (\textit{mismatch}) entre les deux côtés du bilan. D'une part, le passif est constitué d'engagements de longue durée, dont l'échéance et le montant sont soumis à des aléas (mortalité, comportement de rachat des assurés). D'autre part, pour couvrir ces engagements, l'assureur investit les primes sur les marchés financiers, constituant un actif dont la valeur et les flux sont, par nature, volatiles et dépendants du contexte économique.
+
+Cette inadéquation est renforcée par une interdépendance dynamique et complexe entre l'actif et le passif.
+
+\begin{itemize}
+    \item \textbf{Le passif influe sur l'actif :} Le versement des prestations (rachats, décès) contraint l'assureur à liquider une partie de ses actifs, parfois dans des conditions de marché défavorables.
+        \item \textbf{L'actif influe sur le passif :} La performance des actifs financiers a un impact direct sur le niveau des engagements. C'est notamment le cas de la \textbf{Participation aux Bénéfices (PB)}, qui dépend des résultats financiers générés par l'assureur. Le Code des assurances impose une redistribution minimale aux assurés, calculée comme suit :
+        \begin{equation}
+            \label{eq:pb_minReg}
+            \text{PB}_{\text{minReg}} = 85\% \times \max(\text{RésFi}, 0) + 
+            \begin{cases}
+                90\% \times \text{RésTech} & \text{si RésTech} \ge 0 \\
+                100\% \times \text{RésTech} & \text{si RésTech} < 0
+            \end{cases}
+        \end{equation}
+        Où le Résultat Financier (RésFi) est directement issu de la performance des actifs et le Résultat Technique (RésTech) des risques de mortalité et de rachat.
+\end{itemize}
+La gestion Actif-Passif est donc la discipline qui vise à piloter les risques nés de cette interdépendance afin d'assurer la solvabilité et d'optimiser la rentabilité de l'acteur.
+
+\subsection{Le modèle ALM, outil de simulation de l'interdépendance Actif-Passif}
+La section précédente a mis en lumière la complexité de l'interaction entre l'actif et le passif, notamment à travers le mécanisme de la Participation aux Bénéfices (PB). Pour piloter efficacement cette dynamique, l'assureur ne peut se contenter d'une vision statique. Il a besoin d'un outil de simulation prospective capable de modéliser ces boucles de rétroaction sur le long terme : le modèle ALM.
+
+Le modèle ALM est précisément le moteur qui va simuler, année après année, comment la performance des actifs (le RésFi de l'équation \ref{eq:pb_minReg}) se propage au passif via la PB, et comment les sorties du passif (rachats, décès) contraignent en retour la gestion des actifs. Pour ce faire, et comme introduit au chapitre précédent, il s'appuie sur les projections du \textbf{Générateur de Scénarios Économiques (GSE)} pour explorer des milliers de futurs possibles.
+
+C'est en opérant cette simulation conjointe du bilan que le modèle ALM donne une application concrète aux univers de projection prudentiels et stratégiques :
+
+\begin{itemize}
+    \item \textbf{Sous l'univers risque neutre ($\mathbb{Q}$)}, le modèle ALM a une fonction de \textbf{valorisation prudentielle} pour le Pilier 1. Pour chaque scénario, il projette l'ensemble des flux de trésorerie futurs (primes, prestations, revenus d'actifs, frais, etc.), les actualise avec la courbe des taux sans risque du scénario, et calcule une valeur présente des engagements. En moyennant ces valeurs sur des milliers de simulations, il permet de déterminer le \textbf{Best Estimate Liability (BEL)}. De même, en appliquant les chocs réglementaires et en observant la variation de la valeur des fonds propres (NAV) à un an, il quantifie le capital requis, le \textbf{SCR}.
+    
+    \item \textbf{Sous l'univers monde réel ($\mathbb{P}$)}, le modèle ALM se transforme en un outil de \textbf{pilotage stratégique} pour le Pilier 2. Les projections, basées sur des scénarios économiques réalistes incluant des primes de risque, sont au cœur de l'exercice \textbf{ORSA (Own Risk and Solvency Assessment)}. Elles permettent de tester la viabilité du business plan, d'évaluer la robustesse de la stratégie d'investissement face à des crises plausibles et d'anticiper l'évolution de la solvabilité sur un horizon de 3 à 5 ans.
+\end{itemize}
+
+Le modèle ALM est donc l'outil qui opère la synthèse entre les contraintes réglementaires de valorisation et les impératifs de pilotage stratégique. La section suivante détaille l'architecture et le fonctionnement du modèle de simulation utilisé dans ce mémoire.
 
 \section{Architecture et Fonctionnement du Modèle de Projection}
     \subsection{Projection du Passif}
