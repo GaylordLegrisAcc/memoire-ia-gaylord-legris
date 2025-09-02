@@ -44,16 +44,103 @@ Chaque scénario économique généré sert alors d'input pour une projection co
 
 
 \section{Architecture et Fonctionnement du Modèle de Projection}
-Dans cette partie, le fonctionnement détaillé du modèle ALM développé en Python pour Accenture sera présenté. Ce modèle vise à projeter de manière conjointe l'actif et le passif d'un assureur vie sur un horizon de long terme, en intégrant les interactions complexes entre les deux, ainsi que les stratégies de gestion d'actifs et de participation aux bénéfices. Le modèle est structuré autour de plusieurs modules clés, chacun responsable d'une composante spécifique de la projection.
+\label{sec:architecture_modele}
 
-Cette partie n'est pour le moment pas encore terminée. Il sera question de détailler les mécanismes de projection du passif, de projection de l'actif, ainsi que l'interaction entre les deux ainsi que les limitations actuelles du modèle. Dans cette partie je vais également expliquer en détail comment sont calculer BE, SCR et PVFP qui sont les pierres angulaires dans les analyses de ce mémoire.
+L'objectif de cette section est de détailler l'architecture et le séquencement des opérations du modèle ALM développé pour les besoins de cette étude. Le modèle a été conçu pour simuler de manière dynamique et séquentielle le bilan d'un assureur vie sur un horizon de projection pluriannuel.
 
-    \subsection{Projection du Passif}
-    % Votre texte ici...
-    \subsection{Projection de l'Actif}
-    % Votre texte ici...
-    \subsection{Interaction Actif-Passif : Stratégie d'Investissement et Politique de Participation aux Bénéfices (PB)}
-    % Votre texte ici...
+Son fonctionnement global peut être décomposé en trois phases principales, comme illustré dans la figure \ref{fig:modele_alm_sequence} :
+\begin{enumerate}
+\item \textbf{Phase d'Initialisation} : Préparation et validation des données d'entrée, et application des chocs réglementaires à la date de départ.
+\item \textbf{Boucle de Projection Annuelle} : Cœur du modèle qui simule, année après année, l'évolution du bilan selon une séquence d'événements prédéfinis.
+\item \textbf{Phase de Finalisation} : Calcul des indicateurs prudentiels et génération des résultats en fin de projection.
+\end{enumerate}
+
+\begin{figure}[h!]
+\centering
+% Note : Pensez à remplacer le chemin vers votre image
+\includegraphics[width=0.98\textwidth]{images/2_chapitres/chapitre2/modele_alm_sequence.png}
+\caption{Architecture générale et séquencement des événements du modèle ALM. \textbf{(graphique temporaire)}}
+\label{fig:modele_alm_sequence}
+\end{figure}
+
+\subsection{Phase 1 : Initialisation du Modèle}
+
+Cette première phase prépare l'environnement de projection. Elle est elle-même divisée en trois sous-étapes.
+
+\subsubsection{Chargement et Validation des Données d'Entrée}
+
+Le modèle est alimenté par un ensemble de données exhaustif, regroupées en quatre catégories :
+\begin{itemize}
+\item \textbf{Données Économiques et Financières} : Issues du Générateur de Scénarios Économiques (GSE), elles comprennent les courbes de taux, les taux d'inflation et les performances des différentes classes d'actifs pour chaque scénario stochastique.
+\item \textbf{Portefeuille d'Actifs} : Les \textit{model points} d'actifs représentant l'ensemble des placements de l'assureur (obligations à taux fixe et variable, actions et immobilier).
+\item \textbf{Portefeuille de Passifs} : Les \textit{model points} d'épargne décrivant les engagements envers les assurés.
+\item \textbf{Hypothèses de Modélisation} : Un ensemble de tables paramétrant le comportement futur (stratégie d'investissement, stratégie ALM, règles de participation aux bénéfices, tables de mortalité, de rachat) et les chocs prudentiels Solvabilité 2.
+\end{itemize}
+Une étape de validation est systématiquement réalisée pour assurer la cohérence et la qualité des données chargées. Par exemple, nous vérifions qu'il n'y a pas de Provisions mathématiques négatives ou que la somme des taux d'affectation des différentes classes d'actifs est bien égale à 1.
+
+\subsubsection{Application des Chocs Solvabilité 2 en t=0}
+
+L'application des chocs instantanés en t=0 est une étape fondamentale du calcul du SCR (Solvency Capital Requirement) selon la formule standard de Solvabilité 2. L'objectif est de mesurer la résilience de l'assureur face à une série de scénarios de crise prédéfinis, calibrés pour représenter un événement se produisant une fois tous les 200 ans.
+
+Pour chaque choc, le modèle crée un "axe analytique" : les données d'entrée sont dupliquées, puis les paramètres pertinents sont modifiés conformément au scénario de choc. La différence entre la valeur des fonds propres dans le scénario central (sans choc) et leur valeur dans le scénario choqué détermine le besoin en capital pour ce risque spécifique.
+
+Les principaux chocs, ou modules de risque, se répartissent en plusieurs catégories :
+
+\begin{itemize} 
+    \item \textbf{Le risque de marché :} Il regroupe les risques liés aux fluctuations des marchés financiers. 
+    \begin{itemize} 
+        \item \textbf{Choc de taux d'intérêt :} Simule une variation soudaine, à la hausse ou à la baisse, de la courbe des taux d'intérêt. Ce choc a un impact majeur sur la valeur des actifs (notamment les obligations) et des passifs (qui sont actualisés avec cette courbe des taux). 
+        \item \textbf{Choc actions :} Modélise une baisse brutale des marchés actions. La formule standard distingue généralement deux types de chocs actions (Type 1 et Type 2) en fonction de la nature et de la diversification des investissements. Par exemple, un choc de -33.84\% pourrait s'appliquer à un portefeuille d'actions diversifié. 
+        \item \textbf{Choc immobilier :} Représente une chute de la valeur du marché immobilier. Le paramètre de -25\% est une valeur standard pour ce type de risque. 
+        \item \textbf{Choc de spread :} Concerne le risque de crédit sur les obligations et les prêts. Il simule un élargissement des spreads de crédit, ce qui diminue la valeur de marché de ces actifs. 
+    \end{itemize}
+
+\item \textbf{Le risque de souscription vie :} Il est lié aux aléas inhérents à l'activité d'assurance vie.
+\begin{itemize}
+\item \textbf{Choc de mortalité :} Simule une augmentation soudaine et permanente du taux de mortalité (par exemple, +15\%). Ce choc est particulièrement impactant pour les contrats de prévoyance où l'assureur doit verser un capital en cas de décès.
+\item \textbf{Choc de longévité :} À l'inverse, il modélise une baisse permanente du taux de mortalité (les assurés vivent plus longtemps que prévu). Ce risque affecte principalement les rentes viagères, pour lesquelles l'assureur doit verser des prestations plus longtemps.
+\item \textbf{Choc de rachat :} Simule une variation massive et soudaine du comportement des assurés en matière de rachat de leurs contrats. Il se décline en trois sous-modules : une hausse des taux de rachat, une baisse, et un scénario de rachat de masse (catastrophique).
+\item \textbf{Choc de dépenses :} Modélise une augmentation imprévue des frais de gestion de l'assureur, combinée à une hausse de l'inflation de ces frais.
+\item \textbf{Choc de catastrophe :} Concerne les événements extrêmes, comme une pandémie, entraînant une augmentation brutale et temporaire de la mortalité (par exemple, une hausse de 0.15 points de pourcentage du taux de mortalité sur une année).
+\end{itemize}
+
+\end{itemize}
+
+\subsubsection{Préparation à la Boucle de Projection}
+
+Enfin, les tables de données sont préparées pour la projection en y ajoutant les dimensions d'analyse fondamentales : le \textbf{scénario économique}, la \textbf{période de projection} (l'année) et l'\textbf{événement} intra-annuel.
+
+\subsection{Phase 2 : La Boucle de Projection Annuelle}
+
+Le cœur du modèle est une boucle itérative qui projette le bilan année par année. Pour chaque pas de temps, trois événements clés sont modélisés séquentiellement.
+
+\subsubsection{Événement 1 : Performance}
+Cette première étape simule le "passage du temps" sans intervention active du management.
+\begin{itemize}
+\item \textbf{Côté Passif} : Les engagements évoluent sous l'effet des flux biométriques (décès), comportementaux (rachats), et contractuels (arrérages de rente). La provision mathématique est revalorisée en appliquant les Taux Minimums Garantis (TMG) pour les fonds euros et la performance des marchés pour les Unités de Compte (UC).
+\item \textbf{Côté Actif} : La valeur des actifs est mise à jour pour refléter la performance des marchés. Les revenus (coupons, dividendes) sont encaissés et alimentent la trésorerie.
+\end{itemize}
+
+\subsubsection{Événement 2 : Stratégie d'Investissement}
+Cette étape modélise les décisions de gestion financière. L'algorithme simule la politique d'investissement en cherchant à maintenir une allocation d'actifs cible. En fonction de la trésorerie disponible, le modèle arbitre entre les différentes classes d'actifs, générant des ordres d'achats et de ventes.
+
+\subsubsection{Événement 3 : Stratégie ALM et Clôture du Compte de Résultat}
+C'est l'étape finale de l'exercice annuel, qui vise à équilibrer le bilan.
+\begin{enumerate}
+\item \textbf{Détermination du Résultat Financier} : Le modèle agrège l'ensemble des produits financiers générés.
+\item \textbf{Application de la Stratégie de Participation aux Bénéfices (PB)} : Le modèle calcule la PB à distribuer, en respectant les contraintes réglementaires et en visant un taux cible. Il peut activer des leviers comme la reprise de la Provision pour Participation aux Excédents (PPE) ou la réalisation de plus-values latentes.
+\item \textbf{Clôture des Comptes} : Le résultat technique et financier sont finalisés pour établir le compte de résultat et s'assurer de l'équilibre du bilan de clôture.
+\end{enumerate}
+
+\subsection{Phase 3 : Finalisation et Génération des Outputs}
+
+Une fois la boucle achevée pour toutes les années et tous les scénarios, le modèle entre dans sa phase finale.
+
+\subsubsection{Calcul des Indicateurs Prudentiels}
+Le principal objectif est de calculer le \textbf{Best Estimate (BE)} des passifs. Pour chaque scénario, le modèle agrège les flux de passifs futurs et les actualise en utilisant les courbes de taux sans risque correspondantes. La moyenne des BE sur l'ensemble des scénarios fournit la valeur centrale, tandis que la distribution permet de calculer le capital de solvabilité requis (SCR).
+
+\subsubsection{Génération des Rapports de Sortie}
+Enfin, le modèle produit un ensemble de rapports détaillés (similaires aux QRTs réglementaires) présentant les bilans projetés, les comptes de résultat, la décomposition du BE et du SCR, et d'autres indicateurs clés pour l'analyse actuarielle.
 
 \section{Limites Actuelles du modèle}
 A date, les fonds propres ne sont pas modélisés dans le modèle ALM. En effet, le modèle se concentre sur la projection de l'actif et du passif, ainsi que sur les interactions entre les deux, mais n'intègre pas encore la dynamique des fonds propres. Cette limitation est importante car les fonds propres jouent un rôle crucial dans la solvabilité et la résilience financière de l'assureur. Leur modélisation permettrait de mieux évaluer l'impact des stratégies de gestion sur la solidité financière globale de l'entreprise. L'absence des fonds propres nous empêche de calculer des indicateurs cruciaux tels que le ratio de solvabilité.
