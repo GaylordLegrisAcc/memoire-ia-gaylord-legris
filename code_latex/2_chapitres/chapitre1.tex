@@ -69,7 +69,7 @@ Chaque terme de cette équation sera détaillé successivement.
     \centering
     % --- NOTE : L'image du bilan est placée ici pour introduire visuellement la structure qui sera suivie. ---
     \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre1/bilanS2.png}
-    \caption{Bilan économique sous Solvabilité II}
+    \caption{Bilan économique sous Solvabilité II (graphique temporaire)}
     \label{fig:Bilan_economique_S2}
 \end{figure}
 
@@ -86,6 +86,8 @@ Les Provisions Techniques (PT) représentent la valeur des engagements de l'assu
 \begin{equation}
     \text{PT} = \text{Best Estimate (BE)} + \text{Marge de Risque (RM)}
 \end{equation}
+\bigskip
+
 
 % --- NOTE : Les méthodes de valorisation sont maintenant une sous-partie logique du calcul des provisions techniques. ---
 La valorisation des provisions techniques, au cœur du bilan prudentiel, ne peut se contenter d'une vision unique et figée du futur. La présence d'options et de garanties dans les contrats d'épargne impose de distinguer deux approches complémentaires :
@@ -95,12 +97,16 @@ La valorisation des provisions techniques, au cœur du bilan prudentiel, ne peut
     \item \textbf{L'approche stochastique} est un outil de valorisation. Elle explore un grand nombre de futurs possibles à l'aide d'un \textbf{Générateur de Scénarios Économiques (GSE)}. Cet outil produit des milliers de simulations cohérentes des marchés financiers. La valeur d'un indicateur est alors obtenue en calculant la moyenne des résultats sur l'ensemble de ces scénarios (méthode de Monte-Carlo). Cette exploration est indispensable pour quantifier le coût réel des garanties optionnelles (Taux Minimum Garanti, etc.).
 \end{itemize}
 La différence de valeur entre ces deux approches est capturée par le concept de \textbf{TVOG (\textit{Time Value of Options and Guarantees})}. En imposant une approche stochastique, Solvabilité II assure une valorisation \textit{market-consistent} des engagements.
+\bigskip
+
 
 Le \textbf{Best Estimate (BE)}, ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements d'assurance. Son calcul est réalisé sur un horizon long (40-60 ans) en \textit{run-off} (portefeuille en extinction, pas de nouvelles souscriptions). Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
 \begin{equation}
     BEL = \mathbb{E}^{\mathbb{Q}} \left[ \sum_{j=1}^{T} CF(j) \cdot e^{-\int_0^j r(s)ds} \right] \approx \frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{T}\frac{CF_{i}(j)}{(1+r_{i,j})^{j}}
 \end{equation}
 Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent.
+\bigskip
+
 
 La \textbf{Marge de Risque (RM)} complète le Best Estimate. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de "Coût du Capital" (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
 \begin{equation}
@@ -111,12 +117,16 @@ Où $\text{CoC}_{\text{rate}}$ est le coût du capital (fixé à 6\%), et $\text
 
 \subsubsection{Les Fonds Propres et les Exigences de Capital}
 % --- NOTE : Cette sous-section lie logiquement les Fonds Propres aux exigences de capital (SCR/MCR) qui portent sur eux. ---
+\bigskip
+
 
 Les \textbf{Fonds Propres Prudentiels}, aussi appelés \textbf{NAV (\textit{Net Asset Value})}, constituent la richesse de l'assureur. Ils sont définis par la différence entre la valeur des actifs et celle des engagements :
 \begin{equation}
     NAV = VM_{Actifs} - (BE + RM)
 \end{equation}
 Ce sont ces fonds propres qui doivent permettre à l'assureur d'absorber des pertes inattendues. Solvabilité II définit donc deux niveaux d'exigence de capital portant sur la NAV.
+\bigskip
+
 
 Le \textbf{Solvency Capital Requirement (SCR)} est le montant de fonds propres nécessaire pour absorber des pertes exceptionnelles. Il est calibré pour correspondre à la \textbf{Value-at-Risk (VaR) à 99,5\%} de la NAV sur un horizon d'un an. Autrement dit, il s'agit du capital qui doit permettre à l'assureur de faire face à ses engagements sur l'année à venir avec une probabilité de 99,5\%. En cas de non-respect, l'assureur fait l'objet d'un suivi renforcé par le régulateur.
 
@@ -144,13 +154,9 @@ où $Corr_{i,j}$ est le coefficient de corrélation entre les risques $i$ et $j$
 
 \subsection{Le Pilier 2 : Exigences qualitatives et gouvernance}
 
-Ce pilier se concentre sur la supervision, la gestion des risques et la gouvernance interne. Il impose aux assureurs de mettre en place un \textbf{système de gouvernance} sain, prudent et proportionné. Cela inclut une structure organisationnelle transparente, des politiques écrites claires, et un système de contrôle interne robuste. La direction doit être assurée par au moins deux dirigeants effectifs (\textbf{principe des 4 yeux}) qui doivent répondre à des exigences de compétence et d'honorabilité (\textit{fit and proper}).
+Ce pilier se concentre sur la supervision, la gestion des risques et la gouvernance interne. Il impose aux assureurs de mettre en place un système de gouvernance sain, prudent et proportionné. Cela inclut une structure organisationnelle transparente, des politiques écrites claires, et un système de contrôle interne robuste. La direction doit être assurée par au moins deux dirigeants effectifs (principe des 4 yeux) qui doivent répondre à des exigences de compétence et d'honorabilité (\textit{fit and proper}).
 
-
-
-Ce système s'articule autour de quatre \textbf{fonctions clés} indépendantes : la fonction actuarielle, la gestion des risques, l'audit interne et la conformité.
-
-
+Ce système s'articule autour de quatre fonctions clés indépendantes : la fonction actuarielle, la gestion des risques, l'audit interne et la conformité.
 
 L'élément central du Pilier 2 est l'\textbf{ORSA} (\textit{Own Risk and Solvency Assessment}). Il s'agit d'un processus interne par lequel l'assureur évalue, sur un horizon de 3 à 5 ans, l'adéquation entre son profil de risque spécifique, ses limites de tolérance et ses besoins globaux en solvabilité. C'est un outil de pilotage stratégique qui permet d'aller au-delà des hypothèses standards pour refléter la stratégie propre de l'entreprise.
 
@@ -176,6 +182,11 @@ Bien que ces deux univers soient complémentaires, la réglementation Solvabilit
 \item Solvency Capital Requirement (SCR)
 \item Bilan Prudentiel et NAV
 \end{itemize}
+
+\textbf{Exercices du Pilier 2 :}
+\begin{itemize}[itemsep=2pt]
+\item ORSA (Own Risk and Solvency Assessment)
+\end{itemize}
 &
 \textbf{Exercices du Pilier 2 :}
 \begin{itemize}[itemsep=2pt]
@@ -195,7 +206,7 @@ La distinction entre ces deux approches est donc fondamentale : l'une sert à va
 
 \subsection{\texorpdfstring{L'univers Risque Neutre ($\mathbb{Q}$)}{L'univers Risque Neutre (Q)} : un cadre pour la valorisation}
 
-L'\textbf{univers Risque Neutre ($\mathbb{Q}$)} est un cadre de valorisation théorique, requis par Solvabilité II pour les calculs \textit{market-consistent}. Son objectif n'est pas de prédire l'évolution réelle des marchés, mais de calculer la valeur « juste » d'un actif ou d'un passif à la date de calcul, en se fondant sur les prix de marché observés. Dans cet univers, on postule que tous les investisseurs sont indifférents au risque, ce qui implique que le rendement espéré de n'importe quel actif est égal au taux d'intérêt sans risque. Cette construction, fondée sur l'absence d'opportunité d'arbitrage, est indispensable pour valoriser de manière cohérente les options et garanties complexes des contrats d'assurance. La valeur $V_0$ d'un flux de trésorerie futur $CF_T$ est alors son espérance mathématique sous cette probabilité risque neutre, actualisée au taux sans risque $r(s)$ :
+L'\textbf{univers Risque Neutre ($\mathbb{Q}$)} est un cadre de valorisation théorique, requis par Solvabilité II pour les calculs \textit{market-consistent}. Son objectif n'est pas de prédire l'évolution réelle des marchés, mais de calculer la valeur risque neutralisée d'un actif ou d'un passif à la date de calcul, en se fondant sur les prix de marché observés. Dans cet univers, on postule que tous les investisseurs sont indifférents au risque, ce qui implique que le rendement espéré de n'importe quel actif est égal au taux d'intérêt sans risque. Cette construction, fondée sur l'absence d'opportunité d'arbitrage, est indispensable pour valoriser de manière cohérente les options et garanties complexes des contrats d'assurance. La valeur $V_0$ d'un flux de trésorerie futur $CF_T$ est alors son espérance mathématique sous cette probabilité risque neutre, actualisée au taux sans risque $r(s)$ :
 \begin{equation}
     V_0 = \mathbb{E}^{\mathbb{Q}} \left[ CF_T \cdot e^{-\int_0^T r(s)ds} \right]
     \label{eq:valeur_risque_neutre}
