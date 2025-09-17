@@ -54,70 +54,86 @@ Ces contrats sont soumis à un ensemble de réglementations prudentielles visant
 \section{Le cadre prudentiel Solvabilité II}
 \label{sec:s2}
 
-Entrée en vigueur le 1er janvier 2016, la directive Solvabilité II régit le cadre prudentielle pour la quasi-totalité des assureurs et réassureurs de l'Union Européenne. Son principal objectif est d'harmoniser les pratiques du secteur, d'assurer une protection optimale des assurés et de garantir que les compagnies puissent honorer leurs engagements en toutes circonstances. Pour ce faire, elle instaure une approche économique et prospective, fondée sur une évaluation fine des risques et structurée en trois piliers interdépendants.
+Entrée en vigueur le 1er janvier 2016, la directive Solvabilité II régit le cadre prudentielle pour la quasi-totalité des assureurs et réassureurs de l'Union Européenne. Son principal objectif est d'harmoniser les pratiques du secteur, d'assurer une protection optimale des assurés et de garantir que les compagnies puissent honorer leurs engagements en toutes circonstances. Pour ce faire, elle instaure une approche économique et prospective, fondée sur une évaluation fine des risques et structurée en trois piliers interdépendants. Seuls les deux premiers piliers seront présentés car ils sont plus pertinents dans le cadre de ce mémoire.
 
 
-\subsection{Le Pilier 1 : Exigences quantitatives}
+\subsection{Le Pilier 1 : Exigences quantitatives et Bilan Prudentiel}
 
-Le Pilier 1 définit les règles de calcul des provisions techniques et du capital de solvabilité. Il introduit la notion de Bilan Prudentiel, une vision économique du bilan comptable où les actifs et les passifs sont évalués de manière cohérente avec leur valeur de marché.
+Le Pilier 1 définit les exigences quantitatives, au cœur desquelles se trouve le Bilan Prudentiel. Il s'agit d'une vision économique du bilan comptable où les actifs et les passifs sont évalués de manière cohérente avec leur valeur de marché (\textit{market-consistent}). La structure de cette section suivra l'équation fondamentale du bilan prudentiel :
+\begin{equation}
+    \text{Actifs} = \text{Provisions Techniques} + \text{Fonds Propres}
+\end{equation}
+Chaque terme de cette équation sera détaillé successivement.
 
-\subsubsection{Le Bilan Prudentiel Solvabilité II}
+\begin{figure}[H]
+    \centering
+    % --- NOTE : L'image du bilan est placée ici pour introduire visuellement la structure qui sera suivie. ---
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre1/bilanS2.png}
+    \caption{Bilan économique sous Solvabilité II}
+    \label{fig:Bilan_economique_S2}
+\end{figure}
 
-Le bilan prudentiel se structure de la manière suivante :
-\begin{itemize}
-    \item \textbf{Les Actifs}, qui sont comptabilisés à leur \textbf{Valeur de Marché (VM)}.
-    \item \textbf{Les Provisions Techniques}, qui représentent la valeur des engagements de l'assureur envers ses assurés. Elles se décomposent en deux parties : le \textit{Best Estimate} et la Marge de Risque.
-    \item \textbf{Les Fonds Propres Prudentiels}, aussi appelés \textbf{NAV (\textit{Net Asset Value})}, qui constituent la richesse de l'assureur. Ils sont définis par la différence entre la valeur des actifs et celle des engagements : $NAV = VM_{Actifs} - (BE + RM)$.
-\end{itemize}
 
-\subsubsection{La valorisation économique : approche stochastique vs déterministe}
+\subsubsection{L'évaluation des Actifs à la Valeur de Marché}
 
+Le premier terme du bilan, Actifs, sont comptabilisés à leur Valeur de Marché (VM). Cette approche vise à refléter la valeur la plus juste et actuelle des ressources dont dispose l'assureur pour couvrir ses engagements.
+
+
+\subsubsection{Les Provisions Techniques : Cœur de l'évaluation du passif}
+% --- NOTE : Cette sous-section regroupe maintenant tout ce qui concerne le calcul des engagements : BE, RM et les méthodes de valorisation. ---
+
+Les Provisions Techniques (PT) représentent la valeur des engagements de l'assureur envers ses assurés. Elles se décomposent en deux parties : le \textit{Best Estimate} (BE) et la Marge de Risque (\textit{Risk Margin} - RM).
+\begin{equation}
+    \text{PT} = \text{Best Estimate (BE)} + \text{Marge de Risque (RM)}
+\end{equation}
+
+% --- NOTE : Les méthodes de valorisation sont maintenant une sous-partie logique du calcul des provisions techniques. ---
 La valorisation des provisions techniques, au cœur du bilan prudentiel, ne peut se contenter d'une vision unique et figée du futur. La présence d'options et de garanties dans les contrats d'épargne impose de distinguer deux approches complémentaires :
-
 \begin{itemize}
-    \item \textbf{L'approche déterministe} est un outil de pilotage. Elle repose sur une projection unique des variables économiques (courbe des taux, performance des actions, etc.). Bien qu'insuffisante pour la valorisation prudentielle, elle demeure un outil fondamental pour l'assureur. Sa simplicité en fait un instrument privilégié pour l'élaboration du \textit{business plan}, la définition des budgets et la communication d'un scénario central. Sa limite principale est son incapacité à valoriser les risques asymétriques.
+    \item \textbf{L'approche déterministe} est un outil de pilotage. Elle repose sur une projection unique des variables économiques. Bien qu'insuffisante pour la valorisation prudentielle, elle demeure un outil fondamental pour l'élaboration du \textit{business plan} et la communication d'un scénario central. Sa limite principale est son incapacité à valoriser les risques asymétriques.
 
-    \item \textbf{L'approche stochastique} est un outil de valorisation. Pour pallier la limite précédente, cette approche explore un grand nombre de futurs possibles. Elle s'appuie sur un \textbf{Générateur de Scénarios Économiques (GSE)}, qui sera détaillé plus loin. Cet outil produit des milliers de simulations cohérentes des marchés financiers. La valeur d'un indicateur est alors obtenue en calculant la moyenne des résultats sur l'ensemble de ces scénarios (méthode de Monte-Carlo). Cette exploration est indispensable pour quantifier le coût réel des garanties optionnelles (Taux Minimum Garanti, options de rachat, etc.), qui se matérialise principalement dans les scénarios extrêmes.
+    \item \textbf{L'approche stochastique} est un outil de valorisation. Elle explore un grand nombre de futurs possibles à l'aide d'un \textbf{Générateur de Scénarios Économiques (GSE)}. Cet outil produit des milliers de simulations cohérentes des marchés financiers. La valeur d'un indicateur est alors obtenue en calculant la moyenne des résultats sur l'ensemble de ces scénarios (méthode de Monte-Carlo). Cette exploration est indispensable pour quantifier le coût réel des garanties optionnelles (Taux Minimum Garanti, etc.).
 \end{itemize}
+La différence de valeur entre ces deux approches est capturée par le concept de \textbf{TVOG (\textit{Time Value of Options and Guarantees})}. En imposant une approche stochastique, Solvabilité II assure une valorisation \textit{market-consistent} des engagements.
 
-La différence de valeur entre ces deux approches est capturée par le concept de \textbf{TVOG (\textit{Time Value of Options and Guarantees})}. En imposant une approche stochastique, Solvabilité II assure une valorisation \textit{market-consistent} des engagements, reflétant le coût réel des options et garanties embarquées dans les contrats.
-
-\subsubsection{Les Provisions Techniques (BE et RM)}
-
-Le \textbf{Best Estimate (BE)}, ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements d'assurance. Son calcul est réalisé sur un horizon de temps long (40-60 ans) dans l'hypothèse d'un portefeuille en extinction (\textit{run-off}), c'est-à-dire sans l'ajout de nouveaux contrats. Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
+Le \textbf{Best Estimate (BE)}, ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements d'assurance. Son calcul est réalisé sur un horizon long (40-60 ans) en \textit{run-off} (portefeuille en extinction, pas de nouvelles souscriptions). Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
 \begin{equation}
     BEL = \mathbb{E}^{\mathbb{Q}} \left[ \sum_{j=1}^{T} CF(j) \cdot e^{-\int_0^j r(s)ds} \right] \approx \frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{T}\frac{CF_{i}(j)}{(1+r_{i,j})^{j}}
 \end{equation}
-Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent. Le BE se subdivise en \textit{Best Estimate Garanti} (BEG) pour les engagements contractuels minimaux et en \textit{Future Discretionary Benefits} (FDB) pour la part de participation aux bénéfices future et discrétionnaire.
+Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent.
 
-
-
-La \textbf{Marge de Risque (Risk Margin - RM)} s'ajoute au Best Estimate. Elle correspond au coût qu'un autre assureur exigerait pour reprendre le portefeuille de passif, rémunérant ainsi l'immobilisation du capital nécessaire pour couvrir les risques non-financiers jusqu'à leur extinction. Elle est calculée selon une approche "Coût du Capital" (\textit{Cost of Capital} - CoC) :
+La \textbf{Marge de Risque (RM)} complète le Best Estimate. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de "Coût du Capital" (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
 \begin{equation}
     RM = \text{CoC}_{\text{rate}} \times \sum_{j=0}^{T} \frac{\text{SCR}_{\text{non-fi}}(j)}{(1+r_{j+1})^{j+1}}
 \end{equation}
 Où $\text{CoC}_{\text{rate}}$ est le coût du capital (fixé à 6\%), et $\text{SCR}_{\text{non-fi}}(j)$ est la part du SCR couvrant les risques non-financiers à l'année $j$.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre1/bilanS2.png}
-    \caption{Bilan économique sous Solvabilité II}
-    \label{fig:Bilan économique sous Solvabilité II}
-\end{figure}
 
+\subsubsection{Les Fonds Propres et les Exigences de Capital}
+% --- NOTE : Cette sous-section lie logiquement les Fonds Propres aux exigences de capital (SCR/MCR) qui portent sur eux. ---
 
-\subsubsection{Les Exigences de Capital (SCR et MCR)}
-
-Solvabilité II définit deux niveaux d'exigence de capital.
-
-
-Le \textbf{Solvency Capital Requirement (SCR)} est le montant de fonds propres nécessaire pour faire face à une perte inattendue et sévère, calibré pour correspondre à une \textbf{Value-at-Risk (VaR) à 99,5\%}\\ à un horizon d'un an. En cas de non-respect, l'assureur fait l'objet d'un suivi renforcé par le régulateur (l'ACPR en France). En formule standard, son calcul suit une approche modulaire. Pour un risque élémentaire $x$, le SCR est la perte de NAV résultant d'un choc calibré~:
+Les \textbf{Fonds Propres Prudentiels}, aussi appelés \textbf{NAV (\textit{Net Asset Value})}, constituent la richesse de l'assureur. Ils sont définis par la différence entre la valeur des actifs et celle des engagements :
 \begin{equation}
-    SCR_{x} = NAV_{\text{central}} - NAV_{\text{choc}}
+    NAV = VM_{Actifs} - (BE + RM)
 \end{equation}
-Pour les risques de passif purs (mortalité, rachat), la formule se simplifie en une variation de Best Estimate ($SCR_{\text{passif}} = \Delta BE$). Les SCR des risques élémentaires sont ensuite agrégés à l'aide de matrices de corrélation pour former le SCR final.
+Ce sont ces fonds propres qui doivent permettre à l'assureur d'absorber des pertes inattendues. Solvabilité II définit donc deux niveaux d'exigence de capital portant sur la NAV.
 
+Le \textbf{Solvency Capital Requirement (SCR)} est le montant de fonds propres nécessaire pour absorber des pertes exceptionnelles. Il est calibré pour correspondre à la \textbf{Value-at-Risk (VaR) à 99,5\%} de la NAV sur un horizon d'un an. Autrement dit, il s'agit du capital qui doit permettre à l'assureur de faire face à ses engagements sur l'année à venir avec une probabilité de 99,5\%. En cas de non-respect, l'assureur fait l'objet d'un suivi renforcé par le régulateur.
 
+Le calcul du SCR peut se faire via un modèle interne (spécifique à l'assureur) ou, plus communément, via la \textbf{Formule Standard} définie par la réglementation. Cette dernière est une approche modulaire qui décompose le risque total en plusieurs modules et sous-modules (risque de marché, de souscription, de contrepartie, etc.).
+
+Pour chaque risque élémentaire $x$, le capital requis est calculé comme la perte de NAV consécutive à un choc instantané et calibré sur ce risque :
+\begin{equation}
+    SCR_{x} = \Delta NAV = NAV_{\text{central}} - NAV_{\text{choc } x}
+\end{equation}
+Les SCR des différents modules sont ensuite agrégés en prenant compte des corrélations prédéfinies entre les risques. L'agrégation de deux modules de risque $i$ et $j$ se fait via la formule :
+\begin{equation}
+    SCR_{i,j} = \sqrt{SCR_i^2 + SCR_j^2 + 2 \times Corr_{i,j} \times SCR_i \times SCR_j}
+\end{equation}
+où $Corr_{i,j}$ est le coefficient de corrélation entre les risques $i$ et $j$ fourni par la réglementation. Cette agrégation est appliquée de manière hiérarchique pour obtenir le SCR total, appelé \textit{Basic Solvency Capital Requirement} (BSCR) :
+\begin{equation}
+    SCR_{total} = \sqrt{\sum_{i}\sum_{j} SCR_i \times SCR_j \times Corr_{i,j}}
+\end{equation}
 
 \begin{figure}[H]
     \centering
@@ -125,11 +141,6 @@ Pour les risques de passif purs (mortalité, rachat), la formule se simplifie en
     \caption{Schéma des modules et sous-modules du SCR en Formule Standard}
     \label{fig:pieuvre_scr}
 \end{figure}
-
-Le \textbf{Minimum Capital Requirement (MCR)} est le seuil minimal absolu de fonds propres. Si la NAV de l'assureur tombe en dessous de ce seuil, son agrément peut lui être retiré. Le MCR agit comme un dernier filet de sécurité.
-
-
-
 
 \subsection{Le Pilier 2 : Exigences qualitatives et gouvernance}
 
