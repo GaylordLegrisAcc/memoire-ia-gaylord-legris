@@ -252,34 +252,14 @@ où $Z$ est une variable aléatoire suivant une loi normale centrée réduite $\
 
 \subsection{\texorpdfstring{L'univers Monde Réel ($\mathbb{P}$)}{L'univers Monde Réel (P)} : un outil de pilotage stratégique}
 
-À l'inverse, l'\textbf{univers Monde Réel ($\mathbb{P}$)} vise à générer des scénarios réalistes pour refléter une évolution plausible des marchés. Son objectif est la projection et la planification stratégique, notamment pour l'exercice ORSA (Pilier 2) ou l'optimisation de l'allocation d'actifs. La différence fondamentale avec l'univers risque neutre réside dans l'introduction d'une prime de risque pour rémunérer la volatilité supportée par les investisseurs. Le rendement espéré d'un actif risqué est donc supérieur au taux sans risque :
+À l'inverse de l'univers risque neutre, l'\textbf{univers Monde Réel ($\mathbb{P}$)} vise à générer des scénarios réalistes pour refléter une évolution plausible des marchés. Son objectif est la projection et la planification stratégique, notamment pour l'exercice ORSA (Pilier 2). 
+
+La différence fondamentale réside dans l'introduction d'une \textbf{prime de risque} pour rémunérer la volatilité supportée par les investisseurs. Le rendement espéré d'un actif risqué est donc supérieur au taux sans risque, calibré sur des données historiques et des anticipations d'experts :
 \begin{equation}
     \mathbb{E}^{\mathbb{P}}[\text{Rendement de l'actif}] = \text{Taux sans risque} + \text{Prime de risque}
 \end{equation}
-Cette prime est calibrée à partir d'analyses prospectives, de données historiques et de d'avis d'expert sur le marché.
 
-\subsubsection{Modélisation des taux d'intérêt : le modèle de Vasicek}
-Dans l'univers monde réel, le modèle de \textbf{Vasicek} est souvent préféré pour sa parcimonie et son interprétation économique. Il modélise un retour des taux courts $r_t$ vers une moyenne de long terme constante $b$, ce qui correspond à une vision économique plus stable. Son EDS est :
-\begin{equation}
-    dr_t = a(b - r_t)dt + \sigma dW^{\mathbb{P}}_t
-    \label{eq:vasicek}
-\end{equation}
-où $a$ est la vitesse de retour à la moyenne, $b$ la moyenne de long terme du taux, $\sigma$ sa volatilité et $W^{\mathbb{P}}_t$ un mouvement brownien sous la mesure monde réel. La solution de cette EDS est :
-\begin{equation}
-    r_t = r_0 e^{-at} + b(1-e^{-at}) + \sigma \int_0^t e^{-a(t-s)}dW^{\mathbb{P}}_s
-\end{equation}
-Pour calibrer ces modèles, les données choisies en entrée sont typiquement des séries temporelles historiques : Euribor 3 mois pour les taux courts, l'indice des OAT 10 ans pour les taux longs, les cotations de l'IEIF pour l'immobilier et l'EuroStoxx pour les actions.
-
-\subsubsection{Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes avec prime de risque}
-Le modèle de Black \& Scholes est également utilisé, mais sa dérive est modifiée pour inclure la prime de risque. Le rendement espéré $\mu$ est désormais une constante supérieure au taux sans risque moyen : $\mu > r$. L'EDS devient :
-\begin{equation}
-    dS_t = \mu S_t dt + \sigma S_t dW^{\mathbb{P}}_t
-    \label{eq:black_scholes_p}
-\end{equation}
-La solution de cette EDS est le fameux mouvement brownien géométrique :
-\begin{equation}
-    S_t = S_0 \exp\left( \left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W^{\mathbb{P}}_t \right)
-\end{equation}
+Les modèles utilisés, bien que similaires dans leur forme à ceux de l'univers $\mathbb{Q}$ (par exemple, Vasicek pour les taux ou Black \& Scholes pour les actions), sont modifiés pour intégrer cette prime. La dérive du processus stochastique n'est plus le taux sans risque $r_t$, mais un rendement espéré monde réel $\mu$.En somme, si l'univers $\mathbb{Q}$ valorise les engagements à un instant $t$, l'univers $\mathbb{P}$ permet d'exprimer la situation financière de l'entreprise dans le futur, ce qui le rend indispensable pour le pilotage stratégique.
 
 \subsection{Synthèse des deux univers}
 
@@ -320,7 +300,7 @@ Le tableau suivant résume les caractéristiques et les usages des deux univers 
     \end{tabularx}
 \end{table}
 
-Pour la suite de ce mémoire, je vais me concentrer sur l'univers risque neutre $\mathbb{Q}$, car il est le plus pertinent pour les calculs prudentiels et la gestion Actif-Passif dans le cadre de Solvabilité II.
+Pour la suite de ce mémoire, je vais me concentrer sur l'univers risque neutre $\mathbb{Q}$, car il est le plus pertinent pour les calculs prudentiels et la gestion Actif-Passif dans le cadre des calculs liés au pilier 1 de Solvabilité II.
 
 
 \section{La représentation du passif : le concept de \textit{Model Point}}
@@ -328,7 +308,7 @@ Pour la suite de ce mémoire, je vais me concentrer sur l'univers risque neutre 
 
 \subsection{La nécessité de l'agrégation}
 
-Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices. Une modélisation "police à police" est techniquement possible mais informatiquement irréalisable pour des calculs stochastiques complexes comme ceux requis par les modèles ALM. La charge de calcul deviendrait prohibitive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle fondamentale.
+Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices. Une modélisation "police à police" est techniquement possible mais informatiquement très chronophage voire irréalisable pour des calculs stochastiques complexes comme ceux requis par les modèles ALM. La charge de calcul deviendrait prohibitive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle majeure.
 
 
 
