@@ -87,39 +87,58 @@ Les caractéristiques de ces profils (par exemple, les fourchettes de Taux Minim
 
 Chaque contrat individuel est ensuite instancié en tirant ses variables selon des lois de probabilité spécifiques, reflétant la nature de la caractéristique modélisée :
 \subsubsection{Exemple de calibration : Modélisation de la distribution des âges}
-Une modélisation précise de la distribution de l'âge est essentielle pour de nombreuses applications actuarielles. La démarche s'est déroulée en quatre étapes principales : la préparation des données, l'ajustement de modèles, la comparaison statistique et la sélection du meilleur modèle.
+Une modélisation précise de la distribution de l'âge est essentielle lorsque l'on souhaite modéliser un portefeuille de passifs. En effet, c'est un facteur clé dans l'évaluation de risques tels que le décès. La démarche de modélisation s'est déroulée en quatre étapes principales : la préparation des données, l'ajustement de modèles, la comparaison statistique et la sélection du meilleur modèle.
 
-\paragraph{Étape 1 : Création de la loi de probabilité empirique}
 La première étape a consisté à construire une distribution de probabilité réaliste à partir de deux sources de données :
 \begin{enumerate}
-\item \textbf{La pyramide des âges de la population française} pour l'année 2024 (Source : INSEE), fournissant la structure démographique de base.
-\item \textbf{Un modèle de taux de détention} d'assurance-vie par âge, estimé à partir de données de sondage via une interpolation hybride (spline cubique et linéaire).
+\item \textbf{La pyramide des âges de la population française} pour l'année 2024 \cite{pyramide_age}, fournissant la structure démographique de base entre 0 et 100 ans.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/pyramide_age.png}
+\caption{Pyramide des âges de la population française en 2024 \cite{pyramide_age}.}
+\label{fig:pyramide_age}
+\end{figure}
+\item \textbf{Une étude statistique de l'INSEE} sur la détention d'assurance-vie par tranche d'âge en France \cite{insee_prop_av_age}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/insee_prop_av_age.png}
+\caption{Proportion de détention d'assurance-vie par tranche d'âge en France \cite{insee_prop_av_age}.}
+\label{fig:insee_prop_av_age}
+\end{figure}
 \end{enumerate}
-En multipliant la population de chaque âge par le taux de détention estimé, nous avons obtenu une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après normalisation, nous avons obtenu une loi de probabilité empirique, illustrée par la figure \ref{fig:empirique}.
+
+Afin d'obtenir de passer de la figure \ref{fig:insee_prop_av_age} à une proportion de personnes possédant une assurance vie par age, il a été décidé de faire plusieurs interpolations entre les points de données fournis. 
+Il a d'abord été décidé de définir des points précis pour chaque tranche d'âge, en prenant la moyenne de chaque tranche. Par exemple, pour la tranche 18-30 ans, le point retenu est 24 ans. Pour la dernière tranche "70 ans et plus", le point retenu est 82.5 ans. Ensuite une interpolation par spline cubique a été réalisée entre les points de 24 ans à 64.5 ans. Pour atteindre le point suivant, 82.5 ans, une interpolation linéaire a été effectuée afin d'obtenir une décroissance réaliste. Puis après 82.5 ans, il a été décidé de garder la proportion constant car on prend en hypothèse que personne ne souscrit ou ne part de l'assurance vie après 82.5 ans.
+Ces interpolations permettent d'obtenir une estimation continue du taux de détention pour chaque âge entre 18 et 100 ans, qui est l'âge maximum retenu dans le cadre de la génération de portefeuilles dans le cadre de cette étude. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/interpolation_prop_age.png}
+\caption{Proportion de détention d'assurance-vie par âge en France par diverses méthodes d'interpolation.}
+\label{fig:interpolation_prop_age}
+\end{figure}
+
+
+En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après normalisation, il est désormais possible de construire une loi de probabilité empirique, illustrée par la figure \ref{fig:empirique}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{C:/Users/gaylord.legris/Repositories/generateur_passif_ep/variable_estimations/nb_asse_age/graphiques/distribution_age_assures.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/distribution_age_assures.png}
 \caption{Distribution empirique de l'âge des assurés (Hommes et Femmes).}
 \label{fig:empirique}
 \end{figure}
 
-\paragraph{Étape 2 : Ajustement de lois théoriques}
-Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique.
-
-\paragraph{Étape 3 et 4 : Comparaison et Sélection}
-Pour déterminer la loi la plus adéquate, nous avons utilisé des critères visuels et statistiques (Test de Kolmogorov-Smirnov, AIC, BIC). Les figures \ref{fig:gamma} et \ref{fig:beta} montrent l'ajustement des deux lois. Visuellement, la loi Gamma épouse plus fidèlement la forme de la distribution observée.
+Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov, AIC, BIC) ont été utilisés. Les figures \ref{fig:gamma} et \ref{fig:beta} montrent l'ajustement des deux lois. Visuellement, la loi Gamma épouse plus fidèlement la forme de la distribution observée.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{C:/Users/gaylord.legris/Repositories/generateur_passif_ep/variable_estimations/nb_asse_age/graphiques/estimation_loi_gamma.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/estimation_loi_gamma.png}
 \caption{Ajustement de la loi Gamma sur la distribution empirique.}
 \label{fig:gamma}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{C:/Users/gaylord.legris/Repositories/generateur_passif_ep/variable_estimations/nb_asse_age/graphiques/estimation_loi_beta.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/estimation_loi_beta.png}
 \caption{Ajustement de la loi Beta sur la distribution empirique.}
 \label{fig:beta}
 \end{figure}
@@ -133,7 +152,6 @@ Le tableau \ref{tab:stats} confirme cette observation. La loi Gamma présente un
 \textbf{Métrique} & \textbf{Loi Gamma} & \textbf{Loi Beta} & \textbf{Meilleur Modèle} \\
 \midrule
 Statistique K-S (D) & 0.0374 & 0.0748 & Gamma \\
-p-value K-S & 0.0 & 0.0 & - \\
 AIC (Akaike) & 1 709 234.40 & 1 718 905.88 & Gamma \\
 BIC (Bayésien) & 1 709 265.01 & 1 718 926.30 & Gamma \\
 \bottomrule
@@ -142,7 +160,10 @@ BIC (Bayésien) & 1 709 265.01 & 1 718 926.30 & Gamma \\
 \label{tab:stats}
 \end{table}
 
-Il est donc recommandé d'utiliser la \textbf{loi Gamma}, avec les paramètres estimés lors de l'analyse, pour toute application nécessitant une génération ou une représentation de l'âge des assurés.
+D'après ces résultats, il est donc recommandé d'utiliser la \textbf{loi Gamma}, avec les paramètres estimés lors de l'analyse, pour toute application nécessitant une génération ou une représentation de l'âge des assurés.
+
+
+
 \begin{itemize}
     \item \textbf{Nombre de polices par agrégat :} Modélisé par une loi de Poisson $\mathcal{P}(\lambda)$, tronquée pour assurer une valeur minimale de 1. \textit{Note pour moi-même : Je dois justifier le choix de la loi de Poisson. C'est un choix classique, mais je dois expliquer pourquoi je l'ai fait (ex: grand nombre de clients potentiels, faible probabilité de souscription). Je dois aussi préciser comment le paramètre lambda est calibré. Pour la "troncature à 1", je dois être plus précis mathématiquement. Est-ce que j'utilise une loi de Poisson tronquée en zéro (Zero-Truncated Poisson) ? Si oui, je devrais donner la fonction de masse correspondante.}
     \item \textbf{Sexe de l'assuré :} Modélisé par une loi de Bernoulli $\mathcal{B}(p)$, où $p$ représente la proportion d'hommes définie dans les spécifications du produit. \textit{Note pour moi-même : C'est un choix standard. Je dois juste préciser d'où vient le paramètre p. Est-ce que je l'ai tiré des données de marché, des statistiques nationales (INSEE), ou est-ce une hypothèse propre au produit cible ?}
