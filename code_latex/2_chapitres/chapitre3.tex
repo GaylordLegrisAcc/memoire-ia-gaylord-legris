@@ -86,7 +86,7 @@ Le cœur du générateur de passifs repose sur la modélisation de chaque attrib
 Les caractéristiques de ces profils (par exemple, les fourchettes de Taux Minimum Garanti (TMG), les montants moyens de provision mathématique) sont elles-mêmes générées aléatoirement à l'aide de lois uniformes, discrètes ou continues. Cette première étape permet de fixer les méta-paramètres (tels que la moyenne $\mu$, l'écart-type $\sigma$, ou les bornes $[min, max]$) qui régiront la génération fine des contrats. \textit{Note pour moi-même : Attention, ce passage est confus. Est-ce que je tire les paramètres des archétypes aléatoirement ? Si c'est le cas, je dois justifier cette couche de stochasticité. Sinon, si les paramètres sont fixés par des hypothèses expertes, je dois le dire clairement. Je devrais reformuler en précisant que "Les paramètres définissant chaque archétype (fourchettes de TMG, etc.) sont déterminés en amont..." pour plus de clarté.}
 
 Chaque contrat individuel est ensuite instancié en tirant ses variables selon des lois de probabilité spécifiques, reflétant la nature de la caractéristique modélisée :
-\subsubsection{Exemple de calibration : Modélisation de la distribution des âges}
+\subsubsection{Modélisation de la distribution des âges}
 Une modélisation précise de la distribution de l'âge est essentielle lorsque l'on souhaite modéliser un portefeuille de passifs. En effet, c'est un facteur clé dans l'évaluation de risques tels que le décès. La démarche de modélisation s'est déroulée en quatre étapes principales : la préparation des données, l'ajustement de modèles, la comparaison statistique et la sélection du meilleur modèle.
 
 La première étape a consisté à construire une distribution de probabilité réaliste à partir de deux sources de données :
@@ -199,7 +199,7 @@ Le \textbf{Mélange Gaussien à deux composantes (GMM)} s'est avéré être le m
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/calibration_loi_GMM_souscription.png}
-\caption{Ajustement des différentes lois sur la distribution de l'âge à la souscription. Le GMM (en orange) épouse le mieux la forme bimodale.}
+\caption{Ajustement d'une GMM sur la distribution de l'âge à la souscription.}
 \label{fig:gmm_souscription}
 \end{figure}
 
@@ -236,15 +236,56 @@ Moins de 30 ans & 9.9233 & 1.7713 \\
 
 Sur la base des calibrations précédentes, une population synthétique de 500 000 individus a été générée. Pour chaque individu, un âge a été tiré selon la loi Beta, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation observée dans la réalité.
 
-\paragraph{Étape 3 : Modélisation de la détention et du montant de la PM.} 
+La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance-vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation n'est pas linéaire. Pour les patrimoines les plus modestes, qui n'ont pas encore la capacité d'investir dans l'immobilier, la part des actifs financiers est relativement élevée. À mesure que le patrimoine augmente, une part significative est allouée à l'immobilier, ce qui diminue mécaniquement la part relative du patrimoine financier. Ce phénomène s'inverse cependant pour les 10\% des patrimoines les plus élevés, où la diversification vers des actifs financiers redevient prépondérante, entraînant une remontée de leur part dans le patrimoine total.
 
-La dernière étape consiste à déterminer, pour chaque individu de l'échantillon, s'il détient une assurance-vie et, si oui, pour quel montant. 
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            xlabel={Patrimoine brut moyen (€)},
+            ylabel={Patrimoine financier (\%)},
+            xmode=log,
+            log ticks with fixed point,
+            xticklabel style={
+                /pgf/number format/fixed,
+                /pgf/number format/precision=0,
+                /pgf/number format/1000 sep={\,}
+            },
+            yticklabel style={
+                /pgf/number format/fixed,
+                /pgf/number format/precision=0
+            },
+            grid=major,
+            width=\textwidth,
+            height=8cm,
+            legend pos=outer north east
+        ]
+        \addplot[
+            smooth,
+            mark=*,
+            accenture,
+        ] coordinates {
+            (1900, 31.4)
+            (8300, 33.9)
+            (21500, 41.7)
+            (64300, 43.0)
+            (142100, 20.0)
+            (211500, 14.4)
+            (285900, 14.7)
+            (383300, 16.4)
+            (559800, 20.2)
+            (1487700, 23.2)
+        };
+        \legend{Part du patrimoine financier}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Part du patrimoine financier en fonction du patrimoine brut moyen, par décile \cite{insee_patrimoine_age}.}
+    \label{fig:composition_patrimoine}
+\end{figure}
 
-La \textbf{probabilité de détention} a été modélisée en fonction du niveau de patrimoine, en utilisant les données de l'INSEE sur la détention d'assurance-vie par tranche de patrimoine. 
-
-Pour le \textbf{montant de la PM}, une approche plus fine a été adoptée. La PM n'est pas une fraction du patrimoine brut, mais du \textbf{patrimoine financier}. En s'appuyant sur une autre table de l'INSEE décrivant la composition du patrimoine par décile, la part du patrimoine financier a été estimée pour chaque individu. Une hypothèse experte a ensuite été posée : la PM représente en moyenne \textbf{40\% de ce patrimoine financier}. 
-
-\paragraph{Étape 4 : Calibration de la distribution finale de la PM.} 
+La troisième étape consiste à lier le patrimoine financier à la Provision Mathématique. Il est en effet plus réaliste de considérer que l'épargne en assurance-vie (ou la provision mathématique du point de vue de l'assureur) constitue une part du patrimoine financier plutôt que du patrimoine brut. Une hypothèse centrale est donc formulée : la PM d'un individu est estimée comme une fraction de son patrimoine financier. Sur la base de données INSEE, cette fraction est fixée à \textbf{40\%}. Ainsi, pour chaque individu de la population simulée, la PM est calculée comme suit :
+$$ \text{PM} = \text{Patrimoine Brut} \times \text{Part du Patrimoine Financier} \times 40\% $$
+Cette règle permet de transformer la distribution de patrimoine en une distribution de PM, en tenant compte des non-linéarités observées dans la composition du patrimoine.
 
 Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textbf{loi Lognormale}, comme l'indique le tableau \ref{tab:stats_pm}.
 
@@ -258,12 +299,12 @@ Lognorm & 7 142 088 & 7 142 120 & 0.017 \\
 Gamma & 7 254 743 & 7 254 774 & 0.145 \\
 \bottomrule
 \end{tabular}
-\caption{Tableau comparatif des métriques d'ajustement pour la distribution finale de la PM.}
+\caption{Pour le critère de Kolmogorov-Smirnov, la loi Lognormale est largement meilleure que la loi Gamma pour estimer cette distribution.}
 \label{tab:stats_pm}
 \end{table}
 
 
-\section{Synthèse et Génération du Portefeuille Final}
+\subsection{Synthèse et Génération du Portefeuille Final}
 
 Avec toutes les distributions marginales et conditionnelles calibrées, l'étape finale consiste à les assembler pour générer le portefeuille complet. Une approche par copule classique, où les trois variables (Âge, Âge Souscription, PM) seraient mises dans une copule 3D, a été écartée. Une telle approche simplifierait à l'excès les dépendances, en les réduisant à de simples coefficients de corrélation, et ne saurait capturer la richesse des relations non-linéaires (notamment l'évolution du patrimoine avec l'âge).
 
