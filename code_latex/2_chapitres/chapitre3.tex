@@ -81,23 +81,23 @@ La méthodologie de génération du portefeuille de passifs synthétique repose 
 
 \subsection{Approche stochastique par lois de probabilité}
 
-Le cœur du générateur de passifs repose sur la modélisation de chaque attribut d'un contrat d'assurance vie par une loi de probabilité spécifique. Ce processus permet de créer une population de polices hétérogène et réaliste, dont la diversité est essentielle pour une simulation ALM pertinente. La génération s'effectue en deux temps : d'abord, la définition de "produits types" ou archétypes, puis la génération des contrats individuels à partir de ces archétypes. \textit{Note pour moi-même : Le concept d'archétypes est une bonne idée, mais je dois le rendre plus concret. Je devrais définir précisément ce que c'est, combien j'en ai créé et sur quelle base (ex: "fonds en euros sécuritaire", "mixte dynamique", "pur UC"). Un tableau récapitulatif des archétypes et de leurs caractéristiques serait une excellente addition pour clarifier ce point.}
+La génération du portefeuille synthétique s'appuie sur une modélisation stochastique où chaque attribut d'un contrat est représenté par une variable aléatoire. Dans un premier temps, l'objectif est de générer un portefeuille complet, représentatif du marché. Pour ce faire, une loi de probabilité marginale est définie pour chaque caractéristique, avec des paramètres rigoureusement calibrés sur des données de marché. Certaines variables sont ensuite liées entre elles pour refléter les dépendances observées dans les portefeuilles réels. Ce même cadre peut ensuite être adapté pour simuler un produit spécifique ; il suffirait alors de générer des variables aléatoires de manière conditionnelle aux caractéristiques de ce produit. Cette méthode garantit à la fois le réalisme statistique du portefeuille et la flexibilité nécessaire aux analyses prospectives.
 
-Les caractéristiques de ces profils (par exemple, les fourchettes de Taux Minimum Garanti (TMG), les montants moyens de provision mathématique) sont elles-mêmes générées aléatoirement à l'aide de lois uniformes, discrètes ou continues. Cette première étape permet de fixer les méta-paramètres (tels que la moyenne $\mu$, l'écart-type $\sigma$, ou les bornes $[min, max]$) qui régiront la génération fine des contrats. \textit{Note pour moi-même : Attention, ce passage est confus. Est-ce que je tire les paramètres des archétypes aléatoirement ? Si c'est le cas, je dois justifier cette couche de stochasticité. Sinon, si les paramètres sont fixés par des hypothèses expertes, je dois le dire clairement. Je devrais reformuler en précisant que "Les paramètres définissant chaque archétype (fourchettes de TMG, etc.) sont déterminés en amont..." pour plus de clarté.}
+Les sections suivantes détailleront la méthodologie de calibration pour les variables fondamentales qui structurent le portefeuille :
+\begin{itemize}
+    \item L'âge de l'assuré ;
+    \item L'âge à la souscription, qui détermine l'ancienneté du contrat ;
+    \item Le montant de la Provision Mathématique (PM).
+\end{itemize}
+D'autres variables, telles que le sexe ou la répartition des supports, seront également modélisées pour compléter le profil de chaque contrat.
 
-Chaque contrat individuel est ensuite instancié en tirant ses variables selon des lois de probabilité spécifiques, reflétant la nature de la caractéristique modélisée :
-\subsubsection{Modélisation de la distribution des âges}
-Une modélisation précise de la distribution de l'âge est essentielle lorsque l'on souhaite modéliser un portefeuille de passifs. En effet, c'est un facteur clé dans l'évaluation de risques tels que le décès. La démarche de modélisation s'est déroulée en quatre étapes principales : la préparation des données, l'ajustement de modèles, la comparaison statistique et la sélection du meilleur modèle.
+
+\subsubsection{Modélisation de l'âge des assurés}
 
 La première étape a consisté à construire une distribution de probabilité réaliste à partir de deux sources de données :
 \begin{enumerate}
 \item \textbf{La pyramide des âges de la population française} pour l'année 2024 \cite{pyramide_age}, fournissant la structure démographique de base entre 0 et 100 ans.
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/pyramide_age.png}
-\caption{Pyramide des âges de la population française en 2024 \cite{pyramide_age}.}
-\label{fig:pyramide_age}
-\end{figure}
+
 \item \textbf{Une étude statistique de l'INSEE} sur la détention d'assurance-vie par tranche d'âge en France \cite{insee_prop_av_age}
 \begin{figure}[H]
 \centering
@@ -106,10 +106,18 @@ La première étape a consisté à construire une distribution de probabilité r
 \label{fig:insee_prop_av_age}
 \end{figure}
 \end{enumerate}
+Afin de transformer les données discrètes de l'INSEE, présentées par tranches d'âge, en une distribution continue du taux de détention par âge, une méthodologie d'interpolation a été mise en œuvre. Cette étape est cruciale pour pouvoir ensuite simuler l'âge des assurés de manière réaliste.
 
-Afin d'obtenir de passer de la figure \ref{fig:insee_prop_av_age} à une proportion de personnes possédant une assurance vie par age, il a été décidé de faire plusieurs interpolations entre les points de données fournis. 
-Il a d'abord été décidé de définir des points précis pour chaque tranche d'âge, en prenant la moyenne de chaque tranche. Par exemple, pour la tranche 18-30 ans, le point retenu est 24 ans. Pour la dernière tranche "70 ans et plus", le point retenu est 82.5 ans. Ensuite une interpolation PCHIP a été réalisée entre les points de 24 ans à 64.5 ans. Pour atteindre le point suivant, 82.5 ans, une interpolation linéaire a été effectuée afin d'obtenir une décroissance réaliste. Puis après 82.5 ans, il a été décidé de garder la proportion constant car on prend en hypothèse que personne ne souscrit ou ne part de l'assurance vie après 82.5 ans.
-Ces interpolations permettent d'obtenir une estimation continue du taux de détention pour chaque âge entre 18 et 100 ans, qui est l'âge maximum retenu dans le cadre de la génération de portefeuilles dans le cadre de cette étude. 
+L'approche a consisté à définir d'abord des points de données représentatifs pour chaque tranche d'âge fournie. Pour les tranches intermédiaires (par exemple, 30-39 ans), le point central de l'intervalle a été retenu. Pour les tranches extrêmes, des hypothèses spécifiques ont été formulées :
+\begin{itemize}
+    \item Pour la tranche des moins de 30 ans, plusieurs points ont été positionnés entre 18 et 30 ans afin de modéliser la croissance progressive de la détention en début de vie active.
+    \item Pour la tranche des "70 ans et plus", un âge représentatif de 82,5 ans a été choisi.
+\end{itemize}
+
+Une fois ces points définis, une interpolation cubique par morceaux préservant la monotonie (PCHIP, \textit{Piecewise Cubic Hermite Interpolating Polynomial}) a été appliquée sur la majeure partie de la courbe. Cette méthode a été privilégiée car elle évite les oscillations artificielles et garantit que la proportion de détention reste croissante là où les données le suggèrent. Pour les âges plus avancés, une interpolation linéaire a été utilisée pour assurer une transition douce, suivie d'un plateau constant après 82,5 ans. Cette dernière hypothèse modélise une stabilisation du comportement de détention chez les assurés les plus âgés avec une absence de rachats.
+
+Le résultat de ce processus est une fonction continue et lisse qui estime le taux de détention d'assurance-vie pour chaque âge entre 18 et 100 ans, comme illustré par la figure \ref{fig:interpolation_prop_age}.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/interpolation_prop_age.png}
@@ -118,32 +126,16 @@ Ces interpolations permettent d'obtenir une estimation continue du taux de déte
 \end{figure}
 
 
-En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après normalisation, il est désormais possible de construire une loi de probabilité empirique, illustrée par la figure \ref{fig:empirique}.
+En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après normalisation, il est désormais possible de construire une loi de probabilité empirique. Ensuite deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov, AIC, BIC) ont été utilisés. La figure \ref{fig:beta} montre l'ajustement de la loi Beta qui a des meilleurs résultats statistiques et qui épouse mieux la distribution empirique que la loi Gamma (figure \ref{fig:gamma}). 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/distribution_age_assures.png}
-\caption{Distribution empirique de l'âge des assurés (Hommes et Femmes).}
-\label{fig:empirique}
-\end{figure}
-
-Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov, AIC, BIC) ont été utilisés. Les figures \ref{fig:gamma} et \ref{fig:beta} montrent l'ajustement des deux lois. Visuellement, la loi Gamma épouse plus fidèlement la forme de la distribution observée.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/estimation_loi_gamma.png}
-\caption{Ajustement de la loi Gamma sur la distribution empirique.}
-\label{fig:gamma}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/estimation_loi_beta.png}
+\includegraphics[width=0.8 \textwidth]{images/2_chapitres/chapitre3/estimation_loi_beta.png}
 \caption{Ajustement de la loi Beta sur la distribution empirique.}
 \label{fig:beta}
 \end{figure}
 
-Le tableau \ref{tab:stats} confirme cette observation. La loi Beta présente une statistique K-S deux fois plus faible et des scores AIC et BIC significativement inférieurs, indiquant un meilleur ajustement.
+Le tableau \ref{tab:stats} confirme cette observation. La loi Beta présente une statistique K-S deux fois plus faible et des scores AIC et BIC significativement inférieurs, indiquant un meilleur ajustement. C'est donc cette loi qui a été retenue pour modéliser l'âge des assurés dans le portefeuille synthétique.
 
 \begin{table}[H]
 \centering
@@ -160,14 +152,10 @@ BIC (Bayésien) & 1 674 527 & 1 668 378 & Beta \\
 \label{tab:stats}
 \end{table}
 
-D'après ces résultats, il est donc recommandé d'utiliser la \textbf{loi Beta}, avec les paramètres estimés lors de l'analyse, pour toute application nécessitant une génération ou une représentation de l'âge des assurés.
-
-
 \subsubsection{Modélisation de l'âge à la souscription}
+Une fois l'âge des assurés modélisé, il est indispensable de déterminer l'âge à la souscription. Cette variable est fondamentale, car elle permet de calculer l'ancienneté du contrat, un paramètre clé qui influence directement les lois de comportement, notamment les taux de rachat, dans les modèles de projection.
 
-Après avoir modélisé l'âge des assurés, l'étape suivante consiste à déterminer l'âge auquel ils ont souscrit leur contrat. Cette variable est cruciale car elle nous permet de déterminer l'ancienneté du contrat, un facteur déterminant dans les outils de modélisations car il influence les taux de rachats.
-
-La distribution de l'âge à la souscription a été dérivée des mêmes données de taux de détention par âge utilisées précédemment. En effet, la probabilité de souscrire à un âge donné peut être approximée par la variation (la dérivée discrète) du taux de détention. Une augmentation rapide du taux de détention entre 25 et 35 ans, par exemple, implique une forte probabilité de souscription dans cette tranche d'âge. 
+La distribution de l'âge à la souscription n'a pas été calibrée sur des données directes, mais a été dérivée de la courbe de taux de détention par âge, établie dans la section précédente. L'hypothèse sous-jacente est que la densité de probabilité de souscrire à un âge donné est proportionnelle à la vitesse à laquelle le taux de détention augmente à cet âge. Autrement dit, la distribution de l'âge à la souscription peut être approximée par la dérivée discrète de la fonction du taux de détention. Par exemple, une forte pente de la courbe de détention entre 25 et 35 ans signale une intense activité de souscription dans cette tranche d'âge. En calculant la différence finie entre les points de la courbe interpolée, il est donc possible de construire une distribution empirique de l'âge à la souscription.
 
 \begin{figure}[H]
 \centering
@@ -194,7 +182,7 @@ Weibull & 1 437 176 & 1 437 207 & 0.1544 \\
 \label{tab:stats_souscription}
 \end{table}
 
-Le \textbf{Mélange Gaussien à deux composantes (GMM)} s'est avéré être le modèle le plus performant, avec des scores AIC et BIC nettement inférieurs. D'après ce résulat, nous pouvons remarquer qu'il y à alors 2 pics de soucription. Cette bimodalité, illustrée en figure \ref{fig:gmm_souscription}, est une caractéristique de marché que les lois plus simples ne peuvent capturer.
+Le \textbf{Mélange Gaussien à deux composantes (GMM)} s'est avéré être le modèle le plus performant, avec des scores AIC et BIC nettement inférieurs. Cela s'explique car 2 pics de souscription sont observables sur la distribution. Cette bimodalité, illustrée par la calibration de la loi GMM en figure \ref{fig:gmm_souscription}, est une caractéristique de marché que les lois de probabilité plus simples ne peuvent capturer.
 
 \begin{figure}[H]
 \centering
@@ -234,9 +222,9 @@ Moins de 30 ans & 9.9233 & 1.7713 \\
 
 
 
-Sur la base des calibrations précédentes, une population synthétique de 500 000 individus a été générée. Pour chaque individu, un âge a été tiré selon la loi Beta, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation observée dans la réalité.
+Sur la base des calibrations précédentes, une population synthétique de 500 000 individus a été générée. Pour chaque individu, un âge a été tiré selon la loi Beta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation observée dans la réalité.
 
-La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance-vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation n'est pas linéaire. Pour les patrimoines les plus modestes, qui n'ont pas encore la capacité d'investir dans l'immobilier, la part des actifs financiers est relativement élevée. À mesure que le patrimoine augmente, une part significative est allouée à l'immobilier, ce qui diminue mécaniquement la part relative du patrimoine financier. Ce phénomène s'inverse cependant pour les 10\% des patrimoines les plus élevés, où la diversification vers des actifs financiers redevient prépondérante, entraînant une remontée de leur part dans le patrimoine total.
+La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance-vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation n'est pas linéaire. Pour les patrimoines les plus modestes, qui n'ont pas encore la capacité d'investir dans l'immobilier, la part des actifs financiers est relativement élevée. À mesure que le patrimoine augmente, une part significative est allouée à l'immobilier, ce qui diminue mécaniquement la part relative du patrimoine financier. Ce phénomène s'inverse cependant pour les patrimoines les plus élevés, où la diversification vers des actifs financiers redevient prépondérante, entraînant une remontée de leur part dans le patrimoine total, ce n'est pas observable sur le graphique \ref{fig:composition_patrimoine} car les données sont agrégées par décile.
 
 \begin{figure}[H]
     \centering
@@ -323,38 +311,18 @@ Un \textbf{modèle de génération hybride} a donc été privilégié :
 
 Ce processus itératif est répété jusqu'à obtenir le nombre de contrats désiré dans le portefeuille final. Le résultat est un fichier de données synthétique contenant trois variables dont les distributions et les interdépendances sont le reflet fidèle des analyses statistiques menées en amont. Cet outil fournit ainsi une base de données robuste et réaliste pour toutes les analyses actuarielles ultérieures.
 
+A ce portefeuille synthétique de base, d'autres variables sont ajoutées pour enrichir le profil de chaque contrat. Ces variables supplémentaires sont également générées selon des lois de probabilité calibrées, comme résumé ci-dessous :
+
 \begin{itemize}
-    \item \textbf{Nombre de polices par agrégat :} Modélisé par une loi de Poisson $\mathcal{P}(\lambda)$, tronquée pour assurer une valeur minimale de 1. \textit{Note pour moi-même : Je dois justifier le choix de la loi de Poisson. C'est un choix classique, mais je dois expliquer pourquoi je l'ai fait (ex: grand nombre de clients potentiels, faible probabilité de souscription). Je dois aussi préciser comment le paramètre lambda est calibré. Pour la "troncature à 1", je dois être plus précis mathématiquement. Est-ce que j'utilise une loi de Poisson tronquée en zéro (Zero-Truncated Poisson) ? Si oui, je devrais donner la fonction de masse correspondante.}
-    \item \textbf{Sexe de l'assuré :} Modélisé par une loi de Bernoulli $\mathcal{B}(p)$, où $p$ représente la proportion d'hommes définie dans les spécifications du produit. \textit{Note pour moi-même : C'est un choix standard. Je dois juste préciser d'où vient le paramètre p. Est-ce que je l'ai tiré des données de marché, des statistiques nationales (INSEE), ou est-ce une hypothèse propre au produit cible ?}
-    \item \textbf{Montants des provisions (fonds euros et UC) :} Tirés selon une loi Normale $\mathcal{N}(\mu, \sigma^2)$, dont les paramètres sont issus des spécifications. Les valeurs générées sont ensuite tronquées pour rester dans des bornes prédéfinies, afin d'éviter les valeurs aberrantes. \textit{Note pour moi-même : Le choix de la loi Normale pour des montants est discutable. Une loi Lognormale ou Gamma serait peut-être plus adaptée. Je dois justifier ce choix. Ai-je fait des tests d'ajustement (Kolmogorov-Smirnov, etc.) sur des données réelles ? Je dois aussi détailler la troncature : quelles bornes [min,max] et comment ont-elles été choisies ? Je dois vérifier si j'ai bien tenu compte de l'impact de la troncature sur la moyenne et la variance pour que les moments finaux correspondent aux cibles.}
-    \item \textbf{Allocation d'actifs cible :} Les poids cibles pour chaque classe d'actifs (actions, immobilier, etc.) sont également générés suivant des lois Normales. Un mécanisme de normalisation est ensuite appliqué pour garantir que la somme des allocations $\sum_{i} \omega_i$ pour un contrat donné est égale à 1. \textit{Note pour moi-même : Même remarque que pour les provisions. La normalisation post-tirage modifie les lois marginales. Une approche plus rigoureuse serait d'utiliser une loi de Dirichlet. Je devrais mentionner cette alternative et justifier pourquoi je ne l'ai pas utilisée (par exemple, pour des raisons de simplicité).}
-    \item \textbf{Date d'effet du contrat :} Générée par une loi Uniforme continue sur un intervalle de temps $[T_{\text{début}}, T_{\text{fin}}]$. \textit{Note pour moi-même : C'est un choix simple. Je dois le justifier brièvement. Est-ce que l'hypothèse d'une souscription uniforme dans le temps est réaliste pour mon cas ? Je pourrais mentionner que d'autres lois comme Beta ou Triangulaire pourraient mieux modéliser des pics de souscription.}
+    \item \textbf{Sexe de l'assuré :} Modélisé par une loi de Bernoulli $\mathcal{B}(p)$, où le paramètre $p$ représente la probabilité que l'assuré soit un homme. Ce paramètre est calibré à partir de statistiques démographiques publiques sur les détenteurs d'assurance-vie en France (INSEE), afin de refléter la répartition observée sur le marché.
+
+    \item \textbf{Répartition de la PM entre fonds euros et unités de compte (UC) :} La part de la PM allouée aux UC est modélisée par une loi Bêta $\mathcal{B}eta(\alpha, \beta)$, dont les paramètres sont calibrés pour correspondre à la moyenne et à la variance de la répartition cible du portefeuille. La loi Bêta a été préférée à une loi Normale tronquée car son support naturel est l'intervalle $[0, 1]$, ce qui garantit la génération de proportions valides sans nécessiter de troncature ou de normalisation \textit{a posteriori}. La part allouée au fonds euros est ensuite déterminée comme le complément à 1.
+
+    \item \textbf{Allocation d'actifs cible pour les UC :} Pour modéliser la répartition des actifs au sein des UC (actions, obligations, immobilier, etc.), une loi de Dirichlet $\text{Dir}(\boldsymbol{\alpha})$ est utilisée. Cette distribution est la généralisation multivariée de la loi Bêta et est spécifiquement conçue pour générer des vecteurs de nombres aléatoires qui respectent la contrainte de somme à 1 ($\sum_{i} \omega_i = 1$). Le vecteur de paramètres $\boldsymbol{\alpha} = (\alpha_1, \dots, \alpha_K)$ est calibré pour que l'espérance de chaque poids corresponde à l'allocation stratégique cible du produit. Cette approche est plus rigoureuse qu'une génération par lois Normales indépendantes suivie d'une normalisation, car elle préserve la structure de dépendance souhaitée entre les allocations.
+
+    \item \textbf{Taux Minimum Garanti (TMG) :} Le TMG des contrats en modélisé en suivant l'année de souscription du contrat. En effet, les TMG ont tendance à diminuer avec le temps en raison de la baisse des taux d'intérêt, et cette relation temporelle est cruciale à capturer pour représenter fidèlement les risques associés aux contrats. Il a donc été décidé de modéliser le TMG de manière déterministe. Pour chaque année de souscription, une valeur de TMG est assignée en fonction des tendances historiques du marché. Par exemple, les contrats souscrits avant 2000 peuvent avoir un TMG de 3\%, ceux entre 2000 et 2010 un TMG de 2\%, ceux entre 2010 et 2020 un TMG de 1\%, et ceux après 2020 un TMG de 0\%. Cette approche garantit que le portefeuille synthétique reflète les conditions économiques réelles au moment de la souscription.
 \end{itemize}
 
-\subsection{Calibration des distributions marginales à partir des données de marché}
-
-L'approche stochastique adoptée n'est pas purement aléatoire ; elle est rigoureusement calibrée pour refléter une réalité de marché ou un portefeuille cible. La calibration des distributions marginales de chaque variable est assurée principalement via un ensemble de spécifications qui définissent les paramètres des lois de probabilité. Ces spécifications peuvent être obtenues de deux manières complémentaires :
-\begin{enumerate}
-    \item \textbf{Calibration par hypothèses expertes :} Les paramètres des lois (moyennes, écarts-types, bornes) sont définis sur la base d'hypothèses actuarielles et économiques. Cette méthode est utilisée pour explorer des scénarios de marché spécifiques ou pour concevoir des produits cibles. \textit{Note pour moi-même : Ce paragraphe est trop vague, il faut que je le rende plus concret avec des exemples précis.}
-    \item \textbf{Calibration directe sur données réelles :} Les spécifications peuvent être issues d'une analyse statistique d'un portefeuille existant. Les paramètres des lois sont alors les estimateurs directs des moments empiriques (moyenne, variance) observés sur les données, garantissant que le portefeuille synthétique réplique fidèlement la structure du portefeuille réel. \textit{Note pour moi-même : C'est le point le plus faible de la section, je dois absolument le renforcer. Je dois décrire précisément la source de données utilisée (portefeuille réel anonymisé ? taille ? période ?). Je dois expliquer la méthode d'estimation (méthode des moments ou maximum de vraisemblance ? Pourquoi ce choix ?). Surtout, je dois ajouter la validation statistique : quels tests d'ajustement (goodness-of-fit) ai-je utilisés (Chi-deux, K-S) et quels sont les résultats (p-valeurs) ? Des graphiques comparant l'histogramme des données réelles et la densité de la loi calibrée sont indispensables ici.}
-\end{enumerate}
-
-Un exemple particulièrement abouti de cette calibration est la modélisation de la distribution des âges des assurés. Le processus charge une distribution d'âge de référence, représentative de la population cible. Cette distribution est ensuite transformée en une série de lois de probabilité conditionnelles : pour chaque âge maximum possible à la souscription, $n$, une distribution de probabilité discrète, tronquée à $n$, est calculée. \textit{Note pour moi-même : C'est un bon exemple, mais je dois être plus précis. Quelle est la "distribution d'âge de référence" ? Table de mortalité réglementaire, données INSEE ? Je dois citer la source exacte. Je devrais aussi décrire le processus mathématiquement. Si $f(x)$ est la densité de référence, la densité conditionnelle est $f_{X \mid X \leq n}(x) = \frac{f(x)}{\int_0^n f(t)dt}$. Montrer cette formule prouverait ma maîtrise du sujet.}
-Lors de la génération, l'âge d'un assuré pour un contrat donné est tiré au hasard en utilisant la distribution de probabilité conditionnelle qui respecte l'âge maximum autorisé pour ce produit. Cette méthode garantit que la structure démographique du portefeuille généré est cohérente avec celle de la population de référence.
-
-\subsection{Perspective : modélisation des dépendances par la théorie des copules}
-
-\textit{Note pour moi-même : Cette partie devrait plutôt aller dans une conclusion pour donner une ouverture à mon sujet de mémoire}
-Une limite inhérente au modèle actuel est l'hypothèse d'indépendance entre les différentes caractéristiques des contrats. Par exemple, le montant de la provision mathématique est généré indépendamment de l'âge de l'assuré, ce qui est une simplification forte de la réalité. Pour dépasser cette limite, une évolution naturelle du modèle consisterait à intégrer la théorie des copules pour modéliser la structure de dépendance entre les variables aléatoires.
-
-La force de l'approche par copules réside dans sa capacité, via le théorème de Sklar, à séparer la modélisation des distributions marginales de celle de leur structure de dépendance. Il serait ainsi possible de conserver la calibration fine de chaque marge, décrite précédemment, tout en introduisant une structure de corrélation réaliste. La mise en œuvre suivrait les étapes suivantes :
-\begin{enumerate}
-    \item \textbf{Définition de la structure de dépendance :} Spécification d'une matrice de corrélation (par exemple, de Spearman ou de Kendall) entre les variables d'intérêt, comme l'âge, l'ancienneté du contrat et le montant des provisions.\textit{Note pour moi-même : C'est une bonne perspective. Pour la renforcer, je devrais expliquer comment je calibrerais cette matrice de corrélation (estimation à partir des rangs sur les données réelles ?). Je pourrais aussi préciser que le choix entre Spearman et Kendall n'est pas anodin.}
-    \item \textbf{Choix d'une famille de copules :} Sélection d'une copule (Gaussienne, de Student, ou archimédienne comme celles de Clayton ou Gumbel) en fonction de la nature des dépendances à modéliser, notamment la symétrie ou la dépendance aux extrêmes (risques de queue).\textit{Note pour moi-même : Parfait. Pour aller plus loin, je pourrais donner un exemple concret : "Par exemple, pour modéliser le fait que les assurés les plus âgés ont tendance à avoir les plus grosses provisions (dépendance dans la queue supérieure), une copule de Gumbel serait plus appropriée qu'une copule Gaussienne." Cela montrerait une compréhension plus fine.}
-    \item \textbf{Modification du processus de génération :} Le tirage des variables ne se ferait plus de manière indépendante. Il faudrait d'abord générer des vecteurs de variables uniformes corrélées à partir de la copule choisie. Ensuite, par la méthode de la transformée inverse, appliquer la fonction de répartition inverse de chaque loi marginale calibrée ($F_X^{-1}(u)$) pour obtenir les réalisations des variables finales. \textit{Note pour moi-même : Je dois réfléchir à la faisabilité d'appliquer réellement cette méthode dans le cadre du mémoire.}
-\end{enumerate}
-
-Cette extension permettrait d'enrichir considérablement le réalisme du portefeuille synthétique, en capturant des phénomènes clés tels que la tendance des assurés plus âgés à détenir des contrats avec des provisions plus élevées, améliorant ainsi la pertinence des simulations ALM subséquentes.
 \section{Présentation de l'Outil et du Portefeuille de Référence Généré}
 \subsection{Architecture de l'application en Python et choix technologiques}
 % Votre texte ici...
