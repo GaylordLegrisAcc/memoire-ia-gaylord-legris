@@ -127,19 +127,25 @@ Le résultat de ce processus est une fonction continue et lisse qui estime le ta
 \end{figure}
 
 
-En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après standartisation, il est désormais possible de construire une loi de probabilité empirique.  : $$P(Age = x) = \frac{N_{assures}(x)}{Total_{assures}}$$ 
+En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après standartisation, on peut alors construire une loi de probabilité empirique.  : $$P(Age = x) = \frac{N_{assures}(x)}{Total_{assures}}$$ 
 
 
-Ensuite deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov, AIC, BIC : TODO bien expliciter AIC et BIC, pour le test une footnote et annexe succinte) ont été utilisés. La figure \ref{fig:beta} montre l'ajustement de la loi Beta qui a des meilleurs résultats statistiques et qui épouse mieux la distribution empirique que la loi Gamma (figure \ref{fig:gamma}). 
+
+
+\paragraph{Calibration d'une loi usuelle sur la loi empirique}
+
+\bigskip
+
+Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov\footnote{Le test de Kolmogorov-Smirnov est un test d'adéquation non paramétrique comparant la fonction de répartition empirique d'un échantillon à celle d'une loi théorique. La statistique $D$ représente l'écart maximal absolu entre ces deux fonctions : une valeur faible indique un bon ajustement.}, AIC\footnote{Le critère d'information d'Akaike (AIC) est une mesure de la qualité d'un modèle statistique qui arbitre entre la qualité de l'ajustement et la complexité du modèle. Il pénalise l'ajout de paramètres pour éviter le surapprentissage. Un AIC plus faible indique un meilleur modèle.}, BIC\footnote{Le critère d'information bayésien (BIC) est similaire à l'AIC mais impose une pénalité plus forte pour le nombre de paramètres, dépendant de la taille de l'échantillon. Il tend à favoriser des modèles plus parcimonieux. Comme pour l'AIC, une valeur plus faible est préférable.}\footnote{L'AIC et le BIC servent à comparer deux ajustements, pour savoir quel modèle est le mieux ajusté on va donc regarder le plus faible AIC/BIC}) ont été utilisés. La figure \ref{fig:beta} montre l'ajustement de la loi Beta qui a des meilleurs résultats statistiques et qui épouse mieux la distribution empirique que la loi Gamma (figure \ref{fig:gamma}). 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8 \textwidth]{images/2_chapitres/chapitre3/estimation_loi_beta.png}
-\caption{Ajustement de la loi Beta sur la distribution empirique.}
+\caption{Ajustement de la loi Beta sur la distribution empirique. TODO : Séparer une version homme et une femme et mettre en annexe}
 \label{fig:beta}
 \end{figure}
 
-Le tableau \ref{tab:stats} confirme cette observation. La loi Beta présente une statistique K-S deux fois plus faible et des scores AIC et BIC significativement inférieurs, indiquant un meilleur ajustement. C'est donc cette loi qui a été retenue pour modéliser l'âge des assurés dans le portefeuille synthétique.
+Le tableau \ref{tab:stats} confirme cette observation. La loi Beta présente une statistique K-S inférieure (traduisant une distance maximale plus faible entre la distribution théorique et empirique) ainsi que des scores AIC et BIC plus bas, indiquant un meilleur ajustement global. C'est donc cette loi qui a été retenue pour modéliser l'âge des assurés dans le portefeuille synthétique.
 
 \begin{table}[H]
 \centering
@@ -152,7 +158,7 @@ AIC (Akaike) & 1 674 497 & 1 668 357 & Beta \\
 BIC (Bayésien) & 1 674 527 & 1 668 378 & Beta \\
 \bottomrule
 \end{tabular}
-\caption{Tableau comparatif des métriques d'ajustement (population masculine).}
+\caption{Tableau comparatif des métriques d'ajustement (population masculine). TODO : mettre aussi les résultats pour la population féminine, mettre également des valeurs en gras}
 \label{tab:stats}
 \end{table}
 
@@ -168,7 +174,14 @@ La distribution de l'âge à la souscription n'a pas été calibrée sur des don
 
 \end{figure}
 
-Plusieurs lois de probabilité ont été testées pour modéliser cette distribution empirique de l'âge à la souscription : Gamma, Beta, Weibull, et un modèle de Mélange Gaussien (GMM). Le tableau \ref{tab:stats_souscription} présente les résultats.
+Plusieurs lois de probabilité ont été testées pour modéliser cette distribution empirique de l'âge à la souscription :
+\begin{itemize}
+    \item La \textbf{loi Gamma} : définie sur $\mathbb{R}^+$, elle est souvent utilisée pour modéliser des durées. Sa densité est $f(x; k, \theta) = \frac{x^{k-1}e^{-\frac{x}{\theta}}}{\theta^k\Gamma(k)}$.
+    \item La \textbf{loi Beta} : définie sur un intervalle borné $[a,b]$, elle offre une grande flexibilité de forme. Sa densité standard sur $[0,1]$ est $f(x; \alpha, \beta) = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha, \beta)}$.
+    \item La \textbf{loi de Weibull} : courante en analyse de survie, sa densité est donnée par $f(x; \lambda, k) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}e^{-(x/\lambda)^k}$.
+    \item Le \textbf{Modèle de Mélange Gaussien (GMM)} : il s'agit d'une combinaison linéaire de plusieurs lois normales, permettant de s'ajuster à des distributions multimodales. Sa densité est $f(x) = \sum_{i=1}^{K} w_i \frac{1}{\sigma_i\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu_i}{\sigma_i}\right)^2}$.
+\end{itemize}
+Le tableau \ref{tab:stats_souscription} présente les résultats.
 
 \begin{table}[H]
 \centering
@@ -182,7 +195,7 @@ Gamma & 1 400 178 & 1 400 208 & 0.1110 \\
 Weibull & 1 437 176 & 1 437 207 & 0.1544 \\
 \bottomrule
 \end{tabular}
-\caption{Tableau comparatif des métriques d'ajustement pour l'âge à la souscription.}
+\caption{Tableau comparatif des métriques d'ajustement pour l'âge à la souscription. TODO : mettre également des valeurs en gras}
 \label{tab:stats_souscription}
 \end{table}
 
@@ -200,10 +213,14 @@ Le \textbf{Mélange Gaussien à deux composantes (GMM)} s'est avéré être le m
 
 Pour calculer la Provision Mathématique à partir des données marché, une méthode plus complexe a été mise en place. Une approche directe consistant à ajuster une loi sur des données de PM n'est pas possible car des données publiques sur ce sujet n'existent pas. Une méthodologie de modélisation conditionnelle a donc été mise en place.
 
-L'hypothèse fondamentale est que la PM d'un individu est principalement fonction de son \textbf{patrimoine}, qui lui-même est fortement corrélé à son \textbf{âge}. La modélisation s'est donc déroulée en plusieurs étapes.
+L'hypothèse fondamentale est que la PM d'un individu est principalement fonction de son patrimoine, qui lui-même est fortement corrélé à son âge. La modélisation s'est donc déroulée en plusieurs étapes.
 
 
-La première étape a consisté à modéliser la distribution du patrimoine brut en fonction de l'âge, en s'appuyant sur les données de l'INSEE \cite{insee_patrimoine_age}. Plutôt que de calibrer une seule loi pour toute la population, une \textbf{loi Lognormale} a été ajustée pour chaque tranche d'âge. Les paramètres de cette loi, $\mu$ et $\sigma$, ont été estimés par la méthode de \textbf{correspondance des quantiles}, en s'assurant que la médiane et les déciles de la loi ajustée correspondent à ceux observés dans les données. Le tableau \ref{tab:params_patrimoine_age} synthétise les paramètres obtenus.
+La première étape a consisté à modéliser la distribution du patrimoine brut en fonction de l'âge, en s'appuyant sur les données de l'INSEE \cite{insee_patrimoine_age}. Plutôt que de calibrer une seule loi pour toute la population, une \textbf{loi Lognormale} a été ajustée pour chaque tranche d'âge. Les paramètres de cette loi, $\mu$ et $\sigma$, ont été estimés par la méthode de \textbf{correspondance des quantiles}. Cette méthode est particulièrement adaptée lorsque les données individuelles ne sont pas disponibles et que seules des statistiques agrégées sont fournies. Elle consiste à déterminer les paramètres qui minimisent l'écart quadratique entre les quantiles théoriques de la loi et les quantiles empiriques observés (ici les déciles) :
+\begin{equation}
+    (\hat{\mu}, \hat{\sigma}) = \arg\min_{\mu, \sigma} \sum_{i=1}^{9} \left( F^{-1}(p_i; \mu, \sigma) - Q_{emp}(p_i) \right)^2
+\end{equation}
+où $p_i \in \{0.1, \dots, 0.9\}$, $F^{-1}$ est la fonction quantile de la loi Lognormale et $Q_{emp}$ les valeurs fournies par l'INSEE. Cette approche garantit que la distribution ajustée reproduit fidèlement la dispersion de la population réelle. Le tableau \ref{tab:params_patrimoine_age} synthétise les paramètres obtenus.
 
 \begin{table}[H]
 \centering
@@ -226,7 +243,7 @@ Moins de 30 ans & 9.9233 & 1.7713 \\
 
 
 
-Sur la base des calibrations précédentes, une population synthétique de 500 000 individus a été générée. Pour chaque individu, un âge a été tiré selon la loi Beta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation observée dans la réalité.
+Sur la base des calibrations précédentes, une population synthétique de 500 000 individus a été générée. Pour chaque individu, un âge a été tiré selon la loi Bêta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation observée dans la réalité (TODO : rajouter un graphe 3D si c'est possible/lisible).
 
 La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance-vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation n'est pas linéaire. Pour les patrimoines les plus modestes, qui n'ont pas encore la capacité d'investir dans l'immobilier, la part des actifs financiers est relativement élevée. À mesure que le patrimoine augmente, une part significative est allouée à l'immobilier, ce qui diminue mécaniquement la part relative du patrimoine financier. Ce phénomène s'inverse cependant pour les patrimoines les plus élevés, où la diversification vers des actifs financiers redevient prépondérante, entraînant une remontée de leur part dans le patrimoine total, ce n'est pas observable sur le graphique \ref{fig:composition_patrimoine} car les données sont agrégées par décile.
 
@@ -275,11 +292,11 @@ La deuxième étape consiste à estimer la part du patrimoine de chaque individu
     \label{fig:composition_patrimoine}
 \end{figure}
 
-La troisième étape consiste à lier le patrimoine financier à la Provision Mathématique. Il est en effet plus réaliste de considérer que l'épargne en assurance-vie (ou la provision mathématique du point de vue de l'assureur) constitue une part du patrimoine financier plutôt que du patrimoine brut. Une hypothèse centrale est donc formulée : la PM d'un individu est estimée comme une fraction de son patrimoine financier. Sur la base de données INSEE, cette fraction est fixée à \textbf{40\%}. Ainsi, pour chaque individu de la population simulée, la PM est calculée comme suit :
+La troisième étape consiste à lier le patrimoine financier à la Provision Mathématique. Il est en effet plus réaliste de considérer que l'épargne en assurance-vie (ou la provision mathématique du point de vue de l'assureur) constitue une part du patrimoine financier plutôt que du patrimoine brut. Une hypothèse centrale est donc formulée : la PM d'un individu est estimée comme une fraction de son patrimoine financier. Sur la base de données INSEE \cite{insee_patrimoine_age}, cette fraction est fixée à \textbf{40\%}. Ainsi, pour chaque individu de la population simulée, la PM est calculée comme suit :
 $$ \text{PM} = \text{Patrimoine Brut} \times \text{Part du Patrimoine Financier} \times 40\% $$
 Cette règle permet de transformer la distribution de patrimoine en une distribution de PM, en tenant compte des non-linéarités observées dans la composition du patrimoine.
 
-Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textbf{loi Lognormale}, comme l'indique le tableau \ref{tab:stats_pm}.
+Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textbf{loi Lognormale}. Bien que les tests d'adéquation classiques rejettent formellement l'hypothèse nulle en raison de la très grande taille de l'échantillon (rendant le test extrêmement sensible aux infimes déviations), l'analyse comparative des critères d'information et de la distance K-S confirme la supériorité de la loi Lognormale sur cet ajustement, comme l'indique le tableau \ref{tab:stats_pm}.
 
 \begin{table}[H]
 \centering
