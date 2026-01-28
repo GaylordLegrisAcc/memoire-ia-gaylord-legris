@@ -315,72 +315,49 @@ Gamma & 7 254 743 & 7 254 774 & 0.145 \\
 
 \subsection{Synthèse et Génération du Portefeuille Final}
 
-Avec toutes les distributions marginales et conditionnelles calibrées, l'étape finale consiste à les assembler pour générer le portefeuille complet. Une approche par copule classique, où les trois variables (Âge, Âge Souscription, PM) seraient mises dans une copule 3D, a été écartée. Une telle approche simplifierait à l'excès les dépendances, en les réduisant à de simples coefficients de corrélation, et ne saurait capturer la richesse des relations non-linéaires (notamment l'évolution du patrimoine avec l'âge).
+L'étape finale de la modélisation consiste à assembler les différentes distributions marginales et conditionnelles calibrées précédemment pour générer le portefeuille de passifs complet. Contrairement à une approche purement multivariée (copule globale 3D) qui peinerait à capturer la nature conditionnelle de la richesse par rapport à l'âge, une approche hybride a été implémentée.
 
-Un \textbf{modèle de génération hybride} a donc été privilégié :
+\subsubsection{Modélisation de la dépendance des âges par Copule}
 
-\begin{enumerate}
-    \item \textbf{Génération des âges par copule :} Une copule Gaussienne 2D est utilisée pour générer des paires corrélées (Âge de l'assuré, Âge de souscription), en utilisant les lois marginales calibrées (Gamma et GMM). Une contrainte assure que l'âge de souscription est toujours inférieur à l'âge de l'assuré.
-    
-    \item \textbf{Génération conditionnelle de la PM :} Pour chaque couple d'âges généré, la cascade de simulation décrite dans la section précédente est appliquée :
-    \begin{itemize}
-        \item On génère un patrimoine à partir de la loi Lognormale correspondant à l'âge de l'assuré.
-        \item On simule la détention d'un contrat en fonction de ce patrimoine.
-        \item Si un contrat est détenu, on calcule la PM en se basant sur la part de patrimoine financier et la règle des 40\%.
-    \end{itemize}
-\end{enumerate}
+L'analyse des données montre une corrélation mécanique et comportementale entre l'âge de l'assuré et son âge à la souscription. Pour reproduire cette structure de dépendance sans figer les distributions marginales, une \textbf{Copule Gaussienne bivariée} a été utilisée.
 
-Ce processus itératif est répété jusqu'à obtenir le nombre de contrats désiré dans le portefeuille final. Le résultat est un fichier de données synthétique contenant trois variables dont les distributions et les interdépendances sont le reflet fidèle des analyses statistiques menées en amont. Cet outil fournit ainsi une base de données robuste et réaliste pour toutes les analyses actuarielles ultérieures.
-
-A ce portefeuille synthétique de base, d'autres variables sont ajoutées pour enrichir le profil de chaque contrat. Ces variables supplémentaires sont également générées selon des lois de probabilité calibrées, comme résumé ci-dessous :
-
+Cette copule permet de générer des paires de rangs corrélés $(u, v) \in [0, 1]^2$ avec un paramètre de corrélation de Spearman calibré à $\rho = 0.7$. Ces rangs sont ensuite transformés en valeurs réelles via les fonctions quantiles inverses (PPF) des lois marginales retenues :
 \begin{itemize}
-    \item \textbf{Sexe de l'assuré :} Modélisé par une loi de Bernoulli $\mathcal{B}(p)$, où le paramètre $p$ représente la probabilité que l'assuré soit un homme. Ce paramètre est calibré à partir de statistiques démographiques publiques sur les détenteurs d'assurance-vie en France (INSEE), afin de refléter la répartition observée sur le marché.
-
-    \item \textbf{Répartition de la PM entre fonds euros et unités de compte (UC) :} La part de la PM allouée aux UC est modélisée par une loi Bêta $\mathcal{B}eta(\alpha, \beta)$, dont les paramètres sont calibrés pour correspondre à la moyenne et à la variance de la répartition cible du portefeuille. La loi Bêta a été préférée à une loi Normale tronquée car son support naturel est l'intervalle $[0, 1]$, ce qui garantit la génération de proportions valides sans nécessiter de troncature ou de normalisation \textit{a posteriori}. La part allouée au fonds euros est ensuite déterminée comme le complément à 1.
-
-    \item \textbf{Allocation d'actifs cible pour les UC :} Pour modéliser la répartition des actifs au sein des UC (actions, obligations, immobilier, etc.), une loi de Dirichlet $\text{Dir}(\boldsymbol{\alpha})$ est utilisée. Cette distribution est la généralisation multivariée de la loi Bêta et est spécifiquement conçue pour générer des vecteurs de nombres aléatoires qui respectent la contrainte de somme à 1 ($\sum_{i} \omega_i = 1$). Le vecteur de paramètres $\boldsymbol{\alpha} = (\alpha_1, \dots, \alpha_K)$ est calibré pour que l'espérance de chaque poids corresponde à l'allocation stratégique cible du produit. Cette approche est plus rigoureuse qu'une génération par lois Normales indépendantes suivie d'une normalisation, car elle préserve la structure de dépendance souhaitée entre les allocations.
-
-    \item \textbf{Taux Minimum Garanti (TMG) :} Le TMG des contrats en modélisé en suivant l'année de souscription du contrat. En effet, les TMG ont tendance à diminuer avec le temps en raison de la baisse des taux d'intérêt, et cette relation temporelle est cruciale à capturer pour représenter fidèlement les risques associés aux contrats. Il a donc été décidé de modéliser le TMG de manière déterministe. Pour chaque année de souscription, une valeur de TMG est assignée en fonction des tendances historiques du marché. Par exemple, les contrats souscrits avant 2000 peuvent avoir un TMG de 3\%, ceux entre 2000 et 2010 un TMG de 2\%, ceux entre 2010 et 2020 un TMG de 1\%, et ceux après 2020 un TMG de 0\%. Cette approche garantit que le portefeuille synthétique reflète les conditions économiques réelles au moment de la souscription.
+    \item $Age_{assure} = F^{-1}_{Beta}(u)$
+    \item $Age_{souscription} = F^{-1}_{GMM}(v)$
 \end{itemize}
 
+Une contrainte métier stricte est appliquée post-génération : l'âge à la souscription doit nécessairement être inférieur ou égal à l'âge actuel de l'assuré ($Age_{souscription} \leq Age_{assure}$). Les paires ne respectant pas cette condition sont rejetées et régénérées, assurant ainsi la cohérence temporelle des contrats.
+
+\subsubsection{Génération en cascade de la Provision Mathématique}
+
+Une fois le profil d'âge de l'assuré fixé, la Provision Mathématique (PM) est générée de manière conditionnelle, reproduisant la chaîne causale identifiée lors de la calibration :
+\begin{enumerate}
+    \item \textbf{Génération du Patrimoine Global :} Pour un âge donné, un montant de patrimoine est tiré aléatoirement dans la loi Lognormale spécifique à la tranche d'âge de l'assuré (cf. section précédente).
+    \item \textbf{Test de Détention :} Une épreuve de Bernoulli détermine si l'individu détient un contrat d'assurance-vie, avec une probabilité dépendant de son niveau de patrimoine.
+    \item \textbf{Calcul de la PM :} Pour les détenteurs, la PM est calculée par application déterministe des ratios calibrés :
+    $$ \text{PM} = \text{Patrimoine} \times \%_{\text{Financier}}(\text{Patrimoine}) \times 40\% $$
+\end{enumerate}
+
+\subsubsection{Enrichissement du Portefeuille : Sexe et TMG}
+
+Pour finaliser le portefeuille, deux variables supplémentaires sont attribuées à chaque contrat généré :
+
+\begin{itemize}
+    \item \textbf{Le Sexe de l'assuré :} Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés.
+    
+    \item \textbf{Le Taux Minimum Garanti (TMG) :} Contrairement aux autres variables stochastiques, le TMG est modélisé de manière déterministe en fonction de l'année de souscription. L'année de souscription est d'abord déduite par calcul : 
+    $$ \text{Annee}_{\text{sous}} = \text{Annee}_{\text{actuelle}} - (\text{Age}_{\text{actuel}} - \text{Age}_{\text{souscription}}) $$
+    Une table de correspondance historique est ensuite utilisée pour attribuer un TMG cohérent avec les conditions de marché de l'époque (taux élevés pour les vieux contrats, taux nuls ou faibles pour les contrats récents).
+\end{itemize}
+
+Ce processus itératif permet de générer un portefeuille synthétique de 1 000 000 contrats présentant des caractéristiques statistiques fidèles à la réalité du marché français, prêt à être utilisé pour les étapes d'agrégation.
+
 \section{Présentation de l'Outil et du Portefeuille de Référence Généré}
-\subsection{Architecture de l'application en Python et choix technologiques}
-% Votre texte ici...
-\subsection{Description des paramètres d'entrée et des formats de sortie}
-% Votre texte ici...
+
+\subsection{Mise en correspondance avec le format final du modèle ALM}
+
 \subsection{Analyse descriptive du portefeuille de référence}
-% Votre texte ici...
 
 
-% \subsection{Description des contraintes techniques rencontrées}
 
-% La conception du générateur a soulevé plusieurs contraintes techniques. La première fut de garantir le réalisme des portefeuilles générés. Il ne s'agit pas simplement de créer des données aléatoires, mais de reproduire les corrélations observées dans la réalité (par exemple, entre l'âge de l'assuré et le montant des primes). Une autre contrainte était liée à la volumétrie : l'outil devait être capable de générer des portefeuilles de plusieurs millions de lignes de manière performante. Enfin, la flexibilité était un critère essentiel ; l'outil devait permettre de paramétrer finement les caractéristiques des produits à simuler et les lois de comportement (rachat, mortalité) associées.
-
-% \subsection{Méthodologie de génération des portefeuilles}
-
-% La méthodologie adoptée repose sur une approche stochastique. Pour chaque caractéristique clé d'un contrat (âge de l'assuré, montant de la provision mathématique, type de support, etc.), une loi de probabilité a été définie et calibrée à partir de données de marché. L'outil génère ensuite, ligne par ligne, des assurés virtuels en tirant aléatoirement des valeurs selon ces distributions. Pour modéliser les dépendances entre les variables, des techniques de copules ont été envisagées afin de garantir la cohérence et le réalisme des profils générés. Le résultat est un portefeuille granulaire, au contrat près, qui peut ensuite être agrégé en \textit{model points} pour être utilisé dans le modèle de projection ALM.
-
-% \subsection{Présentation de l'outil développé}
-
-% L'outil final se présente comme une application développée en Python, dotée d'une interface permettant à l'utilisateur de paramétrer la simulation. Les entrées principales sont :
-% \begin{itemize}
-% \item Les caractéristiques du ou des produits à simuler (type de garantie, chargements, etc.).
-% \item Les paramètres des lois statistiques pour chaque variable (âge, sexe, montant, etc.).
-% \item La taille du portefeuille souhaité.
-% \item Les lois de comportement (tables de mortalité, formules de rachat).
-% \end{itemize}
-% En sortie, l'outil produit un fichier standardisé contenant le portefeuille de passifs généré, directement exploitable par le modèle ALM.
-
-% \section{Choix technologiques et environnement de développement}
-
-% Le passage de VBA à un écosystème Python n'est pas anodin ; il reflète une orientation stratégique vers des technologies plus modernes, ouvertes et performantes, mieux adaptées aux défis du "Big Data" et des calculs intensifs en actuariat.
-
-% \subsection{Migration vers des technologies modernes}
-% L'environnement Excel/VBA, bien que très répandu, montre ses limites face à la complexité et à la volumétrie des modèles ALM modernes. La migration vers Python a permis de s'affranchir des limitations de mémoire et de performance d'Excel, tout en bénéficiant d'un langage structuré favorisant la qualité du code, la modularité et les tests automatisés, ce qui est un gage de maintenabilité et de fiabilité à long terme.
-
-% \subsection{Avantages d'un langage open-source}
-% Le choix de Python, un langage \textit{open-source}, présente des avantages considérables. D'un point de vue financier, il élimine les coûts de licence associés à de nombreux logiciels propriétaires. Plus important encore, il donne accès à une communauté mondiale de développeurs et de scientifiques, qui contribuent à un écosystème de librairies extrêmement riche et en constante évolution. Cette effervescence garantit un accès permanent aux algorithmes et aux techniques les plus récents.
-
-% \subsection{Utilisation d'un écosystème dynamique}
-% Le projet s'est appuyé sur des librairies de pointe pour la manipulation de données et le calcul scientifique. En particulier, l'utilisation de la librairie \textit{Polars} (ou alternativement \textit{Pandas}), écrite en Rust, a permis d'atteindre des niveaux de performance très élevés pour le traitement de grands volumes de données, dépassant de loin les capacités des outils traditionnels. Le fait que ces outils soient mis à jour très fréquemment par la communauté garantit que le modèle bénéficie en permanence des dernières optimisations et fonctionnalités.

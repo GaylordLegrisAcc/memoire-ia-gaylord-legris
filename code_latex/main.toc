@@ -52,10 +52,12 @@
 \contentsline {subsubsection}{\numberline {3.2.1.2}Modélisation de l'âge à la souscription}{31}{subsubsection.3.2.1.2}%
 \contentsline {subsubsection}{\numberline {3.2.1.3}Modélisation de la Provision Mathématique (PM)}{33}{subsubsection.3.2.1.3}%
 \contentsline {subsection}{\numberline {3.2.2}Synthèse et Génération du Portefeuille Final}{36}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}Modélisation de la dépendance des âges par Copule}{36}{subsubsection.3.2.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}Génération en cascade de la Provision Mathématique}{36}{subsubsection.3.2.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.3}Enrichissement du Portefeuille : Sexe et TMG}{36}{subsubsection.3.2.2.3}%
 \contentsline {section}{\numberline {3.3}Présentation de l'Outil et du Portefeuille de Référence Généré}{37}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Architecture de l'application en Python et choix technologiques}{38}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Description des paramètres d'entrée et des formats de sortie}{38}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Analyse descriptive du portefeuille de référence}{38}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Mise en correspondance avec le format final du modèle ALM}{38}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Analyse descriptive du portefeuille de référence}{38}{subsection.3.3.2}%
 \contentsline {chapter}{\numberline {4}Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}{39}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Présentation des Méthodes d'Agrégation candidates}{40}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Approches par clustering (K-means, DBSCAN/HDBSCAN)}{41}{subsection.4.1.1}%
