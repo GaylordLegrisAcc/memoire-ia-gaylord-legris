@@ -321,3 +321,251 @@ L'utilisation des \textit{Model Points} constitue la méthode standard pour agr�
 
 
 La problématique centrale de ce mémoire est donc d'optimiser cette étape fondamentale de l'agrégation. En partant du portefeuille granulaire "police à police", nous cherchons à définir, comparer et tester différentes méthodes de regroupement pour créer des \textit{Model Points}. L'objectif est de construire une méthodologie de simplification optimale, c'est-à-dire celle qui minimise l'erreur d'agrégation tout en garantissant la plus grande stabilité des indicateurs Solvabilité II (SCR, Marge de Risque, NAV) lors du calcul des différentes sensibilités. Cette section introductive pose donc les fondations de notre analyse : la simplification étant une nécessité, comment s'assurer que la méthode de regroupement choisie est la plus fidèle et la plus robuste possible ?
+
+
+\section{Principes et Enjeux de la Gestion Actif-Passif (ALM)}
+La gestion Actif-Passif (ALM) trouve son origine dans une particularité fondamentale du secteur de l'assurance énoncé précédemment dans le mémoire : le \textbf{cycle de production inversé}. Contrairement à une entreprise classique qui vend un produit avant d'en percevoir le revenu, un assureur collecte des primes aujourd'hui en échange de la promesse de verser des prestations dans un futur lointain et incertain. Ce décalage temporel est au cœur du modèle économique de l'assurance vie.
+
+Ce mécanisme engendre une inadéquation structurelle (\textit{mismatch}) entre les deux côtés du bilan. D'une part, le passif est constitué d'engagements de longue durée, dont l'échéance et le montant sont soumis à des aléas (mortalité, comportement de rachat des assurés). D'autre part, pour couvrir ces engagements, l'assureur investit les primes sur les marchés financiers, constituant un actif dont la valeur et les flux sont, par nature, volatiles et dépendants du contexte économique.
+
+Cette inadéquation est renforcée par une interdépendance dynamique et complexe entre l'actif et le passif.
+
+\begin{itemize}
+    \item \textbf{Le passif influe sur l'actif :} Le versement des prestations (rachats, décès) contraint l'assureur à liquider une partie de ses actifs, parfois dans des conditions de marché défavorables.
+    \item \textbf{L'actif influe sur le passif :} La performance des actifs financiers a un impact direct sur le niveau des engagements. C'est notamment le cas de la \textbf{Participation aux Bénéfices (PB)}, qui dépend des résultats financiers générés par l'assureur. Le Code des assurances impose une redistribution minimale aux assurés, calculée comme suit :
+    \begin{equation}
+        \label{eq:pb_minReg}
+        \text{PB}_{\text{minReg}} = 85\% \times \max(\text{RésFi}, 0) + 
+        \begin{cases}
+            90\% \times \text{RésTech} & \text{si RésTech} \ge 0 \\
+            100\% \times \text{RésTech} & \text{si RésTech} < 0
+        \end{cases}
+    \end{equation}
+    Où le Résultat Financier (RésFi) est directement issu de la performance des actifs et le Résultat Technique (RésTech) des risques de mortalité et de rachat.
+\end{itemize}
+La gestion Actif-Passif est donc la discipline qui vise à piloter les risques nés de cette interdépendance afin d'assurer la solvabilité et d'optimiser la rentabilité de l'acteur.
+
+\subsection{La Modélisation ALM : un Outil de Projection Essentiel}
+
+Pour quantifier et piloter les risques complexes découlant de l'inadéquation actif-passif, les assureurs ont recours à des modèles de projection actuariels sophistiqués, communément appelés modèles de Gestion Actif-Passif ou modèles ALM. L'utilité principale de ces modèles est de projeter le bilan d'un assureur, qu'il s'agisse d'un bilan prudentiel sous Solvabilité 2 ou d'un bilan comptable sous les normes IFRS17, afin d'évaluer la santé financière future de l'organisme sur un horizon de long terme. Leur fonctionnement repose sur la combinaison de deux piliers fondamentaux : des scénarios prospectifs sur l'environnement économique et financier, et des hypothèses sur le comportement futur des assurés (lois de mortalité, de rachat, etc.).
+
+L'approche de modélisation peut être déterministe ou stochastique, chaque approche répondant à des objectifs d'analyse distincts.
+
+L'approche \textbf{déterministe} consiste à projeter le bilan de l'assureur selon une trajectoire unique et prédéfinie de l'environnement économique. Cette trajectoire, qualifiée de \textbf{scénario central}, est généralement construite à partir de la courbe des taux sans risque fournie par l'EIOPA. Elle permet d'obtenir le (\textit{Best Estimate}) central, c'est à dire la somme des flux futurs actualisés du portefeuille dans un contexte économique considéré comme le plus probable, servant de base pour le plan d'affaires et la valorisation prudentielle.
+
+Cependant, une approche déterministe ne peut à elle seule capturer l'éventail des risques, notamment ceux liés aux options et garanties financières (par exemple, les Taux Minimum Garantis ou les options de rachat) dont le coût ne se matérialise que dans des conditions de marché adverses. Pour pallier cette limite, une approche \textbf{stochastique} est nécessaire. Celle-ci s'appuie sur un \textbf{Générateur de Scénarios Économiques (GSE)} pour simuler un grand nombre (souvent plusieurs milliers) de trajectoires économiques futures possibles, chacune représentant une évolution plausible des marchés financiers.
+
+Chaque scénario économique généré sert alors d'input pour une projection complète du modèle ALM. En agrégeant les résultats de ces multiples projections via la \textbf{méthode de Monte Carlo}, l'assureur obtient non plus une seule valeur, mais une distribution des résultats possibles. L'objectif final est de disposer, pour chaque trajectoire, du détail des flux financiers à la maille la plus fine. Cette granularité permet une analyse statistique approfondie des risques, comme le calcul de quantiles (Value at Risk à 99.5\%) pour déterminer le capital de solvabilité requis (SCR) sous Solvabilité 2. Ces modèles stochastiques sont donc au cœur de l'évaluation des risques et de la prise de décision stratégique, et constituent le fondement du modèle de simulation qui sera détaillé dans la suite de ce chapitre.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre2/alm_det.png}
+    \caption{Fonctionnement d'un modèle ALM \textbf{(graphique temporaire)}}
+    \label{fig:alm_det}
+\end{figure}
+
+
+
+\section{Architecture et Fonctionnement du Modèle de Projection}
+\label{sec:architecture_modele}
+
+L'objectif de cette section est de détailler l'architecture et le séquencement des opérations du modèle ALM développé pour les besoins de cette étude. Le modèle a été conçu pour simuler de manière dynamique et séquentielle le bilan d'un assureur vie sur un horizon de projection pluriannuel.
+
+Son fonctionnement global peut être décomposé en trois phases principales, comme illustré dans la figure \ref{fig:modele_alm_sequence} :
+\begin{enumerate}
+\item \textbf{Phase d'Initialisation} : Préparation et validation des données d'entrée, et application des chocs réglementaires à la date de départ.
+\item \textbf{Boucle de Projection Annuelle} : Cœur du modèle qui simule, année après année, l'évolution du bilan selon une séquence d'événements prédéfinis.
+\item \textbf{Phase de Finalisation} : Calcul des indicateurs prudentiels et génération des résultats en fin de projection.
+\end{enumerate}
+
+\begin{figure}[h!]
+\centering
+% Note : Pensez à remplacer le chemin vers votre image
+\includegraphics[width=0.98\textwidth]{images/2_chapitres/chapitre2/modele_alm_sequence.png}
+\caption{Architecture générale et séquencement des événements du modèle ALM. \textbf{(graphique temporaire)}}
+\label{fig:modele_alm_sequence}
+\end{figure}
+
+\subsection{Phase 1 : Initialisation du Modèle}
+
+Cette première phase prépare l'environnement de projection. Elle est elle-même divisée en trois sous-étapes.
+
+\subsubsection{Chargement et Validation des Données d'Entrée}
+
+Le modèle est alimenté par un ensemble de données exhaustif, regroupées en quatre catégories :
+\begin{itemize}
+\item \textbf{Données Économiques et Financières} : Issues du Générateur de Scénarios Économiques (GSE), elles comprennent les courbes de taux, les taux d'inflation et les performances des différentes classes d'actifs pour chaque scénario stochastique.
+\item \textbf{Portefeuille d'Actifs} : Les \textit{model points} d'actifs représentant l'ensemble des placements de l'assureur (obligations à taux fixe et variable, actions et immobilier).
+\item \textbf{Portefeuille de Passifs} : Les \textit{model points} d'épargne décrivant les engagements envers les assurés.
+\item \textbf{Hypothèses de Modélisation} : Un ensemble de tables paramétrant le comportement futur (stratégie d'investissement, stratégie ALM, règles de participation aux bénéfices, tables de mortalité, de rachat) et les chocs prudentiels Solvabilité 2.
+\end{itemize}
+Une étape de validation est systématiquement réalisée pour assurer la cohérence et la qualité des données chargées. Par exemple, nous vérifions qu'il n'y a pas de Provisions mathématiques négatives ou que la somme des taux d'affectation des différentes classes d'actifs est bien égale à 1.
+
+\subsubsection{Application des Chocs Solvabilité 2 en t=0}
+
+L'application des chocs instantanés en t=0 est une étape fondamentale du calcul du SCR (Solvency Capital Requirement) selon la formule standard de Solvabilité 2. L'objectif est de mesurer la résilience de l'assureur face à une série de scénarios de crise prédéfinis, calibrés pour représenter un événement se produisant une fois tous les 200 ans.
+
+Pour chaque choc, le modèle crée un "axe analytique" : les données d'entrée sont dupliquées, puis les paramètres pertinents sont modifiés conformément au scénario de choc. La différence entre la valeur des fonds propres dans le scénario central (sans choc) et leur valeur dans le scénario choqué détermine le besoin en capital pour ce risque spécifique.
+
+Les principaux chocs, ou modules de risque, se répartissent en plusieurs catégories :
+
+\begin{itemize} 
+    \item \textbf{Le risque de marché :} Il regroupe les risques liés aux fluctuations des marchés financiers. 
+    \begin{itemize} 
+        \item \textbf{Choc de taux d'intérêt :} Simule une variation soudaine, à la hausse ou à la baisse, de la courbe des taux d'intérêt. Ce choc a un impact majeur sur la valeur des actifs (notamment les obligations) et des passifs (qui sont actualisés avec cette courbe des taux). 
+        \item \textbf{Choc actions :} Modélise une baisse brutale des marchés actions. La formule standard distingue généralement deux types de chocs actions (Type 1 et Type 2) en fonction de la nature et de la diversification des investissements. Par exemple, un choc de -33.84\% pourrait s'appliquer à un portefeuille d'actions diversifié. 
+        \item \textbf{Choc immobilier :} Représente une chute de la valeur du marché immobilier. Le paramètre de -25\% est une valeur standard pour ce type de risque. 
+        \item \textbf{Choc de spread :} Concerne le risque de crédit sur les obligations et les prêts. Il simule un élargissement des spreads de crédit, ce qui diminue la valeur de marché de ces actifs. 
+    \end{itemize}
+
+\item \textbf{Le risque de souscription vie :} Il est lié aux aléas inhérents à l'activité d'assurance vie.
+\begin{itemize}
+\item \textbf{Choc de mortalité :} Simule une augmentation soudaine et permanente du taux de mortalité (par exemple, +15\%). Ce choc est particulièrement impactant pour les contrats de prévoyance où l'assureur doit verser un capital en cas de décès.
+\item \textbf{Choc de longévité :} À l'inverse, il modélise une baisse permanente du taux de mortalité (les assurés vivent plus longtemps que prévu). Ce risque affecte principalement les rentes viagères, pour lesquelles l'assureur doit verser des prestations plus longtemps.
+\item \textbf{Choc de rachat :} Simule une variation massive et soudaine du comportement des assurés en matière de rachat de leurs contrats. Il se décline en trois sous-modules : une hausse des taux de rachat, une baisse, et un scénario de rachat de masse (catastrophique).
+\item \textbf{Choc de dépenses :} Modélise une augmentation imprévue des frais de gestion de l'assureur, combinée à une hausse de l'inflation de ces frais.
+\item \textbf{Choc de catastrophe :} Concerne les événements extrêmes, comme une pandémie, entraînant une augmentation brutale et temporaire de la mortalité (par exemple, une hausse de 0.15 points de pourcentage du taux de mortalité sur une année).
+\end{itemize}
+
+\end{itemize}
+
+\subsubsection{Préparation à la Boucle de Projection}
+
+Enfin, les tables de données sont préparées pour la projection en y ajoutant les dimensions d'analyse fondamentales : le \textbf{scénario économique}, la \textbf{période de projection} (l'année) et l'\textbf{événement} intra-annuel.
+
+\subsection{Phase 2 : La Boucle de Projection Annuelle}
+
+Le cœur du modèle est une boucle itérative qui projette le bilan année par année. Pour chaque pas de temps, trois événements clés sont modélisés séquentiellement.
+
+\subsubsection{Événement 1 : Performance}
+Cette première étape simule le "passage du temps" sans intervention active du management.
+\begin{itemize}
+\item \textbf{Côté Passif} : Les engagements évoluent sous l'effet des flux biométriques (décès), comportementaux (rachats), et contractuels (arrérages de rente). La provision mathématique est revalorisée en appliquant les Taux Minimums Garantis (TMG) pour les fonds euros et la performance des marchés pour les Unités de Compte (UC).
+\item \textbf{Côté Actif} : La valeur des actifs est mise à jour pour refléter la performance des marchés. Les revenus (coupons, dividendes) sont encaissés et alimentent la trésorerie.
+\end{itemize}
+
+\subsubsection{Événement 2 : Stratégie d'Investissement}
+Cette étape modélise les décisions de gestion financière. L'algorithme simule la politique d'investissement en cherchant à maintenir une allocation d'actifs cible. En fonction de la trésorerie disponible, le modèle arbitre entre les différentes classes d'actifs, générant des ordres d'achats et de ventes.
+
+\subsubsection{Événement 3 : Stratégie ALM et Clôture du Compte de Résultat}
+C'est l'étape finale de l'exercice annuel, qui vise à équilibrer le bilan.
+\begin{enumerate}
+\item \textbf{Détermination du Résultat Financier} : Le modèle agrège l'ensemble des produits financiers générés.
+\item \textbf{Application de la Stratégie de Participation aux Bénéfices (PB)} : Le modèle calcule la PB à distribuer, en respectant les contraintes réglementaires et en visant un taux cible. Il peut activer des leviers comme la reprise de la Provision pour Participation aux Excédents (PPE) ou la réalisation de plus-values latentes.
+\item \textbf{Clôture des Comptes} : Le résultat technique et financier sont finalisés pour établir le compte de résultat et s'assurer de l'équilibre du bilan de clôture.
+\end{enumerate}
+
+\subsection{Phase 3 : Finalisation et Génération des Outputs}
+
+Une fois la boucle achevée pour toutes les années et tous les scénarios, le modèle entre dans sa phase finale.
+
+\subsubsection{Calcul des Indicateurs Prudentiels}
+Le principal objectif est de calculer le \textbf{Best Estimate (BE)} des passifs. Pour chaque scénario, le modèle agrège les flux de passifs futurs et les actualise en utilisant les courbes de taux sans risque correspondantes. La moyenne des BE sur l'ensemble des scénarios fournit la valeur centrale, tandis que la distribution permet de calculer le capital de solvabilité requis (SCR).
+
+\subsubsection{Génération des Rapports de Sortie}
+Enfin, le modèle produit un ensemble de rapports détaillés (similaires aux QRTs réglementaires) présentant les bilans projetés, les comptes de résultat, la décomposition du BE et du SCR, et d'autres indicateurs clés pour l'analyse actuarielle.
+
+\section{Limites Actuelles du modèle}
+A date, les fonds propres ne sont pas modélisés dans le modèle ALM. En effet, le modèle se concentre sur la projection de l'actif et du passif, ainsi que sur les interactions entre les deux, mais n'intègre pas encore la dynamique des fonds propres. Cette limitation est importante car les fonds propres jouent un rôle crucial dans la solvabilité et la résilience financière de l'assureur. Leur modélisation permettrait de mieux évaluer l'impact des stratégies de gestion sur la solidité financière globale de l'entreprise. L'absence des fonds propres nous empêche de calculer des indicateurs cruciaux tels que le ratio de solvabilité.
+
+% \chapter{La Gestion Actif-Passif et développement d'un modèle ALM en Python}
+% \section{La gestion Actif-Passif (ALM) : définitions et enjeux}
+% \label{sec:alm}
+
+% \subsection{Le cycle de production inversé, origine de l'inadéquation Actif-Passif}
+
+% La gestion Actif-Passif (ALM) trouve son origine dans une particularité fondamentale du secteur de l'assurance que l'on a énoncé dans le début de ce chapitre : le \textbf{cycle de production inversé}. Contrairement à une entreprise classique qui vend un produit avant d'en percevoir le revenu, un assureur collecte des primes aujourd'hui en échange de la promesse de verser des prestations dans un futur lointain et incertain. Ce décalage temporel est au cœur du modèle économique de l'assurance vie.
+
+% Ce mécanisme engendre une inadéquation structurelle (\textit{mismatch}) entre les deux côtés du bilan. D'une part, le passif est constitué d'engagements de longue durée, dont l'échéance et le montant sont soumis à des aléas (mortalité, comportement de rachat des assurés). D'autre part, pour couvrir ces engagements, l'assureur investit les primes sur les marchés financiers, constituant un actif dont la valeur et les flux sont, par nature, volatiles et dépendants du contexte économique.
+
+% Cette inadéquation est renforcée par une interdépendance dynamique et complexe entre l'actif et le passif.
+
+% \begin{itemize}
+%     \item \textbf{Le passif influe sur l'actif :} Le versement des prestations (rachats, décès) contraint l'assureur à liquider une partie de ses actifs, parfois dans des conditions de marché défavorables.
+%         \item \textbf{L'actif influe sur le passif :} La performance des actifs financiers a un impact direct sur le niveau des engagements. C'est notamment le cas de la \textbf{Participation aux Bénéfices (PB)}, qui dépend des résultats financiers générés par l'assureur. Le Code des assurances impose une redistribution minimale aux assurés, calculée comme suit :
+%         \begin{equation}
+%             \label{eq:pb_minReg}
+%             \text{PB}_{\text{minReg}} = 85\% \times \max(\text{RésFi}, 0) + 
+%             \begin{cases}
+%                 90\% \times \text{RésTech} & \text{si RésTech} \ge 0 \\
+%                 100\% \times \text{RésTech} & \text{si RésTech} < 0
+%             \end{cases}
+%         \end{equation}
+%         Où le Résultat Financier (RésFi) est directement issu de la performance des actifs et le Résultat Technique (RésTech) des risques de mortalité et de rachat.
+% \end{itemize}
+% La gestion Actif-Passif est donc la discipline qui vise à piloter les risques nés de cette interdépendance afin d'assurer la solvabilité et d'optimiser la rentabilité de l'acteur.
+
+% \subsection{Objectifs et périmètre de l'ALM}
+
+% % À COMPLÉTER :
+% % Expliquer ici les trois grands objectifs de l'ALM :
+% % 1. Maîtriser les risques (taux, marché, liquidité...).
+% % 2. Assurer la solvabilité réglementaire (respect du SCR).
+% % 3. Optimiser la rentabilité (maximiser le rendement pour un risque donné).
+
+
+% \subsection{Le modèle ALM : un outil de simulation prospective}
+
+% % À COMPLÉTER :
+% % Décrire ici le rôle du modèle ALM comme outil de prise de décision.
+% % - Principe : simulation conjointe de l'actif et du passif sur le long terme.
+% % - Inputs principaux : GSE, lois de comportement, portefeuille, règles de gestion.
+% % - Mentionner que vous utilisez un tel outil dans le cadre de votre mémoire, sans pour autant faire une étude ALM complète.
+
+
+% \subsection{Principaux indicateurs de pilotage ALM}
+
+% % À COMPLÉTER :
+% % Lister et décrire brièvement quelques indicateurs clés issus des modèles ALM.
+% % - Projection de la NAV (fonds propres prudentiels).
+% % - Évolution du ratio de couverture SCR.
+% % - Analyses de sensibilité et stress tests (impact d'un choc de taux, actions, etc.).
+
+% La réalisation des analyses de sensibilités, cœur de ce mémoire, s'appuie sur un moteur de projection robuste : le modèle ALM (Asset Liability Management). Historiquement, le modèle utilisé au sein d'Accenture reposait sur une architecture en VBA (Visual Basic for Applications). Pour des impératifs de performance, de maintenabilité et de flexibilité, la décision a été prise de développer un nouveau modèle en Python. Cette migration a été l'occasion de repenser l'architecture du modèle pour mieux répondre aux exigences de calcul complexes de Solvabilité 2.
+
+% Ce chapitre décrit ce nouveau modèle ALM. Nous présenterons son architecture globale, son fonctionnement détaillé à travers la projection des actifs, des passifs et la mise en œuvre des stratégies de gestion, et nous conclurons sur ses limites actuelles qui ouvrent des perspectives d'amélioration.
+
+% \section{Développement du Modèle ALM en Python}
+
+% La transition d'un modèle ALM de VBA vers Python a été motivée par la recherche de performance, de maintenabilité et de modularité. Le langage Python, avec son écosystème de librairies scientifiques comme \textit{NumPy}, \textit{Pandas} ou \textit{Polars}, offre un cadre de développement beaucoup plus robuste et performant pour des calculs actuariels intensifs.
+
+% \subsection{Présentation du modèle ALM développé pour Accenture}
+
+% Le modèle ALM a pour objectif principal de projeter l'ensemble des actifs et des passifs d'un assureur sur un horizon de long terme (typiquement 40 à 60 ans), sous un grand nombre de scénarios économiques stochastiques. Ces projections permettent de calculer les indicateurs prudentiels requis par la directive Solvabilité 2, notamment le BE et le SCR. Le modèle se veut un outil de pilotage stratégique, capable de simuler l'impact de différentes stratégies de gestion d'actifs, de politiques de souscription ou de participation aux bénéfices.
+
+% \subsection{Fonctionnement du modèle ALM}
+
+% \subsubsection{Fonctionnement général du modèle}
+% Le modèle opère de manière itérative, année par année, pour chaque scénario économique. À chaque pas de temps, il simule l'ensemble des flux financiers et des opérations de bilan. Le processus global peut être résumé comme suit :
+% \begin{enumerate}
+% \item \textbf{Entrées :} Le modèle prend en entrée le portefeuille de passifs (issu du générateur ou d'un client), le portefeuille d'actifs, un set de scénarios économiques (ESG), et les règles de gestion (stratégie d'investissement, politique de PB, etc.).
+% \item \textbf{Moteur de projection :} Pour chaque année et chaque scénario, le moteur calcule les flux de passifs, les flux d'actifs, et applique les décisions de gestion.
+% \item \textbf{Sorties :} En fin de projection, le modèle génère des comptes de résultat et des bilans prévisionnels pour chaque scénario, qui sont ensuite utilisés pour calculer les indicateurs S2 par agrégation et analyse statistique.
+% \end{enumerate}
+
+% \subsubsection{Fonctionnement du passif}
+% La projection du passif consiste à simuler l'évolution du portefeuille de contrats. À chaque pas de temps, le modèle calcule :
+% \begin{itemize}
+% \item Les primes encaissées.
+% \item Les prestations versées (décès, rachats, rentes).
+% \item Les chargements et frais prélevés.
+% \item L'évolution des provisions mathématiques, en tenant compte de la revalorisation issue de la participation aux bénéfices.
+% \end{itemize}
+% Les flux de prestations sont déterminés par l'application des lois de comportement (mortalité, rachat) sur le portefeuille des assurés survivants.
+
+% \subsubsection{Fonctionnement de l'actif}
+% Simultanément, le modèle projette la valeur du portefeuille d'actifs. Pour chaque classe d'actifs (actions, obligations, immobilier, etc.), il calcule :
+% \begin{itemize}
+% \item L'évolution de la valeur de marché, en fonction des indices fournis par le scénario économique.
+% \item Les revenus générés (dividendes, coupons, loyers).
+% \end{itemize}
+% Le modèle gère également le réinvestissement des flux de trésorerie et les opérations d'achat/vente décidées par la stratégie d'investissement.
+
+% \subsubsection{Fonctionnement de la stratégie d'investissement}
+% La stratégie d'investissement est un ensemble de règles qui dictent la manière dont l'actif est géré. Le modèle implémente une allocation stratégique cible (\textit{Strategic Asset Allocation} - SAA). Chaque année, il compare l'allocation réelle du portefeuille à l'allocation cible et déclenche des opérations d'achat ou de vente pour réduire l'écart, dans le respect des contraintes de liquidité et de transaction.
+
+% \subsubsection{Fonctionnement de la stratégie ALM et de la politique de PB}
+% Le cœur du modèle ALM est l'interaction entre l'actif et le passif. Le résultat financier généré par l'actif est utilisé pour déterminer la revalorisation servie aux assurés. La politique de Participation aux Bénéfices (PB) est une fonction clé qui répartit la performance financière entre l'assureur et les assurés, dans le respect des engagements contractuels et réglementaires. Le modèle simule la constitution et la reprise de la Provision pour Participation aux Bénéfices (PPB), qui permet de lisser les taux servis dans le temps.
+
+% \subsection{Limites actuelles du modèle}
+% Malgré sa robustesse, le modèle actuel présente certaines limites. Les règles de gestion, notamment la stratégie d'investissement, sont encore modélisées de manière relativement statique et ne réagissent pas toujours de façon dynamique aux conditions de marché extrêmes. De plus, la granularité de certains modules pourrait être affinée, notamment en ce qui concerne la modélisation des frais ou des impôts. Enfin, bien que les performances aient été grandement améliorées par rapport à la version VBA, les temps de calcul pour des portefeuilles très volumineux sur des milliers de scénarios restent un défi et une piste d'optimisation continue.

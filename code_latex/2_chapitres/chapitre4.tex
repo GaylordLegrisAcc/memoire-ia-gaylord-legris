@@ -9,9 +9,47 @@ La démarche consistera d'abord à présenter les différentes méthodes d'agré
 \section{Présentation des Méthodes d'Agrégation candidates}
     \subsection{Approches par clustering (K-means, DBSCAN/HDBSCAN)}
     % Votre texte ici...
-    \subsection{Autres approches (MP par âge, MP Mémoire Amine Ben Fadhel, etc.)}
-    % Votre texte ici...
+    \subsection{Approche déterministe par regroupement de caractéristiques (Baseline)}
+    
+    Cette méthode, qui servira de point de comparaison (baseline) pour les algorithmes de clustering plus complexes, repose sur une approche déterministe classique en actuariat, souvent qualifiée de méthode "Grid-based" ou par cellules.
 
+    Le principe fondamental consiste à partitionner l'univers des contrats en sous-ensembles disjoints (les cellules) définis par une combinaison unique de variables explicatives jugées prépondérantes pour le profil de risque. Contrairement aux méthodes de clustering qui cherchent des similarités statistiques, cette méthode applique une grille de lecture stricte. Dans le cadre de cette étude, les critères de regroupement retenus sont :
+    \begin{itemize}
+        \item Le sexe de l'assuré (variable catégorielle) ;
+        \item Le Taux Minimum Garanti (TMG) (variable continue ou discrète selon les produits) ;
+        \item L'âge de l'assuré (variable continue discrétisée à l'entier) ;
+        \item L'ancienneté du contrat (variable continue discrétisée à l'entier).
+    \end{itemize}
+
+    Mathématiquement, cette méthode définit une relation d'équivalence entre deux contrats $i$ et $j$. Ils appartiennent au même \textit{Model Point} si et seulement si leurs vecteurs de caractéristiques discrétisées sont strictement identiques :
+    $$ (\text{Sexe}_i, \lfloor \text{Age}_i \rfloor, \lfloor \text{Anciennet\'{e}}_i \rfloor, \text{TMG}_i) = (\text{Sexe}_j, \lfloor \text{Age}_j \rfloor, \lfloor \text{Anciennet\'{e}}_j \rfloor, \text{TMG}_j) $$
+
+    L'agrégation s'opère ensuite par la sommation des variables extensives au sein de chaque groupe. La Provision Mathématique (PM) du \textit{Model Point} $k$ ainsi créé correspond à la somme exacte des PM des contrats le constituant :
+    $$ PM_{MP_k} = \sum_{i \in Cellule_k} PM_i $$
+
+    Cette approche présente l'avantage majeur de conserver exactement la volumétrie financière du portefeuille (aucune perte d'information sur le montant total des engagements) et de respecter scrupuleusement les garanties contractuelles comme le TMG. Elle garantit également une homogénéité parfaite des assurés au sein d'un groupe sur les critères choisis. Cependant, elle implique une discrétisation des variables temporelles (âge et ancienneté), ce qui peut introduire un léger biais d'arrondi lors des projections. De plus, le nombre de \textit{Model Points} résultant n'est pas fixé à l'avance mais dépend directement de la dispersion du portefeuille et de la granularité de la grille choisie, ce qui ne permet pas un contrôle direct sur le taux de compression final.
+
+    \subsection{Approche par tranches (Banding) et moyenne pondérée}
+
+    Cette méthode constitue une évolution de l'approche par cellules (baseline). Elle vise à réduire davantage le nombre de \textit{Model Points} en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, communément appelée "Banding".
+
+    Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches (ou \textit{bins}). Dans le cadre de cette implémentation, nous avons retenu :
+    \begin{itemize}
+        \item Un pas de 2 ans pour l'âge de l'assuré ;
+        \item Un pas de 5 ans pour l'ancienneté du contrat.
+    \end{itemize}
+
+    Un contrat $i$ appartient à un groupe $k$ si ses caractéristiques discrètes correspondent et si ses variables continues tombent dans les intervalles définis :
+    $$ i \in MP_k \iff \begin{cases} \text{Sexe}_i = \text{Sexe}_k \\ \text{TMG}_i = \text{TMG}_k \\ \text{Age}_i \in [\text{Age}_{min}^k, \text{Age}_{max}^k[ \\ \text{Anciennet\'{e}}_i \in [\text{Anc}_{min}^k, \text{Anc}_{max}^k[ \end{cases} $$
+
+    La spécificité majeure de cette approche réside dans la détermination des caractéristiques du \textit{Model Point}. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle (par exemple, 31 ans pour la tranche [30-32[), cette méthode calcule le barycentre des contrats regroupés. Afin de préserver la structure financière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
+
+    Ainsi, l'âge ($Age_{MP}$) et l'ancienneté ($Anc_{MP}$) du \textit{Model Point} sont calculés comme suit :
+    $$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} \quad ; \quad \text{Anc}_{MP} = \frac{\sum_{i \in MP} \text{Anciennet\'{e}}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} $$
+
+    Cette pondération par les encours permet de s'assurer que le \textit{Model Point} est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
+
+    \subsection{Approches autres (mémoire Amine, etc.)}
 \section{Définition du Protocole de Test Comparatif}
     \subsection{Constitution des portefeuilles de test}
     % Votre texte ici...
