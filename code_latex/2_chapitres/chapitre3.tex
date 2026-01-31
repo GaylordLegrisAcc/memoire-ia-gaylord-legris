@@ -1,19 +1,25 @@
 \chapter{Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}
 
-Ce chapitre a pour objectif de définir et de mettre en œuvre un protocole d'analyse visant à sélectionner la méthode d'agrégation la plus adaptée à cette étude. Le choix s'appuiera sur une évaluation comparative de plusieurs approches candidates, en considérant des critères clés tels que la fidélité des indicateurs prudentiels (BE et SCR), la performance en termes de temps de calcul et la capacité à bein agréger le portefeuille.
+Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein de modèles stochastiques gourmands en ressources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clôture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de lancements différents.
 
-La démarche consistera d'abord à présenter les différentes méthodes d'agrégation envisagées. Ensuite, elles seront toutes appliquées au portefeuille de référence présenté précédemment afin de quantifier les écarts de résultats par rapport à une modélisation sans agrégation.
+L'objectif de ce chapitre est de définir et de mettre en œuvre un protocole d'analyse visant à sélectionner la méthode d'agrégation la plus performante pour cette étude. L'enjeu est de résoudre un problème d'optimisation sous contraintes : comment réduire drastiquement la volumétrie des données en entrée du modèle ALM, et par extension les temps de traitement, sans altérer la fidélité des indicateurs de risque prudentiels, à savoir le Best Estimate (BE) et le Solvency Capital Requirement (SCR) ?
 
-À l'issue de cette analyse comparative, la méthode jugée la plus performante sera retenue. Elle sera ensuite utilisée pour conduire les analyses de sensibilité détaillées dans le chapitre suivant.
+Pour répondre à cette question, plusieurs approches d'agrégation seront comparées. Deux grandes familles de méthodes seront étudiées :
+\begin{itemize}
+    \item \textbf{Les approches déterministes classiques :} Il s'agit des méthodes traditionnellement utilisées sur le marché, reposant sur un regroupement des contrats par caractéristiques communes ou par tranches. Elles serviront de point de référence pour l'étude.
+    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de Clustering, tels que les K-Means ou les méthodes basées sur la densité, sera exploré pour constituer des points de modèle basés sur une similarité multidimensionnelle des risques.
+\end{itemize}
+
+La démarche s'articulera en trois temps. Les spécificités mathématiques et algorithmiques de chaque méthode candidate seront d'abord exposées. Il s'agira également de détailler le fonctionnement des algorithmes d'apprentissage non supervisé, dont l'usage reste encore peu répandu dans les pratiques actuarielles. Un protocole de test standardisé sera ensuite défini, en précisant les résultats sur le portefeuille de référence et les métriques d'évaluation retenues (écart sur le Best Estimate et taux de compression). Enfin, l'analyse comparative des résultats sera réalisée, ce qui permettra de sélectionner la méthode optimale qui sera utilisée pour les analyses de sensibilité du chapitre suivant.
 
 \section{Présentation des Méthodes d'Agrégation candidates}
     \subsection{Approche déterministe par regroupement de caractéristiques}
     
-    Cette méthode, souvent qualifiée de méthode "Grid-based" ou approche par cellules, constitue le standard historique en actuariat. Elle servira de point de référence (\textit{baseline}) pour évaluer la performance des algorithmes de clustering plus avancés présentés ultérieurement.
+    Cette méthode, reposant sur une segmentation par classes de risque, constitue le standard historique en actuariat. Elle servira de base de comparaison pour évaluer la performance des algorithmes de regroupement statistique plus avancés présentés ultérieurement.
 
-    Le principe fondamental repose sur une partition déterministe du portefeuille. L'objectif est de regrouper les contrats qui partagent des caractéristiques de risque identiques. Dans un modèle de projection ALM, l'évolution de la Provision Mathématique (PM) est gouvernée par des lois biométriques et comportementales spécifiques. La mortalité dépend de l'âge et du sexe ; les rachats sont corrélés à l'ancienneté du contrat (fiscalité) et à l'âge ; la revalorisation dépend du Taux Minimum Garanti (TMG).
+    Le principe fondamental repose sur une partition déterministe du portefeuille. L'objectif est de regrouper les contrats partageant des caractéristiques de risque identiques. Dans un modèle de projection de gestion actif-passif, l'évolution de la Provision Mathématique (PM) est régie par des lois biométriques et comportementales spécifiques. La mortalité dépend de l'âge et du sexe ; les rachats sont corrélés à l'ancienneté du contrat (fiscalité) ainsi qu'à l'âge de l'assuré ; la revalorisation dépend du Taux Minimum Garanti (TMG).
 
-    Par conséquent, pour garantir que le \textit{Model Point} agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une grille de lecture stricte. Les critères de regroupement retenus pour cette étude sont :
+    Par conséquent, pour garantir que le point de modèle agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une segmentation rigide. Les critères de regroupement retenus pour cette étude sont :
     \begin{itemize}
         \item \textbf{Le Sexe} (variable catégorielle) : Indispensable pour l'application des tables de mortalité différenciées.
         \item \textbf{Le Taux Minimum Garanti (TMG)} (variable discrète) : Crucial pour la valorisation des garanties financières.
@@ -21,26 +27,26 @@ La démarche consistera d'abord à présenter les différentes méthodes d'agré
         \item \textbf{L'Ancienneté du contrat} (variable continue) : Discrétisée à l'entier inférieur pour modéliser correctement la fiscalité et les rachats structurels.
     \end{itemize}
 
-    Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même \textit{Model Point} $k$ si et seulement si leurs vecteurs de caractéristiques discrétisées sont identiques :
+    Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même point de modèle $k$ si et seulement si leurs vecteurs de caractéristiques discrétisées sont identiques :
     $$ (\text{Sexe}_i, \lfloor \text{Age}_i \rfloor, \lfloor \text{Anc}_i \rfloor, \text{TMG}_i) = (\text{Sexe}_j, \lfloor \text{Age}_j \rfloor, \lfloor \text{Anc}_j \rfloor, \text{TMG}_j) $$
 
-    Une fois les groupes constitués, l'agrégation s'opère par la sommation des variables extensives. La Provision Mathématique du \textit{Model Point} $k$ est la somme exacte des PM des contrats le constituant :
-    $$ PM_{MP_k} = \sum_{i \in Cellule_k} PM_i $$
-    Les variables intensives du \textit{Model Point} (Âge, Ancienneté) prennent alors les valeurs de la cellule de la grille (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
+    Une fois les groupes constitués, l'agrégation s'opère par la sommation des variables extensives. La Provision Mathématique du point de modèle $k$ est la somme exacte des PM des contrats le constituant :
+    $$ PM_{MP_k} = \sum_{i \in Groupe_k} PM_i $$
+    Les variables intensives du point de modèle (Âge, Ancienneté) prennent alors les valeurs définies par la segmentation (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
 
-    Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les garanties contractuelles (pas de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
+    Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les garanties contractuelles (absence de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
 
-    Cependant, elle souffre de limites intrinsèques :
+    Cependant, elle présente des limites intrinsèques :
     \begin{itemize} 
-        \item \textbf{Le biais de discrétisation :} L'arrondi des variables temporelles (âge, ancienneté) à l'entier introduit une légère approximation par rapport à la réalité continue des contrats.
-        \item \textbf{L'absence de contrôle sur la compression :} Le nombre de \textit{Model Points} finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et de la granularité de la grille. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de cellules très élevé, dont certaines ne contiendront que très peu de contrats, limitant ainsi l'efficacité de la compression (phénomène de "curse of dimensionality").
+        \item \textbf{Le biais de discrétisation :} L'arrondi des variables temporelles (âge, ancienneté) à l'entier introduit une approximation par rapport à la réalité continue des contrats.
+        \item \textbf{L'absence de contrôle sur la compression :} Le nombre de points de modèle finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et de la finesse de la segmentation. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de groupes très élevé, dont certains ne contiendront que peu de contrats, limitant ainsi l'efficacité de la réduction de dimension (phénomène du « fléau de la dimension »).
     \end{itemize}
 
-    \subsection{Approche par tranches (Banding) et moyenne pondérée}
+    \subsection{Approche par tranches et moyenne pondérée}
 
-    Cette méthode constitue une évolution de l'approche par cellules (baseline). Elle vise à réduire davantage le nombre de \textit{Model Points} en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, communément appelée "Banding".
+    Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de points de modèle en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
 
-    Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches (ou \textit{bins}). Dans le cadre de cette implémentation, nous avons retenu :
+    Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, ont été retenus :
     \begin{itemize}
         \item Un pas de 2 ans pour l'âge de l'assuré ;
         \item Un pas de 5 ans pour l'ancienneté du contrat.
@@ -49,12 +55,12 @@ La démarche consistera d'abord à présenter les différentes méthodes d'agré
     Un contrat $i$ appartient à un groupe $k$ si ses caractéristiques discrètes correspondent et si ses variables continues tombent dans les intervalles définis :
     $$ i \in MP_k \iff \begin{cases} \text{Sexe}_i = \text{Sexe}_k \\ \text{TMG}_i = \text{TMG}_k \\ \text{Age}_i \in [\text{Age}_{min}^k, \text{Age}_{max}^k[ \\ \text{Anciennet\'{e}}_i \in [\text{Anc}_{min}^k, \text{Anc}_{max}^k[ \end{cases} $$
 
-    La spécificité majeure de cette approche réside dans la détermination des caractéristiques du \textit{Model Point}. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle (par exemple, 31 ans pour la tranche [30-32[), cette méthode calcule le barycentre des contrats regroupés. Afin de préserver la structure financière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
+    La spécificité majeure de cette approche réside dans la détermination des caractéristiques du point de modèle. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle (par exemple, 31 ans pour la tranche [30-32[), cette méthode calcule le barycentre des contrats regroupés. Afin de préserver la structure financière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
 
-    Ainsi, l'âge ($Age_{MP}$) et l'ancienneté ($Anc_{MP}$) du \textit{Model Point} sont calculés comme suit :
+    Ainsi, l'âge ($Age_{MP}$) et l'ancienneté ($Anc_{MP}$) du point de modèle sont calculés comme suit :
     $$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} \quad ; \quad \text{Anc}_{MP} = \frac{\sum_{i \in MP} \text{Anciennet\'{e}}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} $$
 
-    Cette pondération par les encours permet de s'assurer que le \textit{Model Point} est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
+    Cette pondération par les encours permet de s'assurer que le point de modèle est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
     \subsection{Approches par clustering (K-means, DBSCAN/HDBSCAN)}
     % Votre texte ici...
     \subsection{Approches autres (mémoire Amine, etc.)}
