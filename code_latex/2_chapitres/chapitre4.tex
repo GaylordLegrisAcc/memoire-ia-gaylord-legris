@@ -1,105 +1,51 @@
-\chapter{Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}
+\chapter{Analyse de Sensibilité des Indicateurs S2 aux Caractéristiques du Passif}
 
-Ce chapitre a pour objectif de définir et de mettre en œuvre un protocole d'analyse rigoureux visant à sélectionner la méthode d'agrégation la plus adaptée à notre étude. Le choix s'appuiera sur une évaluation comparative de plusieurs approches candidates, en considérant des critères clés tels que la fidélité des indicateurs prudentiels (BE et SCR), la performance en termes de temps de calcul et la complexité de mise en œuvre.
-
-La démarche consistera d'abord à présenter les différentes méthodes d'agrégation envisagées. Ensuite, nous appliquerons chacune de ces méthodes à un portefeuille de référence afin de quantifier les écarts de résultats par rapport à une modélisation sans agrégation.
-
-À l'issue de cette analyse comparative, la méthode jugée la plus performante sera retenue. Elle sera ensuite utilisée pour conduire les analyses de sensibilité détaillées dans le chapitre suivant.
-
-\section{Présentation des Méthodes d'Agrégation candidates}
-    \subsection{Approche déterministe par regroupement de caractéristiques}
-    
-    Cette méthode, souvent qualifiée de méthode "Grid-based" ou approche par cellules, constitue le standard historique en actuariat. Elle servira de point de référence (\textit{baseline}) pour évaluer la performance des algorithmes de clustering plus avancés présentés ultérieurement.
-
-    Le principe fondamental repose sur une partition déterministe du portefeuille. L'objectif est de regrouper les contrats qui partagent des caractéristiques de risque identiques. Dans un modèle de projection ALM, l'évolution de la Provision Mathématique (PM) est gouvernée par des lois biométriques et comportementales spécifiques. La mortalité dépend de l'âge et du sexe ; les rachats sont corrélés à l'ancienneté du contrat (fiscalité) et à l'âge ; la revalorisation dépend du Taux Minimum Garanti (TMG).
-
-    Par conséquent, pour garantir que le \textit{Model Point} agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une grille de lecture stricte. Les critères de regroupement retenus pour cette étude sont :
-    \begin{itemize}
-        \item \textbf{Le Sexe} (variable catégorielle) : Indispensable pour l'application des tables de mortalité différenciées.
-        \item \textbf{Le Taux Minimum Garanti (TMG)} (variable discrète) : Crucial pour la valorisation des garanties financières.
-        \item \textbf{L'Âge de l'assuré} (variable continue) : Discrétisé à l'entier inférieur pour correspondre aux entrées des tables de mortalité.
-        \item \textbf{L'Ancienneté du contrat} (variable continue) : Discrétisée à l'entier inférieur pour modéliser correctement la fiscalité et les rachats structurels.
-    \end{itemize}
-
-    Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même \textit{Model Point} $k$ si et seulement si leurs vecteurs de caractéristiques discrétisées sont identiques :
-    $$ (\text{Sexe}_i, \lfloor \text{Age}_i \rfloor, \lfloor \text{Anc}_i \rfloor, \text{TMG}_i) = (\text{Sexe}_j, \lfloor \text{Age}_j \rfloor, \lfloor \text{Anc}_j \rfloor, \text{TMG}_j) $$
-
-    Une fois les groupes constitués, l'agrégation s'opère par la sommation des variables extensives. La Provision Mathématique du \textit{Model Point} $k$ est la somme exacte des PM des contrats le constituant :
-    $$ PM_{MP_k} = \sum_{i \in Cellule_k} PM_i $$
-    Les variables intensives du \textit{Model Point} (Âge, Ancienneté) prennent alors les valeurs de la cellule de la grille (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
-
-    Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les garanties contractuelles (pas de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
-
-    Cependant, elle souffre de limites intrinsèques :
-    \begin{itemize}
-        \item \textbf{Le biais de discrétisation :} L'arrondi des variables temporelles (âge, ancienneté) à l'entier introduit une légère approximation par rapport à la réalité continue des contrats.
-        \item \textbf{L'absence de contrôle sur la compression :} Le nombre de \textit{Model Points} finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et de la granularité de la grille. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de cellules très élevé, dont certaines ne contiendront que très peu de contrats, limitant ainsi l'efficacité de la compression (phénomène de "curse of dimensionality").
-    \end{itemize}
-
-    \subsection{Approche par tranches (Banding) et moyenne pondérée}
-
-    Cette méthode constitue une évolution de l'approche par cellules (baseline). Elle vise à réduire davantage le nombre de \textit{Model Points} en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, communément appelée "Banding".
-
-    Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches (ou \textit{bins}). Dans le cadre de cette implémentation, nous avons retenu :
-    \begin{itemize}
-        \item Un pas de 2 ans pour l'âge de l'assuré ;
-        \item Un pas de 5 ans pour l'ancienneté du contrat.
-    \end{itemize}
-
-    Un contrat $i$ appartient à un groupe $k$ si ses caractéristiques discrètes correspondent et si ses variables continues tombent dans les intervalles définis :
-    $$ i \in MP_k \iff \begin{cases} \text{Sexe}_i = \text{Sexe}_k \\ \text{TMG}_i = \text{TMG}_k \\ \text{Age}_i \in [\text{Age}_{min}^k, \text{Age}_{max}^k[ \\ \text{Anciennet\'{e}}_i \in [\text{Anc}_{min}^k, \text{Anc}_{max}^k[ \end{cases} $$
-
-    La spécificité majeure de cette approche réside dans la détermination des caractéristiques du \textit{Model Point}. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle (par exemple, 31 ans pour la tranche [30-32[), cette méthode calcule le barycentre des contrats regroupés. Afin de préserver la structure financière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
-
-    Ainsi, l'âge ($Age_{MP}$) et l'ancienneté ($Anc_{MP}$) du \textit{Model Point} sont calculés comme suit :
-    $$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} \quad ; \quad \text{Anc}_{MP} = \frac{\sum_{i \in MP} \text{Anciennet\'{e}}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} $$
-
-    Cette pondération par les encours permet de s'assurer que le \textit{Model Point} est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
-    \subsection{Approches par clustering (K-means, DBSCAN/HDBSCAN)}
+Le but de ce chapitre est de tester la robustesse de la méthode d'agrégation selectionnée au chapitre 4. Pour ce faire, des chocs (réglementaires + autres) seront appliqués sur des portefeuilles de test générés via le générateur présenté au chapitre 3. L'objectif est d'analyser l'impact de ces chocs sur les indicateurs S2 (BE, SCR) en comparant les résultats obtenus sur les portefeuilles granulaires (sans agrégation) et les portefeuilles agrégés (avec la méthode d'agrégation retenue). Cette analyse permettra de vérifier que la méthode d'agrégation choisie préserve la sensibilité des indicateurs aux variations des caractéristiques du passif, assurant ainsi la fiabilité des analyses de risque et de solvabilité dans un contexte d'optimisation computationnelle.
+\section{Définition des Scénarios de Sensibilité}
+    \subsection{Création des portefeuilles de test via le générateur}
     % Votre texte ici...
-    \subsection{Approches autres (mémoire Amine, etc.)}
-\section{Définition du Protocole de Test Comparatif}
-    \subsection{Constitution des portefeuilles de test}
+    \subsection{Description des chocs sur les variables clés (âge, montant de la PM, etc.)}
     % Votre texte ici...
-    \subsection{Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}
+    \subsection{Scénario d'intégration d'un nouveau produit dans le portefeuille}
     % Votre texte ici...
 
-\section{Analyse Comparative et Choix de la Méthode Optimale}
-    \subsection{Synthèse des performances pour chaque méthode candidate}
+\section{Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}
+    \subsection{Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}
     % Votre texte ici...
-    \subsection{Justification du choix de la méthode retenue pour l'analyse de sensibilité}
+    \subsection{Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}
     % Votre texte ici...
-% \chapter{Protocole d'Analyse : Agrégation et Scénarios de Sensibilité}
 
-% % Introduction du chapitre : Expliquer que ce chapitre pose toute la méthodologie
-% % qui sera appliquée dans la partie suivante. C'est le "comment" de l'analyse.
+\section{Interprétation des Résultats et Validation de l'Approche}
+    \subsection{Validation de la performance de la chaîne de modélisation (Générateur - Agrégation - Modèle ALM)}
+    % Votre texte ici...
+    \subsection{Enseignements sur la sensibilité des portefeuilles aux modifications de caractéristiques du passif}
+    % Votre texte ici...
 
-% \section{Méthodologie et Sélection du Modèle d'Agrégation}
-% % Objectif : Décrire le processus complet qui mène au choix d'UNE méthode d'agrégation.
+% \chapter{Résultats et Analyse des Sensibilités}
 
-% \subsection{Description des Méthodes d'Agrégation Candidates}
-% % Reprendre votre description technique des méthodes (K-means, DBSCAN, etc.)
+% % Introduction du chapitre : Expliquer que ce chapitre présente les résultats
+% % de l'application du protocole défini au chapitre 4. C'est le "quoi" de l'analyse.
 
-% \subsection{Tests de Performance et Analyse comparative}
-% % Fusionner la présentation des portefeuilles de test et l'analyse
-% \subsubsection{Présentation des portefeuilles de test}
-% % Décrire les portefeuilles utilisés spécifiquement pour comparer les méthodes d'agrégation.
+% \section{Application de la Méthode d'Agrégation sur les Portefeuilles de Test}
+% % Appliquer la méthode choisie en 4.3 sur les portefeuilles définis en 4.2.
 
-% \subsubsection{Critères d'évaluation et résultats des tests}
-% % Analyser les résultats (BE, SCR, temps de calcul) pour chaque méthode.
-% % Inclure ici la réflexion sur l'optimisation du nombre de Model Points.
+% \subsection{Analyse des Portefeuilles Agrégés}
+% % Analyser brièvement les portefeuilles agrégés.
+% % Question clé à répondre ici : Les chocs et modifications sont-ils toujours
+% % visibles et bien représentés après l'agrégation ?
 
-% \subsection{Choix du Modèle d'Agrégation Optimal pour les métriques S2}
-% % Conclure cette section en justifiant le choix d'UNE méthode spécifique
-% % au regard des résultats précédents et de sa compatibilité avec les architectures modernes.
+% \section{Analyse des Sensibilités sur les Indicateurs Solvabilité 2}
+% % C'est le cœur de vos résultats.
+% % Présenter les résultats issus du modèle ALM pour chaque scénario de sensibilité.
+% % Comparer les indicateurs (BE, SCR) entre le portefeuille de base et les portefeuilles modifiés.
 
-% \section{Définition des Scénarios de Sensibilité}
-% % Objectif : Décrire précisément les tests qui seront menés sur les portefeuilles.
+% \section{Interprétation des Résultats et Validation de l'Approche}
+% % Prendre du recul sur les résultats chiffrés.
 
-% \subsection{Création des Portefeuilles de Test via le Générateur}
-% % Expliquer comment le générateur est utilisé pour créer les portefeuilles de base
-% % ainsi que leurs variations pour les tests de sensibilité.
+% \subsection{Évaluation de la performance du générateur}
+% % Dans quelle mesure les résultats confirment-ils que le générateur produit
+% % des portefeuilles réactifs et cohérents ?
 
-% \subsection{Description des Chocs et Modifications Appliqués}
-% % Détailler les chocs (positifs/négatifs) sur les variables clés.
-% % Décrire le scénario d'ajout d'un nouveau produit (caractéristiques, volume, etc.).
+% \subsection{Synthèse des impacts observés}
+% % Quelles sont les différences clés observées ? Quels sont les enseignements
+% % principaux des tests de sensibilité ?
