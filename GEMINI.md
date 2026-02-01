@@ -36,14 +36,19 @@ Le mémoire est structuré en 4 chapitres principaux (correspondant aux fichiers
 *   **Clarté :** Phrases structurées, vocabulaire précis. Éviter les tournures familières ou trop orales.
 
 ### Terminologie Spécifique
-*   **Utiliser :** "Provision Mathématique" (PM), "Best Estimate" (BE), "Solvency Capital Requirement" (SCR), "Unités de Compte" (UC), "Fonds Euros", "Participation aux Bénéfices" (PB).
-*   **Éviter :** Termes anglais non standards si un équivalent français précis existe (sauf pour les termes consacrés comme "Best Estimate" ou "SCR" qui sont standards dans la profession).
+*   **Utiliser :** "Provision Mathématique" (PM), "Best Estimate" (BE), "Solvency Capital Requirement" (SCR), "Unités de Compte" (UC), "Fonds Euros", "Participation aux Bénéfices" (PB), "Model Point" (MP).
+*   **Éviter :** Termes anglais non standards si un équivalent français précis existe (sauf pour les termes consacrés comme "Best Estimate" ou "SCR" qui sont standards dans la profession), toujours utilser Model Point et jamais Point de Modèle.
 *   **Mathématiques :** Les formules doivent être rigoureusement formatées en LaTeX.
 
 ### Conventions Techniques (LaTeX)
 *   **Figures :** Placer les images dans le dossier `images/` (ou sous-dossiers). Utiliser l'environnement `figure` avec `\caption` et `\label`.
 *   **Références :** Utiliser `\cite{cle_biblio}` pour la bibliographie et `\ref{label}` pour les renvois internes.
 *   **Structure :** Respecter la hiérarchie `\chapter`, `\section`, `\subsection`, `\subsubsection`. Ne pas abuser des niveaux inférieurs.
+
+### Proposition de graphiques à insérer
+*   **Graphiques proposés :** Propose des graphiques explicatifs à insérer dans le mémoire dans les différentes parties, les graphiques devront être gérés comme présenté ci-dessus en allant piocher du contenu de `images/` même si l'image ne sera pas encore présente je me chargerai de l'ajouter ultérieurement 
+*   **Références :** Propose des sources où je pourrai aller chercher les graphiques que tu me proposes ou des méthodos pour les faire
+*   **Structure :** Essaye de suivre toujours la même structure pour implémenter les graphiques
 
 ## 4. Points d'Attention
 *   **Cohérence :** Vérifier que les notations mathématiques sont uniformes tout au long du document.
