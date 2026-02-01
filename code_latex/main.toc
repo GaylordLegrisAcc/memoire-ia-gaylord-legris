@@ -64,42 +64,44 @@
 \contentsline {subsection}{\numberline {3.1.3}Approche statistique par apprentissage non supervisé (K-Means)}{42}{subsection.3.1.3}%
 \contentsline {subsubsection}{\numberline {3.1.3.1}Principe de l'algorithme}{42}{subsubsection.3.1.3.1}%
 \contentsline {subsubsection}{\numberline {3.1.3.2}Application aux données du portefeuille}{43}{subsubsection.3.1.3.2}%
-\contentsline {paragraph}{Choix des variables et Standardisation}{43}{subsubsection.3.1.3.2}%
-\contentsline {paragraph}{Algorithme et Pondération}{43}{subsubsection.3.1.3.2}%
 \contentsline {subsubsection}{\numberline {3.1.3.3}Constitution des Model Points finaux}{43}{subsubsection.3.1.3.3}%
-\contentsline {subsection}{\numberline {3.1.4}Approches autres (mémoire Amine, etc.)}{44}{subsection.3.1.4}%
-\contentsline {section}{\numberline {3.2}Définition du Protocole de Test Comparatif}{44}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Constitution des portefeuilles de test}{45}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}{45}{subsection.3.2.2}%
-\contentsline {section}{\numberline {3.3}Analyse Comparative et Choix de la Méthode Optimale}{45}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Synthèse des performances pour chaque méthode candidate}{46}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Justification du choix de la méthode retenue pour l'analyse de sensibilité}{46}{subsection.3.3.2}%
-\contentsline {chapter}{\numberline {4}Analyse de Sensibilité des Indicateurs S2 aux Caractéristiques du Passif}{47}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Définition des Scénarios de Sensibilité}{48}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Création des portefeuilles de test via le générateur}{49}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Description des chocs sur les variables clés (âge, montant de la PM, etc.)}{49}{subsection.4.1.2}%
-\contentsline {subsection}{\numberline {4.1.3}Scénario d'intégration d'un nouveau produit dans le portefeuille}{49}{subsection.4.1.3}%
-\contentsline {section}{\numberline {4.2}Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}{49}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}{50}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}{50}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}Interprétation des Résultats et Validation de l'Approche}{50}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Validation de la performance de la chaîne de modélisation (Générateur - Agrégation - Modèle ALM)}{51}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Enseignements sur la sensibilité des portefeuilles aux modifications de caractéristiques du passif}{51}{subsection.4.3.2}%
-\contentsline {chapter}{\numberline {5}Conclusion}{52}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{53}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{53}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{53}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{53}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{54}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{54}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{54}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{54}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Perspectives et Finalisation des Travaux de Recherche}{55}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Bilan de l'expérience professionnelle chez Accenture : un levier pour le mémoire}{56}{subsection.5.3.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.1}Développement et industrialisation d'un modèle ALM en Python}{56}{subsubsection.5.3.2.1}%
-\contentsline {subsubsection}{\numberline {5.3.2.2}Développement d'un modèle de passifs sociaux sous Python}{56}{subsubsection.5.3.2.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.3}Maîtrise d'un écosystème technique moderne}{56}{subsubsection.5.3.2.3}%
-\contentsline {subsubsection}{\numberline {5.3.2.4}Expertise en gestion de données et en calcul distribué (Cloud)}{57}{subsubsection.5.3.2.4}%
-\contentsline {subsubsection}{\numberline {5.3.2.5}Collaboration, autonomie et transmission des savoirs}{57}{subsubsection.5.3.2.5}%
-\contentsline {chapter}{Annexes}{58}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{61}{figure.5.3}%
+\contentsline {subsection}{\numberline {3.1.4}Approches basées sur la densité (DBSCAN et HDBSCAN)}{44}{subsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {3.1.4.1}Principes fondamentaux de DBSCAN}{44}{subsubsection.3.1.4.1}%
+\contentsline {subsubsection}{\numberline {3.1.4.2}Adaptation aux contraintes assurantielles}{45}{subsubsection.3.1.4.2}%
+\contentsline {subsubsection}{\numberline {3.1.4.3}L'évolution vers HDBSCAN}{46}{subsubsection.3.1.4.3}%
+\contentsline {subsubsection}{\numberline {3.1.4.4}Constitution finale des Model Points}{46}{subsubsection.3.1.4.4}%
+\contentsline {section}{\numberline {3.2}Définition du Protocole de Test Comparatif}{47}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Constitution des portefeuilles de test}{48}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}{48}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Analyse Comparative et Choix de la Méthode Optimale}{48}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Synthèse des performances pour chaque méthode candidate}{49}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Justification du choix de la méthode retenue pour l'analyse de sensibilité}{49}{subsection.3.3.2}%
+\contentsline {chapter}{\numberline {4}Analyse de Sensibilité des Indicateurs S2 aux Caractéristiques du Passif}{50}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Définition des Scénarios de Sensibilité}{51}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Création des portefeuilles de test via le générateur}{52}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Description des chocs sur les variables clés (âge, montant de la PM, etc.)}{52}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Scénario d'intégration d'un nouveau produit dans le portefeuille}{52}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}{52}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}{53}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}{53}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Interprétation des Résultats et Validation de l'Approche}{53}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Validation de la performance de la chaîne de modélisation (Générateur - Agrégation - Modèle ALM)}{54}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Enseignements sur la sensibilité des portefeuilles aux modifications de caractéristiques du passif}{54}{subsection.4.3.2}%
+\contentsline {chapter}{\numberline {5}Conclusion}{55}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{56}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{56}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{56}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{56}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{57}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{57}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{57}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{57}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Perspectives et Finalisation des Travaux de Recherche}{58}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Bilan de l'expérience professionnelle chez Accenture : un levier pour le mémoire}{59}{subsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.1}Développement et industrialisation d'un modèle ALM en Python}{59}{subsubsection.5.3.2.1}%
+\contentsline {subsubsection}{\numberline {5.3.2.2}Développement d'un modèle de passifs sociaux sous Python}{59}{subsubsection.5.3.2.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.3}Maîtrise d'un écosystème technique moderne}{59}{subsubsection.5.3.2.3}%
+\contentsline {subsubsection}{\numberline {5.3.2.4}Expertise en gestion de données et en calcul distribué (Cloud)}{60}{subsubsection.5.3.2.4}%
+\contentsline {subsubsection}{\numberline {5.3.2.5}Collaboration, autonomie et transmission des savoirs}{60}{subsubsection.5.3.2.5}%
+\contentsline {chapter}{Annexes}{61}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{64}{figure.5.3}%
