@@ -69,8 +69,8 @@
 \contentsline {subsubsection}{\numberline {3.1.4.1}Principes fondamentaux de DBSCAN}{44}{subsubsection.3.1.4.1}%
 \contentsline {subsubsection}{\numberline {3.1.4.2}Adaptation aux contraintes assurantielles}{45}{subsubsection.3.1.4.2}%
 \contentsline {subsubsection}{\numberline {3.1.4.3}Gestion du bruit et réallocation des contrats}{46}{subsubsection.3.1.4.3}%
-\contentsline {subsubsection}{\numberline {3.1.4.4}L'évolution vers HDBSCAN}{47}{subsubsection.3.1.4.4}%
-\contentsline {subsubsection}{\numberline {3.1.4.5}Constitution finale des Model Points}{47}{subsubsection.3.1.4.5}%
+\contentsline {subsection}{\numberline {3.1.5}Approche hiérarchique adaptative (HDBSCAN)}{47}{subsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.5.1}Constitution finale des Model Points}{48}{subsubsection.3.1.5.1}%
 \contentsline {section}{\numberline {3.2}Définition du Protocole de Test Comparatif}{48}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Constitution des portefeuilles de test}{49}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}{49}{subsection.3.2.2}%
