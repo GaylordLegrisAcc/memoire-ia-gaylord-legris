@@ -114,7 +114,7 @@ Une fois la convergence atteinte, chaque cluster $j$ est transformé en un Model
 
 Cette méthode permet de définir automatiquement des Model Points situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, offrant ainsi une représentation optimale de la distribution des risques.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/kmeans_explication.png}
     \caption{Visualisation de la méthode K-Means sur un jeu de données fictif \cite{kmeans}}
@@ -142,12 +142,12 @@ Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son 
     \item Tout point n'appartenant à aucun cluster est considéré comme du \textbf{bruit} (\textit{outlier}).
 \end{itemize}
 
-\figure[h!]
-\centering
-\includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/dbscan.png}
-\caption{Explication de l'algorithme DBSCAN (TODO : A refaire)}
-\label{fig:dbscan}
-\endfigure
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/dbscan.png}
+    \caption{Explication de l'algorithme DBSCAN (TODO : A refaire)}
+    \label{fig:dbscan}
+\end{figure}
 
 \subsubsection{Adaptation aux contraintes assurantielles}
 L'application directe de DBSCAN aux données brutes du portefeuille d'assurance vie utilisé se heurte à deux obstacles majeurs nécessitant des adaptations spécifiques implémentées dans le protocole : Le problème de la discrétisation et la gestion du bruit.
@@ -171,49 +171,89 @@ Il a donc fallu implémenter une étape de post-traitement systématique : une r
 $ Class(x_{noise}) = Class(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)) $
 Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiques aux segments les plus ressemblants.
 
-\figure[h!]
-\centering
-\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/dbscan.png}
-\caption{Explication des reclassement du bruit (TODO : A faire)}
-\label{fig:dbscan_bruit}
-\endfigure
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/dbscan.png}
+    \caption{Explication du reclassement du bruit (TODO : A refaire)}
+    \label{fig:dbscan_bruit}
+\end{figure}
 
 
 \subsection{Approche hiérarchique adaptative (HDBSCAN)}
 
 Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuses. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche fusionne des clusters distincts dans les zones denses.
 
-Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables. Son fonctionnement peut être décomposé en cinq étapes clés \cite{hdbscan} :
+Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes clés \cite{hdbscan} :
 
-\begin{enumerate}
-    \item \textbf{Transformation de l'espace (Mutual Reachability Distance) :}
-          Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la « distance d'accessibilité mutuelle ».
-          $$ d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} $$
+\subsubsection{Transformation de l'espace : la distance d'accessibilité mutuelle}
+Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la « distance d'accessibilité mutuelle ».
+$$ d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} $$
 
-          Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
+Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
 
-    \item \textbf{Construction de l'Arbre Couvrant Minimum (Minimum Spanning Tree - MST) :}
-          L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un Arbre Couvrant Minimum (Minimum Spanning Tree) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan1.png}
+    \caption{Illustration de la distance d'accessibilité mutuelle \cite{hdbscan}}
+    \label{fig:mutual_reachability}
+\end{figure}
 
-    \item \textbf{Construction de la hiérarchie des clusters :}
-          En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre hiérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
+\subsubsection{Construction de l'Arbre Couvrant Minimum (MST)}
+L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un Arbre Couvrant Minimum (Minimum Spanning Tree - MST) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
 
-    \item \textbf{Condensation de l'arbre :}
-          L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal ("cluster fall out"). Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan2.png}
+    \caption{Construction de l'Arbre Couvrant Minimum \cite{hdbscan}}
+    \label{fig:mst}
+\end{figure}
 
-    \item \textbf{Extraction des clusters stables :}
-          Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Excess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{death}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
-          $$ \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) $$
-          L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters disjoints qui maximise cette stabilité globale.
-\end{enumerate}
+\subsubsection{Construction de la hiérarchie des clusters}
+En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre hiérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan3.png}
+    \caption{Construction de la hiérarchie des clusters \cite{hdbscan}}
+    \label{fig:hierarchy_clusters}
+\end{figure}
+
+\subsubsection{Condensation de l'arbre}
+L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan4.png}
+    \caption{Condensation de l'arbre hiérarchique \cite{hdbscan}}
+    \label{fig:condensed_tree}
+\end{figure}
+
+\subsubsection{Extraction des clusters stables}
+Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Excess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{death}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
+$$ \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) $$
+L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters disjoints qui maximise cette stabilité globale.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan5.png}
+    \caption{Sélection des clusters stables \cite{hdbscan}}
+    \label{fig:stable_clusters}
+\end{figure}
 
 Cette méthodologie permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale et adaptative de la population des assurés sans paramétrage complexe d'un rayon de voisinage.
 
-\begin{figure}[h!]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan6.png}
+    \caption{Résultat final du clustering HDBSCAN \cite{hdbscan}}
+    \label{fig:hdbscan_final}
+\end{figure}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/dbscan_hdbscan.jpg}
-    \caption{Différence entre DBSCAN et HDBSCAN\cite{dbscan_hdbscan}}
-    \label{fig:hdbscan}
+    \caption{Comparaison des approches DBSCAN et HDBSCAN \cite{dbscan_hdbscan}}
+    \label{fig:hdbscan_comparison}
 \end{figure}
 
 \subsubsection{Constitution finale des Model Points}
@@ -222,6 +262,7 @@ Une fois la partition optimale obtenue (via DBSCAN ou HDBSCAN) et le bruit réal
 $ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i} $
 
 Cette méthode assure que le Model Point se situe au centre de gravité financier de son groupe, minimisant ainsi le biais d'agrégation sur les projections futures.
+
 \section{Définition du Protocole de Test Comparatif}
 \subsection{Constitution des portefeuilles de test}
 % Votre texte ici...
@@ -233,37 +274,3 @@ Cette méthode assure que le Model Point se situe au centre de gravité financie
 % Votre texte ici...
 \subsection{Justification du choix de la méthode retenue pour l'analyse de sensibilité}
 % Votre texte ici...
-% \chapter{Protocole d'Analyse : Agrégation et Scénarios de Sensibilité}
-
-% % Introduction du chapitre : Expliquer que ce chapitre pose toute la méthodologie
-% % qui sera appliquée dans la partie suivante. C'est le "comment" de l'analyse.
-
-% \section{Méthodologie et Sélection du Modèle d'Agrégation}
-% % Objectif : Décrire le processus complet qui mène au choix d'UNE méthode d'agrégation.
-
-% \subsection{Description des Méthodes d'Agrégation Candidates}
-% % Reprendre votre description technique des méthodes (K-means, DBSCAN, etc.)
-
-% \subsection{Tests de Performance et Analyse comparative}
-% % Fusionner la présentation des portefeuilles de test et l'analyse
-% \subsubsection{Présentation des portefeuilles de test}
-% % Décrire les portefeuilles utilisés spécifiquement pour comparer les méthodes d'agrégation.
-
-% \subsubsection{Critères d'évaluation et résultats des tests}
-% % Analyser les résultats (BE, SCR, temps de calcul) pour chaque méthode.
-% % Inclure ici la réflexion sur l'optimisation du nombre de Model Points.
-
-% \subsection{Choix du Modèle d'Agrégation Optimal pour les métriques S2}
-% % Conclure cette section en justifiant le choix d'UNE méthode spécifique
-% % au regard des résultats précédents et de sa compatibilité avec les architectures modernes.
-
-% \section{Définition des Scénarios de Sensibilité}
-% % Objectif : Décrire précisément les tests qui seront menés sur les portefeuilles.
-
-% \subsection{Création des Portefeuilles de Test via le Générateur}
-% % Expliquer comment le générateur est utilisé pour créer les portefeuilles de base
-% % ainsi que leurs variations pour les tests de sensibilité.
-
-% \subsection{Description des Chocs et Modifications Appliqués}
-% % Détailler les chocs (positifs/négatifs) sur les variables clés.
-% % Décrire le scénario d'ajout d'un nouveau produit (caractéristiques, volume, etc.).
