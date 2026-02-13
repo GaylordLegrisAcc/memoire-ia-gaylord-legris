@@ -62,12 +62,13 @@ $$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum
 
 Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
 
-\subsubsection{Variante « Smart Granular »}
-Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques :
+\subsubsection{Variante « Smart Granular » et stratégies métier}
+Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
 \begin{itemize}
-    \item \textbf{Sur l'Âge :} Le pas est réduit à 1 an pour les assurés de plus de 60 ans (zone de forte courbure de la mortalité) et élargi à 5 ans pour les jeunes actifs.
-    \item \textbf{Sur l'Ancienneté :} Le découpage est resserré précisément autour du seuil fiscal des 8 ans pour capturer la rupture de comportement des lois de rachat.
-    \item \textbf{Sur le TMG :} Une segmentation stricte est maintenue pour éviter toute dilution des taux garantis.
+    \item \textbf{Smart Focus Active :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrêmes (pas de 15 ans au-delà de 85 ans).
+    \item \textbf{Smart Focus Young :} Stratégie ultra-fine sur les nouveaux entrants (pas de 1 an jusqu'à 50 ans) pour capturer la dynamique de croissance du portefeuille.
+    \item \textbf{Smart Focus Fiscal :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscalité des rachats.
+    \item \textbf{Smart Granular (Équilibré) :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
 \end{itemize}
 
 \subsection{Approche statistique par apprentissage non supervisé (K-Means)}
@@ -313,6 +314,50 @@ Cette approche a été déclinée en deux versions selon la complexité du moteu
 Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents. 
 
 L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+
+\subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
+
+La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regrouper selon leur \textbf{profil de risque dynamique}.
+
+Le principe s'articule en deux phases :
+\begin{enumerate}
+    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
+    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distance entre deux contrats est alors définie par leur proximité comportementale dans le temps :
+    $$ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} $$
+\end{enumerate}
+
+\subsubsection{Niveaux de fidélité du moteur proxy}
+Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
+\begin{itemize}
+    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
+    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
+\end{itemize}
+
+Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents. 
+
+L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+
+\subsection{Techniques transverses d'optimisation et pré-traitement}
+
+Au-delà du choix de l'algorithme de clustering, la performance de l'agrégation dépend fortement de la préparation des données et des contraintes métier imposées lors du processus.
+
+\subsubsection{Stratification par Risques Majeurs (TMG et Sexe)}
+Afin d'éviter des compensations de risques biologiquement ou financièrement absurdes, une stratégie de \textbf{pré-split} a été systématiquement appliquée. Le portefeuille est d'abord divisé en strates étanches selon :
+\begin{itemize}
+    \item \textbf{Le Sexe :} Pour garantir le respect des tables de mortalité différenciées.
+    \item \textbf{Le Taux Minimum Garanti (TMG) :} Pour éviter de diluer la valeur des garanties financières.
+\end{itemize}
+L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamment au sein de chaque strate. Cette approche garantit une « pureté » minimale des Model Points finaux.
+
+\subsubsection{Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}
+Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de \textit{Feature Engineering} ont été testées :
+\begin{itemize}
+    \item \textbf{Ajout de la dimension Log-PM :} On ajoute le logarithme de la Provision Mathématique comme variable spatiale. Cela force l'algorithme à regrouper des contrats de taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
+    \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG contre 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
+\end{itemize}
+
+\subsubsection{Visualisation et réduction de dimension (PCA / t-SNE)}
+Pour valider visuellement la qualité des regroupements avant projection ALM, des techniques de réduction de dimension comme la \textbf{Principal Component Analysis (PCA)} ou le \textbf{t-Distributed Stochastic Neighbor Embedding (t-SNE)} ont été utilisées. Elles permettent de projeter l'espace à 12 dimensions des contrats sur un plan 2D et de vérifier que les clusters formés sont bien compacts et disjoints.
 
 \section{Définition du Protocole de Test Comparatif}
 
