@@ -1,4 +1,4 @@
-\chapter{Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}
+\chapter{Présentation des Méthodes d'Agrégation candidates}
 
 Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein de modèles stochastiques gourmands en ressources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clôture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de lancements différents.
 
@@ -12,7 +12,7 @@ Pour répondre à cette question, plusieurs approches d'agrégation seront compa
 
 La démarche s'articulera en trois temps. Les spécificités mathématiques et algorithmiques de chaque méthode candidate seront d'abord exposées. Il s'agira également de détailler le fonctionnement des algorithmes d'apprentissage non supervisé, dont l'usage reste encore peu répandu dans les pratiques actuarielles. Un protocole de test standardisé sera ensuite défini, en précisant les résultats sur le portefeuille de référence et les métriques d'évaluation retenues (écart sur le Best Estimate et taux de compression). Enfin, l'analyse comparative des résultats sera réalisée, ce qui permettra de sélectionner la méthode optimale qui sera utilisée pour les analyses de sensibilité du chapitre suivant.
 
-\section{Présentation des Méthodes d'Agrégation candidates}
+\section{Approche déterministes classiques}
 \subsection{Approche déterministe par regroupement de caractéristiques}
 
 La méthode par regroupement de caractéristiques repose sur une segmentation par classes de risque, cette approche constitue le standard historique en actuariat. Elle servira de base de comparaison pour évaluer la performance des algorithmes de regroupement statistique plus avancés présentés dans les parties suivantes.
@@ -71,6 +71,7 @@ Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a 
     \item \textbf{Smart Granular (Équilibré) :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
 \end{itemize}
 
+\section{Approches statistiques par apprentissage non supervisé}
 \subsection{Approche statistique par apprentissage non supervisé (K-Means)}
 
 Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y placer les groupes semblables, dans notre cas les Model Points.
@@ -293,6 +294,7 @@ La puissance de l'arbre CART réside dans le choix de la métrique à optimiser 
 
 Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
+\section{Approche par travail sur les flux financiers}
 \subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
 
 La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
@@ -315,27 +317,46 @@ Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, pe
 
 L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
 
-\subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
+\subsection{Approche par calibration de lois comportementales a posteriori sur clés d'agrégation financières}
 
-La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regrouper selon leur \textbf{profil de risque dynamique}.
+L'approche par calibration \textit{a posteriori} marque une rupture méthodologique avec les techniques de clustering spatial. Là où les méthodes classiques tentent d'ajuster des contrats à des lois de mortalité existantes, cette approche propose d'adapter les lois de sortie pour qu'elles correspondent parfaitement à un regroupement arbitraire de contrats. L'objectif est d'éliminer le biais d'agrégation en cristallisant la dynamique des flux au sein de groupes définis par leur structure de marge.
 
-Le principe s'articule en deux phases :
-\begin{enumerate}
-    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
-    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distance entre deux contrats est alors définie par leur proximité comportementale dans le temps :
-    $$ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} $$
-\end{enumerate}
+\subsubsection{Définition des clés d'agrégation et cohérence financière}
 
-\subsubsection{Niveaux de fidélité du moteur proxy}
-Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
+Le portefeuille est partitionné selon un triplet de variables financières qui régissent la mécanique de revalorisation. Contrairement aux méthodes démographiques, on regroupe ici les contrats partageant les mêmes caractéristiques de participation aux bénéfices :
 \begin{itemize}
-    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
-    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
+    \item \textbf{Le TMG net} : Le taux minimum garanti servi à l'assuré.
+    \item \textbf{Le TFGSE} : Le taux de frais de gestion sur encours prélevé par l'assureur.
+    \item \textbf{Le TAF} : Le taux d'affectation des produits financiers, définissant la part des produits de l'actif revenant contractuellement au passif.
 \end{itemize}
 
-Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents. 
+Cette segmentation garantit le respect de la relation fondamentale entre le rendement brut et le rendement net du contrat :
+\begin{equation}
+    TMG_{brut} = \frac{TMG_{net} + TFGSE}{TAF}
+\end{equation}
 
-L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+En agrégeant les contrats selon ces trois axes, on s'assure que le \textbf{Model Point Financier (MPF)} résultant possède un seuil de rentabilité brut identique à celui des contrats individuels qui le composent, évitant ainsi toute dilution des garanties ou des marges.
+
+\subsubsection{Protocole de calibration des lois spécifiques}
+
+Une fois les contrats regroupés par identifiants financiers, l'information démographique (âge, sexe) est remplacée par une loi de flux induite. Le processus se déroule en trois étapes :
+
+\begin{enumerate}
+    \item \textbf{Projection de référence} : On projette le portefeuille complet (50 000 contrats) en mode passif seul sous un scénario central. On extrait, pour chaque groupe $k$ et chaque année $t$, les prestations de décès ($D_{k,t}$), les rachats ($R_{k,t}$) et l'encours de début de période ($PM_{k,t-1}$).
+    
+    \item \textbf{Calcul des probabilités induites} : On définit des lois de probabilités « sur-mesure » qui capturent le comportement moyen du groupe :
+    \begin{equation}
+        q_{k,t}^{\text{décès}} = \frac{\sum D_{i,t}}{\sum PM_{i,t-1}} \quad ; \quad q_{k,t}^{\text{rachat}} = \frac{\sum R_{i,t}}{\sum PM_{i,t-1}}
+    \end{equation}
+    
+    \item \textbf{Substitution des lois} : Lors des projections ALM futures, le modèle n'utilise plus les tables de mortalité classiques. Il appelle, via l'ID du Model Point, le vecteur $[q_{k,1}, \dots, q_{k,T}]$ calibré.
+\end{enumerate}
+
+\subsubsection{Analyse de la propriété de « Biais Zéro »}
+
+Cette méthode permet d'obtenir un \textbf{écart rigoureusement nul sur le Best Estimate} en scénario central. Puisque les lois de sortie sont directement issues de la projection exhaustive, le Model Point agrégé reproduit exactement la cinétique des flux originaux. 
+
+Cependant, cette approche rend le modèle « aveugle » à la structure par âge réelle. Pour les analyses de solvabilité, il devient nécessaire de recalculer ces lois induites sous les différents scénarios de choc (choc de mortalité ou choc de rachat) ou d'appliquer des coefficients de déformation aux probabilités $q_{k,t}$ pour refléter la sensibilité démographique sous-jacente.
 
 \subsection{Techniques transverses d'optimisation et pré-traitement}
 
