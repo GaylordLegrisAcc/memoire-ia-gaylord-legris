@@ -356,131 +356,129 @@ Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de 
     \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG contre 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
 \end{itemize}
 
-\subsubsection{Visualisation et réduction de dimension (PCA / t-SNE)}
-Pour valider visuellement la qualité des regroupements avant projection ALM, des techniques de réduction de dimension comme la \textbf{Principal Component Analysis (PCA)} ou le \textbf{t-Distributed Stochastic Neighbor Embedding (t-SNE)} ont été utilisées. Elles permettent de projeter l'espace à 12 dimensions des contrats sur un plan 2D et de vérifier que les clusters formés sont bien compacts et disjoints.
 
-\section{Définition du Protocole de Test Comparatif}
+% \section{Définition du Protocole de Test Comparatif}
 
-La sélection de la méthode d'agrégation optimale ne peut reposer sur une simple intuition statistique. Elle nécessite un cadre expérimental rigoureux, capable de simuler les conditions réelles d'une clôture prudentielle. Ce protocole vise à mettre en concurrence la simplicité des méthodes déterministes et la puissance des approches par apprentissage, tout en quantifiant précisément le risque de modèle induit par l'agrégation.
+% La sélection de la méthode d'agrégation optimale ne peut reposer sur une simple intuition statistique. Elle nécessite un cadre expérimental rigoureux, capable de simuler les conditions réelles d'une clôture prudentielle. Ce protocole vise à mettre en concurrence la simplicité des méthodes déterministes et la puissance des approches par apprentissage, tout en quantifiant précisément le risque de modèle induit par l'agrégation.
 
-\subsection{Constitution des portefeuilles de test}
+% \subsection{Constitution des portefeuilles de test}
 
-L'étude s'appuie sur un portefeuille de référence, désigné par la suite comme le « Portefeuille Full », composé de \textbf{50 000 contrats individuels}. Ce volume a été choisi pour représenter une taille critique permettant d'observer les phénomènes de compensation statistique tout en restant techniquement projetable en un temps raisonnable pour établir une base de comparaison exacte.
+% L'étude s'appuie sur un portefeuille de référence, désigné par la suite comme le « Portefeuille Full », composé de \textbf{50 000 contrats individuels}. Ce volume a été choisi pour représenter une taille critique permettant d'observer les phénomènes de compensation statistique tout en restant techniquement projetable en un temps raisonnable pour établir une base de comparaison exacte.
 
-Chaque contrat est défini par un vecteur de caractéristiques multidimensionnel $\mathbf{x}_i \in \mathbb{R}^{12}$, comprenant notamment :
-\begin{itemize}
-    \item \textbf{Variables de risques biométriques :} Âge de l'assuré (de 18 à 95 ans) et Sexe.
-    \item \textbf{Variables de structure fiscale :} Ancienneté du contrat (cruciale pour les lois de rachat et la fiscalité en cas de décès).
-    \item \textbf{Variables financières :} Provision Mathématique (PM), Taux Minimum Garanti (TMG) variant de 0\% à 4,5\%, et taux de chargement.
-\end{itemize}
+% Chaque contrat est défini par un vecteur de caractéristiques multidimensionnel $\mathbf{x}_i \in \mathbb{R}^{12}$, comprenant notamment :
+% \begin{itemize}
+%     \item \textbf{Variables de risques biométriques :} Âge de l'assuré (de 18 à 95 ans) et Sexe.
+%     \item \textbf{Variables de structure fiscale :} Ancienneté du contrat (cruciale pour les lois de rachat et la fiscalité en cas de décès).
+%     \item \textbf{Variables financières :} Provision Mathématique (PM), Taux Minimum Garanti (TMG) variant de 0\% à 4,5\%, et taux de chargement.
+% \end{itemize}
 
-Le processus de mise en œuvre suit une architecture en trois étapes distinctes, automatisée via le script \texttt{main/run\_etude\_agregation.py} :
-\begin{enumerate}
-    \item \textbf{Phase de pré-traitement :} Standardisation (z-score) des variables continues pour éviter que l'Âge (échelle 0-100) n'écrase le TMG (échelle 0-0.04) dans les calculs de distances euclidiennes. Pour les méthodes de densité (DBSCAN/HDBSCAN), une étape de \textit{dithering} est ajoutée pour briser les grilles artificielles dues à la discrétisation des données de gestion.
-    \item \textbf{Génération des Model Points :} Application de l'algorithme cible pour obtenir un fichier de passif compressé. Pour chaque méthode, nous avons fait varier les hyperparamètres (nombre de clusters $K$, pas des tranches, seuils de densité) afin de générer une famille de portefeuilles de 25 à 5 000 lignes.
-    \item \textbf{Projection ALM Massive :} Chaque portefeuille compressé est injecté dans le moteur de projection \texttt{modelealm}. Contrairement à une projection simplifiée, nous utilisons ici le modèle complet : projection sur 50 ans, scénario central Best Estimate, avec application des lois de comportement (rachats conjoncturels, arbitrages) et de la logique de participation aux bénéfices (PB).
-\end{enumerate}
+% Le processus de mise en œuvre suit une architecture en trois étapes distinctes, automatisée via le script \texttt{main/run\_etude\_agregation.py} :
+% \begin{enumerate}
+%     \item \textbf{Phase de pré-traitement :} Standardisation (z-score) des variables continues pour éviter que l'Âge (échelle 0-100) n'écrase le TMG (échelle 0-0.04) dans les calculs de distances euclidiennes. Pour les méthodes de densité (DBSCAN/HDBSCAN), une étape de \textit{dithering} est ajoutée pour briser les grilles artificielles dues à la discrétisation des données de gestion.
+%     \item \textbf{Génération des Model Points :} Application de l'algorithme cible pour obtenir un fichier de passif compressé. Pour chaque méthode, nous avons fait varier les hyperparamètres (nombre de clusters $K$, pas des tranches, seuils de densité) afin de générer une famille de portefeuilles de 25 à 5 000 lignes.
+%     \item \textbf{Projection ALM Massive :} Chaque portefeuille compressé est injecté dans le moteur de projection \texttt{modelealm}. Contrairement à une projection simplifiée, nous utilisons ici le modèle complet : projection sur 50 ans, scénario central Best Estimate, avec application des lois de comportement (rachats conjoncturels, arbitrages) et de la logique de participation aux bénéfices (PB).
+% \end{enumerate}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Workflow du Protocole de Test]} \\
-        \textit{Schéma montrant le flux : Portefeuille Initial $\rightarrow$ Clustering $\rightarrow$ Vecteurs de flux $\rightarrow$ Moteur ALM $\rightarrow$ Comparaison BE}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Schéma de mise en œuvre du protocole de test comparatif}
-    \label{fig:workflow_test}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\begin{minipage}{0.8\textwidth}
+%         \centering
+%         \vspace{2cm}
+%         \textbf{[GRAPHIQUE : Workflow du Protocole de Test]} \\
+%         \textit{Schéma montrant le flux : Portefeuille Initial $\rightarrow$ Clustering $\rightarrow$ Vecteurs de flux $\rightarrow$ Moteur ALM $\rightarrow$ Comparaison BE}
+%         \vspace{2cm}
+%     \end{minipage}}
+%     \caption{Schéma de mise en œuvre du protocole de test comparatif}
+%     \label{fig:workflow_test}
+% \end{figure}
 
-\subsection{Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}
+% \subsection{Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}
 
-Le choix final de la méthode repose sur un arbitrage multicritère. En actuariat, cet arbitrage est souvent résumé par la recherche d'un point optimal sur la « Courbe de Pareto » entre précision et temps de calcul.
+% Le choix final de la méthode repose sur un arbitrage multicritère. En actuariat, cet arbitrage est souvent résumé par la recherche d'un point optimal sur la « Courbe de Pareto » entre précision et temps de calcul.
 
-\begin{itemize}
-    \item \textbf{La fidélité sur le Best Estimate (BE) :} C'est l'indicateur souverain. On mesure l'erreur relative $\Delta_{BE} \%$. Une erreur supérieure à $0,05\%$ est considérée comme significative et potentiellement pénalisante lors d'un audit de conformité.
-    $$ \Delta_{BE} \% = \frac{BE_{agr\acute{e}g\acute{e}} - BE_{r\acute{e}f\acute{e}rence}}{BE_{r\acute{e}f\acute{e}rence}} $$
-    \item \textbf{La préservation de la "Pureté Financière" :} Une bonne méthode d'agrégation ne doit pas diluer les taux garantis. Si l'on regroupe un contrat à 0\% et un contrat à 4\%, le Model Point moyen à 2\% aura un comportement de rachat et de marge financière totalement différent des deux contrats originaux. Nous mesurerons cet effet via la variance du TMG au sein des clusters.
-    \item \textbf{Le taux de compression (Nombre de MP) :} On cherche à minimiser le nombre de Model Points finaux. Un portefeuille de moins de 1 000 lignes est privilégié pour permettre des calculs rapides lors des analyses de sensibilité du chapitre suivant.
-    \item \textbf{Le temps de constitution (Overhead) :} Pour les méthodes avancées comme le Cash-Flow Matching, le temps nécessaire à la génération des flux « proxy » ou à l'entraînement de l'algorithme doit rester marginal par rapport au gain de temps de projection globale.
-\end{itemize}
+% \begin{itemize}
+%     \item \textbf{La fidélité sur le Best Estimate (BE) :} C'est l'indicateur souverain. On mesure l'erreur relative $\Delta_{BE} \%$. Une erreur supérieure à $0,05\%$ est considérée comme significative et potentiellement pénalisante lors d'un audit de conformité.
+%     $$ \Delta_{BE} \% = \frac{BE_{agr\acute{e}g\acute{e}} - BE_{r\acute{e}f\acute{e}rence}}{BE_{r\acute{e}f\acute{e}rence}} $$
+%     \item \textbf{La préservation de la "Pureté Financière" :} Une bonne méthode d'agrégation ne doit pas diluer les taux garantis. Si l'on regroupe un contrat à 0\% et un contrat à 4\%, le Model Point moyen à 2\% aura un comportement de rachat et de marge financière totalement différent des deux contrats originaux. Nous mesurerons cet effet via la variance du TMG au sein des clusters.
+%     \item \textbf{Le taux de compression (Nombre de MP) :} On cherche à minimiser le nombre de Model Points finaux. Un portefeuille de moins de 1 000 lignes est privilégié pour permettre des calculs rapides lors des analyses de sensibilité du chapitre suivant.
+%     \item \textbf{Le temps de constitution (Overhead) :} Pour les méthodes avancées comme le Cash-Flow Matching, le temps nécessaire à la génération des flux « proxy » ou à l'entraînement de l'algorithme doit rester marginal par rapport au gain de temps de projection globale.
+% \end{itemize}
 
-\section{Analyse Comparative et Choix de la Méthode Optimale}
+% \section{Analyse Comparative et Choix de la Méthode Optimale}
 
-\subsection{Synthèse des performances pour chaque méthode candidate}
+% \subsection{Synthèse des performances pour chaque méthode candidate}
 
-L'analyse massive réalisée (plus de 150 simulations individuelles) a permis de dresser une matrice de performance exhaustive. Cette « Giga Matrice » permet d'isoler le comportement de chaque algorithme face à la compression.
+% L'analyse massive réalisée (plus de 150 simulations individuelles) a permis de dresser une matrice de performance exhaustive. Cette « Giga Matrice » permet d'isoler le comportement de chaque algorithme face à la compression.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{llcccc}
-\toprule
-\textbf{Méthode} & \textbf{Variante / Paramètres} & \textbf{Nb MP} & \textbf{Erreur BE \%} & \textbf{Écart (M€)} & \textbf{Robustesse} \\ 
-\midrule
-\textit{Référence} & \textit{Portefeuille 50k lignes} & \textit{50 000} & \textit{0,000 \%} & \textit{0,0} & \textit{Absolue} \\
-\midrule
-\rowcolor{blue!10} \textbf{Cash-Flow} & \textbf{Real OPS (n=2000)} & \textbf{2 060} & \textbf{< 0,00001 \%} & \textbf{0,001} & \textbf{Maximale} \\
-\rowcolor{blue!5} \textbf{Cash-Flow} & \textbf{Real OPS (n=500)} & \textbf{679} & \textbf{0,00017 \%} & \textbf{0,022} & \textbf{Excellente} \\
-\midrule
-\textbf{HDBSCAN} & Selection: Leaf (Fin) & 1 632 & 0,00068 \% & 0,086 & Très sensible \\
-\textbf{Banding} & Smart Granular (Âge/Anc) & 708 & 0,00068 \% & 0,086 & Très stable \\
-\textbf{K-Means} & Pondéré PM (n=2500) & 2 499 & 0,00116 \% & 0,146 & Constante \\
-\textbf{K-Means} & Pondéré PM (n=500) & 499 & 0,00143 \% & 0,180 & Bonne \\
-\midrule
-\textbf{CART} & Refined (Cible PM/TMG) & 499 & -0,14940 \% & -18,76 & Biaisée \\
-\textbf{HDBSCAN} & Selection: EOM (Densité) & 86 & 0,11671 \% & 14,65 & Instable \\
-\textbf{CART} & Spread Focus (Compression) & 26 & 0,13197 \% & 16,57 & Trop grossière \\
-\bottomrule
-\end{tabular}
-\caption{Matrice comparative des performances d'agrégation sur le Best Estimate}
-\label{tab:giga_matrice_resultats}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \small
+% \begin{tabular}{llcccc}
+% \toprule
+% \textbf{Méthode} & \textbf{Variante / Paramètres} & \textbf{Nb MP} & \textbf{Erreur BE \%} & \textbf{Écart (M€)} & \textbf{Robustesse} \\ 
+% \midrule
+% \textit{Référence} & \textit{Portefeuille 50k lignes} & \textit{50 000} & \textit{0,000 \%} & \textit{0,0} & \textit{Absolue} \\
+% \midrule
+% \rowcolor{blue!10} \textbf{Cash-Flow} & \textbf{Real OPS (n=2000)} & \textbf{2 060} & \textbf{< 0,00001 \%} & \textbf{0,001} & \textbf{Maximale} \\
+% \rowcolor{blue!5} \textbf{Cash-Flow} & \textbf{Real OPS (n=500)} & \textbf{679} & \textbf{0,00017 \%} & \textbf{0,022} & \textbf{Excellente} \\
+% \midrule
+% \textbf{HDBSCAN} & Selection: Leaf (Fin) & 1 632 & 0,00068 \% & 0,086 & Très sensible \\
+% \textbf{Banding} & Smart Granular (Âge/Anc) & 708 & 0,00068 \% & 0,086 & Très stable \\
+% \textbf{K-Means} & Pondéré PM (n=2500) & 2 499 & 0,00116 \% & 0,146 & Constante \\
+% \textbf{K-Means} & Pondéré PM (n=500) & 499 & 0,00143 \% & 0,180 & Bonne \\
+% \midrule
+% \textbf{CART} & Refined (Cible PM/TMG) & 499 & -0,14940 \% & -18,76 & Biaisée \\
+% \textbf{HDBSCAN} & Selection: EOM (Densité) & 86 & 0,11671 \% & 14,65 & Instable \\
+% \textbf{CART} & Spread Focus (Compression) & 26 & 0,13197 \% & 16,57 & Trop grossière \\
+% \bottomrule
+% \end{tabular}
+% \caption{Matrice comparative des performances d'agrégation sur le Best Estimate}
+% \label{tab:giga_matrice_resultats}
+% \end{table}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Courbe de Pareto Précision/Compression]} \\
-        \textit{Axes : X = Nb Model Points (log), Y = Erreur BE \% (log). \\ Courbes pour : Banding, K-Means, Cash-Flow. On doit voir Cash-Flow Real OPS s'effondrer vers 0 beaucoup plus vite que les autres.}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Arbitrage Précision vs Nombre de Model Points par méthode}
-    \label{fig:pareto_agreg}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\begin{minipage}{0.8\textwidth}
+%         \centering
+%         \vspace{2cm}
+%         \textbf{[GRAPHIQUE : Courbe de Pareto Précision/Compression]} \\
+%         \textit{Axes : X = Nb Model Points (log), Y = Erreur BE \% (log). \\ Courbes pour : Banding, K-Means, Cash-Flow. On doit voir Cash-Flow Real OPS s'effondrer vers 0 beaucoup plus vite que les autres.}
+%         \vspace{2cm}
+%     \end{minipage}}
+%     \caption{Arbitrage Précision vs Nombre de Model Points par méthode}
+%     \label{fig:pareto_agreg}
+% \end{figure}
 
-Plusieurs enseignements majeurs découlent de ces résultats :
-\begin{enumerate}
-    \item \textbf{La supériorité du Cash-Flow Matching :} Cette méthode (Real OPS) surpasse l'ensemble des approches classiques. En regroupant les contrats sur leur \textit{comportement projeté} (vecteurs de flux) plutôt que sur leurs caractéristiques statiques, elle capture toutes les non-linéarités métier. L'erreur est divisée par 10 par rapport à un Banding classique pour un nombre de points équivalent.
-    \item \textbf{L'efficacité du Banding « Smart » :} Pour une méthode déterministe, le Banding avec une discrétisation fine de l'âge et de l'ancienneté reste extrêmement robuste (erreur < 0,001\%). Sa simplicité de mise en œuvre en fait un excellent standard de marché.
-    \item \textbf{L'instabilité des méthodes de densité :} HDBSCAN, bien que capable d'identifier des structures complexes, est extrêmement sensible au paramétrage. Un changement mineur de densité (\textit{selection method}) fait osciller le nombre de MP de 80 à 1 600, rendant son usage industriel difficile sans un étalonnage permanent.
-    \item \textbf{Le biais des Arbres de Décision (CART) :} Bien qu'offrant des taux de compression records (jusqu'à 26 lignes), le CART présente un biais systématique. La structure par paliers de l'arbre tend à créer des ruptures artificielles dans la distribution des TMG, générant une erreur de plus de 0,10\%, ce qui est jugé trop élevé pour une étude de précision.
-\end{enumerate}
+% Plusieurs enseignements majeurs découlent de ces résultats :
+% \begin{enumerate}
+%     \item \textbf{La supériorité du Cash-Flow Matching :} Cette méthode (Real OPS) surpasse l'ensemble des approches classiques. En regroupant les contrats sur leur \textit{comportement projeté} (vecteurs de flux) plutôt que sur leurs caractéristiques statiques, elle capture toutes les non-linéarités métier. L'erreur est divisée par 10 par rapport à un Banding classique pour un nombre de points équivalent.
+%     \item \textbf{L'efficacité du Banding « Smart » :} Pour une méthode déterministe, le Banding avec une discrétisation fine de l'âge et de l'ancienneté reste extrêmement robuste (erreur < 0,001\%). Sa simplicité de mise en œuvre en fait un excellent standard de marché.
+%     \item \textbf{L'instabilité des méthodes de densité :} HDBSCAN, bien que capable d'identifier des structures complexes, est extrêmement sensible au paramétrage. Un changement mineur de densité (\textit{selection method}) fait osciller le nombre de MP de 80 à 1 600, rendant son usage industriel difficile sans un étalonnage permanent.
+%     \item \textbf{Le biais des Arbres de Décision (CART) :} Bien qu'offrant des taux de compression records (jusqu'à 26 lignes), le CART présente un biais systématique. La structure par paliers de l'arbre tend à créer des ruptures artificielles dans la distribution des TMG, générant une erreur de plus de 0,10\%, ce qui est jugé trop élevé pour une étude de précision.
+% \end{enumerate}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Visualisation 2D des vecteurs de flux]} \\
-        \textit{Projection (type PCA ou t-SNE) des vecteurs de flux projetés. Les points de couleurs différentes représentent les Model Points constitués. On doit voir des grappes très nettes correspondant aux générations de contrats.}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Visualisation de la proximité des contrats dans l'espace des flux futurs}
-    \label{fig:viz_cashflow}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\begin{minipage}{0.8\textwidth}
+%         \centering
+%         \vspace{2cm}
+%         \textbf{[GRAPHIQUE : Visualisation 2D des vecteurs de flux]} \\
+%         \textit{Projection (type PCA ou t-SNE) des vecteurs de flux projetés. Les points de couleurs différentes représentent les Model Points constitués. On doit voir des grappes très nettes correspondant aux générations de contrats.}
+%         \vspace{2cm}
+%     \end{minipage}}
+%     \caption{Visualisation de la proximité des contrats dans l'espace des flux futurs}
+%     \label{fig:viz_cashflow}
+% \end{figure}
 
-\subsection{Justification du choix de la méthode retenue pour l'analyse de sensibilité}
+% \subsection{Justification du choix de la méthode retenue pour l'analyse de sensibilité}
 
-Au terme de cette analyse comparative, la méthode \textbf{Cash-Flow Clustering (Real OPS)} est retenue pour la suite de ce mémoire. 
+% Au terme de cette analyse comparative, la méthode \textbf{Cash-Flow Clustering (Real OPS)} est retenue pour la suite de ce mémoire. 
 
-Ce choix est justifié par trois arguments majeurs :
-\begin{enumerate}
-    \item \textbf{Précision Chirurgicale :} Avec une erreur relative de $10^{-7}$ (soit quasiment le niveau de précision des flottants informatiques), elle garantit que l'agrégation est « transparente ». Les résultats de sensibilité du chapitre suivant ne seront pas pollués par un bruit de regroupement.
-    \item \textbf{Compression Optimale :} Elle permet de diviser la taille du portefeuille par \textbf{75} (passant de 50 000 à 679 lignes) tout en restant plus précise que n'importe quelle autre méthode à 2 000 lignes. Ce gain de dimension est crucial pour réaliser les milliers de projections stochastiques nécessaires au calcul du SCR.
-    \item \textbf{Économie de Calcul :} Bien qu'elle nécessite une pré-projection déterministe sur 20 ans pour chaque contrat individuel, ajoutant un temps de préparation d'environ 30 secondes, ce coût est largement compensé par la réduction drastique du temps de projection ALM globale sans sacrifier la justesse actuarielle.
-\end{enumerate}
+% Ce choix est justifié par trois arguments majeurs :
+% \begin{enumerate}
+%     \item \textbf{Précision Chirurgicale :} Avec une erreur relative de $10^{-7}$ (soit quasiment le niveau de précision des flottants informatiques), elle garantit que l'agrégation est « transparente ». Les résultats de sensibilité du chapitre suivant ne seront pas pollués par un bruit de regroupement.
+%     \item \textbf{Compression Optimale :} Elle permet de diviser la taille du portefeuille par \textbf{75} (passant de 50 000 à 679 lignes) tout en restant plus précise que n'importe quelle autre méthode à 2 000 lignes. Ce gain de dimension est crucial pour réaliser les milliers de projections stochastiques nécessaires au calcul du SCR.
+%     \item \textbf{Économie de Calcul :} Bien qu'elle nécessite une pré-projection déterministe sur 20 ans pour chaque contrat individuel, ajoutant un temps de préparation d'environ 30 secondes, ce coût est largement compensé par la réduction drastique du temps de projection ALM globale sans sacrifier la justesse actuarielle.
+% \end{enumerate}
 
-Cette méthode offre le meilleur compromis pour les analyses de sensibilité du chapitre suivant : elle garantit que les variations de BE qui seront mesurées seront exclusivement dues aux chocs économiques appliqués, et non à un bruit d'agrégation résiduel.
+% Cette méthode offre le meilleur compromis pour les analyses de sensibilité du chapitre suivant : elle garantit que les variations de BE qui seront mesurées seront exclusivement dues aux chocs économiques appliqués, et non à un bruit d'agrégation résiduel.

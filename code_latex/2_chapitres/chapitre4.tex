@@ -1,51 +1,131 @@
-\chapter{Analyse de Sensibilité des Indicateurs S2 aux Caractéristiques du Passif}
+\chapter{Protocole d'Analyse et Résultats de l'Agrégation}
 
-Le but de ce chapitre est de tester la robustesse de la méthode d'agrégation selectionnée au chapitre 4. Pour ce faire, des chocs (réglementaires + autres) seront appliqués sur des portefeuilles de test générés via le générateur présenté au chapitre 3. L'objectif est d'analyser l'impact de ces chocs sur les indicateurs S2 (BE, SCR) en comparant les résultats obtenus sur les portefeuilles granulaires (sans agrégation) et les portefeuilles agrégés (avec la méthode d'agrégation retenue). Cette analyse permettra de vérifier que la méthode d'agrégation choisie préserve la sensibilité des indicateurs aux variations des caractéristiques du passif, assurant ainsi la fiabilité des analyses de risque et de solvabilité dans un contexte d'optimisation computationnelle.
-\section{Définition des Scénarios de Sensibilité}
-    \subsection{Création des portefeuilles de test via le générateur}
+Ce chapitre constitue le cœur expérimental de cette étude. Après avoir exposé les fondements théoriques des méthodes d'agrégation, il s'agit désormais de mettre en œuvre un cadre rigoureux pour comparer leurs performances. L'objectif est double : quantifier précisément le risque de modèle induit par la réduction de dimension sur le passif seul, puis valider la robustesse de la méthode sélectionnée à travers des analyses de sensibilité.
+
+\section{Définition du Protocole de Test Comparatif}
+
+La sélection de la méthode d'agrégation optimale ne peut reposer sur une simple intuition statistique. Elle nécessite un cadre expérimental capable de simuler les conditions réelles d'une clôture prudentielle, en mettant en concurrence la simplicité des méthodes déterministes et la puissance des approches par apprentissage.
+
+\subsection{Constitution des portefeuilles de test}
+
+L'étude s'appuie sur un portefeuille de référence, désigné par la suite comme le « Portefeuille Full », composé de \textbf{50 000 contrats individuels}. Ce volume a été choisi pour représenter une taille critique permettant d'observer les phénomènes de compensation statistique tout en restant techniquement projetable en un temps raisonnable pour établir une base de comparaison exacte.
+
+Chaque contrat est défini par un vecteur de caractéristiques multidimensionnel $\mathbf{x}_i \in \mathbb{R}^{12}$, comprenant notamment :
+\begin{itemize}
+    \item \textbf{Variables de risques biométriques :} Âge de l'assuré (de 18 à 95 ans) et Sexe.
+    \item \textbf{Variables de structure fiscale :} Ancienneté du contrat (cruciale pour les lois de rachat et la fiscalité en cas de décès).
+    \item \textbf{Variables financières :} Provision Mathématique (PM), Taux Minimum Garanti (TMG) variant de 0\% à 4,5\%, et taux de chargement.
+\end{itemize}
+
+Le processus de mise en œuvre suit une architecture en trois étapes distinctes :
+\begin{enumerate}
+    \item \textbf{Phase de pré-traitement :} Standardisation (z-score) des variables continues et application du \textit{dithering} pour les méthodes de densité afin de fluidifier l'espace des données discrétisées.
+    \item \textbf{Génération des Model Points :} Application de chaque algorithme cible pour obtenir des portefeuilles compressés. Pour chaque méthode, nous avons fait varier les hyperparamètres afin de générer une famille de portefeuilles allant de 25 à 5 000 lignes.
+    \item \textbf{Projection ALM Massive :} Chaque portefeuille compressé est injecté dans le moteur de projection complet (projection sur 50 ans, scénario central Best Estimate) pour mesurer l'impact réel sur les flux.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{2cm}
+        \textbf{[GRAPHIQUE : Workflow du Protocole de Test]} \\
+        \textit{Schéma montrant le flux : Portefeuille Initial $\rightarrow$ Clustering $\rightarrow$ Vecteurs de flux $\rightarrow$ Moteur ALM $\rightarrow$ Comparaison BE}
+        \vspace{2cm}
+    \end{minipage}}
+    \caption{Schéma de mise en œuvre du protocole de test comparatif}
+    \label{fig:workflow_test}
+\end{figure}
+
+\subsection{Définition des critères de sélection}
+
+Le choix final de la méthode repose sur un arbitrage multicritère, principalement axé sur la recherche d'un point optimal sur la « Courbe de Pareto » entre précision et taux de compression.
+
+\begin{itemize}
+    \item \textbf{La fidélité sur le Best Estimate (BE) :} Mesurée par l'erreur relative $\Delta_{BE} \%$. Une erreur supérieure à $0,05\%$ est considérée comme significative.
+    $$ \Delta_{BE} \% = \frac{BE_{agr\acute{e}g\acute{e}} - BE_{r\acute{e}f\acute{e}rence}}{BE_{r\acute{e}f\acute{e}rence}} $$
+    \item \textbf{La préservation de la "Pureté Financière" :} Capacité de la méthode à ne pas diluer les taux garantis (TMG) au sein des groupes.
+    \item \textbf{Le taux de compression :} On cherche à descendre en dessous de 1 000 Model Points pour garantir la fluidité des calculs stochastiques futurs.
+    \item \textbf{Le temps de constitution (Overhead) :} Le coût de préparation des données doit rester marginal par rapport au gain de temps de projection.
+\end{itemize}
+
+\section{Analyse Comparative et Choix de la Méthode Optimale}
+
+\subsection{Synthèse des performances sur le passif seul}
+
+L'analyse massive réalisée (plus de 150 simulations individuelles) a permis de dresser une matrice de performance exhaustive permettant d'isoler le comportement de chaque algorithme face à la compression.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Méthode} & \textbf{Variante / Paramètres} & \textbf{Nb MP} & \textbf{Erreur BE \%} & \textbf{Écart (M€)} & \textbf{Robustesse} \\ 
+\midrule
+\textit{Référence} & \textit{Portefeuille 50k lignes} & \textit{50 000} & \textit{0,000 \%} & \textit{0,0} & \textit{Absolue} \\
+\midrule
+\rowcolor{blue!10} \textbf{Cash-Flow} & \textbf{Real OPS (n=2000)} & \textbf{2 060} & \textbf{< 0,00001 \%} & \textbf{0,001} & \textbf{Maximale} \\
+\rowcolor{blue!5} \textbf{Cash-Flow} & \textbf{Real OPS (n=500)} & \textbf{679} & \textbf{0,00017 \%} & \textbf{0,022} & \textbf{Excellente} \\
+\midrule
+\textbf{HDBSCAN} & Selection: Leaf (Fin) & 1 632 & 0,00068 \% & 0,086 & Très sensible \\
+\textbf{Banding} & Smart Granular (Âge/Anc) & 708 & 0,00068 \% & 0,086 & Très stable \\
+\textbf{K-Means} & Pondéré PM (n=2500) & 2 499 & 0,00116 \% & 0,146 & Constante \\
+\textbf{K-Means} & Pondéré PM (n=500) & 499 & 0,00143 \% & 0,180 & Bonne \\
+\midrule
+\textbf{CART} & Refined (Cible PM/TMG) & 499 & -0,14940 \% & -18,76 & Biaisée \\
+\textbf{HDBSCAN} & Selection: EOM (Densité) & 86 & 0,11671 \% & 14,65 & Instable \\
+\textbf{CART} & Spread Focus (Compression) & 26 & 0,13197 \% & 16,57 & Trop grossière \\
+\bottomrule
+\end{tabular}
+\caption{Matrice comparative des performances d'agrégation sur le Best Estimate}
+\label{tab:giga_matrice_resultats}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{2cm}
+        \textbf{[GRAPHIQUE : Courbe de Pareto Précision/Compression]} \\
+        \textit{Axes : X = Nb Model Points (log), Y = Erreur BE \% (log). \\ Courbes pour : Banding, K-Means, Cash-Flow.}
+        \vspace{2cm}
+    \end{minipage}}
+    \caption{Arbitrage Précision vs Nombre de Model Points par méthode}
+    \label{fig:pareto_agreg}
+\end{figure}
+
+Plusieurs enseignements majeurs découlent de ces résultats :
+\begin{enumerate}
+    \item \textbf{La supériorité du Cash-Flow Matching :} Cette méthode surpasse l'ensemble des approches classiques. En regroupant les contrats sur leur comportement projeté plutôt que sur leurs caractéristiques statiques, elle capture toutes les non-linéarités métier.
+    \item \textbf{L'efficacité du Banding « Smart » :} Le Banding avec une discrétisation fine reste extrêmement robuste (erreur < 0,001\%), constituant un excellent standard de marché.
+    \item \textbf{L'instabilité des méthodes de densité :} HDBSCAN est extrêmement sensible au paramétrage, ce qui rend son usage industriel délicat.
+    \item \textbf{Le biais des Arbres de Décision (CART) :} Bien qu'offrant de forts taux de compression, le CART présente un biais systématique trop élevé pour une étude de précision.
+\end{enumerate}
+
+\subsection{Justification du choix de la méthode retenue}
+
+Au terme de cette analyse, la méthode \textbf{Cash-Flow Clustering (Real OPS)} est retenue pour la suite de ce mémoire. Elle offre le meilleur compromis : une erreur relative négligeable ($10^{-7}$) et une division par 75 de la taille du portefeuille. Cela garantit que les variations de BE mesurées dans les sections suivantes seront exclusivement dues aux chocs appliqués, et non à un bruit d'agrégation.
+
+\section{Analyse de Sensibilité des Indicateurs S2}
+
+Le but de cette section est de tester la robustesse de la méthode d'agrégation sélectionnée face à des variations de l'environnement ou du portefeuille.
+
+\subsection{Définition des Scénarios de Sensibilité}
+    \subsubsection{Création des portefeuilles de test via le générateur}
     % Votre texte ici...
-    \subsection{Description des chocs sur les variables clés (âge, montant de la PM, etc.)}
+    \subsubsection{Description des chocs sur les variables clés (âge, montant de la PM, etc.)}
     % Votre texte ici...
-    \subsection{Scénario d'intégration d'un nouveau produit dans le portefeuille}
+    \subsubsection{Scénario d'intégration d'un nouveau produit dans le portefeuille}
     % Votre texte ici...
 
-\section{Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}
-    \subsection{Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}
+\subsection{Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}
+    \subsubsection{Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}
     % Votre texte ici...
-    \subsection{Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}
+    \subsubsection{Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}
     % Votre texte ici...
 
 \section{Interprétation des Résultats et Validation de l'Approche}
-    \subsection{Validation de la performance de la chaîne de modélisation (Générateur - Agrégation - Modèle ALM)}
+    \subsection{Validation de la performance de la chaîne de modélisation}
     % Votre texte ici...
-    \subsection{Enseignements sur la sensibilité des portefeuilles aux modifications de caractéristiques du passif}
+    \subsection{Enseignements sur la sensibilité des portefeuilles aux modifications du passif}
     % Votre texte ici...
-
-% \chapter{Résultats et Analyse des Sensibilités}
-
-% % Introduction du chapitre : Expliquer que ce chapitre présente les résultats
-% % de l'application du protocole défini au chapitre 4. C'est le "quoi" de l'analyse.
-
-% \section{Application de la Méthode d'Agrégation sur les Portefeuilles de Test}
-% % Appliquer la méthode choisie en 4.3 sur les portefeuilles définis en 4.2.
-
-% \subsection{Analyse des Portefeuilles Agrégés}
-% % Analyser brièvement les portefeuilles agrégés.
-% % Question clé à répondre ici : Les chocs et modifications sont-ils toujours
-% % visibles et bien représentés après l'agrégation ?
-
-% \section{Analyse des Sensibilités sur les Indicateurs Solvabilité 2}
-% % C'est le cœur de vos résultats.
-% % Présenter les résultats issus du modèle ALM pour chaque scénario de sensibilité.
-% % Comparer les indicateurs (BE, SCR) entre le portefeuille de base et les portefeuilles modifiés.
-
-% \section{Interprétation des Résultats et Validation de l'Approche}
-% % Prendre du recul sur les résultats chiffrés.
-
-% \subsection{Évaluation de la performance du générateur}
-% % Dans quelle mesure les résultats confirment-ils que le générateur produit
-% % des portefeuilles réactifs et cohérents ?
-
-% \subsection{Synthèse des impacts observés}
-% % Quelles sont les différences clés observées ? Quels sont les enseignements
-% % principaux des tests de sensibilité ?
