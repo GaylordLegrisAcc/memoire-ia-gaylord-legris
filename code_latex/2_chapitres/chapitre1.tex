@@ -306,21 +306,58 @@ Pour la suite de ce mémoire, je vais me concentrer sur l'univers risque neutre 
 \section{La représentation du passif : le concept de \textit{Model Point}}
 \label{sec:mp}
 
-\subsection{La nécessité de l'agrégation}
+\subsection{Enjeux de l'agrégation et réduction de la dimensionnalité}
 
-Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices. Une modélisation "police à police" est techniquement possible mais informatiquement très chronophage voire irréalisable pour des calculs stochastiques complexes comme ceux requis par les modèles ALM. La charge de calcul deviendrait prohibitive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle majeure.
+Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices. Une modélisation "police à police" est techniquement possible mais informatiquement très chronophage, voire irréalisable pour des calculs stochastiques complexes comme ceux requis par les modèles ALM, où chaque contrat doit être projeté sur des milliers de scénarios économiques.
 
+La charge de calcul deviendrait excessive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle majeure. La réponse standard à cette contrainte est la création de \textbf{\textit{Model Points}} (MP). Un MP est un contrat synthétique représentant un agrégat de polices partageant des caractéristiques homogènes (âge, ancienneté, type de produit, TMG). L'objectif est de réduire drastiquement le volume de données à traiter tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet.
 
+\subsection{Cadre réglementaire et exigences de validation}
 
-La réponse standard à cette contrainte est la création de \textbf{\textit{Model Points}} (MP). Un MP est un contrat synthétique représentant un agrégat de polices partageant des caractéristiques homogènes. L'objectif est de réduire drastiquement le volume de données à traiter tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet. La qualité de la représentation dépend directement de la pertinence des critères de regroupement (caractéristiques du produit, de l'assuré, du contrat), souvent optimisés par des techniques de classification statistique (\textit{clustering}).
+Si l'agrégation est une nécessité opérationnelle, elle constitue également un risque de modèle. Le remplacement d'un portefeuille réel par une image simplifiée introduit inévitablement un biais d'estimation. Dans le cadre prudentiel de Solvabilité II, ces simplifications sont encadrées strictement.
 
-\subsection{Les impacts de l'agrégation en MP sur les indicateurs S2}
+\subsubsection{Le principe de matérialité et justification des approximations}
 
-L'utilisation des \textit{Model Points} constitue la méthode standard pour agréger le passif et rendre les modèles ALM opérationnels. Cependant, la manière dont ces groupes de contrats sont formés à partir des polices individuelles a un impact direct et significatif sur la valorisation des indicateurs réglementaires et leur sensibilité aux chocs.
+La directive Solvabilité II et les textes de l'ACPR imposent que les méthodes de simplification soient \og appropriées \fg{} et ne conduisent pas à une sous-estimation significative des risques.
+En particulier, la \textit{Notice ACPR sur les modèles internes} (2023) \cite{notice_acpr} rappelle dans son paragraphe 21 que l'entreprise doit \og identifier, documenter et justifier la pertinence des simplifications, des approximations et des hypothèses \fg  utilisées. Bien que ce texte vise les modèles internes, il établit un standard de place : l'erreur introduite par l'agrégation doit rester immatérielle au regard du Best Estimate Liability (BEL) et du Capital de Solvabilité Requis (SCR).
 
+Les autorités de contrôle (ACPR, EIOPA) insistent sur deux points majeurs :
+\begin{itemize}
+    \item \textbf{La granularité adaptée (Segmentation) :} Comme précisé dans le paragraphe 38 de la notice, la granularité des facteurs de risque et la segmentation doivent être justifiées en analysant les avantages et les inconvénients. Une segmentation trop grossière (ex: moyenne des âges sur tout le portefeuille) écraserait la convexité des engagements et sous-estimerait la valeur des options et garanties.
+    \item \textbf{La validation quantitative :} L'entreprise doit démontrer, chiffres à l'appui, que le passage du "réel" au "modèle" n'altère pas significativement les indicateurs clés (BEL, SCR).
+\end{itemize}
 
+\subsection{Dispositif de contrôle de la qualité de l'agrégation}
 
-La problématique centrale de ce mémoire est donc d'optimiser cette étape fondamentale de l'agrégation. En partant du portefeuille granulaire "police à police", nous cherchons à définir, comparer et tester différentes méthodes de regroupement pour créer des \textit{Model Points}. L'objectif est de construire une méthodologie de simplification optimale, c'est-à-dire celle qui minimise l'erreur d'agrégation tout en garantissant la plus grande stabilité des indicateurs Solvabilité II (SCR, Marge de Risque, NAV) lors du calcul des différentes sensibilités. Cette section introductive pose donc les fondations de notre analyse : la simplification étant une nécessité, comment s'assurer que la méthode de regroupement choisie est la plus fidèle et la plus robuste possible ?
+Pour répondre à ces exigences, la construction des \textit{Model Points} doit s'accompagner d'un dispositif de validation robuste, intégré à la gouvernance des risques et à l'exercice ORSA. Ce dispositif repose généralement sur trois niveaux de contrôle.
+
+\subsubsection{Tests de reproduction des métriques statiques (Reproduction)}
+Il s'agit de vérifier, à la date d'arrêté, que le portefeuille agrégé (MP) reproduit fidèlement les stocks du portefeuille réel. Les écarts relatifs sont mesurés sur des indicateurs clés tels que :
+\begin{itemize}
+    \item La Provision Mathématique (PM) totale et par segment ;
+    \item Les encours moyens, l'âge moyen pondéré des assurés, l'ancienneté moyenne ;
+    \item La répartition par Taux Minimum Garanti (TMG).
+\end{itemize}
+Des seuils de tolérance stricts (par exemple $<0.1\%$ d'écart sur la PM) sont définis par l'assureur pour valider cette étape.
+
+\subsubsection{Contrôles du profil de risque et des queues de distribution}
+L'agrégation ne doit pas "lisser" les risques extrêmes. Un point d'attention particulier, souligné par les contrôles prudentiels (paragraphe 39 de la notice ACPR), est la bonne représentation des "queues de distribution".
+Par exemple, un portefeuille contenant quelques très gros contrats ou des contrats très anciens avec des TMG très élevés (4.5\%) ne doit pas voir ces risques dilués dans une moyenne à 0\% comme c'est le cas pour les contrats récents. Ces profils atypiques nécessitent souvent la création de \textit{Model Points} dédiés pour isoler le risque.
+
+\subsubsection{Tests de sensibilité et stabilité dynamique}
+La validation la plus critique concerne le comportement du portefeuille agrégé sous contrainte (chocs). Un regroupement peut sembler correct en vision statique (t=0) mais diverger lors des projections.
+Des tests de sensibilité sont réalisés en comparant les résultats du modèle "Police à Police" (sur un scénario déterministe) et du modèle agrégé :
+\begin{itemize}
+    \item \textbf{Sensibilité aux taux :} Comportement du BEL suite des chocs de taux d'intérêt (hausse, baisse) ;
+    \item \textbf{Sensibilité aux rachats :} Impact des chocs sur les taux de rachat (hausse ou baisse) ;
+    \item \textbf{Sensibilité à la mortalité :} Impact des chocs sur les tables de mortalité.
+\end{itemize}
+L'objectif est de s'assurer que l'agrégation conserve la convexité du passif et la sensibilité aux variables économiques, garantissant ainsi un calcul correct du SCR.
+
+\subsection{Problématique du mémoire}
+
+C'est dans ce cadre réglementaire et technique que s'inscrit ce mémoire. La méthode d'agrégation choisie a un impact direct sur la qualité des indicateurs S2 produits.
+En partant du portefeuille granulaire, nous chercherons à définir et comparer différentes méthodes de regroupement (notamment par \textit{Clustering}) pour construire des \textit{Model Points}. L'objectif est d'identifier la méthodologie qui offre le meilleur compromis entre temps de calcul (réduction dimensionnelle) et fidélité prudentielle (stabilité du SCR et des sensibilités), conformément aux attentes du régulateur.
 
 
 \section{Principes et Enjeux de la Gestion Actif-Passif (ALM)}
@@ -465,7 +502,7 @@ Le principal objectif est de calculer le \textbf{Best Estimate (BE)} des passifs
 \subsubsection{Génération des Rapports de Sortie}
 Enfin, le modèle produit un ensemble de rapports détaillés (similaires aux QRTs réglementaires) présentant les bilans projetés, les comptes de résultat, la décomposition du BE et du SCR, et d'autres indicateurs clés pour l'analyse actuarielle.
 
-\section{Limites Actuelles du modèle}
+\subsection{Limites Actuelles du modèle}
 A date, les fonds propres ne sont pas modélisés dans le modèle ALM. En effet, le modèle se concentre sur la projection de l'actif et du passif, ainsi que sur les interactions entre les deux, mais n'intègre pas encore la dynamique des fonds propres. Cette limitation est importante car les fonds propres jouent un rôle crucial dans la solvabilité et la résilience financière de l'assureur. Leur modélisation permettrait de mieux évaluer l'impact des stratégies de gestion sur la solidité financière globale de l'entreprise. L'absence des fonds propres nous empêche de calculer des indicateurs cruciaux tels que le ratio de solvabilité.
 
 % \chapter{La Gestion Actif-Passif et développement d'un modèle ALM en Python}
