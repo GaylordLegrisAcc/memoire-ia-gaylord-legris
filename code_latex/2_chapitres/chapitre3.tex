@@ -1,25 +1,41 @@
-\chapter{Protocole d'Analyse : Sélection d'une Méthode d'Agrégation}
+\chapter{Présentation des Méthodes d'Agrégation candidates}
 
-Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein de modèles stochastiques gourmands en ressources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clôture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de lancements différents.
+Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale
+ : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein de modèles stochastiques gourmands en ress
+ources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clô
+ture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de lancements différents. 
 
-L'objectif de ce chapitre est de définir et de mettre en œuvre un protocole d'analyse visant à sélectionner la méthode d'agrégation la plus performante pour cette étude. L'enjeu est de résoudre un problème d'optimisation sous contraintes : comment réduire drastiquement la volumétrie des données en entrée du modèle ALM, et par extension les temps de traitement, sans altérer la fidélité des indicateurs de risque prudentiels, à savoir le Best Estimate (BE) et le Solvency Capital Requirement (SCR) ?
+L'objectif de ce chapitre est de définir et de mettre en œuvre un protocole d'analyse visant à sélectionner la méthode d'agrégation la plus performante pour cette étude. L'enjeu e
+st de résoudre un problème d'optimisation sous contraintes : comment réduire drastiquement la volumétrie des données en entrée du modèle ALM, et par extension les temps de traitem
+ent, sans altérer la fidélité des indicateurs de risque prudentiels, à savoir le Best Estimate (BE) et le Solvency Capital Requirement (SCR) ?
 
 Pour répondre à cette question, plusieurs approches d'agrégation seront comparées. Deux grandes familles de méthodes seront étudiées :
 \begin{itemize}
-    \item \textbf{Les approches déterministes classiques :} Il s'agit des méthodes traditionnellement utilisées sur le marché, reposant sur un regroupement des contrats par caractéristiques communes ou par tranches. Elles serviront de point de référence pour l'étude.
-    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de Clustering, tels que les K-Means ou les méthodes basées sur la densité, sera exploré pour constituer des Model Points basés sur une similarité multidimensionnelle des risques.
+    \item \textbf{Les approches déterministes classiques :} Il s'agit des méthodes traditionnellement utilisées sur le marché, reposant sur un regroupement des contrats par caract
+éristiques communes ou par tranches. Elles serviront de point de référence pour l'étude.
+    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de Clustering, tels que les K-Means ou les méthodes basées sur la densité,
+ sera exploré pour constituer des Model Points basés sur une similarity multidimensionnelle des risques.
 \end{itemize}
 
-La démarche s'articulera en trois temps. Les spécificités mathématiques et algorithmiques de chaque méthode candidate seront d'abord exposées. Il s'agira également de détailler le fonctionnement des algorithmes d'apprentissage non supervisé, dont l'usage reste encore peu répandu dans les pratiques actuarielles. Un protocole de test standardisé sera ensuite défini, en précisant les résultats sur le portefeuille de référence et les métriques d'évaluation retenues (écart sur le Best Estimate et taux de compression). Enfin, l'analyse comparative des résultats sera réalisée, ce qui permettra de sélectionner la méthode optimale qui sera utilisée pour les analyses de sensibilité du chapitre suivant.
+La démarche s'articulera en trois temps. Les spécificités mathématiques et algorithmiques de chaque méthode candidate seront d'abord exposées. Il s'agira également de détailler le
+ fonctionnement des algorithmes d'apprentissage non supervisé, dont l'usage reste encore peu répandu dans les pratiques actuarielles. Un protocole de test standardisé sera ensuite
+ défini, en précisant les résultats sur le portefeuille de référence et les métriques d'évaluation retenues (écart sur le Best Estimate et taux de compression). Enfin, l'analyse c
+omparative des résultats sera réalisée, ce qui permettra de sélectionner la méthode optimale qui sera utilisée pour les analyses de sensibilité du chapitre suivant.
 
-\section{Présentation des Méthodes d'Agrégation candidates}
+\section{Approche déterministes classiques}
 \subsection{Approche déterministe par regroupement de caractéristiques}
 
-La méthode par regroupement de caractéristiques repose sur une segmentation par classes de risque, cette approche constitue le standard historique en actuariat. Elle servira de base de comparaison pour évaluer la performance des algorithmes de regroupement statistique plus avancés présentés dans les parties suivantes.
+La méthode par regroupement de caractéristiques repose sur une segmentation par classes de risque, cette approche constitue le standard historique en actuariat. Elle servira de ba
+se de comparaison pour évaluer la performance des algorithmes de regroupement statistique plus avancés présentés dans les parties suivantes.
 
-Le principe fondamental repose sur une partition déterministe du portefeuille. L'objectif est de regrouper les contrats partageant des caractéristiques de risque identiques. Dans un modèle de projection de gestion actif-passif, l'évolution de la Provision Mathématique (PM) est influencée par des caractéristiques spécifiques du contrat. La mortalité dépend de la génération, de l'âge et du sexe ; les rachats sont corrélés à l'âge de l'assuré et à l'ancienneté du contrat (fiscalité) ; la revalorisation dépend du Taux Minimum Garanti (TMG).
+Le principe fondamental repose sur une partition déterministe du portefeuille. L'objectif est de regrouper les contrats partageant des caractéristiques de risque identiques. Dans 
+un modèle de projection de gestion actif-passif, l'évolution de la Provision Mathématique (PM) est influencée par des caractéristiques spécifiques du contrat. La mortalité dépend 
+de la génération, de l'âge et du sexe ; les rachats sont corrélés à l'âge de l'assuré et à l'ancienneté du contrat (fiscalité) ; la revalorisation dépend du Taux Minimum Garanti (
+TMG).
 
-Par conséquent, pour garantir que le Model Point agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une segmentation rigide. Les critères de regroupement retenus pour cette étude sont :
+Par conséquent, pour garantir que le Model Point agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants
+. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une segmentation rigide. Les critères de regroupement retenus pour cette 
+étude sont :
 \begin{itemize}
     \item \textbf{Le Sexe} : Indispensable pour l'application des tables de mortalité différenciées.
     \item \textbf{Le Taux Minimum Garanti (TMG)} : Crucial pour la valorisation des garanties financières.
@@ -27,60 +43,85 @@ Par conséquent, pour garantir que le Model Point agrégé se comporte comme la 
     \item \textbf{L'Ancienneté du contrat} : Discrétisée à l'entier inférieur pour modéliser correctement la fiscalité et les rachats structurels.
 \end{itemize}
 
-Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même Model Point $k$ si et seulement si leurs vecteurs de caractéristiques discrétisées sont identiques :
-$$ (\text{Sexe}_i, \lfloor \text{Age}_i \rfloor, \lfloor \text{Anc}_i \rfloor, \text{TMG}_i) = (\text{Sexe}_j, \lfloor \text{Age}_j \rfloor, \lfloor \text{Anc}_j \rfloor, \text{TMG}_j) $$
+Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même Model Point $k$ si et seulement si leurs vecteurs de car
+actéristiques discrétisées sont identiques :
+$$ (\text{Sexe}_i, \lfloor \text{Age}_i \rfloor, \lfloor \text{Anc}_i \rfloor, \text{TMG}_i) = (\text{Sexe}_j, \lfloor \text{Age}_j \rfloor, \lfloor \text{Anc}_j \rfloor, \text{TM
+G}_j) $$
 
-Une fois les groupes constitués, l'agrégation s'opère par la somme des variables extensives (dont la valeur pour le groupe est la somme des valeurs individuelles). La Provision Mathématique du Model Point $k$ est alors la somme des PM des contrats qui le constituent :
+Une fois les groupes constitués, l'agrégation s'opère par la somme des variables extensives (dont la valeur pour le groupe est la somme des valeurs individuelles). La Provision Ma
+thématique du Model Point $k$ est alors la somme des PM des contrats qui le constituent :
 $$ PM_{MP_k} = \sum_{i \in Groupe_k} PM_i $$
-Les variables intensives du Model Point (dont la valeur est indépendante de la taille du groupe, comme l'Âge ou l'Ancienneté) prennent alors les valeurs définies par la segmentation (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
+Les variables intensives du Model Point (dont la valeur est indépendante de la taille du groupe, comme l'Âge ou l'Ancienneté) prennent alors les valeurs définies par la segmentati
+on (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
 
-Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les garanties contractuelles (absence de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
+Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les
+ garanties contractuelles (absence de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
 
 Cependant, elle présente des limites intrinsèques :
 \begin{itemize}
-    \item \textbf{La rigidité de la structure de regroupement :} La définition des classes est fixée \textit{a priori} et de manière uniforme, sans tenir compte de la distribution réelle des capitaux. Cette approche ne permet pas de concentrer automatiquement la précision du regroupement sur les zones à fort enjeux financiers, traitant potentiellement avec la même granularité les segments marginaux et les segments prépondérants.
-    \item \textbf{L'absence de contrôle sur la compression :} Le nombre de Model Points finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et de la finesse de la segmentation. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de groupes très élevé, dont certains ne contiendront que peu de contrats, limitant ainsi l'efficacité de la réduction de dimension (phénomène du « fléau de la dimension »).
+    \item \textbf{La rigidité de la structure de regroupement :} La définition des classes est fixée \textit{a priori} et de manière uniforme, sans tenir compte de la distribution
+ réelle des capitaux. Cette approche ne permet pas de concentrer automatiquement la précision du regroupement sur les zones à fort enjeux financiers, traitant potentiellement avec
+ la même granularité les segments marginaux et les segments prépondérants.
+    \item \textbf{L'absence de contrôle sur la compression :} Le nombre de Model Points finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et 
+de la finesse de la segmentation. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de groupes très élevé, dont certains ne contiendront que peu de contrat
+s, limitant ainsi l'efficacité de la réduction de dimension (phénomène du « fléau de la dimension »).
 \end{itemize}
 
 \subsection{Approche par tranches et moyenne pondérée}
 
-Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
+Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'é
+galité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
 
-Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivant ont été retenus :
+Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des
+ variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivant ont été retenus :
 \begin{itemize}
     \item Un pas de 2 ans pour l'âge de l'assuré ;
     \item Un pas de 5 ans pour l'ancienneté du contrat.
 \end{itemize}
 
 Un contrat $i$ appartient à un groupe $k$ si ses caractéristiques discrètes correspondent et si ses variables continues tombent dans les intervalles définis :
-$$ i \in MP_k \iff \begin{cases} \text{Sexe}_i = \text{Sexe}_k \\ \text{TMG}_i = \text{TMG}_k \\ \text{Age}_i \in [\text{Age}_{min}^k, \text{Age}_{max}^k[ \\ \text{Anciennet\'{e}}_i \in [\text{Anc}_{min}^k, \text{Anc}_{max}^k[ \end{cases} $$
+$$ i \in MP_k \iff \begin{cases} \text{Sexe}_i = \text{Sexe}_k \\ \text{TMG}_i = \text{TMG}_k \\ \text{Age}_i \in [\text{Age}_{min}^k, \text{Age}_{max}^k[ \\ \text{Anciennet\'{e}}
+_i \in [\text{Anc}_{min}^k, \text{Anc}_{max}^k[ \end{cases} $$
 
-La spécificité majeure de cette approche réside dans la détermination des caractéristiques du Model Point. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle (par exemple, 31 ans pour la tranche [30-32[), dans cette méthode il faut calculer le barycentre des contrats regroupés. Finalement, afin de préserver la structure financière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
+La spécificité majeure de cette approche réside dans la détermination des caractéristiques du Model Point. Contrairement à une approche simpliste qui retiendrait le centre de l'in
+tervalle (par exemple, 31 ans pour la tranche [30-32[), dans cette méthode il faut calculer le barycentre des contrats regroupés. Finalement, afin de préserver la structure financ
+ière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
 
 Ainsi, l'âge ($Age_{MP}$) et l'ancienneté ($Anc_{MP}$) du Model Point sont calculés comme suit :
-$$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} \quad ; \quad \text{Anc}_{MP} = \frac{\sum_{i \in MP} \text{Anciennet\'{e}}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} $$
+$$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} \quad ; \quad \text{Anc}_{MP} = \frac{\sum_{i \in MP} \text{Anciennet\'{e}
+}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} $$
 
-Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
+Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ain
+si le biais d'agrégation sur les projections de flux futurs.
 
 \subsubsection{Variante « Smart Granular » et stratégies métier}
-Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
+Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse 
+des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
 \begin{itemize}
-    \item \textbf{Smart Focus Active :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrêmes (pas de 15 ans au-delà de 85 ans).
-    \item \textbf{Smart Focus Young :} Stratégie ultra-fine sur les nouveaux entrants (pas de 1 an jusqu'à 50 ans) pour capturer la dynamique de croissance du portefeuille.
-    \item \textbf{Smart Focus Fiscal :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscalité des rachats.
+    \item \textbf{Smart Focus Active :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrême
+s (pas de 15 ans au-delà de 85 ans).
+    \item \textbf{Smart Focus Young :} Stratégie ultra-fine sur les nouveaux entrants (pas de 1 an jusqu'à 50 ans) pour capturer la dynamique de croissance du portefeuille.       
+    \item \textbf{Smart Focus Fiscal :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscal
+ité des rachats.
     \item \textbf{Smart Granular (Équilibré) :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
 \end{itemize}
 
+\section{Approches statistiques par apprentissage non supervisé}
 \subsection{Approche statistique par apprentissage non supervisé (K-Means)}
 
-Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y placer les groupes semblables, dans notre cas les Model Points.
+Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à
+ déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y pl
+acer les groupes semblables, dans notre cas les Model Points.
 
-Parmi les algorithmes de clustering, la méthode des K-Means a été retenue car c'est une méthode robuste et fonctionne très bien pour minimiser l'inertie intra-classe, c'est-à-dire la dispersion des contrats autour de leur Model Point représentatif.
+Parmi les algorithmes de clustering, la méthode des K-Means a été retenue car c'est une méthode robuste et fonctionne très bien pour minimiser l'inertie intra-classe, c'est-à-dire
+ la dispersion des contrats autour de leur Model Point représentatif.
 
 \subsubsection{Principe de l'algorithme}
-L'algorithme des K-Means cherche à partitionner un ensemble de $N$ contrats en $K$ groupes (ou clusters) distincts, de manière à minimiser la distance entre chaque contrat et le centre de son groupe (le centroïde). Dans notre contexte, ce centroïde deviendra le Model Point.
+L'algorithme des K-Means cherche à partitionner un ensemble de $N$ contrats en $K$ groupes (ou clusters) distincts, de manière à minimiser la distance entre chaque contrat et le c
+entre de son groupe (le centroïde). Dans notre contexte, ce centroïde deviendra le Model Point.
 
-Mathématiquement, pour un ensemble de contrats représentés par des vecteurs de caractéristiques $x_i \in \mathbb{R}^d$ (où $d$ est le nombre de dimensions : Âge, Ancienneté, TMG...), l'algorithme cherche à déterminer les $K$ centroïdes $\mu_1, ..., \mu_K$ qui minimisent la fonction objectif $J$ (l'inertie) :
+Mathématiquement, pour un ensemble de contrats représentés par des vecteurs de caractéristiques $x_i \in \mathbb{R}^d$ (où $d$ est le nombre de dimensions : Âge, Ancienneté, TMG..
+.), l'algorithme cherche à déterminer les $K$ centroïdes $\mu_1, ..., \mu_K$ qui minimisent la fonction objectif $J$ (l'inertie) :
 
 $$ J = \sum_{j=1}^{K} \sum_{x_i \in S_j} w_i || x_i - \mu_j ||^2 $$
 
@@ -88,11 +129,13 @@ Où :
 \begin{itemize}
     \item $S_j$ est l'ensemble des contrats assignés au cluster $j$.
     \item $|| . ||$ est la distance/norme utilisée (ici norme euclidienne).
-    \item $w_i$ est le poids du contrat $i$, ici cela correspond à la Provision Mathématique ($PM_i$). Ainsi, l'algorithme est forcé de minimiser l'erreur de regroupement prioritairement pour les contrats à fort enjeux financiers.
+    \item $w_i$ est le poids du contrat $i$, ici cela correspond à la Provision Mathématique ($PM_i$). Ainsi, l'algorithme est forcé de minimiser l'erreur de regroupement priorita
+irement pour les contrats à fort enjeux financiers.
 \end{itemize}
 
 \subsubsection{Application aux données du portefeuille}
-La mise en œuvre de cet algorithme sur un portefeuille d'épargne nécessite plusieurs étapes pour garantir la pertinence des regroupements : le choix des variables, la standardisation des données, et l'adaptation de l'algorithme pour intégrer la pondération par la PM.
+La mise en œuvre de cet algorithme sur un portefeuille d'épargne nécessite plusieurs étapes pour garantir la pertinence des regroupements : le choix des variables, la standardisat
+ion des données, et l'adaptation de l'algorithme pour intégrer la pondération par la PM.
 
 Les variables retenues pour le calcul de la distance sont celles qui impactent directement le profil de risque et les flux futurs :
 \begin{itemize}
@@ -101,14 +144,19 @@ Les variables retenues pour le calcul de la distance sont celles qui impactent d
     \item \textbf{Le Taux Minimum Garanti (TMG)}.
 \end{itemize}
 
-Ces variables ayant des échelles très différentes (un âge varie de 0 à 100, un TMG de 0 à 0.04), un calcul de distance brut donnerait un poids disproportionné à l'âge. Il est donc impératif de procéder à une standardisation (centrage-réduction) des données avant le clustering :
+Ces variables ayant des échelles très différentes (un âge varie de 0 à 100, un TMG de 0 à 0.04), un calcul de distance brut donnerait un poids disproportionné à l'âge. Il est donc
+ impératif de procéder à une standardisation (centrage-réduction) des données avant le clustering :
 $$ \tilde{x}_{i, d} = \frac{x_{i, d} - \mu_d}{\sigma_d} $$
 Cette transformation place toutes les variables sur une échelle comparable, permettant à l'algorithme de traiter équitablement les différentes dimensions du risque.
 
-L'algorithme utilisé est une variante pondérée des K-Means. Contrairement à une approche standard où chaque point a une importance égale, ici chaque contrat « attire » le centroïde proportionnellement à sa PM.
+L'algorithme utilisé est une variante pondérée des K-Means. Contrairement à une approche standard où chaque point a une importance égale, ici chaque contrat « attire » le centroïd
+e proportionnellement à sa PM.
 Le processus itératif est le suivant :
 \begin{enumerate}
-    \item \textbf{Initialisation :} Sélection des $K$ centroïdes initiaux via la méthode \textbf{k-means++}. Contrairement à une initialisation totalement aléatoire qui risque de conduire à des optimums locaux de mauvaise qualité, cet algorithme répartit les centres initiaux de manière espacée. Le premier centroïde est choisi au hasard, puis chaque centroïde suivant est sélectionné avec une probabilité proportionnelle au carré de la distance qui le sépare du centroïde le plus proche déjà choisi ($D(x)^2$). Cela accélère considérablement la convergence.
+    \item \textbf{Initialisation :} Sélection des $K$ centroïdes initiaux via la méthode \textbf{k-means++}. Contrairement à une initialisation totalement aléatoire qui risque de 
+conduire à des optimums locaux de mauvaise qualité, cet algorithme répartit les centres initiaux de manière espacée. Le premier centroïde est choisi au hasard, puis chaque centroï
+de suivant est sélectionné avec une probabilité proportionnelle au carré de la distance qui le sépare du centroïde le plus proche déjà choisi ($D(x)^2$). Cela accélère considérabl
+ement la convergence.
     \item \textbf{Affectation :} Chaque contrat est assigné au centroïde le plus proche en termes de distance euclidienne pondérée.
     \item \textbf{Mise à jour :} Les nouveaux centroïdes sont recalculés comme le barycentre pondéré des contrats de leur cluster.
     \item \textbf{Convergence :} Répétition des étapes 2 et 3 jusqu'à stabilisation des centroïdes.
@@ -118,10 +166,12 @@ Le processus itératif est le suivant :
 Une fois la convergence atteinte, chaque cluster $j$ est transformé en un Model Point unique.
 \begin{itemize}
     \item Les variables extensives (PM, Nombre de contrats) sont sommées : $PM_{MP_j} = \sum_{i \in S_j} PM_i$.
-    \item Les variables intensives (Âge, Ancienneté, TMG) sont définies par les coordonnées du centroïde final, qui correspondent naturellement à la moyenne pondérée des caractéristiques des contrats du cluster.
+    \item Les variables intensives (Âge, Ancienneté, TMG) sont définies par les coordonnées du centroïde final, qui correspondent naturellement à la moyenne pondérée des caractéri
+stiques des contrats du cluster.
 \end{itemize}
 
-Cette méthode permet de définir automatiquement des Model Points situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, offrant ainsi une représentation optimale de la distribution des risques.
+Cette méthode permet de définir automatiquement des Model Points situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, of
+frant ainsi une représentation optimale de la distribution des risques.
 
 \begin{figure}[H]
     \centering
@@ -132,9 +182,13 @@ Cette méthode permet de définir automatiquement des Model Points situés au c�
 
 \subsection{Approches basées sur la densité (DBSCAN et HDBSCAN)}
 
-Si l'algorithme des K-Means est performant pour des données réparties de manière homogène et sphérique, il montre ses limites lorsque les structures sous-jacentes du portefeuille sont complexes ou de densités variables. En effet, les données d'un portefeuille d'assurance vie présentent souvent des formes allongées ou irrégulières. Par exemple, une génération de produits vendue massivement sur une courte période crée une concentration spécifique de forme non convexe.
+Si l'algorithme des K-Means est performant pour des données réparties de manière homogène et sphérique, il montre ses limites lorsque les structures sous-jacentes du portefeuille 
+sont complexes ou de densités variables. En effet, les données d'un portefeuille d'assurance vie présentent souvent des formes allongées ou irrégulières. Par exemple, une générati
+on de produits vendue massivement sur une courte période crée une concentration spécifique de forme non convexe.
 
-Pour capter ces formes complexes sans fixer \textit{a priori} le nombre de Model Points comme dans les K-Means, des méthodes basées sur la densité peuvent être mises en place : DBSCAN (\textit{Density-Based Spatial Clustering of Applications with Noise} ou \textit{Regroupement spatial basé sur la densité d'applications avec bruit}) et son extension hiérarchique HDBSCAN.
+Pour capter ces formes complexes sans fixer \textit{a priori} le nombre de Model Points comme dans les K-Means, des méthodes basées sur la densité peuvent être mises en place : DB
+SCAN (\textit{Density-Based Spatial Clustering of Applications with Noise} ou \textit{Regroupement spatial basé sur la densité d'applications avec bruit}) et son extension hiérarc
+hique HDBSCAN.
 
 \subsubsection{Principes fondamentaux de DBSCAN}
 L'algorithme DBSCAN définit un cluster comme une zone de forte densité séparée par des zones de faible densité. Il repose sur deux paramètres clés : un rayon de voisinage $\varepsilon$ (\textit{epsilon}) et un nombre minimum de points $MinPts$.
@@ -159,24 +213,30 @@ Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son 
 \end{figure}
 
 \subsubsection{Adaptation aux contraintes assurantielles}
-L'application directe de DBSCAN aux données brutes du portefeuille d'assurance vie utilisé se heurte à deux obstacles majeurs nécessitant des adaptations spécifiques implémentées dans le protocole : Le problème de la discrétisation et la gestion du bruit.
+L'application directe de DBSCAN aux données brutes du portefeuille d'assurance vie utilisé se heurte à deux obstacles majeurs nécessitant des adaptations spécifiques implémentées 
+dans le protocole : Le problème de la discrétisation et la gestion du bruit.
 
-Les variables de gestion (Âge, Ancienneté) sont traditionnellement stockées de manière discrète. Cette structure crée une grille artificielle où plusieurs contrats se superposent exactement sur les mêmes coordonnées $(x,y)$. Cela fausse le calcul de densité locale : un point isolé sur la grille peut artificiellement paraître très dense simplement parce qu'il superpose plusieurs contrats identiques au mêmes caractéristiques.
+Les variables de gestion (Âge, Ancienneté) sont traditionnellement stockées de manière discrète. Cette structure crée une grille artificielle où plusieurs contrats se superposent 
+exactement sur les mêmes coordonnées $(x,y)$. Cela fausse le calcul de densité locale : un point isolé sur la grille peut artificiellement paraître très dense simplement parce qu'
+il superpose plusieurs contrats identiques au mêmes caractéristiques.
 
-Pour y remédier, une technique de \textbf{Dithering} (bruitage uniforme) peut être utilisée. Avant l'étape de clustering, une perturbation aléatoire $u_i$ est ajoutée aux variables temporelles de chaque contrat $x_i$ :
+Pour y remédier, une technique de \textbf{Dithering} (bruitage uniforme) peut être utilisée. Avant l'étape de clustering, une perturbation aléatoire $u_i$ est ajoutée aux variable
+s temporelles de chaque contrat $x_i$ :
 
 $ \tilde{x}_{i, d} = x_{i, d} + u_{i, d} \quad \text{avec} \quad u_{i, d} \sim \mathcal{U}([-0.5, 0.5]) $
 
-Cette transformation permet alors de fluidifier l'espace et d'éviter une trop grande densité des contrats, sans altérer les propriétés statistiques globales du portefeuille (l'espérance de la perturbation étant nulle).
+Cette transformation permet alors de fluidifier l'espace et d'éviter une trop grande densité des contrats, sans altérer les propriétés statistiques globales du portefeuille (l'esp
+érance de la perturbation étant nulle).
 
 \subsubsection{Gestion du bruit et réallocation des contrats}
-Contrairement à une analyse de données classique exploratoire où le bruit peut être écarté, dans un modèle épargne, la complétude des engagements est une contrainte absolue :
+Contrairement à une analyse de données classique exploratoire où le bruit peut être écarté, dans un modèle épargne, la complétude des engagements est une contrainte absolue :     
 
 $\sum PM_{MP} = \sum PM_{contrats}$.
 
 Les contrats classés comme \og bruit \fg{} par DBSCAN (zones de faible densité ou points isolés) ne peuvent être ignorés.
 
-Il a donc fallu implémenter une étape de post-traitement systématique : une réallocation via un algorithme des \textbf{$k$-plus proches voisins ($k$-NN)} avec $k=1$. Chaque contrat identifié comme bruit $x_{noise}$ est réaffecté au cluster validé $C_j$ le plus proche :
+Il a donc fallu implémenter une étape de post-traitement systématique : une réallocation via un algorithme des \textbf{$k$-plus proches voisins ($k$-NN)} avec $k=1$. Chaque contra
+t identifié comme bruit $x_{noise}$ est réaffecté au cluster validé $C_j$ le plus proche :
 $ Class(x_{noise}) = Class(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)) $
 Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiques aux segments les plus ressemblants.
 
@@ -190,15 +250,23 @@ Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiq
 
 \subsection{Approche hiérarchique adaptative (HDBSCAN)}
 
-Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuses. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche fusionne des clusters distincts dans les zones denses.
+Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un 
+seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment 
+commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuse
+s. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche f
+usionne des clusters distincts dans les zones denses.
 
-Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes clés \cite{hdbscan} :
+Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarc
+hique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes clés \cite{hdbscan} :
 
 \subsubsection{Transformation de l'espace : la distance d'accessibilité mutuelle}
-Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la « distance d'accessibilité mutuelle ».
+Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique :
+ la « distance d'accessibilité mutuelle ».
 $$ d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} $$
 
-Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
+Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : 
+si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transforma
+tion a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
 
 \begin{figure}[H]
     \centering
@@ -208,7 +276,8 @@ Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le p
 \end{figure}
 
 \subsubsection{Construction de l'Arbre Couvrant Minimum (MST)}
-L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un Arbre Couvrant Minimum (Minimum Spanning Tree - MST) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
+L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un Arbre Couvrant Minimum (Minimu
+m Spanning Tree - MST) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
 
 \begin{figure}[H]
     \centering
@@ -218,7 +287,8 @@ L'algorithme construit ensuite un graphe où chaque contrat est un sommet, reli�
 \end{figure}
 
 \subsubsection{Construction de la hiérarchie des clusters}
-En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre hiérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
+En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre h
+iérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
 
 \begin{figure}[H]
     \centering
@@ -228,7 +298,9 @@ En supprimant itérativement les arêtes du MST par ordre décroissant de poids,
 \end{figure}
 
 \subsubsection{Condensation de l'arbre}
-L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
+L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$)
+. Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance 
+de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
 
 \begin{figure}[H]
     \centering
@@ -238,18 +310,23 @@ L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque 
 \end{figure}
 
 \subsubsection{Extraction des clusters stables}
-Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Excess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{death}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
+Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Ex
+cess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{d
+eath}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
 $$ \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) $$
 L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters disjoints qui maximise cette stabilité globale.
 
 \subsubsection{Stratégies d'extraction des clusters : EOM vs Leaf}
 Deux stratégies de sélection des nœuds dans la hiérarchie ont été mises en concurrence :
 \begin{itemize}
-    \item \textbf{Excess of Mass (EOM) :} C'est la stratégie par défaut de HDBSCAN. Elle cherche à maximiser la stabilité globale en sélectionnant les clusters les plus persistants dans l'arbre. Elle a tendance à produire des macro-clusters, ce qui favorise un fort taux de compression mais peut lisser des micro-segments atypiques.
-    \item \textbf{Leaf (Feuilles) :} Cette variante force l'algorithme à sélectionner uniquement les nœuds terminaux de l'arbre condensé (les « feuilles »). Elle garantit l'homogénéité maximale au sein de chaque Model Point en évitant toute fusion, au prix d'un nombre de MP plus important.
+    \item \textbf{Excess of Mass (EOM) :} C'est la stratégie par défaut de HDBSCAN. Elle cherche à maximiser la stabilité globale en sélectionnant les clusters les plus persistant
+s dans l'arbre. Elle a tendance à produire des macro-clusters, ce qui favorise un fort taux de compression mais peut lisser des micro-segments atypiques.
+    \item \textbf{Leaf (Feuilles) :} Cette variante force l'algorithme à sélectionner uniquement les nœuds terminaux de l'arbre condensé (les « feuilles »). Elle garantit l'homogé
+néité maximale au sein de chaque Model Point en évitant toute fusion, au prix d'un nombre de MP plus important.
 \end{itemize}
 
-Cette méthodologie permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale et adaptative de la population des assurés sans paramétrage complexe d'un rayon de voisinage.
+Cette méthodologie permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale et adaptative de la pop
+ulation des assurés sans paramétrage complexe d'un rayon de voisinage.
 
 \begin{figure}[H]
     \centering
@@ -266,7 +343,8 @@ Cette méthodologie permet d'identifier simultanément des micro-clusters très 
 \end{figure}
 
 \subsubsection{Constitution finale des Model Points}
-Une fois la partition optimale obtenue (via DBSCAN ou HDBSCAN) et le bruit réalloué, la construction des Model Points suit la logique de conservation des flux financiers. Pour chaque cluster $j$, le Model Point est défini par le barycentre pondéré des contrats :
+Une fois la partition optimale obtenue (via DBSCAN ou HDBSCAN) et le bruit réalloué, la construction des Model Points suit la logique de conservation des flux financiers. Pour cha
+que cluster $j$, le Model Point est défini par le barycentre pondéré des contrats :
 
 $ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i} $
 
@@ -274,75 +352,117 @@ Cette méthode assure que le Model Point se situe au centre de gravité financie
 
 \subsection{Approche par Arbres de Décision (CART)}
 
-L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'intérêt.
+L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le pr
+ocessus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'
+intérêt.
 
 Dans le cadre de cette étude, deux variantes de ciblage ont été implémentées :
 \begin{itemize}
-    \item \textbf{Refined :} La cible est une combinaison linéaire de l'encours et du taux garanti ($PM \times (1 + 10 \times TMG)$), afin de forcer l'arbre à isoler les masses financières à fort enjeux de revalorisation.
+    \item \textbf{Refined :} La cible est une combinaison linéaire de l'encours et du taux garanti ($PM \times (1 + 10 \times TMG)$), afin de forcer l'arbre à isoler les masses fi
+nancières à fort enjeux de revalorisation.
     \item \textbf{Spread Focus :} La cible est le TMG pur, l'objectif étant d'obtenir des clusters d'une grande pureté financière pour limiter la dilution des garanties.
 \end{itemize}
 
-L'algorithme procède par divisions successives (splits) binaires de l'espace des caractéristiques (Âge, Ancienneté, TMG). À chaque étape, il choisit la variable et le seuil qui maximisent l'homogénéité de la cible au sein des deux groupes formés. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) est atteint.
+L'algorithme procède par divisions successives (splits) binaires de l'espace des caractéristiques (Âge, Ancienneté, TMG). À chaque étape, il choisit la variable et le seuil qui ma
+ximisent l'homogénéité de la cible au sein des deux groupes formés. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) e
+st atteint.
 
 \subsubsection{Définition de la variable cible : Refined vs Spread Focus}
 La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
 \begin{itemize}
-    \item \textbf{Variante Refined :} On définit une cible $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
-    \item \textbf{Variante Spread Focus :} La cible est le TMG pur. L'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques.
+    \item \textbf{Variante Refined :} On définit une cible $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats 
+qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
+    \item \textbf{Variante Spread Focus :} La cible est le TMG pur. L'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approch
+e est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques.
 \end{itemize}
 
-Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
+Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une
+ certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
+\section{Approche par travail sur les flux financiers}
 \subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
 
-La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
+La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selo
+n leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
 
 Le principe s'articule en deux phases :
 \begin{enumerate}
-    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
-    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distance entre deux contrats est alors définie par leur proximité comportementale dans le temps :
+    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ an
+s. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décè
+s, termes) et de la marge financière à l'année $t$.
+    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distan
+ce entre deux contrats est alors définie par leur proximité comportementale dans le temps :
     $$ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} $$
 \end{enumerate}
 
 \subsubsection{Niveaux de fidélité du moteur proxy}
 Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
 \begin{itemize}
-    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
-    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
+    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui 
+peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
+    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s)
+, il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, 
+fiscalité).
 \end{itemize}
 
-Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents. 
+Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des
+ caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de so
+rtie statistiquement équivalents.
 
-L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Bes
+t Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
 
-\subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
+\subsection{Approche par calibration de lois comportementales a posteriori (Biais Zéro)}
 
-La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regrouper selon leur \textbf{profil de risque dynamique}.
+L'approche par calibration \textit{a posteriori}, dénommée \og Biais Zéro \fg{} dans cette étude, marque une rupture méthodologique avec les techniques de clustering spatial. Là o
+ù les méthodes classiques tentent d'ajuster des contrats à des lois de mortalité existantes, cette approche propose d'adapter les lois de sortie pour qu'elles correspondent parfai
+tement à un regroupement arbitraire de contrats.
 
-Le principe s'articule en deux phases :
+\subsubsection{Mécanique des décréments et bases de calibration}
+
+Pour atteindre une erreur nulle sur le Best Estimate, la calibration doit respecter scrupuleusement l'ordonnancement des flux au sein du moteur de projection Polars. Le moteur app
+lique la séquence suivante sur une période $[t, t+1]$ :
 \begin{enumerate}
-    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
-    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distance entre deux contrats est alors définie par leur proximité comportementale dans le temps :
-    $$ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} $$
+    \item \textbf{Revalorisation technique} : Application du TMG au prorata temporis sur la PM de début d'année.
+    \item \textbf{Calcul des rachats} : Les rachats s'appliquent sur la PM revalorisée à mi-période.
+    \item \textbf{Calcul des décès} : Les décès s'appliquent sur la PM nette des rachats.
 \end{enumerate}
 
-\subsubsection{Niveaux de fidélité du moteur proxy}
-Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
+Ainsi, les lois induites $q_{k,t}$ ne sont pas calculées sur la PM de début d'année, mais sur les \textbf{bases d'application exactes} (mi-période). Pour un groupe de contrats $k$,
+ les probabilités de rachat ($q_{k,t}^{rt}$) et de décès ($q_{k,t}^{dc}$) sont définies par :
+
+\begin{equation}
+    q_{k,t}^{rt} = \frac{\sum_{i \in k} \text{Prestations\_Rachats}_{i,t}}{\sum_{i \in k} \text{Base\_Rachats}_{i,t}} \quad ; \quad q_{k,t}^{dc} = \frac{\sum_{i \in k} \text{Prestat
+ions\_Décès}_{i,t}}{\sum_{i \in k} \text{Base\_Décès}_{i,t}}
+\end{equation}
+
+Où la base de rachat intègre les intérêts techniques acquis à mi-période, et la base de décès est nette des rachats déjà effectués. Cette précision mathématique permet de capture
+r l'intégralité de la cinétique des flux, rendant le Model Point agnostique de la démographie réelle ($Age, Sexe$).
+
+\subsubsection{Définition des clés d'agrégation financières}
+
+Le portefeuille est partitionné selon un triplet de variables financières qui régissent la mécanique de revalorisation :
 \begin{itemize}
-    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
-    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
+    \item \textbf{Le TMG net} : Le taux minimum garanti servi à l'assuré.
+    \item \textbf{Le TFGSE} : Le taux de frais de gestion sur encours prélevé par l'assureur.
+    \item \textbf{Le TAF} : Le taux d'affectation des produits financiers.
 \end{itemize}
 
-Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents. 
+Cette segmentation garantit que le \textbf{Model Point Financier (MPF)} possède un seuil de rentabilité brut identique à celui des contrats individuels :
+\begin{equation}
+    TMG_{brut} = \frac{TMG_{net} + TFGSE}{TAF}
+\end{equation}
 
-L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+L'agrégation sur ces clés, combinée aux lois induites, permet d'atteindre le \og Biais Zéro \fg{} opérationnel, l'erreur résiduelle ne provenant plus que des arrondis numériques (e
+stimée à $0,006\%$ dans nos tests).
 
 \subsection{Techniques transverses d'optimisation et pré-traitement}
 
 Au-delà du choix de l'algorithme de clustering, la performance de l'agrégation dépend fortement de la préparation des données et des contraintes métier imposées lors du processus.
 
 \subsubsection{Stratification par Risques Majeurs (TMG et Sexe)}
-Afin d'éviter des compensations de risques biologiquement ou financièrement absurdes, une stratégie de \textbf{pré-split} a été systématiquement appliquée. Le portefeuille est d'abord divisé en strates étanches selon :
+Afin d'éviter des compensations de risques biologiquement ou financièrement absurdes, une stratégie de \textbf{pré-split} a été systématiquement appliquée. Le portefeuille est d'a
+bord divisé en strates étanches selon :
 \begin{itemize}
     \item \textbf{Le Sexe :} Pour garantir le respect des tables de mortalité différenciées.
     \item \textbf{Le Taux Minimum Garanti (TMG) :} Pour éviter de diluer la valeur des garanties financières.
@@ -352,135 +472,135 @@ L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamme
 \subsubsection{Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}
 Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de \textit{Feature Engineering} ont été testées :
 \begin{itemize}
-    \item \textbf{Ajout de la dimension Log-PM :} On ajoute le logarithme de la Provision Mathématique comme variable spatiale. Cela force l'algorithme à regrouper des contrats de taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
-    \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG contre 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
+    \item \textbf{Ajout de la dimension Log-PM :} On ajoute le logarithme de la Provision Mathématique comme variable spatiale. Cela force l'algorithme à regrouper des contrats de
+ taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
+    \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG cont
+re 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
 \end{itemize}
 
-\subsubsection{Visualisation et réduction de dimension (PCA / t-SNE)}
-Pour valider visuellement la qualité des regroupements avant projection ALM, des techniques de réduction de dimension comme la \textbf{Principal Component Analysis (PCA)} ou le \textbf{t-Distributed Stochastic Neighbor Embedding (t-SNE)} ont été utilisées. Elles permettent de projeter l'espace à 12 dimensions des contrats sur un plan 2D et de vérifier que les clusters formés sont bien compacts et disjoints.
 
-\section{Définition du Protocole de Test Comparatif}
+% \section{Définition du Protocole de Test Comparatif}
 
-La sélection de la méthode d'agrégation optimale ne peut reposer sur une simple intuition statistique. Elle nécessite un cadre expérimental rigoureux, capable de simuler les conditions réelles d'une clôture prudentielle. Ce protocole vise à mettre en concurrence la simplicité des méthodes déterministes et la puissance des approches par apprentissage, tout en quantifiant précisément le risque de modèle induit par l'agrégation.
+% La sélection de la méthode d'agrégation optimale ne peut reposer sur une simple intuition statistique. Elle nécessite un cadre expérimental rigoureux, capable de simuler les conditions réelles d'une clôture prudentielle. Ce protocole vise à mettre en concurrence la simplicité des méthodes déterministes et la puissance des approches par apprentissage, tout en quantifiant précisément le risque de modèle induit par l'agrégation.
 
-\subsection{Constitution des portefeuilles de test}
+% \subsection{Constitution des portefeuilles de test}
 
-L'étude s'appuie sur un portefeuille de référence, désigné par la suite comme le « Portefeuille Full », composé de \textbf{50 000 contrats individuels}. Ce volume a été choisi pour représenter une taille critique permettant d'observer les phénomènes de compensation statistique tout en restant techniquement projetable en un temps raisonnable pour établir une base de comparaison exacte.
+% L'étude s'appuie sur un portefeuille de référence, désigné par la suite comme le « Portefeuille Full », composé de \textbf{50 000 contrats individuels}. Ce volume a été choisi pour représenter une taille critique permettant d'observer les phénomènes de compensation statistique tout en restant techniquement projetable en un temps raisonnable pour établir une base de comparaison exacte.
 
-Chaque contrat est défini par un vecteur de caractéristiques multidimensionnel $\mathbf{x}_i \in \mathbb{R}^{12}$, comprenant notamment :
-\begin{itemize}
-    \item \textbf{Variables de risques biométriques :} Âge de l'assuré (de 18 à 95 ans) et Sexe.
-    \item \textbf{Variables de structure fiscale :} Ancienneté du contrat (cruciale pour les lois de rachat et la fiscalité en cas de décès).
-    \item \textbf{Variables financières :} Provision Mathématique (PM), Taux Minimum Garanti (TMG) variant de 0\% à 4,5\%, et taux de chargement.
-\end{itemize}
+% Chaque contrat est défini par un vecteur de caractéristiques multidimensionnel $\mathbf{x}_i \in \mathbb{R}^{12}$, comprenant notamment :
+% \begin{itemize}
+%     \item \textbf{Variables de risques biométriques :} Âge de l'assuré (de 18 à 95 ans) et Sexe.
+%     \item \textbf{Variables de structure fiscale :} Ancienneté du contrat (cruciale pour les lois de rachat et la fiscalité en cas de décès).
+%     \item \textbf{Variables financières :} Provision Mathématique (PM), Taux Minimum Garanti (TMG) variant de 0\% à 4,5\%, et taux de chargement.
+% \end{itemize}
 
-Le processus de mise en œuvre suit une architecture en trois étapes distinctes, automatisée via le script \texttt{main/run\_etude\_agregation.py} :
-\begin{enumerate}
-    \item \textbf{Phase de pré-traitement :} Standardisation (z-score) des variables continues pour éviter que l'Âge (échelle 0-100) n'écrase le TMG (échelle 0-0.04) dans les calculs de distances euclidiennes. Pour les méthodes de densité (DBSCAN/HDBSCAN), une étape de \textit{dithering} est ajoutée pour briser les grilles artificielles dues à la discrétisation des données de gestion.
-    \item \textbf{Génération des Model Points :} Application de l'algorithme cible pour obtenir un fichier de passif compressé. Pour chaque méthode, nous avons fait varier les hyperparamètres (nombre de clusters $K$, pas des tranches, seuils de densité) afin de générer une famille de portefeuilles de 25 à 5 000 lignes.
-    \item \textbf{Projection ALM Massive :} Chaque portefeuille compressé est injecté dans le moteur de projection \texttt{modelealm}. Contrairement à une projection simplifiée, nous utilisons ici le modèle complet : projection sur 50 ans, scénario central Best Estimate, avec application des lois de comportement (rachats conjoncturels, arbitrages) et de la logique de participation aux bénéfices (PB).
-\end{enumerate}
+% Le processus de mise en œuvre suit une architecture en trois étapes distinctes, automatisée via le script \texttt{main/run\_etude\_agregation.py} :
+% \begin{enumerate}
+%     \item \textbf{Phase de pré-traitement :} Standardisation (z-score) des variables continues pour éviter que l'Âge (échelle 0-100) n'écrase le TMG (échelle 0-0.04) dans les calculs de distances euclidiennes. Pour les méthodes de densité (DBSCAN/HDBSCAN), une étape de \textit{dithering} est ajoutée pour briser les grilles artificielles dues à la discrétisation des données de gestion.
+%     \item \textbf{Génération des Model Points :} Application de l'algorithme cible pour obtenir un fichier de passif compressé. Pour chaque méthode, nous avons fait varier les hyperparamètres (nombre de clusters $K$, pas des tranches, seuils de densité) afin de générer une famille de portefeuilles de 25 à 5 000 lignes.
+%     \item \textbf{Projection ALM Massive :} Chaque portefeuille compressé est injecté dans le moteur de projection \texttt{modelealm}. Contrairement à une projection simplifiée, nous utilisons ici le modèle complet : projection sur 50 ans, scénario central Best Estimate, avec application des lois de comportement (rachats conjoncturels, arbitrages) et de la logique de participation aux bénéfices (PB).
+% \end{enumerate}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Workflow du Protocole de Test]} \\
-        \textit{Schéma montrant le flux : Portefeuille Initial $\rightarrow$ Clustering $\rightarrow$ Vecteurs de flux $\rightarrow$ Moteur ALM $\rightarrow$ Comparaison BE}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Schéma de mise en œuvre du protocole de test comparatif}
-    \label{fig:workflow_test}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\begin{minipage}{0.8\textwidth}
+%         \centering
+%         \vspace{2cm}
+%         \textbf{[GRAPHIQUE : Workflow du Protocole de Test]} \\
+%         \textit{Schéma montrant le flux : Portefeuille Initial $\rightarrow$ Clustering $\rightarrow$ Vecteurs de flux $\rightarrow$ Moteur ALM $\rightarrow$ Comparaison BE}
+%         \vspace{2cm}
+%     \end{minipage}}
+%     \caption{Schéma de mise en œuvre du protocole de test comparatif}
+%     \label{fig:workflow_test}
+% \end{figure}
 
-\subsection{Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}
+% \subsection{Définition des critères de sélection : fidélité des indicateurs (BE/SCR), performance et temps de calcul}
 
-Le choix final de la méthode repose sur un arbitrage multicritère. En actuariat, cet arbitrage est souvent résumé par la recherche d'un point optimal sur la « Courbe de Pareto » entre précision et temps de calcul.
+% Le choix final de la méthode repose sur un arbitrage multicritère. En actuariat, cet arbitrage est souvent résumé par la recherche d'un point optimal sur la « Courbe de Pareto » entre précision et temps de calcul.
 
-\begin{itemize}
-    \item \textbf{La fidélité sur le Best Estimate (BE) :} C'est l'indicateur souverain. On mesure l'erreur relative $\Delta_{BE} \%$. Une erreur supérieure à $0,05\%$ est considérée comme significative et potentiellement pénalisante lors d'un audit de conformité.
-    $$ \Delta_{BE} \% = \frac{BE_{agr\acute{e}g\acute{e}} - BE_{r\acute{e}f\acute{e}rence}}{BE_{r\acute{e}f\acute{e}rence}} $$
-    \item \textbf{La préservation de la "Pureté Financière" :} Une bonne méthode d'agrégation ne doit pas diluer les taux garantis. Si l'on regroupe un contrat à 0\% et un contrat à 4\%, le Model Point moyen à 2\% aura un comportement de rachat et de marge financière totalement différent des deux contrats originaux. Nous mesurerons cet effet via la variance du TMG au sein des clusters.
-    \item \textbf{Le taux de compression (Nombre de MP) :} On cherche à minimiser le nombre de Model Points finaux. Un portefeuille de moins de 1 000 lignes est privilégié pour permettre des calculs rapides lors des analyses de sensibilité du chapitre suivant.
-    \item \textbf{Le temps de constitution (Overhead) :} Pour les méthodes avancées comme le Cash-Flow Matching, le temps nécessaire à la génération des flux « proxy » ou à l'entraînement de l'algorithme doit rester marginal par rapport au gain de temps de projection globale.
-\end{itemize}
+% \begin{itemize}
+%     \item \textbf{La fidélité sur le Best Estimate (BE) :} C'est l'indicateur souverain. On mesure l'erreur relative $\Delta_{BE} \%$. Une erreur supérieure à $0,05\%$ est considérée comme significative et potentiellement pénalisante lors d'un audit de conformité.
+%     $$ \Delta_{BE} \% = \frac{BE_{agr\acute{e}g\acute{e}} - BE_{r\acute{e}f\acute{e}rence}}{BE_{r\acute{e}f\acute{e}rence}} $$
+%     \item \textbf{La préservation de la "Pureté Financière" :} Une bonne méthode d'agrégation ne doit pas diluer les taux garantis. Si l'on regroupe un contrat à 0\% et un contrat à 4\%, le Model Point moyen à 2\% aura un comportement de rachat et de marge financière totalement différent des deux contrats originaux. Nous mesurerons cet effet via la variance du TMG au sein des clusters.
+%     \item \textbf{Le taux de compression (Nombre de MP) :} On cherche à minimiser le nombre de Model Points finaux. Un portefeuille de moins de 1 000 lignes est privilégié pour permettre des calculs rapides lors des analyses de sensibilité du chapitre suivant.
+%     \item \textbf{Le temps de constitution (Overhead) :} Pour les méthodes avancées comme le Cash-Flow Matching, le temps nécessaire à la génération des flux « proxy » ou à l'entraînement de l'algorithme doit rester marginal par rapport au gain de temps de projection globale.
+% \end{itemize}
 
-\section{Analyse Comparative et Choix de la Méthode Optimale}
+% \section{Analyse Comparative et Choix de la Méthode Optimale}
 
-\subsection{Synthèse des performances pour chaque méthode candidate}
+% \subsection{Synthèse des performances pour chaque méthode candidate}
 
-L'analyse massive réalisée (plus de 150 simulations individuelles) a permis de dresser une matrice de performance exhaustive. Cette « Giga Matrice » permet d'isoler le comportement de chaque algorithme face à la compression.
+% L'analyse massive réalisée (plus de 150 simulations individuelles) a permis de dresser une matrice de performance exhaustive. Cette « Giga Matrice » permet d'isoler le comportement de chaque algorithme face à la compression.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{llcccc}
-\toprule
-\textbf{Méthode} & \textbf{Variante / Paramètres} & \textbf{Nb MP} & \textbf{Erreur BE \%} & \textbf{Écart (M€)} & \textbf{Robustesse} \\ 
-\midrule
-\textit{Référence} & \textit{Portefeuille 50k lignes} & \textit{50 000} & \textit{0,000 \%} & \textit{0,0} & \textit{Absolue} \\
-\midrule
-\rowcolor{blue!10} \textbf{Cash-Flow} & \textbf{Real OPS (n=2000)} & \textbf{2 060} & \textbf{< 0,00001 \%} & \textbf{0,001} & \textbf{Maximale} \\
-\rowcolor{blue!5} \textbf{Cash-Flow} & \textbf{Real OPS (n=500)} & \textbf{679} & \textbf{0,00017 \%} & \textbf{0,022} & \textbf{Excellente} \\
-\midrule
-\textbf{HDBSCAN} & Selection: Leaf (Fin) & 1 632 & 0,00068 \% & 0,086 & Très sensible \\
-\textbf{Banding} & Smart Granular (Âge/Anc) & 708 & 0,00068 \% & 0,086 & Très stable \\
-\textbf{K-Means} & Pondéré PM (n=2500) & 2 499 & 0,00116 \% & 0,146 & Constante \\
-\textbf{K-Means} & Pondéré PM (n=500) & 499 & 0,00143 \% & 0,180 & Bonne \\
-\midrule
-\textbf{CART} & Refined (Cible PM/TMG) & 499 & -0,14940 \% & -18,76 & Biaisée \\
-\textbf{HDBSCAN} & Selection: EOM (Densité) & 86 & 0,11671 \% & 14,65 & Instable \\
-\textbf{CART} & Spread Focus (Compression) & 26 & 0,13197 \% & 16,57 & Trop grossière \\
-\bottomrule
-\end{tabular}
-\caption{Matrice comparative des performances d'agrégation sur le Best Estimate}
-\label{tab:giga_matrice_resultats}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \small
+% \begin{tabular}{llcccc}
+% \toprule
+% \textbf{Méthode} & \textbf{Variante / Paramètres} & \textbf{Nb MP} & \textbf{Erreur BE \%} & \textbf{Écart (M€)} & \textbf{Robustesse} \\ 
+% \midrule
+% \textit{Référence} & \textit{Portefeuille 50k lignes} & \textit{50 000} & \textit{0,000 \%} & \textit{0,0} & \textit{Absolue} \\
+% \midrule
+% \rowcolor{blue!10} \textbf{Cash-Flow} & \textbf{Real OPS (n=2000)} & \textbf{2 060} & \textbf{< 0,00001 \%} & \textbf{0,001} & \textbf{Maximale} \\
+% \rowcolor{blue!5} \textbf{Cash-Flow} & \textbf{Real OPS (n=500)} & \textbf{679} & \textbf{0,00017 \%} & \textbf{0,022} & \textbf{Excellente} \\
+% \midrule
+% \textbf{HDBSCAN} & Selection: Leaf (Fin) & 1 632 & 0,00068 \% & 0,086 & Très sensible \\
+% \textbf{Banding} & Smart Granular (Âge/Anc) & 708 & 0,00068 \% & 0,086 & Très stable \\
+% \textbf{K-Means} & Pondéré PM (n=2500) & 2 499 & 0,00116 \% & 0,146 & Constante \\
+% \textbf{K-Means} & Pondéré PM (n=500) & 499 & 0,00143 \% & 0,180 & Bonne \\
+% \midrule
+% \textbf{CART} & Refined (Cible PM/TMG) & 499 & -0,14940 \% & -18,76 & Biaisée \\
+% \textbf{HDBSCAN} & Selection: EOM (Densité) & 86 & 0,11671 \% & 14,65 & Instable \\
+% \textbf{CART} & Spread Focus (Compression) & 26 & 0,13197 \% & 16,57 & Trop grossière \\
+% \bottomrule
+% \end{tabular}
+% \caption{Matrice comparative des performances d'agrégation sur le Best Estimate}
+% \label{tab:giga_matrice_resultats}
+% \end{table}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Courbe de Pareto Précision/Compression]} \\
-        \textit{Axes : X = Nb Model Points (log), Y = Erreur BE \% (log). \\ Courbes pour : Banding, K-Means, Cash-Flow. On doit voir Cash-Flow Real OPS s'effondrer vers 0 beaucoup plus vite que les autres.}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Arbitrage Précision vs Nombre de Model Points par méthode}
-    \label{fig:pareto_agreg}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\begin{minipage}{0.8\textwidth}
+%         \centering
+%         \vspace{2cm}
+%         \textbf{[GRAPHIQUE : Courbe de Pareto Précision/Compression]} \\
+%         \textit{Axes : X = Nb Model Points (log), Y = Erreur BE \% (log). \\ Courbes pour : Banding, K-Means, Cash-Flow. On doit voir Cash-Flow Real OPS s'effondrer vers 0 beaucoup plus vite que les autres.}
+%         \vspace{2cm}
+%     \end{minipage}}
+%     \caption{Arbitrage Précision vs Nombre de Model Points par méthode}
+%     \label{fig:pareto_agreg}
+% \end{figure}
 
-Plusieurs enseignements majeurs découlent de ces résultats :
-\begin{enumerate}
-    \item \textbf{La supériorité du Cash-Flow Matching :} Cette méthode (Real OPS) surpasse l'ensemble des approches classiques. En regroupant les contrats sur leur \textit{comportement projeté} (vecteurs de flux) plutôt que sur leurs caractéristiques statiques, elle capture toutes les non-linéarités métier. L'erreur est divisée par 10 par rapport à un Banding classique pour un nombre de points équivalent.
-    \item \textbf{L'efficacité du Banding « Smart » :} Pour une méthode déterministe, le Banding avec une discrétisation fine de l'âge et de l'ancienneté reste extrêmement robuste (erreur < 0,001\%). Sa simplicité de mise en œuvre en fait un excellent standard de marché.
-    \item \textbf{L'instabilité des méthodes de densité :} HDBSCAN, bien que capable d'identifier des structures complexes, est extrêmement sensible au paramétrage. Un changement mineur de densité (\textit{selection method}) fait osciller le nombre de MP de 80 à 1 600, rendant son usage industriel difficile sans un étalonnage permanent.
-    \item \textbf{Le biais des Arbres de Décision (CART) :} Bien qu'offrant des taux de compression records (jusqu'à 26 lignes), le CART présente un biais systématique. La structure par paliers de l'arbre tend à créer des ruptures artificielles dans la distribution des TMG, générant une erreur de plus de 0,10\%, ce qui est jugé trop élevé pour une étude de précision.
-\end{enumerate}
+% Plusieurs enseignements majeurs découlent de ces résultats :
+% \begin{enumerate}
+%     \item \textbf{La supériorité du Cash-Flow Matching :} Cette méthode (Real OPS) surpasse l'ensemble des approches classiques. En regroupant les contrats sur leur \textit{comportement projeté} (vecteurs de flux) plutôt que sur leurs caractéristiques statiques, elle capture toutes les non-linéarités métier. L'erreur est divisée par 10 par rapport à un Banding classique pour un nombre de points équivalent.
+%     \item \textbf{L'efficacité du Banding « Smart » :} Pour une méthode déterministe, le Banding avec une discrétisation fine de l'âge et de l'ancienneté reste extrêmement robuste (erreur < 0,001\%). Sa simplicité de mise en œuvre en fait un excellent standard de marché.
+%     \item \textbf{L'instabilité des méthodes de densité :} HDBSCAN, bien que capable d'identifier des structures complexes, est extrêmement sensible au paramétrage. Un changement mineur de densité (\textit{selection method}) fait osciller le nombre de MP de 80 à 1 600, rendant son usage industriel difficile sans un étalonnage permanent.
+%     \item \textbf{Le biais des Arbres de Décision (CART) :} Bien qu'offrant des taux de compression records (jusqu'à 26 lignes), le CART présente un biais systématique. La structure par paliers de l'arbre tend à créer des ruptures artificielles dans la distribution des TMG, générant une erreur de plus de 0,10\%, ce qui est jugé trop élevé pour une étude de précision.
+% \end{enumerate}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Visualisation 2D des vecteurs de flux]} \\
-        \textit{Projection (type PCA ou t-SNE) des vecteurs de flux projetés. Les points de couleurs différentes représentent les Model Points constitués. On doit voir des grappes très nettes correspondant aux générations de contrats.}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Visualisation de la proximité des contrats dans l'espace des flux futurs}
-    \label{fig:viz_cashflow}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\begin{minipage}{0.8\textwidth}
+%         \centering
+%         \vspace{2cm}
+%         \textbf{[GRAPHIQUE : Visualisation 2D des vecteurs de flux]} \\
+%         \textit{Projection (type PCA ou t-SNE) des vecteurs de flux projetés. Les points de couleurs différentes représentent les Model Points constitués. On doit voir des grappes très nettes correspondant aux générations de contrats.}
+%         \vspace{2cm}
+%     \end{minipage}}
+%     \caption{Visualisation de la proximité des contrats dans l'espace des flux futurs}
+%     \label{fig:viz_cashflow}
+% \end{figure}
 
-\subsection{Justification du choix de la méthode retenue pour l'analyse de sensibilité}
+% \subsection{Justification du choix de la méthode retenue pour l'analyse de sensibilité}
 
-Au terme de cette analyse comparative, la méthode \textbf{Cash-Flow Clustering (Real OPS)} est retenue pour la suite de ce mémoire. 
+% Au terme de cette analyse comparative, la méthode \textbf{Cash-Flow Clustering (Real OPS)} est retenue pour la suite de ce mémoire. 
 
-Ce choix est justifié par trois arguments majeurs :
-\begin{enumerate}
-    \item \textbf{Précision Chirurgicale :} Avec une erreur relative de $10^{-7}$ (soit quasiment le niveau de précision des flottants informatiques), elle garantit que l'agrégation est « transparente ». Les résultats de sensibilité du chapitre suivant ne seront pas pollués par un bruit de regroupement.
-    \item \textbf{Compression Optimale :} Elle permet de diviser la taille du portefeuille par \textbf{75} (passant de 50 000 à 679 lignes) tout en restant plus précise que n'importe quelle autre méthode à 2 000 lignes. Ce gain de dimension est crucial pour réaliser les milliers de projections stochastiques nécessaires au calcul du SCR.
-    \item \textbf{Économie de Calcul :} Bien qu'elle nécessite une pré-projection déterministe sur 20 ans pour chaque contrat individuel, ajoutant un temps de préparation d'environ 30 secondes, ce coût est largement compensé par la réduction drastique du temps de projection ALM globale sans sacrifier la justesse actuarielle.
-\end{enumerate}
+% Ce choix est justifié par trois arguments majeurs :
+% \begin{enumerate}
+%     \item \textbf{Précision Chirurgicale :} Avec une erreur relative de $10^{-7}$ (soit quasiment le niveau de précision des flottants informatiques), elle garantit que l'agrégation est « transparente ». Les résultats de sensibilité du chapitre suivant ne seront pas pollués par un bruit de regroupement.
+%     \item \textbf{Compression Optimale :} Elle permet de diviser la taille du portefeuille par \textbf{75} (passant de 50 000 à 679 lignes) tout en restant plus précise que n'importe quelle autre méthode à 2 000 lignes. Ce gain de dimension est crucial pour réaliser les milliers de projections stochastiques nécessaires au calcul du SCR.
+%     \item \textbf{Économie de Calcul :} Bien qu'elle nécessite une pré-projection déterministe sur 20 ans pour chaque contrat individuel, ajoutant un temps de préparation d'environ 30 secondes, ce coût est largement compensé par la réduction drastique du temps de projection ALM globale sans sacrifier la justesse actuarielle.
+% \end{enumerate}
 
-Cette méthode offre le meilleur compromis pour les analyses de sensibilité du chapitre suivant : elle garantit que les variations de BE qui seront mesurées seront exclusivement dues aux chocs économiques appliqués, et non à un bruit d'agrégation résiduel.
+% Cette méthode offre le meilleur compromis pour les analyses de sensibilité du chapitre suivant : elle garantit que les variations de BE qui seront mesurées seront exclusivement dues aux chocs économiques appliqués, et non à un bruit d'agrégation résiduel.

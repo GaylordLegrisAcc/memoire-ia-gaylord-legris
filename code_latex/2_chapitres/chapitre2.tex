@@ -339,25 +339,192 @@ Une fois le profil d'âge de l'assuré fixé, la Provision Mathématique (PM) es
     $$ \text{PM} = \text{Patrimoine} \times \%_{\text{Financier}}(\text{Patrimoine}) \times 40\% $$
 \end{enumerate}
 
-\subsubsection{Enrichissement du Portefeuille : Sexe et TMG}
+\subsubsection{Historique des taux techniques et des TMG retenus pour la modélisation}
 
-Pour finaliser le portefeuille, deux variables supplémentaires sont attribuées à chaque contrat généré :
+La détermination des \emph{taux minimums garantis} (TMG) par année de souscription s'appuie sur les plafonds réglementaires de taux techniques définis par le Code des assurances, tels qu'analysés dans la note \og Le taux technique en assurance vie \fg{} publiée par l'ACPR \cite{acpr66},et les travaux de l'ACPR sur l'assurance vie en environnement de taux bas \cite{acprTauxBas}, complétés par la veille de marché de Good Value for Money sur les caractéristiques des contrats d'assurance vie \cite{gvmTMG}.
 
+La note \cite{acpr66} rappelle notamment que, depuis les années 1990, le taux technique maximal autorisable sur les contrats d'assurance vie est encadré par une formule fonction du taux moyen des emprunts d'État (TME), avec un plafond de l'ordre de 4{,}5\,\% au début des années 1990, puis une baisse progressive de ce plafond au fil de la diminution des taux d'intérêt. Les travaux ultérieurs de l'ACPR montrent qu'en environnement de taux bas, le taux technique moyen effectivement pratiqué sur le stock de contrats s'est progressivement rapproché de 0\,\%, avec un taux moyen de l'ordre de 0{,}35--0{,}5\,\% au milieu des années 2010 \cite{acprTauxBas}.
+
+Sur la base de ces éléments réglementaires et de marché, nous construisons une série historique de TMG par année de souscription. Pour chaque année $t$, nous retenons :
 \begin{itemize}
-    \item \textbf{Le Sexe de l'assuré :} Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés.
-    
-    \item \textbf{Le Taux Minimum Garanti (TMG) :} Contrairement aux autres variables stochastiques, le TMG est modélisé de manière déterministe en fonction de l'année de souscription. L'année de souscription est d'abord déduite par calcul : 
-    $$ \text{Annee}_{\text{sous}} = \text{Annee}_{\text{actuelle}} - (\text{Age}_{\text{actuel}} - \text{Age}_{\text{souscription}}) $$
-    Une table de correspondance historique est ensuite utilisée pour attribuer un TMG cohérent avec les conditions de marché de l'époque (taux élevés pour les vieux contrats, taux nuls ou faibles pour les contrats récents).
+  \item un \emph{taux technique maximal réglementaire} $TT^{\max}_t$, issu des plafonds ACPR/Code des assurances ;
+  \item un $TMG_t$ effectivement utilisé dans notre modèle, calibré en dessous de ce plafond, de façon à représenter un contrat \og typique \fg{} de l'année considérée.
 \end{itemize}
+
+Le tableau~\ref{tab:TMG_historique} présente la série retenue pour la période 1993--2024.
+
+On observe alors que, jusqu'au milieu des années 1990, les plafonds de taux techniques autorisent des TMG jusqu'à 4{,}5\,\%, ce qui est cohérent avec les niveaux de TMG donnés dans contrats de l'époque tels que décrits dans \cite{acpr66,gvmTMG}. À partir de la fin des années 1990 et des années 2000, la baisse des taux d'intérêt se traduit par une réduction progressive des plafonds réglementaires et des TMG pratiqués, les valeurs retenues $TMG_t$ restant systématiquement inférieures à $TT^{\max}_t$ afin de tenir compte d'un certain conservatisme des assureurs.
+
+À partir de 2015, nous faisons l'hypothèse de TMG nuls ($TMG_t = 0$) pour les nouveaux contrats, ce qui reflète l'environnement de taux durablement bas documenté par l'ACPR \cite{acprTauxBas} et la généralisation des contrats d'épargne en assurance vie sans garantie explicite de taux (garantie limitée au capital net de frais, la performance étant portée par la participation aux bénéfices). Cette hypothèse est cohérente avec les analyses de marché montrant que, sur la période récente, la quasi-totalité des nouveaux contrats d'épargne individuelle n'affichent plus de taux minimum garanti significatif \cite{gvmTMG}.
+
+Dans le cadre de la modélisation ALM présentée dans la suite, cette série annuelle de TMG constitue la base pour la construction de profils discrets par génération de contrat : pour chaque année de souscription $t$, trois profils de contrat sont définis autour de $TMG_t$ (un profil \og généreux \fg{}, un profil médian et un profil conservateur), de façon à représenter la dispersion observée des TMG dans une même cohorte tout en conservant un cadre de simulation discret adapté à l’agrégation de passifs.
+
+\subsubsection{Intégration du TAF et du TFGSE dans la modélisation des TMG}
+
+Au-delà du seul $TMG_t$, la valorisation des engagements en assurance vie dépend fortement des \emph{frais de gestion prélevés sur les encours} et de la \emph{participation aux bénéfices} (PB) effectivement redistribuée aux assurés. Pour capturer ces deux dimensions dans un cadre de modélisation discret, nous introduisons deux paramètres complémentaires pour chaque contrat :
+\begin{itemize}
+  \item le taux de frais de gestion sur encours $TFGSE$, appliqué annuellement sur la provision mathématique ;
+  \item le taux d'affectation des produits financiers $TAF$, représentant la part des produits
+        financiers attribuée aux assurés (taux servi et dotation à la provision pour participation
+        aux bénéfices).
+\end{itemize}
+
+Les données de marché publiées par France Assureurs sur l'assurance vie en unités de compte montrent qu'en 2024, les frais de gestion sur encours des contrats en unités de compte s'élèvent en moyenne à 0{,}88\,\% par an, avec une valeur de 0{,}83\,\% pour les gestions libres ou pilotées sans surcoût et un surcoût moyen de 0{,}36\,\% pour la gestion sous mandat \cite{faUC2024}. Pour les supports en euros, les mêmes travaux indiquent un taux de frais de gestion d'environ 0{,}66\,\% par an, ce qui situe la moyenne de marché entre 0{,}6\,\% et 0{,}7\,\% selon le type de contrat \cite{faUC2024}. Ces ordres de grandeur sont cohérents avec les comparatifs de frais publiés par différents acteurs de place, qui situent la plupart des contrats dans une fourchette de 0{,}5\,\% à 1{,}0\,\% de frais de gestion annuels sur encours.
+
+Dans le modèle, afin de rester cohérent avec cette distribution observée tout en conservant une structure discrète compatible avec l'agrégation ALM, nous retenons trois niveaux de $TFGSE$ :
+\[
+  TFGSE \in \{0{,}50\%,\ 0{,}70\%,\ 0{,}90\%\}.
+\]
+Ces trois valeurs représentent respectivement :
+\begin{itemize}
+  \item un profil \og peu chargé \fg{} ($0{,}50\,$\%), typique de contrats compétitifs ou de gammes patrimoniales ;
+  \item un profil \og moyen \fg{} ($0{,}70\,$\%), proche de la moyenne observée sur les fonds en euros ;
+  \item un profil \og chargé \fg{} ($0{,}90\,$\%), représentant des contrats grand public avec une structure de frais élevée.
+\end{itemize}
+Dans chaque cohorte d'année $t$, la probabilité d'appartenance à l'un de ces trois profils est ajustée de manière à ce que la moyenne pondérée de $TFGSE$ reste compatible avec les statistiques agrégées de marché, tout en reflétant une amélioration progressive des grilles tarifaires sur les générations récentes de contrats.
+
+Concernant la participation aux bénéfices, le cadre réglementaire impose une redistribution d'au moins 85\,\% des bénéfices financiers et 90\,\% des bénéfices techniques au profit des assurés, sous forme de PB et de dotation à la provision pour participation aux bénéfices (PPB). Les analyses de l'ACPR sur la revalorisation des contrats d'assurance vie mettent en évidence que, sur longue période, la part des produits financiers effectivement affectée aux assurés (taux servi + variation de PPB) se situe fréquemment au-delà de 80\,\% du résultat financier, les marges techniques des assureurs restant limitées \cite{acprTauxBas,acprRevalo2024}.
+
+Nous modélisons cette réalité au moyen d'un taux d'affectation des produits financiers $TAF$ discret, qui représente la part des produits financiers attribuée aux assurés sur un exercice donné. Trois niveaux sont retenus :
+\[
+  TAF \in \{80\%,\ 90\%,\ 95\%\}.
+\]
+Ces niveaux correspondent à :
+\begin{itemize}
+  \item $80\,$\% : un comportement proche du plancher réglementaire, associé à des contrats peu généreux
+        en termes de participation aux bénéfices ;
+  \item $90\,$\% : un comportement \og moyen \fg{} de marché, cohérent avec les constats de l'ACPR
+        sur des marges techniques modérées ;
+  \item $95\,$\% : un profil particulièrement favorable aux assurés, typique de certains contrats
+        haut de gamme ou de gammes associatives affichant des taux servis durablement supérieurs
+        à la moyenne du marché.
+\end{itemize}
+
+Pour assurer la cohérence économique du modèle, une dépendance entre $TFGSE$ et $TAF$ sera introduite au travers de profils de contrat. Concrètement, pour chaque contrat synthétique, nous tirons d'abord un profil de frais parmi $\{0{,}50\%, 0{,}70\%, 0{,}90\%\}$, puis un niveau de $TAF$ parmi les trois valeurs $\{80\%, 90\%, 95\%\}$, avec une loi discrète conditionnelle. Par exemple, un contrat à faibles frais ($TFGSE = 0{,}50\,$\%) aura une probabilité plus forte d'être associé à un $TAF$ élevé (90--95\,\%), tandis qu'un contrat fortement chargé ($TFGSE = 0{,}90\,$\%) sera plus souvent associé à un $TAF$ dans la partie basse de la grille (80--85\,\%). Ce couplage reproduit qualitativement le fait que les contrats les plus compétitifs en frais sont également ceux qui, historiquement, affichent les meilleurs taux servis et une politique de PB plus favorable aux assurés.
+
+Au total, pour une année de souscription $t$ donnée, chaque contrat du portefeuille synthétique est donc caractérisé par un triplet discret $(TMG_t, TFGSE, TAF)$, où :
+\begin{itemize}
+  \item $TMG_t$ est fixé par la table historique de la section précédente, construite à partir des plafonds de taux techniques ACPR ;
+  \item $TFGSE$ prend l'une des trois valeurs $\{0{,}50\%, 0{,}70\%, 0{,}90\%\}$ ;
+  \item $TAF$ prend l'une des trois valeurs $\{80\%, 90\%, 95\%\}$.
+\end{itemize}
+Ce choix de discrétisation permet de simplifier la génération du portfeuilles sur les aspects financiers et assurantiels tout en restant ancré sur des ordres de grandeur observés sur le marché français de l'assurance vie, tels que documentés par France Assureurs et l'ACPR \cite{acprTauxBas,acprRevalo2024,faUC2024}.
+
+\subsubsection{Corrélation des caractéristiques contractuelles avec la provision mathématique}
+
+Dans le modèle initial, les paramètres $(TMG_t, TFGSE, TAF)$ sont tirés indépendamment de
+l'année de souscription $t$. Cependant, pour refléter fidèlement la structure du portefeuille
+d'un assureur français, il est pertinent d'introduire une dépendance entre ces caractéristiques
+contractuelles et la \emph{provision mathématique} du contrat $PM_k$, qui sert de proxy naturel
+pour segmenter les contrats par gamme commerciale (Mass Market, Patrimonial, Gestion Privée).
+
+Cette approche s'appuie sur deux observations de marché :
+\begin{enumerate}
+  \item Les frais de gestion sur encours $TFGSE$ sont généralement \emph{dégressifs} avec l'encours
+        du contrat : les contrats à forte provision mathématique (typiquement $>$ 100k€,
+        voire $>$ 500k€ pour la Gestion Privée) bénéficient de grilles tarifaires plus favorables
+        \cite{faUC2024}.
+  \item Les contrats à gros encours sont historiquement plus concentrés dans les gammes patrimoniales
+        et de Gestion Privée, qui affichent des politiques de participation aux bénéfices (PB) et
+        des taux minimums garantis (TMG) différenciés par rapport aux contrats retail
+        (petits patrimoines).
+\end{enumerate}
+
+\title{Définition des seuils de provision mathématique}
+
+Nous segmentons les contrats selon trois tranches de provision mathématique $PM_k$ :
+\begin{center}
+\begin{tabular}{lcc}
+  \hline
+  \textbf{Gamme} & \textbf{Tranche $PM_k$} & \textbf{Exemple typique} \\
+  \hline
+  Mass Market / Retail & $PM_k \leq 50\,000€$ & Contrats petit patrimoine \\
+  Patrimonial & $50\,000€ < PM_k \leq 500\,000€$ & Clientèle moyenne/haute gamme \\
+  Gestion Privée & $PM_k > 500\,000€$ & HNWI, family offices \\
+  \hline
+\end{tabular}
+\end{center}
+
+Ces seuils sont inspirés de la segmentation commerciale standard des acteurs français
+(AXA, CNP Assurances, Generali) et cohérents avec les statistiques agrégées de France Assureurs
+sur la structure par encours des contrats d'épargne individuelle \cite{faUC2024}.
+
+\title{Lois conditionnelles par tranche de provision}
+
+Pour chaque contrat généré, après tirage de l'année $t$ et de la provision mathématique $PM_k$,
+les paramètres $(TFGSE, TAF)$ sont tirés selon la loi conditionnelle suivante :
+
+\begin{table}[h!]
+\centering
+\caption{Lois discrètes conditionnelles de $(TFGSE, TAF)$ selon la tranche de provision mathématique}
+\label{tab:TFGSE_TAF_PM}
+\begin{tabular}{ll|ccc}
+  \hline
+  \multirow{2}{*}{\textbf{Gamme}} & \multirow{2}{*}{\textbf{Tranche $PM_k$}} &
+    \multicolumn{3}{c}{\textbf{Probabilités $P(TFGSE, TAF|PM_k)$}} \\
+  & & $(0{,}5\%,90\%)$ & $(0{,}7\%,90\%)$ & $(0{,}9\%,80\%)$ \\
+  \hline
+  Mass Market & $PM_k \leq 50k€$ & 0,20 & 0,40 & 0,40 \\
+  Patrimonial & $50k€ < PM_k \leq 500k€$ & 0,40 & 0,40 & 0,20 \\
+  Gestion Privée & $PM_k > 500k€$ & 0,60 & 0,30 & 0,10 \\
+  \hline
+\end{tabular}
+\end{table}
+
+Le TMG reste fonction de l'année $t$ uniquement ($TMG_t$ de la table~\ref{tab:TMG_historique}),
+mais la pondération des générations anciennes (TMG élevés) sera naturellement plus forte dans les
+tranches Gestion Privée, car ces contrats ont eu plus de temps pour accumuler des provisions élevées.
+
+\title{Algorithme de génération mis à jour}
+
+L'algorithme de génération de portefeuille devient :
+\begin{enumerate}
+  \item Tirer l'année de souscription $t \in [1993,2024]$ selon la structure d'âge du portefeuille ;
+  \item Tirer la provision mathématique $PM_k$ (loi lognormale typique des encours assurance vie) ;
+  \item Identifier la tranche de $PM_k$ et tirer le couple $(TFGSE, TAF)$ selon la table~\ref{tab:TFGSE_TAF_PM} ;
+  \item Assigner $TMG_t$ selon la table historique ;
+  \item Calculer le TMG net : $TMG_t^{net} = \max(TM G_t - TFGSE, 0)$.
+\end{enumerate}
+
+\title{Vérification de cohérence avec les données agrégées}
+
+Cette structure assure plusieurs cohérences observables :
+\begin{itemize}
+  \item \textbf{TFGSE moyen} : la moyenne pondérée par les tranches de $PM_k$ retombe autour de
+        0,65--0,70\,\%, cohérent avec France Assureurs (fonds euros : 0,66\,\%) \cite{faUC2024}.
+  \item \textbf{TMG moyen} : les contrats anciens (TMG $>$ 2\,\%) sont naturellement plus présents
+        dans les tranches à gros $PM_k$, ce qui est cohérent avec le taux technique moyen actuel
+        du portefeuille (0,35--0,5\,\%) rapporté par l'ACPR \cite{acprTauxBas}.
+  \item \textbf{Relation frais-rendement} : les gros contrats (GP) ont à la fois des frais plus bas
+        et un TAF plus élevé, reproduisant le différentiel de performance observé entre gammes.
+\end{itemize}
+
+Cette approche par corrélation avec la provision mathématique permet ainsi de générer un
+portefeuille synthétique dont les caractéristiques microéconomiques (par contrat) sont
+cohérentes avec les statistiques macroéconomiques publiées, tout en conservant une structure
+parfaitement discrète et donc compatible avec l'agrégation ALM.
+
+
+\subsubsection{Ajout du sexe pour finaliser le portefeuille}
+
+Pour finaliser le portefeuille, le sexe est une variable important à modéliser. Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés. En France, les données de l'INSEE indiquent que la répartition est légèrement en faveur des femmes, avec environ 52\,\% de femmes et 48\,\% d'hommes parmi les assurés en assurance vie \cite{insee_assurance_vie}. Cette répartition est donc utilisée pour générer le sexe de chaque individu du portefeuille synthétique, en tirant une variable binaire où $P(Sexe = Femme) = 0.52$ et $P(Sexe = Homme) = 0.48$.
 
 Ce processus itératif permet de générer un portefeuille synthétique de 1 000 000 contrats présentant des caractéristiques statistiques fidèles à la réalité du marché français, prêt à être utilisé pour les étapes d'agrégation.
 
-\section{Présentation de l'Outil et du Portefeuille de Référence Généré}
-
 \subsection{Mise en correspondance avec le format final du modèle ALM}
+Une fois les caractéristiques individuelles générées (âge, âge à la souscription, PM, TMG, TAF, TFGSE, sexe), il est nécessaire de les formater pour les rendre compatibles avec les exigences d'entrée du modèle ALM utilisé pour la projection des passifs. Cela implique notamment de :
+\begin{itemize}
+    \item Discrétiser les variables continues (âge, PM) en classes d'âge et de PM adaptées à la granularité du modèle ALM.
+    \item Assigner à chaque contrat un profil de frais et de participation aux bénéfices en fonction des règles définies précédemment.
+    \item Structurer les données dans un format tabulaire ou matriciel compatible avec les algorithmes d'agrégation et de projection utilisés dans le modèle ALM.
+\end{itemize}
+
+
+\section{Présentation du Portefeuille de Référence Généré}
 
 \subsection{Analyse descriptive du portefeuille de référence}
+
+\subsection{Limitations du portefeuille généré}
 
 
 
