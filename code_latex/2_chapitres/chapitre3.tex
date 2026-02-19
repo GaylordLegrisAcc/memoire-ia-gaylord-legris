@@ -1,24 +1,20 @@
-\chapter{Présentation des Méthodes d'Agrégation candidates}
+\chapter{Présentation des Méthodes d'Agrégation Candidates}
 
-Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale
- : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein des modèles de gestion actif-passif qui sont gourmands en ressources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clôture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de projections différentes. 
+Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale de ce mémoire : la réduction de la dimension du portefeuille de passif. 
 
-L'objectif de ce chapitre est de définir et de mettre en œuvre un protocole d'analyse visant à sélectionner la méthode d'agrégation la plus performante pour cette étude. L'enjeu e
-st de résoudre un problème d'optimisation sous contraintes : comment réduire drastiquement la volumétrie des données en entrée du modèle ALM, et par extension les temps de traitem
-ent, sans altérer la fidélité des indicateurs de risque prudentiels, à savoir le Best Estimate (BE) et le Solvency Capital Requirement (SCR) ?
+L'impossibilité technique de projeter individuellement chaque contrat au sein des modèles de gestion actif-passif (ALM), particulièrement gourmands en ressources computationnelles, fait de l'agrégation du passif un impératif incontournable pour le marché de l'assurance. Cette nécessité découle directement des exigences de réactivité lors des phases de clôture réglementaire Solvabilité 2, où la finesse de l'analyse des risques doit impérativement se concilier avec la performance d'exécution pour permettre le lancement de multiples sensibilités et scénarios économiques.
 
-Pour répondre à cette question, plusieurs approches d'agrégation seront comparées. Deux grandes familles de méthodes seront étudiées :
+L'enjeu sous-jacent est de résoudre un problème complexe d'optimisation sous contraintes : comment réduire drastiquement la volumétrie des données en entrée du modèle ALM sans altérer la fidélité des indicateurs de risque prudentiels, à savoir le \textit{Best Estimate} (BE) et le \textit{Solvency Capital Requirement} (SCR) ?
+
+Pour répondre à cette problématique, l'objectif de ce chapitre est de définir et d'exposer de manière exhaustive les fondements mathématiques et algorithmiques de différentes approches d'agrégation qui seront mises en concurrence dans ce mémoire. La démarche s'articulera autour de l'étude de trois grandes familles de méthodes :
+
 \begin{itemize}
-    \item \textbf{Les approches déterministes classiques :} Il s'agit des méthodes traditionnellement utilisées sur le marché, reposant sur un regroupement des contrats par caract
-éristiques communes ou par tranches. Elles serviront de point de référence pour l'étude.
-    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de Clustering, tels que les K-Means ou les méthodes basées sur la densité,
- sera exploré pour constituer des Model Points basés sur une similarity multidimensionnelle des risques.
+    \item \textbf{Les approches déterministes classiques :} Méthodes traditionnellement utilisées sur le marché, elles reposent sur une segmentation experte du portefeuille par caractéristiques communes ou par tranches (\textit{Banding}). Elles serviront de référence (ou \textit{benchmark}) pour évaluer l'apport des techniques plus complexes.
+    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de \textit{Machine Learning}, tels que les algorithmes de partitionnement (K-Means), basés sur la densité (DBSCAN, HDBSCAN) ou les arbres de décision (CART), sera exploré pour constituer des \textit{Model Points} fondés sur une similarité multidimensionnelle des profils de risque.
+    \item \textbf{Les approches dynamiques basées sur les flux financiers :} En rupture avec le regroupement spatial statique, ces méthodes avancées (telles que le \textit{Cash-Flow Matching} et l'approche par calibration \textit{a posteriori}) proposent d'agréger les contrats en fonction de leur comportement projeté et de leur cinétique d'écoulement.
 \end{itemize}
 
-La démarche s'articulera en trois temps. Les spécificités mathématiques et algorithmiques de chaque méthode candidate seront d'abord exposées. Il s'agira également de détailler le
- fonctionnement des algorithmes d'apprentissage non supervisé, dont l'usage reste encore peu répandu dans les pratiques actuarielles. Un protocole de test standardisé sera ensuite
- défini, en précisant les résultats sur le portefeuille de référence et les métriques d'évaluation retenues (écart sur le Best Estimate et taux de compression). Enfin, l'analyse c
-omparative des résultats sera réalisée, ce qui permettra de sélectionner la méthode optimale qui sera utilisée pour les analyses de sensibilité du chapitre suivant.
+L'exposé détaillé de ces modèles nous permettra de poser le socle théorique nécessaire avant d'aborder, dans le chapitre suivant, le protocole de test standardisé et l'analyse comparative de leurs performances respectives.
 
 \section{Approche déterministes classiques}
 \subsection{Approche déterministe par regroupement de caractéristiques}
