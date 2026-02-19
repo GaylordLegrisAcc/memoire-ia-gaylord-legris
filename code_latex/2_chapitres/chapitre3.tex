@@ -1,9 +1,7 @@
 \chapter{Présentation des Méthodes d'Agrégation candidates}
 
 Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale
- : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein de modèles stochastiques gourmands en ress
-ources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clô
-ture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de lancements différents. 
+ : la réduction de la dimension du portefeuille de passif. L'impossibilité technique de projeter individuellement chaque contrat au sein des modèles de gestion actif-passif qui sont gourmands en ressources fait de l'agrégation du passif un impératif pour l'ensemble du marché de l'assurance. Cette nécessité découle directement de l'exigence de réactivité lors des phases de clôture, où la finesse de l'analyse doit impérativement se concilier avec une performance des modèles de projection utilisés car il faut effectuer beaucoup de projections différentes. 
 
 L'objectif de ce chapitre est de définir et de mettre en œuvre un protocole d'analyse visant à sélectionner la méthode d'agrégation la plus performante pour cette étude. L'enjeu e
 st de résoudre un problème d'optimisation sous contraintes : comment réduire drastiquement la volumétrie des données en entrée du modèle ALM, et par extension les temps de traitem
