@@ -99,6 +99,10 @@ s (pas de 15 ans au-delà de 85 ans).
 ité des rachats.
     \item \textbf{Smart Granular (Équilibré) :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
 \end{itemize}
+\subsubsection{Limites de l'approche et variance intra-classe}
+Bien que la pondération par la Provision Mathématique assure la conservation du barycentre financier, le regroupement par tranches (Banding) écrase inévitablement la dispersion au sein de chaque groupe. Mathématiquement, la variance intra-classe (ou inertie) d'une tranche $k$ pour une caractéristique $X$ (comme l'âge) s'exprime par :
+$$ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{MP_k})^2 $$
+Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique (\textit{Machine Learning}), capables de minimiser cette inertie de manière optimale plutôt que de subir une grille prédéfinie.
 
 \section{Approches statistiques par apprentissage non supervisé}
 \subsection{Approche statistique par apprentissage non supervisé (K-Means)}
