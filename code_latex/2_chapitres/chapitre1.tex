@@ -411,7 +411,7 @@ La projection des engagements s'effectue selon une logique de flux en fin de pé
     Le modèle applique les tables biométriques et comportementales pour déterminer les probabilités de sortie :
     \begin{itemize}
         \item \textbf{Mortalité ($q_{x+t}$) :} Application des tables réglementaires ou d'expérience (par génération ou par âge atteint).
-        \item \textbf{Rachats ($\alpha_t$) :} Application du taux de rachat total lié à l'ancienneté du contrat. \textcolor{blue}{(Les rachats conjoncturels ne sont pas modélisés dans la version actuelle du modèle, mais pourraient être intégrés dans une version future pour simuler des comportements plus réalistes en fonction des conditions de marché).}
+        \item \textbf{Rachats ($\alpha_t$) :} Application du taux de rachat total lié à l'ancienneté du contrat.
     \end{itemize}
 
     \item \textbf{Valorisation intermédiaire et calcul des prestations :}
@@ -462,6 +462,10 @@ Cette approche par déflateurs permet de valoriser de manière cohérente les op
 
 \subsection{Limites actuelles du modèle}
 À date, bien que le modèle projette finement les provisions techniques et les actifs, la dynamique des Fonds Propres n'est pas entièrement modélisée. Cette limitation empêche le calcul direct d'un ratio de solvabilité projeté, mais n'impacte pas la qualité des sensibilités sur le Best Estimate et le SCR, qui constituent le cœur de ce mémoire.
+
+Les rachats conjoncturels ne sont pas modélisés dans la version actuelle du modèle, mais pourraient être intégrés dans une version future pour simuler des comportements plus réalistes en fonction des conditions de marché. De même, la modélisation de la PB est actuellement basée sur une règle simple, mais pourrait être enrichie pour refléter des stratégies plus complexes.
+
+Ces évolutions font partie des perspectives d'amélioration du modèle, mais ne remettent pas en cause sa capacité à produire des indicateurs fiables pour les analyses de sensibilité qui sont au cœur de ce mémoire.
 
 % \chapter{La Gestion Actif-Passif et développement d'un modèle ALM en Python}
 % \section{La gestion Actif-Passif (ALM) : définitions et enjeux}
