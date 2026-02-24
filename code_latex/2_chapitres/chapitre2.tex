@@ -556,15 +556,19 @@ Cette copule permet de générer des paires de rangs corrélés $(u, v) \in [0, 
 
 Une contrainte métier stricte est appliquée post-génération : l'âge à la souscription doit nécessairement être inférieur ou égal à l'âge actuel de l'assuré ($Age_{souscription} \leq Age_{assure}$). Les paires ne respectant pas cette condition sont rejetées et régénérées, assurant ainsi la cohérence temporelle des contrats.
 
-\subsubsection{Génération en cascade de la Provision Mathématique}
+\subsubsection{Algorithme global de génération en cascade}
 
-Une fois le profil d'âge de l'assuré fixé, la Provision Mathématique (PM) est générée de manière conditionnelle, reproduisant la chaîne causale identifiée lors de la calibration :
+Une fois l'âge et la date de souscription fixés via la copule bivariée, le reste des caractéristiques du contrat est généré de manière conditionnelle. L'algorithme final s'applique contrat par contrat selon les étapes suivantes :
+
 \begin{enumerate}
-    \item \textbf{Génération du Patrimoine Global :} Pour un âge donné, un montant de patrimoine est tiré aléatoirement dans la loi Lognormale spécifique à la tranche d'âge de l'assuré (cf. section précédente).
-    \item \textbf{Test de Détention :} Une épreuve de Bernoulli détermine si l'individu détient un contrat d'assurance-vie, avec une probabilité dépendant de son niveau de patrimoine.
-    \item \textbf{Calcul de la PM :} Pour les détenteurs, la PM est calculée par application déterministe des ratios calibrés :
-    $$ \text{PM} = \text{Patrimoine} \times \%_{\text{Financier}}(\text{Patrimoine}) \times 40\% $$
+    \item \textbf{Génération du Patrimoine Global :} Pour l'âge de l'assuré, un montant de patrimoine brut est tiré aléatoirement dans la loi Lognormale spécifique à sa tranche d'âge.
+    \item \textbf{Test de Détention et Calcul de la PM :} Une épreuve de Bernoulli détermine la détention d'une assurance vie. Pour les détenteurs, la PM est calculée par application du ratio financier cible (40\,\% du patrimoine financier).
+    \item \textbf{Assignation de la gamme et des paramètres financiers :} En fonction de la PM générée, le contrat est classé dans un segment (Mass Market, Patrimonial, Gestion Privée). Les taux de frais (TFGSE) et d'affectation (TAF) sont ensuite tirés selon la loi conditionnelle définie au tableau \ref{tab:TFGSE_TAF_PM}. Le TMG est lui déduit de l'année de souscription.
+    \item \textbf{Allocation Euro/UC :} À l'aide du modèle Logit calibré sur l'âge, l'ancienneté et la PM, la part investie en unités de compte est déterminée.
+    \item \textbf{Finalisation :} Le sexe de l'assuré est généré aléatoirement (52\,\% de femmes).
 \end{enumerate}
+
+Cette séquence garantit que chaque ligne du portefeuille d'un million de contrats présente une cohérence interne parfaite, liant l'histoire de l'assuré (âge, date d'entrée) à sa richesse (PM) et aux caractéristiques de son produit (Frais, TMG, UC).
 
 \subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris}
 
@@ -582,10 +586,14 @@ La gestion de la volumétrie (\texttt{nb\_cnt}) est dynamique : avant toute dém
 Le générateur stochastique produit des âges et des anciennetés sous forme de variables continues (ex: 45,3 ans). Il faut donc l'adapter aux exigences du modèle ALM qui requiert des dates exactes. La date de naissance de l'assuré (\texttt{dt\_asse\_naiss}) et la date d'effet du contrat (\texttt{dt\_cnt\_effet}) sont calculées en soustrayant le nombre de jours correspondants (Âge $\times$ 365,25) à la date d'arrêté de référence. Cette méthode assure une parfaite cohérence entre les dates injectées dans l'outil et l'âge mathématique simulé.
 
 \subsubsection*{Hypothèses biométriques et actuarielles}
-Pour que la projection des flux de passifs soit opérationnelle, l'utilisation de tables de mortalité est requise. Un choix classique a été opéré en retenant la table réglementaire genrée du marché français \texttt{TGHTGF05}, appliquée de manière uniforme à la fois pour la mortalité d'expérience et pour la mortalité de provisionnement. Les autres paramètres comportementaux résiduels (taux de chargement sur primes, allocation stratégique de référence) sont fixés à des valeurs standards... \textcolor{blue}{Donner les valeurs utilisées et les justifier avec une source biblio par exemple.}
+Pour que la projection des flux de passifs soit opérationnelle, l'utilisation de tables de mortalité est requise. Un choix classique a été opéré en retenant la table réglementaire genrée du marché français \texttt{TGHTGF05}, appliquée de manière uniforme à la fois pour la mortalité d'expérience et pour la mortalité de provisionnement.
+
+Concernant les autres paramètres comportementaux résiduels, des hypothèses standards de marché ont été retenues. S'agissant d'un portefeuille projeté en modèle fermé (run-off), les taux de chargement sur primes futures n'ont pas d'incidence majeure et sont donc ignorés par souci de simplification. 
+
+Enfin, l'Allocation Stratégique d'Actifs (ASA) de référence du fonds en euros, paramètre exogène indispensable au moteur ALM pour la projection des rendements financiers, est fixée de manière stylisée mais représentative de l'actif moyen d'un assureur vie français dans un contexte de taux normaux : 80\,\% d'obligations (souveraines et corporate), 15\,\% d'actions et 5\,\% d'immobilier \textcolor{blue}{compléter avec les hypothèses d'actifs retenues}. 
 
 \bigskip
-L'ensemble de ces règles de transposition garantit que le portefeuille synthétique généré soit exploitable techniquement par le moteur de projection, tout en assumant des hypothèses claires qui encadreront l'interprétation des futurs tests de sensibilité. Ces caractéristiques ne devraient pas influencer de manière significative les résultats globaux, mais il est important de les documenter pour assurer la transparence et la reproductibilité de l'étude. \textcolor{blue}{A réécrire}
+L'ensemble de ces règles de transposition garantit que le portefeuille synthétique généré est parfaitement exploitable techniquement par le moteur de projection. Ces partis pris permettent de s'assurer que les futures analyses de sensibilités mesureront fidèlement les effets liés aux chocs (sur les rachats ou les marchés) sans altérer les résultats de base du modèle.
 
 \section{Présentation du Portefeuille de Référence Généré}
 
