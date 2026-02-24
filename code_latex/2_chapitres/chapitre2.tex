@@ -511,14 +511,26 @@ Pour finaliser le portefeuille, le sexe est une variable important à modéliser
 
 Ce processus itératif permet de générer un portefeuille synthétique de 1 000 000 contrats présentant des caractéristiques statistiques fidèles à la réalité du marché français, prêt à être utilisé pour les étapes d'agrégation.
 
-\subsection{Mise en correspondance avec le format final du modèle ALM}
-Une fois les caractéristiques individuelles générées (âge, âge à la souscription, PM, TMG, TAF, TFGSE, sexe), il est nécessaire de les formater pour les rendre compatibles avec les exigences d'entrée du modèle ALM utilisé pour la projection des passifs. Cela implique notamment de :
-\begin{itemize}
-    \item Discrétiser les variables continues (âge, PM) en classes d'âge et de PM adaptées à la granularité du modèle ALM.
-    \item Assigner à chaque contrat un profil de frais et de participation aux bénéfices en fonction des règles définies précédemment.
-    \item Structurer les données dans un format tabulaire ou matriciel compatible avec les algorithmes d'agrégation et de projection utilisés dans le modèle ALM.
-\end{itemize}
+\subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris}
 
+Une fois les caractéristiques individuelles ou agrégées des contrats générées (âge, ancienneté, provision mathématique, taux techniques), il est impératif de formater ces données brutes pour les rendre intelligibles par le modèle ALM.
+
+Cette étape nécessite de formuler plusieurs hypothèses simplificatrices et partis pris de modélisation afin de renseigner l'exhaustivité des champs requis. Les règles de transposition retenues sont détaillées ci-après.
+
+\subsubsection*{Variables structurelles et signalétiques}
+
+Afin de simuler le portefeuille d'un assureur "typique", des identifiants statiques ont été fixés. La date d'arrêté de l'étude est fixée au 31 décembre 2022 (\texttt{dt\_trajectoire = \textcolor{blue}{2022-12-31}}). Le périmètre est restreint à un canton unique pour un portefeuille épargne individuel standard au sein de l'entité Accenture. 
+
+La gestion de la volumétrie (\texttt{nb\_cnt}) est dynamique : avant toute démarche d'agrégation, chaque ligne générée représente un unique contrat (\texttt{nb\_cnt = 1}). Lors de l'application des algorithmes de \textit{clustering} (cf. Chapitre 4), cette variable prendra la valeur du nombre de contrats regroupés au sein du Model Point.
+
+\subsubsection*{Traduction temporelle des variables d'âge}
+Le générateur stochastique produit des âges et des anciennetés sous forme de variables continues (ex: 45,3 ans). Il faut donc l'adapter aux exigences du modèle ALM qui requiert des dates exactes. La date de naissance de l'assuré (\texttt{dt\_asse\_naiss}) et la date d'effet du contrat (\texttt{dt\_cnt\_effet}) sont calculées en soustrayant le nombre de jours correspondants (Âge $\times$ 365,25) à la date d'arrêté de référence. Cette méthode assure une parfaite cohérence entre les dates injectées dans l'outil et l'âge mathématique simulé.
+
+\subsubsection*{Hypothèses biométriques et actuarielles}
+Pour que la projection des flux de passifs soit opérationnelle, l'utilisation de tables de mortalité est requise. Un choix classique a été opéré en retenant la table réglementaire genrée du marché français \texttt{TGHTGF05}, appliquée de manière uniforme à la fois pour la mortalité d'expérience et pour la mortalité de provisionnement. Les autres paramètres comportementaux résiduels (taux de chargement sur primes, allocation stratégique de référence) sont fixés à des valeurs standards... \textcolor{blue}{Donner les valeurs utilisées et les justifier avec une source biblio par exemple.}
+
+\bigskip
+L'ensemble de ces règles de transposition garantit que le portefeuille synthétique généré soit exploitable techniquement par le moteur de projection, tout en assumant des hypothèses claires qui encadreront l'interprétation des futurs tests de sensibilité. Ces caractéristiques ne devraient pas influencer de manière significative les résultats globaux, mais il est important de les documenter pour assurer la transparence et la reproductibilité de l'étude. \textcolor{blue}{A réécrire}
 
 \section{Présentation du Portefeuille de Référence Généré}
 
