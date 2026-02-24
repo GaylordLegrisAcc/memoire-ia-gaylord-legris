@@ -313,32 +313,6 @@ Gamma & 7 254 743 & 7 254 774 & 0.145 \\
 \end{table}
 
 
-\subsection{Synthèse et Génération du Portefeuille Final}
-
-L'étape finale de la modélisation consiste à assembler les différentes distributions marginales et conditionnelles calibrées précédemment pour générer le portefeuille de passifs complet. Contrairement à une approche purement multivariée (copule globale 3D) qui peinerait à capturer la nature conditionnelle de la richesse par rapport à l'âge, une approche hybride a été implémentée.
-
-\subsubsection{Modélisation de la dépendance des âges par Copule}
-
-L'analyse des données montre une corrélation mécanique et comportementale entre l'âge de l'assuré et son âge à la souscription. Pour reproduire cette structure de dépendance sans figer les distributions marginales, une \textbf{Copule Gaussienne bivariée} a été utilisée.
-
-Cette copule permet de générer des paires de rangs corrélés $(u, v) \in [0, 1]^2$ avec un paramètre de corrélation de Spearman calibré à $\rho = 0.7$. Ces rangs sont ensuite transformés en valeurs réelles via les fonctions quantiles inverses (PPF) des lois marginales retenues :
-\begin{itemize}
-    \item $Age_{assure} = F^{-1}_{Beta}(u)$
-    \item $Age_{souscription} = F^{-1}_{GMM}(v)$
-\end{itemize}
-
-Une contrainte métier stricte est appliquée post-génération : l'âge à la souscription doit nécessairement être inférieur ou égal à l'âge actuel de l'assuré ($Age_{souscription} \leq Age_{assure}$). Les paires ne respectant pas cette condition sont rejetées et régénérées, assurant ainsi la cohérence temporelle des contrats.
-
-\subsubsection{Génération en cascade de la Provision Mathématique}
-
-Une fois le profil d'âge de l'assuré fixé, la Provision Mathématique (PM) est générée de manière conditionnelle, reproduisant la chaîne causale identifiée lors de la calibration :
-\begin{enumerate}
-    \item \textbf{Génération du Patrimoine Global :} Pour un âge donné, un montant de patrimoine est tiré aléatoirement dans la loi Lognormale spécifique à la tranche d'âge de l'assuré (cf. section précédente).
-    \item \textbf{Test de Détention :} Une épreuve de Bernoulli détermine si l'individu détient un contrat d'assurance-vie, avec une probabilité dépendant de son niveau de patrimoine.
-    \item \textbf{Calcul de la PM :} Pour les détenteurs, la PM est calculée par application déterministe des ratios calibrés :
-    $$ \text{PM} = \text{Patrimoine} \times \%_{\text{Financier}}(\text{Patrimoine}) \times 40\% $$
-\end{enumerate}
-
 \subsubsection{Modélisation des variables financières reliées à la revalorisation du passif : TMG, TAF et TFGSE}
 
 La détermination des \emph{taux minimums garantis} (TMG) par année de souscription s'appuie sur les plafonds réglementaires de taux techniques définis par le Code des assurances, tels qu'analysés dans la note \og Le taux technique en assurance vie \fg{} publiée par l'ACPR \cite{acpr66},et les travaux de l'ACPR sur l'assurance vie en environnement de taux bas \cite{acprTauxBas}, complétés par la veille de marché de Good Value for Money sur les caractéristiques des contrats d'assurance vie \cite{gvmTMG}.
@@ -430,7 +404,7 @@ Cette approche s'appuie sur deux observations de marché :
         (petits patrimoines).
 \end{enumerate}
 
-\title{Définition des seuils de provision mathématique}
+\subsubsection*{Définition des seuils de provision mathématique}
 
 Nous segmentons les contrats selon trois tranches de provision mathématique $PM_k$ :
 \begin{center}
@@ -449,7 +423,7 @@ Ces seuils sont inspirés de la segmentation commerciale standard des acteurs fr
 (AXA, CNP Assurances, Generali) et cohérents avec les statistiques agrégées de France Assureurs
 sur la structure par encours des contrats d'épargne individuelle \cite{faUC2024}.
 
-\title{Lois conditionnelles par tranche de provision}
+\subsubsection*{Lois conditionnelles par tranche de provision}
 
 Pour chaque contrat généré, après tirage de l'année $t$ et de la provision mathématique $PM_k$,
 les paramètres $(TFGSE, TAF)$ sont tirés selon la loi conditionnelle suivante :
@@ -475,7 +449,7 @@ Le TMG reste fonction de l'année $t$ uniquement ($TMG_t$ de la table~\ref{tab:T
 mais la pondération des générations anciennes (TMG élevés) sera naturellement plus forte dans les
 tranches Gestion Privée, car ces contrats ont eu plus de temps pour accumuler des provisions élevées.
 
-\title{Algorithme de génération mis à jour}
+\subsubsection*{Algorithme de génération mis à jour}
 
 L'algorithme de génération de portefeuille devient :
 \begin{enumerate}
@@ -486,7 +460,7 @@ L'algorithme de génération de portefeuille devient :
   \item Calculer le TMG net : $TMG_t^{net} = \max(TM G_t - TFGSE, 0)$.
 \end{enumerate}
 
-\title{Vérification de cohérence avec les données agrégées}
+\subsubsection*{Vérification de cohérence avec les données agrégées}
 
 Cette structure assure plusieurs cohérences observables :
 \begin{itemize}
@@ -565,6 +539,32 @@ Bien que cette spécification logistique soit une simplification de la réalité
 Pour finaliser le portefeuille, le sexe est une variable important à modéliser. Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés. En France, les données de l'INSEE indiquent que la répartition est légèrement en faveur des femmes, avec environ 52\,\% de femmes et 48\,\% d'hommes parmi les assurés en assurance vie \cite{insee_assurance_vie}. Cette répartition est donc utilisée pour générer le sexe de chaque individu du portefeuille synthétique, en tirant une variable binaire où $P(Sexe = Femme) = 0.52$ et $P(Sexe = Homme) = 0.48$.
 
 Ce processus itératif permet de générer un portefeuille synthétique de 1 000 000 contrats présentant des caractéristiques statistiques fidèles à la réalité du marché français, prêt à être utilisé pour les étapes d'agrégation.
+
+\subsection{Synthèse et Génération du Portefeuille Final}
+
+L'étape finale de la modélisation consiste à assembler les différentes distributions marginales et conditionnelles calibrées précédemment pour générer le portefeuille de passifs complet. Contrairement à une approche purement multivariée (copule globale 3D) qui peinerait à capturer la nature conditionnelle de la richesse par rapport à l'âge, une approche hybride a été implémentée.
+
+\subsubsection{Modélisation de la dépendance des âges par Copule}
+
+L'analyse des données montre une corrélation mécanique et comportementale entre l'âge de l'assuré et son âge à la souscription. Pour reproduire cette structure de dépendance sans figer les distributions marginales, une \textbf{Copule Gaussienne bivariée} a été utilisée.
+
+Cette copule permet de générer des paires de rangs corrélés $(u, v) \in [0, 1]^2$ avec un paramètre de corrélation de Spearman calibré à $\rho = 0.7$. Ces rangs sont ensuite transformés en valeurs réelles via les fonctions quantiles inverses (PPF) des lois marginales retenues :
+\begin{itemize}
+    \item $Age_{assure} = F^{-1}_{Beta}(u)$
+    \item $Age_{souscription} = F^{-1}_{GMM}(v)$
+\end{itemize}
+
+Une contrainte métier stricte est appliquée post-génération : l'âge à la souscription doit nécessairement être inférieur ou égal à l'âge actuel de l'assuré ($Age_{souscription} \leq Age_{assure}$). Les paires ne respectant pas cette condition sont rejetées et régénérées, assurant ainsi la cohérence temporelle des contrats.
+
+\subsubsection{Génération en cascade de la Provision Mathématique}
+
+Une fois le profil d'âge de l'assuré fixé, la Provision Mathématique (PM) est générée de manière conditionnelle, reproduisant la chaîne causale identifiée lors de la calibration :
+\begin{enumerate}
+    \item \textbf{Génération du Patrimoine Global :} Pour un âge donné, un montant de patrimoine est tiré aléatoirement dans la loi Lognormale spécifique à la tranche d'âge de l'assuré (cf. section précédente).
+    \item \textbf{Test de Détention :} Une épreuve de Bernoulli détermine si l'individu détient un contrat d'assurance-vie, avec une probabilité dépendant de son niveau de patrimoine.
+    \item \textbf{Calcul de la PM :} Pour les détenteurs, la PM est calculée par application déterministe des ratios calibrés :
+    $$ \text{PM} = \text{Patrimoine} \times \%_{\text{Financier}}(\text{Patrimoine}) \times 40\% $$
+\end{enumerate}
 
 \subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris}
 
