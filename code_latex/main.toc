@@ -44,7 +44,6 @@
 \contentsline {section}{\numberline {2.2}Méthodologie de Génération et Modélisation Statistique}{25}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Approche stochastique par lois de probabilité}{26}{subsection.2.2.1}%
 \contentsline {subsubsection}{\numberline {2.2.1.1}Modélisation de l'âge des assurés}{26}{subsubsection.2.2.1.1}%
-\contentsline {paragraph}{Calibration d'une loi usuelle sur la loi empirique}{28}{figure.2.3}%
 \contentsline {subsubsection}{\numberline {2.2.1.2}Modélisation de l'âge à la souscription}{29}{subsubsection.2.2.1.2}%
 \contentsline {subsubsection}{\numberline {2.2.1.3}Modélisation de la Provision Mathématique (PM)}{31}{subsubsection.2.2.1.3}%
 \contentsline {subsubsection}{\numberline {2.2.1.4}Modélisation des variables financières reliées à la revalorisation du passif : TMG, TAF et TFGSE}{34}{subsubsection.2.2.1.4}%
@@ -56,74 +55,74 @@
 \contentsline {subsection}{\numberline {2.2.3}Mise en correspondance avec le format final du modèle ALM et Partis Pris}{41}{subsection.2.2.3}%
 \contentsline {section}{\numberline {2.3}Présentation du Portefeuille de Référence Généré}{43}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}Analyse descriptive du portefeuille de référence}{43}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Limitations du portefeuille généré}{43}{subsection.2.3.2}%
-\contentsline {chapter}{\numberline {3}Présentation des Méthodes d'Agrégation Candidates}{44}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Approche déterministes classiques}{45}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Approche déterministe par regroupement de caractéristiques}{46}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Approche par tranches et moyenne pondérée}{47}{subsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.2.1}Variante « Smart Granular » et stratégies métier}{48}{subsubsection.3.1.2.1}%
-\contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{48}{subsubsection.3.1.2.2}%
-\contentsline {section}{\numberline {3.2}Approches statistiques par apprentissage non supervisé}{49}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Approche statistique par apprentissage non supervisé (K-Means)}{50}{subsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.1.1}Principe de l'algorithme}{50}{subsubsection.3.2.1.1}%
-\contentsline {subsubsection}{\numberline {3.2.1.2}Application aux données du portefeuille}{50}{subsubsection.3.2.1.2}%
-\contentsline {subsubsection}{\numberline {3.2.1.3}Constitution des Model Points finaux}{51}{subsubsection.3.2.1.3}%
-\contentsline {subsection}{\numberline {3.2.2}Approches basées sur la densité (DBSCAN et HDBSCAN)}{52}{subsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.1}Principes fondamentaux de DBSCAN}{52}{subsubsection.3.2.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2.2}Adaptation aux contraintes assurantielles}{53}{subsubsection.3.2.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.3}Gestion du bruit et réallocation des contrats}{54}{subsubsection.3.2.2.3}%
-\contentsline {subsection}{\numberline {3.2.3}Approche hiérarchique adaptative (HDBSCAN)}{55}{subsection.3.2.3}%
-\contentsline {subsubsection}{\numberline {3.2.3.1}Transformation de l'espace : la distance d'accessibilité mutuelle}{55}{subsubsection.3.2.3.1}%
-\contentsline {subsubsection}{\numberline {3.2.3.2}Construction de l'Arbre Couvrant Minimum (MST)}{56}{subsubsection.3.2.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.3.3}Construction de la hiérarchie des clusters}{57}{subsubsection.3.2.3.3}%
-\contentsline {subsubsection}{\numberline {3.2.3.4}Condensation de l'arbre}{57}{subsubsection.3.2.3.4}%
-\contentsline {subsubsection}{\numberline {3.2.3.5}Extraction des clusters stables}{58}{subsubsection.3.2.3.5}%
-\contentsline {subsubsection}{\numberline {3.2.3.6}Stratégies d'extraction des clusters : EOM vs Leaf}{58}{subsubsection.3.2.3.6}%
-\contentsline {subsubsection}{\numberline {3.2.3.7}Constitution finale des Model Points}{59}{subsubsection.3.2.3.7}%
-\contentsline {subsection}{\numberline {3.2.4}Approche par Arbres de Décision (CART)}{60}{subsection.3.2.4}%
-\contentsline {subsubsection}{\numberline {3.2.4.1}Définition de la variable cible : Refined vs Spread Focus}{60}{subsubsection.3.2.4.1}%
-\contentsline {section}{\numberline {3.3}Approche par travail sur les flux financiers}{60}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Approche par Appariement de Flux (Cash-Flow Matching)}{61}{subsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.1.1}Niveaux de fidélité du moteur proxy}{61}{subsubsection.3.3.1.1}%
-\contentsline {subsection}{\numberline {3.3.2}Approche par calibration de lois comportementales a posteriori (Biais Zéro)}{62}{subsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.2.1}Mécanique des décréments et bases de calibration}{62}{subsubsection.3.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.3.2.2}Définition des clés d'agrégation financières}{62}{subsubsection.3.3.2.2}%
-\contentsline {subsection}{\numberline {3.3.3}Techniques transverses d'optimisation et pré-traitement}{63}{subsection.3.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.3.1}Stratification par Risques Majeurs (TMG et Sexe)}{63}{subsubsection.3.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.3.2}Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}{63}{subsubsection.3.3.3.2}%
-\contentsline {chapter}{\numberline {4}Protocole d'Analyse et Résultats de l'Agrégation}{64}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Définition du Protocole de Test Comparatif}{65}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{66}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{67}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Analyse Comparative et Choix de la Méthode Optimale}{67}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{68}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{69}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}Analyse de Sensibilité des Indicateurs S2}{69}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Définition des Scénarios de Sensibilité}{70}{subsection.4.3.1}%
-\contentsline {subsubsection}{\numberline {4.3.1.1}Création des portefeuilles de test via le générateur}{70}{subsubsection.4.3.1.1}%
-\contentsline {subsubsection}{\numberline {4.3.1.2}Description des chocs sur les variables clés (âge, montant de la PM, etc.)}{70}{subsubsection.4.3.1.2}%
-\contentsline {subsubsection}{\numberline {4.3.1.3}Scénario d'intégration d'un nouveau produit dans le portefeuille}{70}{subsubsection.4.3.1.3}%
-\contentsline {subsection}{\numberline {4.3.2}Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}{70}{subsection.4.3.2}%
-\contentsline {subsubsection}{\numberline {4.3.2.1}Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}{70}{subsubsection.4.3.2.1}%
-\contentsline {subsubsection}{\numberline {4.3.2.2}Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}{70}{subsubsection.4.3.2.2}%
-\contentsline {section}{\numberline {4.4}Interprétation des Résultats et Validation de l'Approche}{70}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Validation de la performance de la chaîne de modélisation}{71}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Enseignements sur la sensibilité des portefeuilles aux modifications du passif}{71}{subsection.4.4.2}%
-\contentsline {chapter}{\numberline {5}Conclusion}{72}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{73}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{73}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{73}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{73}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{74}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{74}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{74}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{74}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Perspectives et Finalisation des Travaux de Recherche}{75}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Bilan de l'expérience professionnelle chez Accenture : un levier pour le mémoire}{76}{subsection.5.3.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.1}Développement et industrialisation d'un modèle ALM en Python}{76}{subsubsection.5.3.2.1}%
-\contentsline {subsubsection}{\numberline {5.3.2.2}Développement d'un modèle de passifs sociaux sous Python}{76}{subsubsection.5.3.2.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.3}Maîtrise d'un écosystème technique moderne}{76}{subsubsection.5.3.2.3}%
-\contentsline {subsubsection}{\numberline {5.3.2.4}Expertise en gestion de données et en calcul distribué (Cloud)}{77}{subsubsection.5.3.2.4}%
-\contentsline {subsubsection}{\numberline {5.3.2.5}Collaboration, autonomie et transmission des savoirs}{77}{subsubsection.5.3.2.5}%
-\contentsline {chapter}{Annexes}{78}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{82}{table.5.1}%
+\contentsline {subsection}{\numberline {2.3.2}Limitations du portefeuille généré}{44}{subsection.2.3.2}%
+\contentsline {chapter}{\numberline {3}Présentation des Méthodes d'Agrégation Candidates}{45}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Approche déterministes classiques}{46}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Approche déterministe par regroupement de caractéristiques}{47}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Approche par tranches et moyenne pondérée}{48}{subsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.1}Variante « Smart Granular » et stratégies métier}{49}{subsubsection.3.1.2.1}%
+\contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{49}{subsubsection.3.1.2.2}%
+\contentsline {section}{\numberline {3.2}Approches statistiques par apprentissage non supervisé}{50}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Approche statistique par apprentissage non supervisé (K-Means)}{51}{subsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.1.1}Principe de l'algorithme}{51}{subsubsection.3.2.1.1}%
+\contentsline {subsubsection}{\numberline {3.2.1.2}Application aux données du portefeuille}{51}{subsubsection.3.2.1.2}%
+\contentsline {subsubsection}{\numberline {3.2.1.3}Constitution des Model Points finaux}{52}{subsubsection.3.2.1.3}%
+\contentsline {subsection}{\numberline {3.2.2}Approches basées sur la densité (DBSCAN et HDBSCAN)}{53}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}Principes fondamentaux de DBSCAN}{53}{subsubsection.3.2.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}Adaptation aux contraintes assurantielles}{54}{subsubsection.3.2.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.3}Gestion du bruit et réallocation des contrats}{55}{subsubsection.3.2.2.3}%
+\contentsline {subsection}{\numberline {3.2.3}Approche hiérarchique adaptative (HDBSCAN)}{56}{subsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.3.1}Transformation de l'espace : la distance d'accessibilité mutuelle}{56}{subsubsection.3.2.3.1}%
+\contentsline {subsubsection}{\numberline {3.2.3.2}Construction de l'Arbre Couvrant Minimum (MST)}{57}{subsubsection.3.2.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.3.3}Construction de la hiérarchie des clusters}{58}{subsubsection.3.2.3.3}%
+\contentsline {subsubsection}{\numberline {3.2.3.4}Condensation de l'arbre}{58}{subsubsection.3.2.3.4}%
+\contentsline {subsubsection}{\numberline {3.2.3.5}Extraction des clusters stables}{59}{subsubsection.3.2.3.5}%
+\contentsline {subsubsection}{\numberline {3.2.3.6}Stratégies d'extraction des clusters : EOM vs Leaf}{59}{subsubsection.3.2.3.6}%
+\contentsline {subsubsection}{\numberline {3.2.3.7}Constitution finale des Model Points}{60}{subsubsection.3.2.3.7}%
+\contentsline {subsection}{\numberline {3.2.4}Approche par Arbres de Décision (CART)}{61}{subsection.3.2.4}%
+\contentsline {subsubsection}{\numberline {3.2.4.1}Définition de la variable cible : Refined vs Spread Focus}{61}{subsubsection.3.2.4.1}%
+\contentsline {section}{\numberline {3.3}Approche par travail sur les flux financiers}{61}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Approche par Appariement de Flux (Cash-Flow Matching)}{62}{subsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.1.1}Niveaux de fidélité du moteur proxy}{62}{subsubsection.3.3.1.1}%
+\contentsline {subsection}{\numberline {3.3.2}Approche par calibration de lois comportementales a posteriori (Biais Zéro)}{63}{subsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.2.1}Mécanique des décréments et bases de calibration}{63}{subsubsection.3.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.3.2.2}Définition des clés d'agrégation financières}{63}{subsubsection.3.3.2.2}%
+\contentsline {subsection}{\numberline {3.3.3}Techniques transverses d'optimisation et pré-traitement}{64}{subsection.3.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.3.1}Stratification par Risques Majeurs (TMG et Sexe)}{64}{subsubsection.3.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.3.2}Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}{64}{subsubsection.3.3.3.2}%
+\contentsline {chapter}{\numberline {4}Protocole d'Analyse et Résultats de l'Agrégation}{65}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Définition du Protocole de Test Comparatif}{66}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{67}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{68}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Analyse Comparative et Choix de la Méthode Optimale}{68}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{69}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{70}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Analyse de Sensibilité des Indicateurs S2}{70}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Définition des Scénarios de Sensibilité}{71}{subsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.1.1}Création des portefeuilles de test via le générateur}{71}{subsubsection.4.3.1.1}%
+\contentsline {subsubsection}{\numberline {4.3.1.2}Description des chocs sur les variables clés (âge, montant de la PM, etc.)}{71}{subsubsection.4.3.1.2}%
+\contentsline {subsubsection}{\numberline {4.3.1.3}Scénario d'intégration d'un nouveau produit dans le portefeuille}{71}{subsubsection.4.3.1.3}%
+\contentsline {subsection}{\numberline {4.3.2}Analyse de l'Impact de l'Agrégation sur la Mesure des Chocs}{71}{subsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.2.1}Comparaison des indicateurs S2 sur portefeuilles choqués granulaires et agrégés}{71}{subsubsection.4.3.2.1}%
+\contentsline {subsubsection}{\numberline {4.3.2.2}Analyse de la fidélité de la méthode d'agrégation à retranscrire la sensibilité}{71}{subsubsection.4.3.2.2}%
+\contentsline {section}{\numberline {4.4}Interprétation des Résultats et Validation de l'Approche}{71}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Validation de la performance de la chaîne de modélisation}{72}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Enseignements sur la sensibilité des portefeuilles aux modifications du passif}{72}{subsection.4.4.2}%
+\contentsline {chapter}{\numberline {5}Conclusion}{73}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{74}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{74}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{74}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{74}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{75}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{75}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{75}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{75}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Perspectives et Finalisation des Travaux de Recherche}{76}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Bilan de l'expérience professionnelle chez Accenture : un levier pour le mémoire}{77}{subsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.1}Développement et industrialisation d'un modèle ALM en Python}{77}{subsubsection.5.3.2.1}%
+\contentsline {subsubsection}{\numberline {5.3.2.2}Développement d'un modèle de passifs sociaux sous Python}{77}{subsubsection.5.3.2.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.3}Maîtrise d'un écosystème technique moderne}{77}{subsubsection.5.3.2.3}%
+\contentsline {subsubsection}{\numberline {5.3.2.4}Expertise en gestion de données et en calcul distribué (Cloud)}{78}{subsubsection.5.3.2.4}%
+\contentsline {subsubsection}{\numberline {5.3.2.5}Collaboration, autonomie et transmission des savoirs}{78}{subsubsection.5.3.2.5}%
+\contentsline {chapter}{Annexes}{79}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{83}{table.5.1}%

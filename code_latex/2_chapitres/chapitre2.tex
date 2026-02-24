@@ -132,9 +132,7 @@ En multipliant la population de chaque âge par le taux de détention estimé, i
 
 
 
-\paragraph{Calibration d'une loi usuelle sur la loi empirique}
-
-\bigskip
+\subsubsection*{Calibration d'une loi usuelle sur la loi empirique}
 
 Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov\footnote{Le test de Kolmogorov-Smirnov est un test d'adéquation non paramétrique comparant la fonction de répartition empirique d'un échantillon à celle d'une loi théorique. La statistique $D$ représente l'écart maximal absolu entre ces deux fonctions : une valeur faible indique un bon ajustement.}, AIC\footnote{Le critère d'information d'Akaike (AIC) est une mesure de la qualité d'un modèle statistique qui arbitre entre la qualité de l'ajustement et la complexité du modèle. Il pénalise l'ajout de paramètres pour éviter le surapprentissage. Un AIC plus faible indique un meilleur modèle.}, BIC\footnote{Le critère d'information bayésien (BIC) est similaire à l'AIC mais impose une pénalité plus forte pour le nombre de paramètres, dépendant de la taille de l'échantillon. Il tend à favoriser des modèles plus parcimonieux. Comme pour l'AIC, une valeur plus faible est préférable.}\footnote{L'AIC et le BIC servent à comparer deux ajustements, pour savoir quel modèle est le mieux ajusté on va donc regarder le plus faible AIC/BIC}) ont été utilisés. La figure \ref{fig:beta} montre l'ajustement de la loi Beta qui a des meilleurs résultats statistiques et qui épouse mieux la distribution empirique que la loi Gamma (figure \ref{fig:gamma}). 
 
@@ -599,7 +597,39 @@ L'ensemble de ces règles de transposition garantit que le portefeuille synthét
 
 \subsection{Analyse descriptive du portefeuille de référence}
 
+L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique de $1\,000\,000$ de contrats. L'analyse de ses caractéristiques servira à évaluer la pertinence des hypothèses utilisée et aidera à évaluer le profil de risque spécifique de ce portefeuille.
+
+\subsubsection*{Volumétrie et structure des encours}
+Le portefeuille généré représente une Provision Mathématique (PM) totale de $222,07$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
+\begin{itemize}
+    \item La gamme \textbf{Mass Market} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité des volumes avec 57,05\,\% des contrats, mais concentre seulement 4,22\,\% des encours totaux.
+    \item À l'inverse, la \textbf{Gestion Privée} ($\text{PM} > 500\,k\text{\euro}$) ne concerne que 7,93\,\% des polices mais centralise 69,17\,\% des engagements (PM).
+\end{itemize}
+Cette concentration, mettant en évidence un effet de Pareto \footnote{L'effet de Pareto, ou règle des 80/20, appliqué ici à l'assurance-vie, illustre qu'une faible proportion de contrats (les plus gros patrimoines) représente la grande majorité des encours sous gestion
+}, tire la PM moyenne par contrat à un niveau relativement élevé de $222\,071\,\text{\euro}$, positionnant ce portefeuille synthétique sur un profil d'assureur fortement orienté vers la gestion de patrimoine.
+
+\subsubsection*{Profil démographique et ancienneté}
+L'âge moyen des assurés s'établit à $53,1$ ans, une valeur cohérente avec la structure des détenteurs d'assurance vie en France. L'ancienneté moyenne des contrats est quant à elle de $19,9$ ans, témoignant d'un portefeuille mature et fortement ancré dans le temps.
+
+\subsubsection*{Caractéristiques financières}
+La calibration des variables financières a porté ses fruits :
+\begin{itemize}
+    \item \textbf{L'allocation d'actifs :} La part globale investie en Unités de Compte (UC) atteint $44,44\,\%$. Ce ratio, légèrement supérieur à la cible de calibration initiale, s'explique précisément par le poids massif de la Gestion Privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
+    \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,89\,\%$. Ce niveau, qui peut paraître élevé dans le contexte de taux de la dernière décennie, est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
+    \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,62\,\%$, en parfaite adéquation avec la moyenne du marché pour des portefeuilles mixtes.
+\end{itemize}
+
 \subsection{Limitations du portefeuille généré}
 
+Bien que le générateur produise une base de données robuste et exploitable pour des projections ALM, la méthodologie stochastique employée présente certaines limites qu'il convient d'expliciter pour nuancer les futures analyses de sensibilités.
+
+\subsubsection*{Un effet de "sur-représentation patrimoniale"}
+La cascade de génération lie mathématiquement la détention d'assurance vie au patrimoine global selon une loi Lognormale. Or, dans la réalité, les patrimoines extrêmement élevés (les "queues de distribution") diversifient fortement leurs actifs (immobilier d'entreprise, private equity, holdings) et ne logent pas systématiquement 40\,\% de leur richesse en assurance vie. Cela explique la sur-représentation des "gros contrats" dans le portefeuille par rapport à la moyenne nationale, lui conférant un profil atypique, très sensible aux comportements des clients fortunés.
+
+\subsubsection*{Le biais du survivant sur l'ancienneté}
+L'ancienneté moyenne frôlant les 20 ans résulte de la dérivation de l'âge à la souscription par rapport à l'âge actuel. Cependant, ce modèle statique ne simule pas l'historique de rachats (partiels ou totaux) qu'aurait subi un véritable portefeuille sur 20 ans. Les contrats simulés "naissent" directement avec leur encours actuel, ce qui lisse les dynamiques de marché passées et surestime potentiellement le poids des très vieux contrats.
+
+\subsubsection*{L'absence de dynamiques spécifiques à un assureur et de garanties complexes}
+Enfin, le portefeuille est généré de manière homogène sur la base de moyennes de place. Il ne capture pas l'histoire propre à une compagnie spécifique (par exemple, le lancement d'un produit phare ayant drainé 30\,\% de la collecte en 2012, ou la présence de clauses spécifiques comme des garanties plancher en cas de décès). De plus, la modélisation ne distingue pas les contrats alimentés par primes uniques de ceux alimentés par versements libres ou programmés, dont les comportements de rachat diffèrent significativement.
 
 
