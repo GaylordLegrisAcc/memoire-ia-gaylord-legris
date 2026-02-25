@@ -1,9 +1,9 @@
 \babel@toc {french}{}\relax 
-\contentsline {chapter}{Résumé}{ii}{chapter*.2}%
-\contentsline {chapter}{Abstract}{iii}{chapter*.3}%
-\contentsline {chapter}{Remerciements}{iv}{chapter*.4}%
-\contentsline {chapter}{Synthèse}{v}{chapter*.5}%
-\contentsline {chapter}{Synthesis}{vi}{chapter*.6}%
+\contentsline {chapter}{Résumé}{iii}{chapter*.2}%
+\contentsline {chapter}{Abstract}{iv}{chapter*.3}%
+\contentsline {chapter}{Remerciements}{v}{chapter*.4}%
+\contentsline {chapter}{Synthèse}{vi}{chapter*.5}%
+\contentsline {chapter}{Synthesis}{vii}{chapter*.6}%
 \contentsline {chapter}{Introduction}{1}{chapter*.7}%
 \contentsline {chapter}{\numberline {1}Contexte réglementaire et modélisation en assurance vie}{3}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Les spécificités des produits d'assurance vie épargne}{4}{section.1.1}%
@@ -88,21 +88,22 @@
 \contentsline {subsection}{\numberline {3.4.2}Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}{64}{subsection.3.4.2}%
 \contentsline {subsubsection}{\numberline {3.4.2.1}Mécanique des décréments et bases de calibration}{64}{subsubsection.3.4.2.1}%
 \contentsline {subsubsection}{\numberline {3.4.2.2}Définition des clés d'agrégation financières}{64}{subsubsection.3.4.2.2}%
-\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{66}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{67}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{68}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{69}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{69}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{70}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{71}{subsection.4.2.2}%
-\contentsline {chapter}{\numberline {5}Conclusion}{72}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{73}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{73}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{73}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{73}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{74}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{74}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{74}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{74}{section.5.3}%
-\contentsline {chapter}{Annexes}{76}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{80}{table.5.1}%
+\contentsline {section}{\numberline {3.5}Conclusion}{65}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{67}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{68}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{69}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{70}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{70}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{71}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{72}{subsection.4.2.2}%
+\contentsline {chapter}{\numberline {5}Conclusion}{73}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{74}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{74}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{74}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{74}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{75}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{75}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{75}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{75}{section.5.3}%
+\contentsline {chapter}{Annexes}{77}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{81}{table.5.1}%

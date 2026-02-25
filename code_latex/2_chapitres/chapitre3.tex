@@ -102,7 +102,8 @@ ité des rachats.
 \subsubsection{Limites de l'approche et variance intra-classe}
 Bien que la pondération par la Provision Mathématique assure la conservation du barycentre financier, le regroupement par tranches (Banding) écrase inévitablement la dispersion au sein de chaque groupe. Mathématiquement, la variance intra-classe (ou inertie) d'une tranche $k$ pour une caractéristique $X$ (comme l'âge) s'exprime par :
 $$ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{MP_k})^2 $$
-Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique (\textit{Machine Learning}), capables de minimiser cette inertie de manière optimale plutôt que de subir une grille prédéfinie.
+Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique. Plutôt que de subir une grille d'agrégation statique et arbitraire qui contraint la donnée, il apparaît nécessaire d'adopter des approches où la structure intrinsèque du portefeuille dicte elle-même la formation des groupes. Les méthodes d'apprentissage non supervisé, explorées dans la section suivante, répondent précisément à cet impératif en cherchant à minimiser l'inertie intra-classe de manière algorithmique.
+
 
 \section{Les approches statistiques spatiales (Apprentissage Non Supervisé)}
 
@@ -180,6 +181,8 @@ Cette méthode permet de définir automatiquement des Model Points situés au c�
     \caption{Visualisation de la méthode K-Means sur un jeu de données fictif \cite{kmeans}}
     \label{fig:kmeans_clusters}
 \end{figure}
+
+Bien que l'algorithme des K-Means s'avère performant pour minimiser la variance financière, il repose sur une hypothèse géométrique forte : il tend à construire des partitions sphériques (ou convexes) et de tailles comparables. Or, la réalité d'un portefeuille d'assurance vie se caractérise souvent par des densités très hétérogènes et des formes irrégulières, liées par exemple à la commercialisation massive d'une génération spécifique de produits. Pour capter ces niches sans forcer l'homogénéité des volumes, il convient de s'affranchir de la notion de distance pure au profit d'une analyse de la densité locale.
 
 \subsection{Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}
 
@@ -411,4 +414,8 @@ Cette segmentation garantit que le \textbf{Model Point Financier (MPF)} possède
 
 L'agrégation sur ces clés, combinée aux lois induites, permet d'atteindre le \og Biais Zéro \fg{} opérationnel, l'erreur résiduelle ne provenant plus que des arrondis numériques (estimée à $0,006\%$ dans nos tests).
 
-\textcolor{blue}{Bilan des méthodes candidates et annonce du protocole de test standardisé (qui fera l'objet du Chapitre 4).}
+\section{Conclusion}
+
+Ce chapitre a permis d'exposer le socle théorique des différentes méthodes d'agrégation envisagées, de la rigidité des approches déterministes classiques à la flexibilité des algorithmes d'apprentissage automatique spatial, jusqu'à la complexité des modèles d'appariement de flux financiers. Chaque méthode présente des compromis distincts entre la précision de la modélisation, le respect des garanties financières et le coût computationnel. 
+
+Cependant, l'évaluation purement théorique de ces approches demeure insuffisante pour statuer sur leur applicabilité. Il est désormais impératif de confronter ces méthodes à la réalité d'un moteur de projection stochastique. Le chapitre suivant s'attachera ainsi à définir un protocole de test standardisé et à mener une analyse comparative rigoureuse, afin d'identifier la méthodologie optimale pour l'évaluation des passifs sous le référentiel Solvabilité 2.
