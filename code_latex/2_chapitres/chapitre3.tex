@@ -105,22 +105,34 @@ $$ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{
 Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique (\textit{Machine Learning}), capables de minimiser cette inertie de manière optimale plutôt que de subir une grille prédéfinie.
 
 \section{Les approches statistiques spatiales (Apprentissage Non Supervisé)}
-\textcolor{blue}{Ici, on introduit les techniques transverses en préambule car elles servent à préparer la donnée pour ces algorithmes : Stratification Sexe/TMG, Feature Engineering (Log-PM).}
+
+Au-delà du choix de l'algorithme de clustering, la performance de l'agrégation dépend fortement de la préparation des données et des contraintes métier imposées lors du processus.
+
+\subsubsection*{Stratification par Risques Majeurs (TMG et Sexe)}
+Afin d'éviter des compensations de risques biologiquement ou financièrement absurdes, une stratégie de \textbf{pré-split} a été systématiquement appliquée. Le portefeuille est d'abord divisé en strates étanches selon :
+\begin{itemize}
+    \item \textbf{Le Sexe :} Pour garantir le respect des tables de mortalité différenciées.
+    \item \textbf{Le Taux Minimum Garanti (TMG) :} Pour éviter de diluer la valeur des garanties financières.
+\end{itemize}
+L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamment au sein de chaque strate. Cette approche garantit une « pureté » minimale des Model Points finaux.
+
+\subsubsection*{Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}
+Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de \textit{Feature Engineering} ont été testées :
+\begin{itemize}
+    \item \textbf{Ajout de la dimension Log-PM :} On ajoute le logarithme de la Provision Mathématique comme variable spatiale. Cela force l'algorithme à regrouper des contrats de taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
+    \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG contre 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
+\end{itemize}
+
 \subsection{Partitionnement par inertie : \textit{k}-moyennes (K-Means) pondéré}
 
-Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à
- déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y pl
-acer les groupes semblables, dans notre cas les Model Points.
+Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y placer les groupes semblables, dans notre cas les Model Points.
 
-Parmi les algorithmes de clustering, la méthode des K-Means a été retenue car c'est une méthode robuste et fonctionne très bien pour minimiser l'inertie intra-classe, c'est-à-dire
- la dispersion des contrats autour de leur Model Point représentatif.
+Parmi les algorithmes de clustering, la méthode des K-Means a été retenue car c'est une méthode robuste et fonctionne très bien pour minimiser l'inertie intra-classe, c'est-à-dire la dispersion des contrats autour de leur Model Point représentatif.
 
 \subsubsection{Principe de l'algorithme}
-L'algorithme des K-Means cherche à partitionner un ensemble de $N$ contrats en $K$ groupes (ou clusters) distincts, de manière à minimiser la distance entre chaque contrat et le c
-entre de son groupe (le centroïde). Dans notre contexte, ce centroïde deviendra le Model Point.
+L'algorithme des K-Means cherche à partitionner un ensemble de $N$ contrats en $K$ groupes (ou clusters) distincts, de manière à minimiser la distance entre chaque contrat et le centre de son groupe (le centroïde). Dans notre contexte, ce centroïde deviendra le Model Point.
 
-Mathématiquement, pour un ensemble de contrats représentés par des vecteurs de caractéristiques $x_i \in \mathbb{R}^d$ (où $d$ est le nombre de dimensions : Âge, Ancienneté, TMG..
-.), l'algorithme cherche à déterminer les $K$ centroïdes $\mu_1, ..., \mu_K$ qui minimisent la fonction objectif $J$ (l'inertie) :
+Mathématiquement, pour un ensemble de contrats représentés par des vecteurs de caractéristiques $x_i \in \mathbb{R}^d$ (où $d$ est le nombre de dimensions : Âge, Ancienneté, TMG...), l'algorithme cherche à déterminer les $K$ centroïdes $\mu_1, ..., \mu_K$ qui minimisent la fonction objectif $J$ (l'inertie) :
 
 $$ J = \sum_{j=1}^{K} \sum_{x_i \in S_j} w_i || x_i - \mu_j ||^2 $$
 
@@ -128,13 +140,11 @@ Où :
 \begin{itemize}
     \item $S_j$ est l'ensemble des contrats assignés au cluster $j$.
     \item $|| . ||$ est la distance/norme utilisée (ici norme euclidienne).
-    \item $w_i$ est le poids du contrat $i$, ici cela correspond à la Provision Mathématique ($PM_i$). Ainsi, l'algorithme est forcé de minimiser l'erreur de regroupement priorita
-irement pour les contrats à fort enjeux financiers.
+    \item $w_i$ est le poids du contrat $i$, ici cela correspond à la Provision Mathématique ($PM_i$). Ainsi, l'algorithme est forcé de minimiser l'erreur de regroupement prioritairement pour les contrats à fort enjeux financiers.
 \end{itemize}
 
 \subsubsection{Application aux données du portefeuille}
-La mise en œuvre de cet algorithme sur un portefeuille d'épargne nécessite plusieurs étapes pour garantir la pertinence des regroupements : le choix des variables, la standardisat
-ion des données, et l'adaptation de l'algorithme pour intégrer la pondération par la PM.
+La mise en œuvre de cet algorithme sur un portefeuille d'épargne nécessite plusieurs étapes pour garantir la pertinence des regroupements : le choix des variables, la standardisation des données, et l'adaptation de l'algorithme pour intégrer la pondération par la PM.
 
 Les variables retenues pour le calcul de la distance sont celles qui impactent directement le profil de risque et les flux futurs :
 \begin{itemize}
@@ -143,19 +153,13 @@ Les variables retenues pour le calcul de la distance sont celles qui impactent d
     \item \textbf{Le Taux Minimum Garanti (TMG)}.
 \end{itemize}
 
-Ces variables ayant des échelles très différentes (un âge varie de 0 à 100, un TMG de 0 à 0.04), un calcul de distance brut donnerait un poids disproportionné à l'âge. Il est donc
- impératif de procéder à une standardisation (centrage-réduction) des données avant le clustering :
+Ces variables ayant des échelles très différentes (un âge varie de 0 à 100, un TMG de 0 à 0.04), un calcul de distance brut donnerait un poids disproportionné à l'âge. Il est donc impératif de procéder à une standardisation (centrage-réduction) des données avant le clustering :
 $$ \tilde{x}_{i, d} = \frac{x_{i, d} - \mu_d}{\sigma_d} $$
 Cette transformation place toutes les variables sur une échelle comparable, permettant à l'algorithme de traiter équitablement les différentes dimensions du risque.
 
-L'algorithme utilisé est une variante pondérée des K-Means. Contrairement à une approche standard où chaque point a une importance égale, ici chaque contrat « attire » le centroïd
-e proportionnellement à sa PM.
-Le processus itératif est le suivant :
+L'algorithme utilisé est une variante pondérée des K-Means. Contrairement à une approche standard où chaque point a une importance égale, ici chaque contrat « attire » le centroïde proportionnellement à sa PM. Le processus itératif est le suivant :
 \begin{enumerate}
-    \item \textbf{Initialisation :} Sélection des $K$ centroïdes initiaux via la méthode \textbf{k-means++}. Contrairement à une initialisation totalement aléatoire qui risque de 
-conduire à des optimums locaux de mauvaise qualité, cet algorithme répartit les centres initiaux de manière espacée. Le premier centroïde est choisi au hasard, puis chaque centroï
-de suivant est sélectionné avec une probabilité proportionnelle au carré de la distance qui le sépare du centroïde le plus proche déjà choisi ($D(x)^2$). Cela accélère considérabl
-ement la convergence.
+    \item \textbf{Initialisation :} Sélection des $K$ centroïdes initiaux via la méthode \textbf{k-means++}. Contrairement à une initialisation totalement aléatoire qui risque de conduire à des optimums locaux de mauvaise qualité, cet algorithme répartit les centres initiaux de manière espacée. Le premier centroïde est choisi au hasard, puis chaque centroïde suivant est sélectionné avec une probabilité proportionnelle au carré de la distance qui le sépare du centroïde le plus proche déjà choisi ($D(x)^2$). Cela accélère considérablement la convergence.
     \item \textbf{Affectation :} Chaque contrat est assigné au centroïde le plus proche en termes de distance euclidienne pondérée.
     \item \textbf{Mise à jour :} Les nouveaux centroïdes sont recalculés comme le barycentre pondéré des contrats de leur cluster.
     \item \textbf{Convergence :} Répétition des étapes 2 et 3 jusqu'à stabilisation des centroïdes.
@@ -165,12 +169,10 @@ ement la convergence.
 Une fois la convergence atteinte, chaque cluster $j$ est transformé en un Model Point unique.
 \begin{itemize}
     \item Les variables extensives (PM, Nombre de contrats) sont sommées : $PM_{MP_j} = \sum_{i \in S_j} PM_i$.
-    \item Les variables intensives (Âge, Ancienneté, TMG) sont définies par les coordonnées du centroïde final, qui correspondent naturellement à la moyenne pondérée des caractéri
-stiques des contrats du cluster.
+    \item Les variables intensives (Âge, Ancienneté, TMG) sont définies par les coordonnées du centroïde final, qui correspondent naturellement à la moyenne pondérée des caractéristiques des contrats du cluster.
 \end{itemize}
 
-Cette méthode permet de définir automatiquement des Model Points situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, of
-frant ainsi une représentation optimale de la distribution des risques.
+Cette méthode permet de définir automatiquement des Model Points situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, offrant ainsi une représentation optimale de la distribution des risques.
 
 \begin{figure}[H]
     \centering
@@ -181,13 +183,9 @@ frant ainsi une représentation optimale de la distribution des risques.
 
 \subsection{Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}
 
-Si l'algorithme des K-Means est performant pour des données réparties de manière homogène et sphérique, il montre ses limites lorsque les structures sous-jacentes du portefeuille 
-sont complexes ou de densités variables. En effet, les données d'un portefeuille d'assurance vie présentent souvent des formes allongées ou irrégulières. Par exemple, une générati
-on de produits vendue massivement sur une courte période crée une concentration spécifique de forme non convexe.
+Si l'algorithme des K-Means est performant pour des données réparties de manière homogène et sphérique, il montre ses limites lorsque les structures sous-jacentes du portefeuille sont complexes ou de densités variables. En effet, les données d'un portefeuille d'assurance vie présentent souvent des formes allongées ou irrégulières. Par exemple, une génération de produits vendue massivement sur une courte période crée une concentration spécifique de forme non convexe.
 
-Pour capter ces formes complexes sans fixer \textit{a priori} le nombre de Model Points comme dans les K-Means, des méthodes basées sur la densité peuvent être mises en place : DB
-SCAN (\textit{Density-Based Spatial Clustering of Applications with Noise} ou \textit{Regroupement spatial basé sur la densité d'applications avec bruit}) et son extension hiérarc
-hique HDBSCAN.
+Pour capter ces formes complexes sans fixer \textit{a priori} le nombre de Model Points comme dans les K-Means, des méthodes basées sur la densité peuvent être mises en place : DBSCAN (\textit{Density-Based Spatial Clustering of Applications with Noise} ou \textit{Regroupement spatial basé sur la densité d'applications avec bruit}) et son extension hiérarchique HDBSCAN.
 
 \subsubsection{Principes fondamentaux de DBSCAN}
 L'algorithme DBSCAN définit un cluster comme une zone de forte densité séparée par des zones de faible densité. Il repose sur deux paramètres clés : un rayon de voisinage $\varepsilon$ (\textit{epsilon}) et un nombre minimum de points $MinPts$.
@@ -212,20 +210,15 @@ Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son 
 \end{figure}
 
 \subsubsection{Adaptation aux contraintes assurantielles}
-L'application directe de DBSCAN aux données brutes du portefeuille d'assurance vie utilisé se heurte à deux obstacles majeurs nécessitant des adaptations spécifiques implémentées 
-dans le protocole : Le problème de la discrétisation et la gestion du bruit.
+L'application directe de DBSCAN aux données brutes du portefeuille d'assurance vie utilisé se heurte à deux obstacles majeurs nécessitant des adaptations spécifiques implémentées dans le protocole : Le problème de la discrétisation et la gestion du bruit.
 
-Les variables de gestion (Âge, Ancienneté) sont traditionnellement stockées de manière discrète. Cette structure crée une grille artificielle où plusieurs contrats se superposent 
-exactement sur les mêmes coordonnées $(x,y)$. Cela fausse le calcul de densité locale : un point isolé sur la grille peut artificiellement paraître très dense simplement parce qu'
-il superpose plusieurs contrats identiques au mêmes caractéristiques.
+Les variables de gestion (Âge, Ancienneté) sont traditionnellement stockées de manière discrète. Cette structure crée une grille artificielle où plusieurs contrats se superposent exactement sur les mêmes coordonnées $(x,y)$. Cela fausse le calcul de densité locale : un point isolé sur la grille peut artificiellement paraître très dense simplement parce qu'il superpose plusieurs contrats identiques au mêmes caractéristiques.
 
-Pour y remédier, une technique de \textbf{Dithering} (bruitage uniforme) peut être utilisée. Avant l'étape de clustering, une perturbation aléatoire $u_i$ est ajoutée aux variable
-s temporelles de chaque contrat $x_i$ :
+Pour y remédier, une technique de \textbf{Dithering} (bruitage uniforme) peut être utilisée. Avant l'étape de clustering, une perturbation aléatoire $u_i$ est ajoutée aux variables temporelles de chaque contrat $x_i$ :
 
 $ \tilde{x}_{i, d} = x_{i, d} + u_{i, d} \quad \text{avec} \quad u_{i, d} \sim \mathcal{U}([-0.5, 0.5]) $
 
-Cette transformation permet alors de fluidifier l'espace et d'éviter une trop grande densité des contrats, sans altérer les propriétés statistiques globales du portefeuille (l'esp
-érance de la perturbation étant nulle).
+Cette transformation permet alors de fluidifier l'espace et d'éviter une trop grande densité des contrats, sans altérer les propriétés statistiques globales du portefeuille (l'espérance de la perturbation étant nulle).
 
 \subsubsection{Gestion du bruit et réallocation des contrats}
 Contrairement à une analyse de données classique exploratoire où le bruit peut être écarté, dans un modèle épargne, la complétude des engagements est une contrainte absolue :     
@@ -234,8 +227,7 @@ $\sum PM_{MP} = \sum PM_{contrats}$.
 
 Les contrats classés comme \og bruit \fg{} par DBSCAN (zones de faible densité ou points isolés) ne peuvent être ignorés.
 
-Il a donc fallu implémenter une étape de post-traitement systématique : une réallocation via un algorithme des \textbf{$k$-plus proches voisins ($k$-NN)} avec $k=1$. Chaque contra
-t identifié comme bruit $x_{noise}$ est réaffecté au cluster validé $C_j$ le plus proche :
+Il a donc fallu implémenter une étape de post-traitement systématique : une réallocation via un algorithme des \textbf{$k$-plus proches voisins ($k$-NN)} avec $k=1$. Chaque contrat identifié comme bruit $x_{noise}$ est réaffecté au cluster validé $C_j$ le plus proche :
 $ Class(x_{noise}) = Class(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)) $
 Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiques aux segments les plus ressemblants.
 
@@ -249,23 +241,15 @@ Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiq
 
 \subsection{L'extension hiérarchique adaptative : HDBSCAN (Distance d'accessibilité, extraction EOM vs Leaf)}
 
-Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un 
-seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment 
-commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuse
-s. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche f
-usionne des clusters distincts dans les zones denses.
+Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuses. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche fusionne des clusters distincts dans les zones denses.
 
-Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarc
-hique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes clés \cite{hdbscan} :
+Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes clés \cite{hdbscan} :
 
 \subsubsection{Transformation de l'espace : la distance d'accessibilité mutuelle}
-Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique :
- la « distance d'accessibilité mutuelle ».
+Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la « distance d'accessibilité mutuelle ».
 $$ d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} $$
 
-Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : 
-si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transforma
-tion a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
+Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
 
 \begin{figure}[H]
     \centering
@@ -275,8 +259,7 @@ tion a pour effet d'isoler les points aberrants en les « repoussant » hors des
 \end{figure}
 
 \subsubsection{Construction de l'Arbre Couvrant Minimum (MST)}
-L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un Arbre Couvrant Minimum (Minimu
-m Spanning Tree - MST) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
+L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un Arbre Couvrant Minimum (Minimum Spanning Tree - MST) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
 
 \begin{figure}[H]
     \centering
@@ -286,8 +269,7 @@ m Spanning Tree - MST) est généré pour connecter l'ensemble des points en min
 \end{figure}
 
 \subsubsection{Construction de la hiérarchie des clusters}
-En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre h
-iérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
+En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre hiérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
 
 \begin{figure}[H]
     \centering
@@ -297,9 +279,7 @@ iérarchique) représentant l'ensemble des regroupements possibles, du plus glob
 \end{figure}
 
 \subsubsection{Condensation de l'arbre}
-L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$)
-. Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance 
-de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
+L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
 
 \begin{figure}[H]
     \centering
@@ -309,8 +289,7 @@ de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conse
 \end{figure}
 
 \subsubsection{Extraction des clusters stables}
-Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Ex
-cess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{d
+Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Excess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{d
 eath}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
 $$ \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) $$
 L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters disjoints qui maximise cette stabilité globale.
@@ -318,14 +297,11 @@ L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters di
 \subsubsection{Stratégies d'extraction des clusters : EOM vs Leaf}
 Deux stratégies de sélection des nœuds dans la hiérarchie ont été mises en concurrence :
 \begin{itemize}
-    \item \textbf{Excess of Mass (EOM) :} C'est la stratégie par défaut de HDBSCAN. Elle cherche à maximiser la stabilité globale en sélectionnant les clusters les plus persistant
-s dans l'arbre. Elle a tendance à produire des macro-clusters, ce qui favorise un fort taux de compression mais peut lisser des micro-segments atypiques.
-    \item \textbf{Leaf (Feuilles) :} Cette variante force l'algorithme à sélectionner uniquement les nœuds terminaux de l'arbre condensé (les « feuilles »). Elle garantit l'homogé
-néité maximale au sein de chaque Model Point en évitant toute fusion, au prix d'un nombre de MP plus important.
+    \item \textbf{Excess of Mass (EOM) :} C'est la stratégie par défaut de HDBSCAN. Elle cherche à maximiser la stabilité globale en sélectionnant les clusters les plus persistants dans l'arbre. Elle a tendance à produire des macro-clusters, ce qui favorise un fort taux de compression mais peut lisser des micro-segments atypiques.
+    \item \textbf{Leaf (Feuilles) :} Cette variante force l'algorithme à sélectionner uniquement les nœuds terminaux de l'arbre condensé (les « feuilles »). Elle garantit l'homogénéité maximale au sein de chaque Model Point en évitant toute fusion, au prix d'un nombre de MP plus important.
 \end{itemize}
 
-Cette méthodologie permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale et adaptative de la pop
-ulation des assurés sans paramétrage complexe d'un rayon de voisinage.
+Cette méthodologie permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale et adaptative de la population des assurés sans paramétrage complexe d'un rayon de voisinage.
 
 \begin{figure}[H]
     \centering
@@ -342,8 +318,7 @@ ulation des assurés sans paramétrage complexe d'un rayon de voisinage.
 \end{figure}
 
 \subsubsection{Constitution finale des Model Points}
-Une fois la partition optimale obtenue (via DBSCAN ou HDBSCAN) et le bruit réalloué, la construction des Model Points suit la logique de conservation des flux financiers. Pour cha
-que cluster $j$, le Model Point est défini par le barycentre pondéré des contrats :
+Une fois la partition optimale obtenue (via DBSCAN ou HDBSCAN) et le bruit réalloué, la construction des Model Points suit la logique de conservation des flux financiers. Pour chaque cluster $j$, le Model Point est défini par le barycentre pondéré des contrats :
 
 $ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i} $
 
@@ -353,8 +328,7 @@ Cette méthode assure que le Model Point se situe au centre de gravité financie
 \textcolor{blue}{On isole le CART ici, car il utilise une variable cible, contrairement aux K-Means/HDBSCAN.}
 \subsection{Principe des Arbres de Décision (CART) appliqués au passif}
 
-L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le pr
-ocessus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'
+L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'
 intérêt.
 
 Dans le cadre de cette étude, deux variantes de ciblage ont été implémentées :
@@ -364,33 +338,25 @@ nancières à fort enjeux de revalorisation.
     \item \textbf{Spread Focus :} La cible est le TMG pur, l'objectif étant d'obtenir des clusters d'une grande pureté financière pour limiter la dilution des garanties.
 \end{itemize}
 
-L'algorithme procède par divisions successives (splits) binaires de l'espace des caractéristiques (Âge, Ancienneté, TMG). À chaque étape, il choisit la variable et le seuil qui ma
-ximisent l'homogénéité de la cible au sein des deux groupes formés. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) e
-st atteint.
+L'algorithme procède par divisions successives (splits) binaires de l'espace des caractéristiques (Âge, Ancienneté, TMG). À chaque étape, il choisit la variable et le seuil qui maximisent l'homogénéité de la cible au sein des deux groupes formés. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) est atteint.
 
 \subsection{Définition des variables cibles (Refined vs Spread Focus)}
 La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
 \begin{itemize}
-    \item \textbf{Variante Refined :} On définit une cible $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats 
-qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
-    \item \textbf{Variante Spread Focus :} La cible est le TMG pur. L'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approch
-e est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques.
+    \item \textbf{Variante Refined :} On définit une cible $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
+    \item \textbf{Variante Spread Focus :} La cible est le TMG pur. L'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques.
 \end{itemize}
 
-Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une
- certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
+Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
 \section{Les approches dynamiques basées sur l'écoulement des flux}
 \subsection{Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}
 
-La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selo
-n leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
+La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
 
 Le principe s'articule en deux phases :
 \begin{enumerate}
-    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ an
-s. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décè
-s, termes) et de la marge financière à l'année $t$.
+    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
     \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distan
 ce entre deux contrats est alors définie par leur proximité comportementale dans le temps :
     $$ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} $$
@@ -399,46 +365,35 @@ ce entre deux contrats est alors définie par leur proximité comportementale da
 \subsubsection{Niveaux de fidélité du moteur proxy}
 Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
 \begin{itemize}
-    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui 
-peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
-    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s)
-, il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, 
-fiscalité).
+    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
+    \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
 \end{itemize}
 
-Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des
- caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de so
-rtie statistiquement équivalents.
+Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents.
 
-L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Bes
-t Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
 
 \subsection{Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}
 
-L'approche par calibration \textit{a posteriori}, dénommée \og Biais Zéro \fg{} dans cette étude, marque une rupture méthodologique avec les techniques de clustering spatial. Là o
-ù les méthodes classiques tentent d'ajuster des contrats à des lois de mortalité existantes, cette approche propose d'adapter les lois de sortie pour qu'elles correspondent parfai
-tement à un regroupement arbitraire de contrats.
+L'approche par calibration \textit{a posteriori}, dénommée \og Biais Zéro \fg{} dans cette étude, marque une rupture méthodologique avec les techniques de clustering spatial. Là où les méthodes classiques tentent d'ajuster des contrats à des lois de mortalité existantes, cette approche propose d'adapter les lois de sortie pour qu'elles correspondent parfaitement à un regroupement arbitraire de contrats.
 
 \subsubsection{Mécanique des décréments et bases de calibration}
 
-Pour atteindre une erreur nulle sur le Best Estimate, la calibration doit respecter scrupuleusement l'ordonnancement des flux au sein du moteur de projection Polars. Le moteur app
-lique la séquence suivante sur une période $[t, t+1]$ :
+Pour atteindre une erreur nulle sur le Best Estimate, la calibration doit respecter scrupuleusement l'ordonnancement des flux au sein du moteur de projection Polars. Le moteur applique la séquence suivante sur une période $[t, t+1]$ :
 \begin{enumerate}
     \item \textbf{Revalorisation technique} : Application du TMG au prorata temporis sur la PM de début d'année.
     \item \textbf{Calcul des rachats} : Les rachats s'appliquent sur la PM revalorisée à mi-période.
     \item \textbf{Calcul des décès} : Les décès s'appliquent sur la PM nette des rachats.
 \end{enumerate}
 
-Ainsi, les lois induites $q_{k,t}$ ne sont pas calculées sur la PM de début d'année, mais sur les \textbf{bases d'application exactes} (mi-période). Pour un groupe de contrats $k$,
- les probabilités de rachat ($q_{k,t}^{rt}$) et de décès ($q_{k,t}^{dc}$) sont définies par :
+Ainsi, les lois induites $q_{k,t}$ ne sont pas calculées sur la PM de début d'année, mais sur les \textbf{bases d'application exactes} (mi-période). Pour un groupe de contrats $k$, les probabilités de rachat ($q_{k,t}^{rt}$) et de décès ($q_{k,t}^{dc}$) sont définies par :
 
 \begin{equation}
     q_{k,t}^{rt} = \frac{\sum_{i \in k} \text{Prestations\_Rachats}_{i,t}}{\sum_{i \in k} \text{Base\_Rachats}_{i,t}} \quad ; \quad q_{k,t}^{dc} = \frac{\sum_{i \in k} \text{Prestat
 ions\_Décès}_{i,t}}{\sum_{i \in k} \text{Base\_Décès}_{i,t}}
 \end{equation}
 
-Où la base de rachat intègre les intérêts techniques acquis à mi-période, et la base de décès est nette des rachats déjà effectués. Cette précision mathématique permet de capture
-r l'intégralité de la cinétique des flux, rendant le Model Point agnostique de la démographie réelle ($Age, Sexe$).
+Où la base de rachat intègre les intérêts techniques acquis à mi-période, et la base de décès est nette des rachats déjà effectués. Cette précision mathématique permet de capturer l'intégralité de la cinétique des flux, rendant le Model Point agnostique de la démographie réelle ($Age, Sexe$).
 
 \subsubsection{Définition des clés d'agrégation financières}
 
@@ -454,30 +409,6 @@ Cette segmentation garantit que le \textbf{Model Point Financier (MPF)} possède
     TMG_{brut} = \frac{TMG_{net} + TFGSE}{TAF}
 \end{equation}
 
-L'agrégation sur ces clés, combinée aux lois induites, permet d'atteindre le \og Biais Zéro \fg{} opérationnel, l'erreur résiduelle ne provenant plus que des arrondis numériques (e
-stimée à $0,006\%$ dans nos tests).
-
-\subsection{Techniques transverses d'optimisation et pré-traitement}
-
-Au-delà du choix de l'algorithme de clustering, la performance de l'agrégation dépend fortement de la préparation des données et des contraintes métier imposées lors du processus.
-
-\subsubsection{Stratification par Risques Majeurs (TMG et Sexe)}
-Afin d'éviter des compensations de risques biologiquement ou financièrement absurdes, une stratégie de \textbf{pré-split} a été systématiquement appliquée. Le portefeuille est d'a
-bord divisé en strates étanches selon :
-\begin{itemize}
-    \item \textbf{Le Sexe :} Pour garantir le respect des tables de mortalité différenciées.
-    \item \textbf{Le Taux Minimum Garanti (TMG) :} Pour éviter de diluer la valeur des garanties financières.
-\end{itemize}
-L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamment au sein de chaque strate. Cette approche garantit une « pureté » minimale des Model Points finaux.
-
-\subsubsection{Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}
-Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de \textit{Feature Engineering} ont été testées :
-\begin{itemize}
-    \item \textbf{Ajout de la dimension Log-PM :} On ajoute le logarithme de la Provision Mathématique comme variable spatiale. Cela force l'algorithme à regrouper des contrats de
- taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
-    \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG cont
-re 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
-\end{itemize}
-
+L'agrégation sur ces clés, combinée aux lois induites, permet d'atteindre le \og Biais Zéro \fg{} opérationnel, l'erreur résiduelle ne provenant plus que des arrondis numériques (estimée à $0,006\%$ dans nos tests).
 
 \textcolor{blue}{Bilan des méthodes candidates et annonce du protocole de test standardisé (qui fera l'objet du Chapitre 4).}
