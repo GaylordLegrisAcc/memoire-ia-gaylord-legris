@@ -107,6 +107,7 @@ Plus la tranche est large, plus cette variance augmente, ce qui dilue la précis
 
 \section{Les approches statistiques spatiales (Apprentissage Non Supervisé)}
 
+\subsection{Préparation de l'espace spatial : Techniques transverses}
 Au-delà du choix de l'algorithme de clustering, la performance de l'agrégation dépend fortement de la préparation des données et des contraintes métier imposées lors du processus.
 
 \subsubsection*{Stratification par Risques Majeurs (TMG et Sexe)}
@@ -328,7 +329,9 @@ $ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i} $
 Cette méthode assure que le Model Point se situe au centre de gravité financier de son groupe, minimisant ainsi le biais d'agrégation sur les projections futures.
 
 \section{L'approche par segmentation supervisée}
-\textcolor{blue}{On isole le CART ici, car il utilise une variable cible, contrairement aux K-Means/HDBSCAN.}
+
+Alors que les méthodes d'apprentissage non supervisé (K-Means, HDBSCAN) cherchent à regrouper les contrats selon une similarité globale de leurs caractéristiques, elles ne garantissent pas structurellement l'homogénéité d'un indicateur financier précis. Pour pallier cette limite et forcer la modélisation à se concentrer sur les enjeux de rentabilité (comme le TMG), il convient de se tourner vers des algorithmes d'apprentissage supervisé.
+
 \subsection{Principe des Arbres de Décision (CART) appliqués au passif}
 
 L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'
@@ -353,6 +356,9 @@ La puissance de l'arbre CART réside dans le choix de la métrique à optimiser 
 Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
 \section{Les approches dynamiques basées sur l'écoulement des flux}
+
+Toutes les méthodes de partitionnement spatial abordées jusqu'ici, qu'elles soient supervisées ou non, partagent une limite conceptuelle commune : elles évaluent la similarité des profils de risque de manière purement statique, à la date d'arrêté. Pour franchir un nouveau cap de fidélité financière, une rupture méthodologique s'impose : agréger les contrats non plus sur ce qu'ils sont, mais sur ce qu'ils vont produire.
+
 \subsection{Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}
 
 La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
