@@ -132,8 +132,14 @@
 
 
 % Contenu principal en une seule colonne
-\setcounter{tocdepth}{1}
-\tableofcontents
+\cleardoublepage
+\begin{singlespace}
+    \raggedbottom
+    \setcounter{tocdepth}{1}
+    \tableofcontents
+\end{singlespace}
+\clearpage
+\flushbottom
 
 % IMPORTANT: Ensure all included .tex files exist in the specified paths
 % and do not contain LaTeX errors themselves!
