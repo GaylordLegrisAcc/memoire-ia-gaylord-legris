@@ -127,7 +127,10 @@ Le résultat de ce processus est une fonction continue et lisse qui estime le ta
 \end{figure}
 
 
-En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après standartisation, on peut alors construire une loi de probabilité empirique.  : $$P(Age = x) = \frac{N_{assures}(x)}{Total_{assures}}$$ 
+En multipliant la population de chaque âge par le taux de détention estimé, il a été possible d'obtenir une estimation du nombre d'assurés pour chaque âge et chaque sexe. Après standartisation, on peut alors construire une loi de probabilité empirique.  : 
+\begin{equation}
+P(Age = x) = \frac{N_{assures}(x)}{Total_{assures}}
+\end{equation} 
 
 
 
@@ -291,7 +294,10 @@ La deuxième étape consiste à estimer la part du patrimoine de chaque individu
 \end{figure}
 
 La troisième étape consiste à lier le patrimoine financier à la Provision Mathématique. Il est en effet plus réaliste de considérer que l'épargne en assurance-vie (ou la provision mathématique du point de vue de l'assureur) constitue une part du patrimoine financier plutôt que du patrimoine brut. Une hypothèse centrale est donc formulée : la PM d'un individu est estimée comme une fraction de son patrimoine financier. Sur la base de données INSEE \cite{insee_patrimoine_age}, cette fraction est fixée à \textbf{40\%}. Ainsi, pour chaque individu de la population simulée, la PM est calculée comme suit :
-$$ \text{PM} = \text{Patrimoine Brut} \times \text{Part du Patrimoine Financier} \times 40\% $$
+
+\begin{equation}
+ \text{PM} = \text{Patrimoine Brut} \times \text{Part du Patrimoine Financier} \times 40\% 
+\end{equation}
 Cette règle permet de transformer la distribution de patrimoine en une distribution de PM, en tenant compte des non-linéarités observées dans la composition du patrimoine.
 
 Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textbf{loi Lognormale}. Bien que les tests d'adéquation classiques rejettent formellement l'hypothèse nulle en raison de la très grande taille de l'échantillon (rendant le test extrêmement sensible aux infimes déviations), l'analyse comparative des critères d'information et de la distance K-S confirme la supériorité de la loi Lognormale sur cet ajustement, comme l'indique le tableau \ref{tab:stats_pm}.

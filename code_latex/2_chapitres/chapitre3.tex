@@ -39,69 +39,68 @@ Par conséquent, pour garantir que le Model Point agrégé se comporte comme la 
 
 Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même Model Point $k$ si et seulement si leurs vecteurs de car
 actéristiques discrétisées sont identiques :
-$$ (\text{Sexe}_i, \lfloor \text{Age}_i \rfloor, \lfloor \text{Anc}_i \rfloor, \text{TMG}_i) = (\text{Sexe}_j, \lfloor \text{Age}_j \rfloor, \lfloor \text{Anc}_j \rfloor, \text{TM
-G}_j) $$
+\begin{equation}
+(S_i, \lfloor A_i \rfloor, \lfloor Anc_i \rfloor, TMG_i) = (S_j, \lfloor A_j \rfloor, \lfloor Anc_j \rfloor, TMG_j)
+\end{equation}
 
-Une fois les groupes constitués, l'agrégation s'opère par la somme des variables extensives (dont la valeur pour le groupe est la somme des valeurs individuelles). La Provision Ma
-thématique du Model Point $k$ est alors la somme des PM des contrats qui le constituent :
-$$ PM_{MP_k} = \sum_{i \in Groupe_k} PM_i $$
-Les variables intensives du Model Point (dont la valeur est indépendante de la taille du groupe, comme l'Âge ou l'Ancienneté) prennent alors les valeurs définies par la segmentati
-on (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
+Où $S_i, A_i$ et $Anc_i$ désignent respectivement le sexe, l'âge et l'ancienneté du contrat $i$. Une fois les groupes constitués, l'agrégation s'opère par la somme des variables extensives. La Provision Mathématique du Model Point $k$ (associé à la classe d'équivalence $C_k$) est alors la somme des encours des contrats qui le constituent :
+\begin{equation}
+PM_{MP_k} = \sum_{i \in C_k} PM_i
+\end{equation}
+Les variables intensives du Model Point (dont la valeur est indépendante de la taille du groupe, comme l'Âge ou l'Ancienneté) prennent alors les valeurs définies par la segmentation (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
 
-Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les
- garanties contractuelles (absence de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
+Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les garanties contractuelles (absence de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
 
 Cependant, elle présente des limites intrinsèques :
 \begin{itemize}
-    \item \textbf{La rigidité de la structure de regroupement :} La définition des classes est fixée \textit{a priori} et de manière uniforme, sans tenir compte de la distribution
- réelle des capitaux. Cette approche ne permet pas de concentrer automatiquement la précision du regroupement sur les zones à fort enjeux financiers, traitant potentiellement avec
- la même granularité les segments marginaux et les segments prépondérants.
-    \item \textbf{L'absence de contrôle sur la compression :} Le nombre de Model Points finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et 
-de la finesse de la segmentation. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de groupes très élevé, dont certains ne contiendront que peu de contrat
-s, limitant ainsi l'efficacité de la réduction de dimension (phénomène du « fléau de la dimension »).
+    \item \textbf{La rigidité de la structure de regroupement :} La définition des classes est fixée \textit{a priori} et de manière uniforme, sans tenir compte de la distribution réelle des capitaux. Cette approche ne permet pas de concentrer automatiquement la précision du regroupement sur les zones à fort enjeux financiers, traitant potentiellement avec la même granularité les segments marginaux et les segments prépondérants.
+    \item \textbf{L'absence de contrôle sur la compression :} Le nombre de Model Points finaux n'est pas paramétrable. Il dépend exclusivement de la dispersion du portefeuille et de la finesse de la segmentation. Sur un portefeuille très hétérogène, cette méthode peut générer un nombre de groupes très élevé, dont certains ne contiendront que peu de contrats, limitant ainsi l'efficacité de la réduction de dimension (phénomène du « fléau de la dimension »).
 \end{itemize}
 
 \subsection{Approche par tranches (Banding) et pondération financière}
 
-Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'é
-galité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
+Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
 
-Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des
- variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivant ont été retenus :
+Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivant ont été retenus :
 \begin{itemize}
     \item Un pas de 2 ans pour l'âge de l'assuré ;
     \item Un pas de 5 ans pour l'ancienneté du contrat.
 \end{itemize}
 
 Un contrat $i$ appartient à un groupe $k$ si ses caractéristiques discrètes correspondent et si ses variables continues tombent dans les intervalles définis :
-$$ i \in MP_k \iff \begin{cases} \text{Sexe}_i = \text{Sexe}_k \\ \text{TMG}_i = \text{TMG}_k \\ \text{Age}_i \in [\text{Age}_{min}^k, \text{Age}_{max}^k[ \\ \text{Anciennet\'{e}}
-_i \in [\text{Anc}_{min}^k, \text{Anc}_{max}^k[ \end{cases} $$
 
-La spécificité majeure de cette approche réside dans la détermination des caractéristiques du Model Point. Contrairement à une approche simpliste qui retiendrait le centre de l'in
-tervalle (par exemple, 31 ans pour la tranche [30-32[), dans cette méthode il faut calculer le barycentre des contrats regroupés. Finalement, afin de préserver la structure financ
-ière du portefeuille, la moyenne est pondérée par la Provision Mathématique (PM).
+\begin{equation}
+i \in C_k \iff 
+\begin{cases} 
+S_i = S_k \\ 
+TMG_i = TMG_k \\ 
+A_i \in [A_{min}^k, A_{max}^k[ \\ 
+Anc_i \in [Anc_{min}^k, Anc_{max}^k[ 
+\end{cases}
+\end{equation}
 
-Ainsi, l'âge ($Age_{MP}$) et l'ancienneté ($Anc_{MP}$) du Model Point sont calculés comme suit :
-$$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} \quad ; \quad \text{Anc}_{MP} = \frac{\sum_{i \in MP} \text{Anciennet\'{e}
-}_i \times \text{PM}_i}{\sum_{i \in MP} \text{PM}_i} $$
+La spécificité majeure de cette approche réside dans la détermination des caractéristiques du Model Point. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle, il convient de calculer le barycentre financier des contrats regroupés. Ainsi, l'âge ($A_{MP_k}$) et l'ancienneté ($Anc_{MP_k}$) du Model Point $k$ sont calculés comme suit :
 
-Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ain
-si le biais d'agrégation sur les projections de flux futurs.
+\begin{equation}
+A_{MP_k} = \frac{\sum_{i \in C_k} A_i \cdot PM_i}{\sum_{i \in C_k} PM_i} \quad ; \quad Anc_{MP_k} = \frac{\sum_{i \in C_k} Anc_i \cdot PM_i}{\sum_{i \in C_k} PM_i}
+\end{equation}
+
+Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
 
 \subsubsection{Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}
-Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse 
-des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
+Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
 \begin{itemize}
-    \item \textbf{Smart Focus Active :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrême
-s (pas de 15 ans au-delà de 85 ans).
+    \item \textbf{Smart Focus Active :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrêmes (pas de 15 ans au-delà de 85 ans).
     \item \textbf{Smart Focus Young :} Stratégie ultra-fine sur les nouveaux entrants (pas de 1 an jusqu'à 50 ans) pour capturer la dynamique de croissance du portefeuille.       
-    \item \textbf{Smart Focus Fiscal :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscal
-ité des rachats.
+    \item \textbf{Smart Focus Fiscal :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscalité des rachats.
     \item \textbf{Smart Granular (Équilibré) :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
 \end{itemize}
 \subsubsection{Limites de l'approche et variance intra-classe}
 Bien que la pondération par la Provision Mathématique assure la conservation du barycentre financier, le regroupement par tranches (Banding) écrase inévitablement la dispersion au sein de chaque groupe. Mathématiquement, la variance intra-classe (ou inertie) d'une tranche $k$ pour une caractéristique $X$ (comme l'âge) s'exprime par :
-$$ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{MP_k})^2 $$
+
+\begin{equation}
+ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{MP_k})^2 
+\end{equation}
 Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique. Plutôt que de subir une grille d'agrégation statique et arbitraire qui contraint la donnée, il apparaît nécessaire d'adopter des approches où la structure intrinsèque du portefeuille dicte elle-même la formation des groupes. Les méthodes d'apprentissage non supervisé, explorées dans la section suivante, répondent précisément à cet impératif en cherchant à minimiser l'inertie intra-classe de manière algorithmique.
 
 
@@ -121,7 +120,7 @@ L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamme
 \subsubsection*{Ingénierie des caractéristiques : Log-PM et Poids Dimensionnels}
 Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de \textit{Feature Engineering} ont été testées :
 \begin{itemize}
-    \item \textbf{Ajout de la dimension Log-PM :} On ajoute le logarithme de la Provision Mathématique comme variable spatiale. Cela force l'algorithme à regrouper des contrats de taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
+    \item \textbf{Ajout de la dimension Log-PM :} Le logarithme de la Provision Mathématique est ajouté comme variable spatiale. Cela force l'algorithme à regrouper des contrats de taille financière similaire, évitant qu'un « gros » contrat ne soit noyé dans une masse de « petits » contrats.
     \item \textbf{Pondération des dimensions :} Lors du calcul de la distance euclidienne, des poids $w_d$ sont appliqués. Par exemple, une importance de 10 est donnée au TMG contre 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
 \end{itemize}
 
@@ -136,11 +135,14 @@ L'algorithme des K-Means cherche à partitionner un ensemble de $N$ contrats en 
 
 Mathématiquement, pour un ensemble de contrats représentés par des vecteurs de caractéristiques $x_i \in \mathbb{R}^d$ (où $d$ est le nombre de dimensions : Âge, Ancienneté, TMG...), l'algorithme cherche à déterminer les $K$ centroïdes $\mu_1, ..., \mu_K$ qui minimisent la fonction objectif $J$ (l'inertie) :
 
-$$ J = \sum_{j=1}^{K} \sum_{x_i \in S_j} w_i || x_i - \mu_j ||^2 $$
+
+\begin{equation}
+J = \sum_{j=1}^{K} \sum_{x_i \in C_j} w_i \left\lVert x_i - \mu_j \right\rVert^2
+\end{equation}
 
 Où :
 \begin{itemize}
-    \item $S_j$ est l'ensemble des contrats assignés au cluster $j$.
+    \item $C_j$ est l'ensemble des contrats assignés au cluster $j$.
     \item $|| . ||$ est la distance/norme utilisée (ici norme euclidienne).
     \item $w_i$ est le poids du contrat $i$, ici cela correspond à la Provision Mathématique ($PM_i$). Ainsi, l'algorithme est forcé de minimiser l'erreur de regroupement prioritairement pour les contrats à fort enjeux financiers.
 \end{itemize}
@@ -156,7 +158,10 @@ Les variables retenues pour le calcul de la distance sont celles qui impactent d
 \end{itemize}
 
 Ces variables ayant des échelles très différentes (un âge varie de 0 à 100, un TMG de 0 à 0.04), un calcul de distance brut donnerait un poids disproportionné à l'âge. Il est donc impératif de procéder à une standardisation (centrage-réduction) des données avant le clustering :
-$$ \tilde{x}_{i, d} = \frac{x_{i, d} - \mu_d}{\sigma_d} $$
+
+\begin{equation}
+ \tilde{x}_{i, d} = \frac{x_{i, d} - \mu_d}{\sigma_d} 
+\end{equation}
 Cette transformation place toutes les variables sur une échelle comparable, permettant à l'algorithme de traiter équitablement les différentes dimensions du risque.
 
 L'algorithme utilisé est une variante pondérée des K-Means. Contrairement à une approche standard où chaque point a une importance égale, ici chaque contrat « attire » le centroïde proportionnellement à sa PM. Le processus itératif est le suivant :
@@ -251,7 +256,10 @@ Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{H
 
 \subsubsection{Transformation de l'espace : la distance d'accessibilité mutuelle}
 Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la « distance d'accessibilité mutuelle ».
-$$ d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} $$
+
+\begin{equation}
+ d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} 
+\end{equation}
 
 Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les points aberrants en les « repoussant » hors des zones de forte concentration, ce qui stabilise la formation des clusters.
 
@@ -283,7 +291,7 @@ En supprimant itérativement les arêtes du MST par ordre décroissant de poids,
 \end{figure}
 
 \subsubsection{Condensation de l'arbre}
-L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), on vérifie si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, on considère qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
+L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation (split), la taille minimale des nouveaux groupes formés est vérifiée si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, il est considéré qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
 
 \begin{figure}[H]
     \centering
@@ -295,7 +303,10 @@ L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque 
 \subsubsection{Extraction des clusters stables}
 Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Excess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{d
 eath}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
-$$ \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) $$
+
+\begin{equation}
+ \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) 
+\end{equation}
 L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters disjoints qui maximise cette stabilité globale.
 
 \subsubsection{Stratégies d'extraction des clusters : EOM vs Leaf}
@@ -349,7 +360,7 @@ L'algorithme procède par divisions successives (splits) binaires de l'espace de
 \subsection{Définition des variables cibles (Refined vs Spread Focus)}
 La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
 \begin{itemize}
-    \item \textbf{Variante Refined :} On définit une cible $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
+    \item \textbf{Variante Refined :} Une variable cible d'intérêt $Y_i$ est définie par $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
     \item \textbf{Variante Spread Focus :} La cible est le TMG pur. L'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques.
 \end{itemize}
 
@@ -361,14 +372,17 @@ Toutes les méthodes de partitionnement spatial abordées jusqu'ici, qu'elles so
 
 \subsection{Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}
 
-La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selon leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
+La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : les contrats sont regroupés selon leur \textbf{profil de risque dynamique}.
 
 Le principe s'articule en deux phases :
 \begin{enumerate}
-    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. On extrait de cette projection un vecteur de flux financiers $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
+    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. Un vecteur de flux financiers est extrait de cette projection $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
     \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distan
 ce entre deux contrats est alors définie par leur proximité comportementale dans le temps :
-    $$ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} $$
+    
+\begin{equation}
+ d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} 
+\end{equation}
 \end{enumerate}
 
 \subsubsection{Niveaux de fidélité du moteur proxy}
@@ -380,7 +394,7 @@ Cette approche a été déclinée en deux versions selon la complexité du moteu
 
 Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents.
 
-L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur calculé \textit{in fine} (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
 
 \subsection{Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}
 
@@ -398,9 +412,10 @@ Pour atteindre une erreur nulle sur le Best Estimate, la calibration doit respec
 Ainsi, les lois induites $q_{k,t}$ ne sont pas calculées sur la PM de début d'année, mais sur les \textbf{bases d'application exactes} (mi-période). Pour un groupe de contrats $k$, les probabilités de rachat ($q_{k,t}^{rt}$) et de décès ($q_{k,t}^{dc}$) sont définies par :
 
 \begin{equation}
-    q_{k,t}^{rt} = \frac{\sum_{i \in k} \text{Prestations\_Rachats}_{i,t}}{\sum_{i \in k} \text{Base\_Rachats}_{i,t}} \quad ; \quad q_{k,t}^{dc} = \frac{\sum_{i \in k} \text{Prestat
-ions\_Décès}_{i,t}}{\sum_{i \in k} \text{Base\_Décès}_{i,t}}
+    q_{k,t}^{rt} = \frac{\sum_{i \in C_k} PR_{i,t}}{\sum_{i \in C_k} BR_{i,t}} \quad ; \quad q_{k,t}^{dc} = \frac{\sum_{i \in C_k} PD_{i,t}}{\sum_{i \in C_k} BD_{i,t}}
 \end{equation}
+
+Où $PR_{i,t}$ et $PD_{i,t}$ représentent respectivement les prestations pour rachats et pour décès du contrat $i$ à l'instant $t$. Les termes $BR_{i,t}$ et $BD_{i,t}$ désignent les bases d'application exactes associées.
 
 Où la base de rachat intègre les intérêts techniques acquis à mi-période, et la base de décès est nette des rachats déjà effectués. Cette précision mathématique permet de capturer l'intégralité de la cinétique des flux, rendant le Model Point agnostique de la démographie réelle ($Age, Sexe$).
 
