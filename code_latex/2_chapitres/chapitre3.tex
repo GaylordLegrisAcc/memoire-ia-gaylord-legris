@@ -16,8 +16,8 @@ Pour répondre à cette problématique, l'objectif de ce chapitre est de défini
 
 L'exposé détaillé de ces modèles nous permettra de poser le socle théorique nécessaire avant d'aborder, dans le chapitre suivant, le protocole de test standardisé et l'analyse comparative de leurs performances respectives.
 
-\section{Approches déterministes classiques}
-\subsection{Approche déterministe par regroupement de caractéristiques}
+\section{Les approches déterministes : Le standard de marché}
+\subsection{Segmentation stricte par regroupement de caractéristiques}
 
 La méthode par regroupement de caractéristiques repose sur une segmentation par classes de risque, cette approche constitue le standard historique en actuariat. Elle servira de ba
 se de comparaison pour évaluer la performance des algorithmes de regroupement statistique plus avancés présentés dans les parties suivantes.
@@ -61,7 +61,7 @@ de la finesse de la segmentation. Sur un portefeuille très hétérogène, cette
 s, limitant ainsi l'efficacité de la réduction de dimension (phénomène du « fléau de la dimension »).
 \end{itemize}
 
-\subsection{Approche par tranches et moyenne pondérée}
+\subsection{Approche par tranches (Banding) et pondération financière}
 
 Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'é
 galité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
@@ -88,7 +88,7 @@ $$ \text{Age}_{MP} = \frac{\sum_{i \in MP} \text{Age}_i \times \text{PM}_i}{\sum
 Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ain
 si le biais d'agrégation sur les projections de flux futurs.
 
-\subsubsection{Variante « Smart Granular » et stratégies métier}
+\subsubsection{Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}
 Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse 
 des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
 \begin{itemize}
@@ -104,8 +104,9 @@ Bien que la pondération par la Provision Mathématique assure la conservation d
 $$ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{MP_k})^2 $$
 Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique (\textit{Machine Learning}), capables de minimiser cette inertie de manière optimale plutôt que de subir une grille prédéfinie.
 
-\section{Approches statistiques par apprentissage non supervisé}
-\subsection{Partitionnement en \textit{k}-moyennes (K-Means)}
+\section{Les approches statistiques spatiales (Apprentissage Non Supervisé)}
+\textcolor{blue}{Ici, on introduit les techniques transverses en préambule car elles servent à préparer la donnée pour ces algorithmes : Stratification Sexe/TMG, Feature Engineering (Log-PM).}
+\subsection{Partitionnement par inertie : \textit{k}-moyennes (K-Means) pondéré}
 
 Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à
  déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y pl
@@ -178,7 +179,7 @@ frant ainsi une représentation optimale de la distribution des risques.
     \label{fig:kmeans_clusters}
 \end{figure}
 
-\subsection{Approches basées sur la densité (DBSCAN et HDBSCAN)}
+\subsection{Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}
 
 Si l'algorithme des K-Means est performant pour des données réparties de manière homogène et sphérique, il montre ses limites lorsque les structures sous-jacentes du portefeuille 
 sont complexes ou de densités variables. En effet, les données d'un portefeuille d'assurance vie présentent souvent des formes allongées ou irrégulières. Par exemple, une générati
@@ -246,7 +247,7 @@ Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiq
 \end{figure}
 
 
-\subsection{Approche hiérarchique adaptative (HDBSCAN)}
+\subsection{L'extension hiérarchique adaptative : HDBSCAN (Distance d'accessibilité, extraction EOM vs Leaf)}
 
 Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un 
 seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment 
@@ -348,7 +349,9 @@ $ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i} $
 
 Cette méthode assure que le Model Point se situe au centre de gravité financier de son groupe, minimisant ainsi le biais d'agrégation sur les projections futures.
 
-\subsection{Approche par Arbres de Décision (CART)}
+\section{L'approche par segmentation supervisée}
+\textcolor{blue}{On isole le CART ici, car il utilise une variable cible, contrairement aux K-Means/HDBSCAN.}
+\subsection{Principe des Arbres de Décision (CART) appliqués au passif}
 
 L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le pr
 ocessus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'
@@ -365,7 +368,7 @@ L'algorithme procède par divisions successives (splits) binaires de l'espace de
 ximisent l'homogénéité de la cible au sein des deux groupes formés. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) e
 st atteint.
 
-\subsubsection{Définition de la variable cible : Refined vs Spread Focus}
+\subsection{Définition des variables cibles (Refined vs Spread Focus)}
 La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
 \begin{itemize}
     \item \textbf{Variante Refined :} On définit une cible $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats 
@@ -377,8 +380,8 @@ e est privilégiée pour les modèles ALM très sensibles au spread entre taux d
 Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une
  certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
-\section{Approches basées sur l'analyse des flux financiers}
-\subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
+\section{Les approches dynamiques basées sur l'écoulement des flux}
+\subsection{Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}
 
 La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selo
 n leurs caractéristiques statiques, on les regroupe selon leur \textbf{profil de risque dynamique}.
@@ -410,7 +413,7 @@ rtie statistiquement équivalents.
 L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur que l'on cherche à calculer au final (le Bes
 t Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
 
-\subsection{Approche par calibration de lois comportementales a posteriori (Biais Zéro)}
+\subsection{Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}
 
 L'approche par calibration \textit{a posteriori}, dénommée \og Biais Zéro \fg{} dans cette étude, marque une rupture méthodologique avec les techniques de clustering spatial. Là o
 ù les méthodes classiques tentent d'ajuster des contrats à des lois de mortalité existantes, cette approche propose d'adapter les lois de sortie pour qu'elles correspondent parfai
@@ -476,6 +479,8 @@ Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de 
 re 1 pour l'Âge, pour s'assurer que la proximité financière prime sur la proximité démographique.
 \end{itemize}
 
+
+\textcolor{blue}{Bilan des méthodes candidates et annonce du protocole de test standardisé (qui fera l'objet du Chapitre 4).}
 
 % \section{Définition du Protocole de Test Comparatif}
 
