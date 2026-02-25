@@ -1,6 +1,6 @@
-\chapter{Construction d'un Générateur de Portefeuilles de Passifs}
+\chapter{Construction d'un générateur de portefeuilles de passifs}
 
-\section{Objectifs Stratégiques et Contraintes Techniques}
+\section{Objectifs stratégiques et contraintes techniques}
 La capacité à tester la robustesse des modèles et la pertinence des analyses de sensibilité repose sur un prérequis fondamental : la disponibilité de données de passif réalistes. Pour un cabinet de conseil, où l'accès aux portefeuilles des clients n'est pas systématique, la faculté de générer des portefeuilles synthétiques, mais représentatifs du marché, constitue un atout stratégique majeur. C'est dans ce contexte qu'un générateur de portefeuilles de passifs a été conçu et développé dans le cadre de ce mémoire.
 
 Ce chapitre a pour vocation de présenter cet outil et la manière dont il a été construits. Il sera également détaillé les besoins stratégiques et analytiques auxquels ce générateur répond, la méthodologie de génération retenue, les contraintes techniques rencontrées et les données qui ont été utilisées pour rendre le portefeuille le plus réaliste possible.
@@ -74,7 +74,7 @@ La conception et la mise en œuvre d'un générateur de portefeuilles de passifs
 
 La section suivante présente en détail la méthodologie de modélisation probabiliste qui a été développée pour construire un portefeuille à la fois réaliste et volumineux.
 
-\section{Méthodologie de Génération et Modélisation Statistique}
+\section{Méthodologie de génération et modélisation statistique}
 
 La méthodologie de génération du portefeuille de passifs synthétique repose sur une approche probabiliste. L'objectif est de construire un ensemble de contrats d'assurance dont les propriétés statistiques sont entièrement maîtrisées. Pour ce faire, chaque caractéristique d'un contrat (âge de l'assuré, montant de la provision, etc.) est modélisée comme une variable aléatoire, tirée d'une loi de probabilité préalablement calibrée sur des données de marché quand elles sont disponibles. Sinon, des hypothèses ont été formulées pour recréer ces variables de la manière la plus réaliste possible.
 
@@ -593,7 +593,7 @@ Enfin, l'Allocation Stratégique d'Actifs (ASA) de référence du fonds en euros
 \bigskip
 L'ensemble de ces règles de transposition garantit que le portefeuille synthétique généré est parfaitement exploitable techniquement par le moteur de projection. Ces partis pris permettent de s'assurer que les futures analyses de sensibilités mesureront fidèlement les effets liés aux chocs (sur les rachats ou les marchés) sans altérer les résultats de base du modèle.
 
-\section{Présentation du Portefeuille de Référence Généré}
+\section{Présentation du portefeuille de référence généré}
 
 \subsection{Analyse descriptive du portefeuille de référence}
 

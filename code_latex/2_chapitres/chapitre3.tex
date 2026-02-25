@@ -1,4 +1,4 @@
-\chapter{Présentation des Méthodes d'Agrégation Candidates}
+\chapter{Présentation des méthodes d'agrégation candidates}
 
 Après avoir établi le cadre réglementaire et construit un générateur de passif capable de produire des données réalistes, il convient désormais d'aborder la problématique centrale de ce mémoire : la réduction de la dimension du portefeuille de passif. 
 
@@ -16,7 +16,7 @@ Pour répondre à cette problématique, l'objectif de ce chapitre est de défini
 
 L'exposé détaillé de ces modèles nous permettra de poser le socle théorique nécessaire avant d'aborder, dans le chapitre suivant, le protocole de test standardisé et l'analyse comparative de leurs performances respectives.
 
-\section{Approche déterministes classiques}
+\section{Approches déterministes classiques}
 \subsection{Approche déterministe par regroupement de caractéristiques}
 
 La méthode par regroupement de caractéristiques repose sur une segmentation par classes de risque, cette approche constitue le standard historique en actuariat. Elle servira de ba
@@ -105,7 +105,7 @@ $$ Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{
 Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux « biais d'agrégation ». C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique (\textit{Machine Learning}), capables de minimiser cette inertie de manière optimale plutôt que de subir une grille prédéfinie.
 
 \section{Approches statistiques par apprentissage non supervisé}
-\subsection{Approche statistique par apprentissage non supervisé (K-Means)}
+\subsection{Partitionnement en \textit{k}-moyennes (K-Means)}
 
 Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à
  déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y pl
@@ -377,7 +377,7 @@ e est privilégiée pour les modèles ALM très sensibles au spread entre taux d
 Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une
  certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
-\section{Approche par travail sur les flux financiers}
+\section{Approches basées sur l'analyse des flux financiers}
 \subsection{Approche par Appariement de Flux (Cash-Flow Matching)}
 
 La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : au lieu de regrouper les contrats selo
