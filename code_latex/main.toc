@@ -82,29 +82,30 @@
 \contentsline {subsubsection}{\numberline {3.2.4.7}Constitution finale des Model Points}{62}{subsubsection.3.2.4.7}%
 \contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{63}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Principe des Arbres de Décision (CART) appliqués au passif}{63}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (Refined vs Spread Focus)}{63}{subsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{63}{subsubsection.3.3.1.1}%
+\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (Refined vs Spread Focus)}{64}{subsection.3.3.2}%
 \contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{64}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{64}{subsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{64}{subsubsection.3.4.1.1}%
-\contentsline {subsection}{\numberline {3.4.2}Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}{65}{subsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.2.1}Mécanique des décréments et bases de calibration}{65}{subsubsection.3.4.2.1}%
-\contentsline {subsubsection}{\numberline {3.4.2.2}Définition des clés d'agrégation financières}{66}{subsubsection.3.4.2.2}%
-\contentsline {section}{\numberline {3.5}Conclusion}{66}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{68}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{69}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{70}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{71}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{71}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{72}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{73}{subsection.4.2.2}%
-\contentsline {chapter}{\numberline {5}Conclusion}{74}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{75}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{75}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{75}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{75}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{76}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{76}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{76}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{76}{section.5.3}%
-\contentsline {chapter}{Annexes}{78}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{82}{table.5.1}%
+\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{65}{subsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{65}{subsubsection.3.4.1.1}%
+\contentsline {subsection}{\numberline {3.4.2}Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}{66}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}Mécanique des décréments et bases de calibration}{66}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}Définition des clés d'agrégation financières}{67}{subsubsection.3.4.2.2}%
+\contentsline {section}{\numberline {3.5}Conclusion}{67}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{69}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{70}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{71}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{72}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{72}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{73}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{74}{subsection.4.2.2}%
+\contentsline {chapter}{\numberline {5}Conclusion}{75}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{76}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{76}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{76}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{76}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{77}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{77}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{77}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{77}{section.5.3}%
+\contentsline {chapter}{Annexes}{79}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{83}{table.5.1}%
