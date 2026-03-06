@@ -361,76 +361,58 @@ Ces trois valeurs représentent respectivement :
 \end{itemize}
 Dans chaque cohorte d'année $t$, la probabilité d'appartenance à l'un de ces trois profils est ajustée de manière à ce que la moyenne pondérée de $TFGSE$ reste compatible avec les statistiques agrégées de marché, tout en reflétant une amélioration progressive des grilles tarifaires sur les générations récentes de contrats.
 
-Concernant la participation aux bénéfices, le cadre réglementaire impose une redistribution d'au moins 85\,\% des bénéfices financiers et 90\,\% des bénéfices techniques au profit des assurés, sous forme de PB et de dotation à la provision pour participation aux bénéfices (PPB). Les analyses de l'ACPR sur la revalorisation des contrats d'assurance vie mettent en évidence que, sur longue période, la part des produits financiers effectivement affectée aux assurés (taux servi + variation de PPB) se situe fréquemment au-delà de 80\,\% du résultat financier, les marges techniques des assureurs restant limitées \cite{acprTauxBas,acprRevalo2024}.
-
-Nous modélisons cette réalité au moyen d'un taux d'affectation des produits financiers $TAF$ discret, qui représente la part des produits financiers attribuée aux assurés sur un exercice donné. Trois niveaux sont retenus :
+Concernant la participation aux bénéfices (PB), le cadre réglementaire français impose aux organismes d'assurance vie une redistribution minimale. Celle-ci correspond à $85\,\%$ du solde du compte financier et à $90\,\%$ du solde du compte technique, allouée sous forme de revalorisation immédiate ou de dotation à la provision pour participation aux bénéfices (PPB). Dans la pratique, en raison des enjeux concurrentiels, nous observons que la part des résultats financiers effectivement redistribuée aux assurés excède régulièrement ces minima légaux. Les études de l'ACPR sur la revalorisation des contrats mettent en évidence une contrainte forte sur les marges conservées par les assureurs, le taux de redistribution dépassant fréquemment le seuil réglementaire pour s'aligner sur les attentes du marché \cite{acprTauxBas,acprRevalo2024}.
+Cette réalité est modélisée au moyen d'un taux d'affectation des produits financiers, noté $TAF$, de nature discrète, qui représente la part des produits financiers attribuée aux assurés sur un exercice donné. Afin de respecter le seuil légal de distribution, trois niveaux sont retenus :
 \[
-  TAF \in \{80\%,\ 90\%,\ 95\%\}.
+  TAF \in \{85\,\%,\ 90\,\%,\ 95\,\%\}.
 \]
 Ces niveaux correspondent à :
 \begin{itemize}
-  \item $80\,$\% : un comportement proche du plancher réglementaire, associé à des contrats peu généreux
-        en termes de participation aux bénéfices ;
-  \item $90\,$\% : un comportement \og moyen \fg{} de marché, cohérent avec les constats de l'ACPR
-        sur des marges techniques modérées ;
-  \item $95\,$\% : un profil particulièrement favorable aux assurés, typique de certains contrats
-        haut de gamme ou de gammes associatives affichant des taux servis durablement supérieurs
-        à la moyenne du marché.
+  \item $85\,$\% : un comportement correspondant au plancher réglementaire, associé à des contrats peu généreux en termes de participation aux bénéfices ;
+  \item $90\,$\% : un comportement \og moyen \fg{} de marché, cohérent avec les constats de l'ACPR sur des marges techniques modérées ;
+  \item $95\,$\% : un profil particulièrement favorable aux assurés, typique de certains contrats haut de gamme ou de gammes associatives affichant des taux servis durablement supérieurs à la moyenne du marché.
 \end{itemize}
 
-Pour assurer la cohérence économique du modèle, une dépendance entre $TFGSE$ et $TAF$ sera introduite au travers de profils de contrat. Concrètement, pour chaque contrat synthétique, nous tirons d'abord un profil de frais parmi $\{0{,}50\%, 0{,}70\%, 0{,}90\%\}$, puis un niveau de $TAF$ parmi les trois valeurs $\{80\%, 90\%, 95\%\}$, avec une loi discrète conditionnelle. Par exemple, un contrat à faibles frais ($TFGSE = 0{,}50\,$\%) aura une probabilité plus forte d'être associé à un $TAF$ élevé (90--95\,\%), tandis qu'un contrat fortement chargé ($TFGSE = 0{,}90\,$\%) sera plus souvent associé à un $TAF$ dans la partie basse de la grille (80--85\,\%). Ce couplage reproduit qualitativement le fait que les contrats les plus compétitifs en frais sont également ceux qui, historiquement, affichent les meilleurs taux servis et une politique de PB plus favorable aux assurés.
+Pour assurer la cohérence économique du modèle, une dépendance entre le $TFGSE$ et le $TAF$ est introduite au travers de profils de contrats. Concrètement, pour chaque contrat synthétique, il est procédé au tirage d'un profil de frais parmi $\{0{,}50\,\%,\ 0{,}70\,\%,\ 0{,}90\,\%\}$, puis d'un niveau de $TAF$ parmi les trois valeurs $\{85\,\%,\ 90\,\%,\ 95\,\%\}$, au moyen d'une loi discrète conditionnelle. Par exemple, un contrat à faibles frais ($TFGSE = 0{,}50\,$\%) présente une probabilité plus forte d'être associé à un $TAF$ élevé ($90\,\%$--$95\,\%$), tandis qu'un contrat fortement chargé ($TFGSE = 0{,}90\,$\%) se voit plus souvent associé à un $TAF$ dans la partie basse de la grille ($85\,\%$). Ce couplage reproduit qualitativement le fait que les contrats les plus compétitifs en frais sont également ceux qui, historiquement, affichent les meilleurs taux servis et une politique de PB plus favorable aux assurés.
 
-Au total, pour une année de souscription $t$ donnée, chaque contrat du portefeuille synthétique est donc caractérisé par un triplet discret $(TMG_t, TFGSE, TAF)$, où :
+Au total, pour une année de souscription $t$ donnée, chaque contrat du portefeuille synthétique se trouve donc caractérisé par un triplet discret $(TMG_t, TFGSE, TAF)$, où :
 \begin{itemize}
-  \item $TMG_t$ est fixé par la table historique de la section précédente, construite à partir des plafonds de taux techniques ACPR ;
-  \item $TFGSE$ prend l'une des trois valeurs $\{0{,}50\%, 0{,}70\%, 0{,}90\%\}$ ;
-  \item $TAF$ prend l'une des trois valeurs $\{80\%, 90\%, 95\%\}$.
+  \item $TMG_t$ est fixé par la table historique de la section précédente, construite à partir des plafonds de taux techniques de l'ACPR ;
+  \item $TFGSE$ prend l'une des trois valeurs $\{0{,}50\,\%,\ 0{,}70\,\%,\ 0{,}90\,\%\}$ ;
+  \item $TAF$ prend l'une des trois valeurs $\{85\,\%,\ 90\,\%,\ 95\,\%\}$.
 \end{itemize}
-Ce choix de discrétisation permet de simplifier la génération du portfeuilles sur les aspects financiers et assurantiels tout en restant ancré sur des ordres de grandeur observés sur le marché français de l'assurance vie, tels que documentés par France Assureurs et l'ACPR \cite{acprTauxBas,acprRevalo2024,faUC2024}.
+Ce choix de discrétisation permet de simplifier la génération du portefeuille sur les aspects financiers et assurantiels tout en restant ancré sur des ordres de grandeur observés sur le marché français de l'assurance vie, tels que documentés par France Assureurs et l'ACPR \cite{acprTauxBas,acprRevalo2024,faUC2024}.
 
 \subsubsection*{Corrélation des caractéristiques contractuelles avec la provision mathématique}
 
-Dans le modèle initial, les paramètres $(TMG_t, TFGSE, TAF)$ sont tirés indépendamment de
-l'année de souscription $t$. Cependant, pour refléter fidèlement la structure du portefeuille
-d'un assureur français, il est pertinent d'introduire une dépendance entre ces caractéristiques
-contractuelles et la \emph{provision mathématique} du contrat $PM_k$, qui sert de proxy naturel
-pour segmenter les contrats par gamme commerciale (Mass Market, Patrimonial, Gestion Privée).
+Dans la modélisation initiale, les paramètres $(TMG_t, TFGSE, TAF)$ sont tirés indépendamment de l'année de souscription $t$. Cependant, pour refléter fidèlement la structure du portefeuille d'un assureur français, il apparaît pertinent d'introduire une dépendance entre ces caractéristiques contractuelles et la \emph{provision mathématique} du contrat, notée $PM_k$. Celle-ci sert de proxy naturel pour segmenter les contrats par gamme commerciale (Mass Market, Patrimonial, Gestion Privée).
 
 Cette approche s'appuie sur deux observations de marché :
 \begin{enumerate}
-  \item Les frais de gestion sur encours $TFGSE$ sont généralement \emph{dégressifs} avec l'encours
-        du contrat : les contrats à forte provision mathématique (typiquement $>$ 100k€,
-        voire $>$ 500k€ pour la Gestion Privée) bénéficient de grilles tarifaires plus favorables
-        \cite{faUC2024}.
-  \item Les contrats à gros encours sont historiquement plus concentrés dans les gammes patrimoniales
-        et de Gestion Privée, qui affichent des politiques de participation aux bénéfices (PB) et
-        des taux minimums garantis (TMG) différenciés par rapport aux contrats retail
-        (petits patrimoines).
+  \item Les frais de gestion sur encours $TFGSE$ sont généralement \emph{dégressifs} avec l'encours du contrat : les contrats à forte provision mathématique (typiquement supérieurs à 100\,k\euro, voire supérieurs à 500\,k\euro{} pour la Gestion Privée) bénéficient de grilles tarifaires plus favorables \cite{faUC2024}.
+  \item Les contrats présentant des encours importants sont historiquement plus concentrés dans les gammes patrimoniales et de Gestion Privée, lesquelles affichent des politiques de participation aux bénéfices (PB) et des taux minimums garantis (TMG) différenciés par rapport aux contrats de la clientèle grand public.
 \end{enumerate}
 
 \subsubsection*{Définition des seuils de provision mathématique}
 
-Nous segmentons les contrats selon trois tranches de provision mathématique $PM_k$ :
+Les contrats sont segmentés selon trois tranches de provision mathématique $PM_k$ :
 \begin{center}
 \begin{tabular}{lcc}
   \hline
   \textbf{Gamme} & \textbf{Tranche $PM_k$} & \textbf{Exemple typique} \\
   \hline
-  Mass Market / Retail & $PM_k \leq 50\,000€$ & Contrats petit patrimoine \\
-  Patrimonial & $50\,000€ < PM_k \leq 500\,000€$ & Clientèle moyenne/haute gamme \\
-  Gestion Privée & $PM_k > 500\,000€$ & HNWI, family offices \\
+  Mass Market / Retail & $PM_k \leq 50\,000$\,\euro & Clientèle grand public \\
+  Patrimonial & $50\,000$\,\euro $< PM_k \leq 500\,000$\,\euro & Clientèle moyenne / haut de gamme \\
+  Gestion Privée & $PM_k > 500\,000$\,\euro & HNWI, family offices \\
   \hline
 \end{tabular}
 \end{center}
 
-Ces seuils sont inspirés de la segmentation commerciale standard des acteurs français
-(AXA, CNP Assurances, Generali) et cohérents avec les statistiques agrégées de France Assureurs
-sur la structure par encours des contrats d'épargne individuelle \cite{faUC2024}.
+Ces seuils s'inspirent de la segmentation commerciale standard des acteurs français (AXA, CNP Assurances, Generali) et s'avèrent cohérents avec les statistiques agrégées de France Assureurs sur la structure par encours des contrats d'épargne individuelle \cite{faUC2024}.
 
 \subsubsection*{Lois conditionnelles par tranche de provision}
 
-Pour chaque contrat généré, après tirage de l'année $t$ et de la provision mathématique $PM_k$,
-les paramètres $(TFGSE, TAF)$ sont tirés selon la loi conditionnelle suivante :
+Pour chaque contrat généré, après le tirage de l'année $t$ et de la provision mathématique $PM_k$, les paramètres $(TFGSE, TAF)$ sont définis selon la loi conditionnelle suivante :
 
 \begin{table}[h!]
 \centering
@@ -439,48 +421,39 @@ les paramètres $(TFGSE, TAF)$ sont tirés selon la loi conditionnelle suivante 
 \begin{tabular}{ll|ccc}
   \hline
   \multirow{2}{*}{\textbf{Gamme}} & \multirow{2}{*}{\textbf{Tranche $PM_k$}} &
-    \multicolumn{3}{c}{\textbf{Probabilités $P(TFGSE, TAF|PM_k)$}} \\
-  & & $(0{,}5\%,90\%)$ & $(0{,}7\%,90\%)$ & $(0{,}9\%,80\%)$ \\
+    \multicolumn{3}{c}{\textbf{Probabilités $\mathbb{P}(TFGSE, TAF \mid PM_k)$}} \\
+  & & $(0{,}5\,\%,\ 95\,\%)$ & $(0{,}7\,\%,\ 90\,\%)$ & $(0{,}9\,\%,\ 85\,\%)$ \\
   \hline
-  Mass Market & $PM_k \leq 50k€$ & 0,20 & 0,40 & 0,40 \\
-  Patrimonial & $50k€ < PM_k \leq 500k€$ & 0,40 & 0,40 & 0,20 \\
-  Gestion Privée & $PM_k > 500k€$ & 0,60 & 0,30 & 0,10 \\
+  Mass Market & $PM_k \leq 50$\,k\euro & 0,20 & 0,40 & 0,40 \\
+  Patrimonial & $50$\,k\euro $< PM_k \leq 500$\,k\euro & 0,40 & 0,40 & 0,20 \\
+  Gestion Privée & $PM_k > 500$\,k\euro & 0,60 & 0,30 & 0,10 \\
   \hline
 \end{tabular}
 \end{table}
 
-Le TMG reste fonction de l'année $t$ uniquement ($TMG_t$ de la table~\ref{tab:TMG_historique}),
-mais la pondération des générations anciennes (TMG élevés) sera naturellement plus forte dans les
-tranches Gestion Privée, car ces contrats ont eu plus de temps pour accumuler des provisions élevées.
+Le $TMG$ reste fonction de l'année $t$ uniquement ($TMG_t$ de la table~\ref{tab:TMG_historique}), mais la pondération des générations anciennes (aux $TMG$ élevés) s'avère naturellement plus forte dans les tranches de Gestion Privée, ces contrats ayant eu davantage de temps pour accumuler des provisions élevées.
 
 \subsubsection*{Algorithme de génération mis à jour}
 
-L'algorithme de génération de portefeuille devient :
+L'algorithme de génération du portefeuille s'établit de la façon suivante :
 \begin{enumerate}
-  \item Tirer l'année de souscription $t \in [1993,2024]$ selon la structure d'âge du portefeuille ;
-  \item Tirer la provision mathématique $PM_k$ (loi lognormale typique des encours assurance vie) ;
-  \item Identifier la tranche de $PM_k$ et tirer le couple $(TFGSE, TAF)$ selon la table~\ref{tab:TFGSE_TAF_PM} ;
-  \item Assigner $TMG_t$ selon la table historique ;
-  \item Calculer le TMG net : $TMG_t^{net} = \max(TM G_t - TFGSE, 0)$.
+  \item Tirage de l'année de souscription $t \in [1993,2024]$ selon la structure d'âge du portefeuille ;
+  \item Tirage de la provision mathématique $PM_k$ (loi log-normale typique des encours d'assurance vie) ;
+  \item Identification de la tranche de $PM_k$ et affectation du couple $(TFGSE, TAF)$ selon la table~\ref{tab:TFGSE_TAF_PM} ;
+  \item Assignation du $TMG_t$ selon la table historique ;
+  \item Calcul du $TMG$ net : $TMG_t^{net} = \max(TMG_t - TFGSE, 0)$.
 \end{enumerate}
 
 \subsubsection*{Vérification de cohérence avec les données agrégées}
 
 Cette structure assure plusieurs cohérences observables :
 \begin{itemize}
-  \item \textbf{TFGSE moyen} : la moyenne pondérée par les tranches de $PM_k$ retombe autour de
-        0,65--0,70\,\%, cohérent avec France Assureurs (fonds euros : 0,66\,\%) \cite{faUC2024}.
-  \item \textbf{TMG moyen} : les contrats anciens (TMG $>$ 2\,\%) sont naturellement plus présents
-        dans les tranches à gros $PM_k$, ce qui est cohérent avec le taux technique moyen actuel
-        du portefeuille (0,35--0,5\,\%) rapporté par l'ACPR \cite{acprTauxBas}.
-  \item \textbf{Relation frais-rendement} : les gros contrats (GP) ont à la fois des frais plus bas
-        et un TAF plus élevé, reproduisant le différentiel de performance observé entre gammes.
+  \item \textbf{TFGSE moyen} : la moyenne pondérée par les tranches de $PM_k$ retombe autour de $0{,}65\,\%$ à $0{,}70\,\%$, ce qui est cohérent avec les données de France Assureurs (fonds euros : $0{,}66\,\%$) \cite{faUC2024}.
+  \item \textbf{TMG moyen} : les contrats anciens ($TMG > 2\,\%$) sont naturellement plus présents dans les tranches à forte $PM_k$, ce qui est conforme au taux technique moyen actuel du portefeuille ($0{,}35\,\%$ à $0{,}5\,\%$) rapporté par l'ACPR \cite{acprTauxBas}.
+  \item \textbf{Relation frais-rendement} : les contrats à encours importants (GP) présentent à la fois des frais plus bas et un $TAF$ plus élevé, reproduisant le différentiel de performance observé entre les gammes.
 \end{itemize}
 
-Cette approche par corrélation avec la provision mathématique permet ainsi de générer un
-portefeuille synthétique dont les caractéristiques microéconomiques (par contrat) sont
-cohérentes avec les statistiques macroéconomiques publiées, tout en conservant une structure
-parfaitement discrète et donc compatible avec l'agrégation ALM.
+Cette approche par corrélation avec la provision mathématique permet ainsi de générer un portefeuille synthétique dont les caractéristiques microéconomiques (par contrat) s'avèrent cohérentes avec les statistiques macroéconomiques publiées, tout en conservant une structure parfaitement discrète et donc compatible avec l'agrégation ALM.
 
 \subsubsection{Modélisation de l'allocation entre fonds en euros et unités de compte}
 
