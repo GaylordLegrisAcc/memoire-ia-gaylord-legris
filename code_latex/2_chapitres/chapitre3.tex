@@ -345,23 +345,39 @@ Alors que les méthodes d'apprentissage non supervisé (K-Means, HDBSCAN) cherch
 
 \subsection{Principe des Arbres de Décision (CART) appliqués au passif}
 
-L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux K-Means qui cherchent une similarité globale, le CART vise à partitionner le portefeuille en minimisant la variance d'une variable cible d'
-intérêt.
+L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux approches non supervisées qui évaluent une similarité spatiale globale, le modèle CART partitionne l'espace des caractéristiques en cherchant à expliquer au mieux la variance d'une variable cible continue. Il s'agit ici d'un arbre de régression.
 
-Dans le cadre de cette étude, deux variantes de ciblage ont été implémentées :
-\begin{itemize}
-    \item \textbf{Refined :} La cible est une combinaison linéaire de l'encours et du taux garanti ($PM \times (1 + 10 \times TMG)$), afin de forcer l'arbre à isoler les masses fi
-nancières à fort enjeux de revalorisation.
-    \item \textbf{Spread Focus :} La cible est le TMG pur, l'objectif étant d'obtenir des clusters d'une grande pureté financière pour limiter la dilution des garanties.
-\end{itemize}
+\subsubsection{Formalisation mathématique du critère de partitionnement}
 
-L'algorithme procède par divisions successives (splits) binaires de l'espace des caractéristiques (Âge, Ancienneté, TMG). À chaque étape, il choisit la variable et le seuil qui maximisent l'homogénéité de la cible au sein des deux groupes formés. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) est atteint.
+L'algorithme procède par divisions binaires successives (ou \textit{splits}) de l'espace des caractéristiques $X = \{\text{Âge},\,\text{Ancienneté},\,\text{TMG}\}$. À chaque nœud $m$ de l'arbre, représentant un sous-ensemble $N_m$ de contrats, l'objectif est de trouver la variable de coupe $j$ et le seuil $s$ qui minimisent l'impureté des deux nœuds enfants formés (gauche et droit). 
+
+Afin de respecter la volumétrie financière du portefeuille, le critère d'impureté $H(m)$ retenu est la variance pondérée par la Provision Mathématique ($w_i = PM_i$). Pour une variable cible $Y_i$, l'impureté du nœud $m$ s'exprime ainsi :
+
+\begin{equation}
+    H(m) = \frac{1}{\sum_{i \in N_m} w_i} \sum_{i \in N_m} w_i (Y_i - \bar{Y}_m)^2
+\end{equation}
+
+Où $\bar{Y}_m$ est la moyenne pondérée de la cible au sein du nœud :
+\begin{equation}
+    \bar{Y}_m = \frac{\sum_{i \in N_m} w_i Y_i}{\sum_{i \in N_m} w_i}
+\end{equation}
+
+Pour chaque itération, l'algorithme sélectionne le couple $(j, s)$ qui minimise la fonction de coût $G(j, s)$, correspondant à la somme des impuretés pondérées des nœuds enfants :
+
+\begin{equation}
+    G(j, s) = \frac{W_{gauche}}{W_m} H(m_{gauche}) + \frac{W_{droit}}{W_m} H(m_{droit})
+\end{equation}
+
+Où $W$ représente la somme des poids (PM) des contrats dans le nœud considéré. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) est atteint.
 
 \subsection{Définition des variables cibles (Refined vs Spread Focus)}
+
 La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
+
 \begin{itemize}
-    \item \textbf{Variante Refined :} Une variable cible d'intérêt $Y_i$ est définie par $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
-    \item \textbf{Variante Spread Focus :} La cible est le TMG pur. L'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques.
+    \item \textbf{Variante Refined (Risque mixte) :} Une variable cible d'intérêt $Y_i$ est définie par $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$, avec $\alpha = 10$ défini empiriquement. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
+    
+    \item \textbf{Variante Spread Focus (Pureté financière) :} La cible est le TMG pur, défini ici par $Y_i = TMG_i$. Pondéré par la PM, l'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques, car elle isole parfaitement les poches de garanties coûteuses.
 \end{itemize}
 
 Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par « paliers » qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
