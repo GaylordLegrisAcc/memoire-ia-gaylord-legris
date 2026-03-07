@@ -56,7 +56,7 @@ Enfin, la capacité à se positionner par rapport à ses concurrents est fondame
     \draw [arrow] (process) -- (output);
 
     \end{tikzpicture}
-    \caption{Schéma de la méthodologie de génération d'un portefeuille de passifs synthétique.}
+    \caption{Schéma de la méthodologie de génération d'un portefeuille de passifs synthétique. \textcolor{blue}{Moche à refaire}}
     \label{fig:methodologie_horizontale}
 \end{figure}
 
@@ -468,61 +468,73 @@ Cette approche par corrélation avec la provision mathématique permet ainsi de 
 
 La répartition de la Provision Mathématique (PM) entre le fonds en euros et les supports en unités de compte (UC) est une caractéristique essentielle pour modéliser un portefeuille d'assurance vie et pour mener à bien les analyses de sensibilités financières dans la suite de ce mémoire. 
 
-Cependant, les données publiques fournissent principalement des statistiques agrégées (part moyenne des UC autour de 40\,\% \textcolor{blue}{citer des trucs} sur les cotisations récentes, profils de risque types) et ne donnent pas accès à la répartition économique spécifique contrat par contrat. En l'absence de données individuelles permettant d'estimer un modèle statistique classique, une approche paramétrique a été retenue, calibrée pour reproduire les faits principaux observés sur le marché.
+Cependant, les données publiques fournissent principalement des statistiques agrégées. À titre d'exemple, la part des UC dans la collecte s'établit historiquement autour de 40\,\% sur le marché français \cite{france_assureurs, faUC2024}. Si ces publications renseignent sur les profils de risque types, elles ne donnent en revanche aucun accès à la répartition économique spécifique contrat par contrat. En l'absence de données individuelles permettant d'estimer un modèle statistique classique, une approche paramétrique a donc été retenue, calibrée pour reproduire fidèlement ces grands équilibres observés sur le marché.
 
 \subsubsection*{Spécification du modèle d'allocation}
 
-L'objectif est de modéliser la proportion $p_{\text{UC},i} \in (0,1)$ de la PM investie en unités de compte pour chaque contrat $i$. Le modèle repose sur un prédicteur linéaire $\eta_i$ combinant les caractéristiques du contrat et de l'assuré :
+L'objectif est de modéliser la proportion $p_{\text{UC},i} \in (0,1)$ de la Provision Mathématique investie en unités de compte pour chaque contrat $i$. Dans le cadre de cette approche paramétrique, ce modèle repose sur un prédicteur linéaire $\eta_i$ combinant les caractéristiques du contrat et de l'assuré.
+
+Le choix des variables explicatives retenues s'appuie sur les deux principaux facteurs comportementaux d'un contrat d'assurance vie :
+\begin{itemize}
+    \item \textbf{L'âge de l'assuré ($\text{Age}_i$)} : L'aversion au risque s'accentue généralement avec l'âge, les épargnants privilégiant la sécurisation de leur capital sur le fonds en euros à l'approche de la retraite.
+    \item \textbf{Le volume de l'épargne ($\log(\text{PM}_i)$)} : Il traduit un \og effet richesse \fg{}. Les encours les plus importants présentent souvent une part d'UC plus élevée, traduisant une recherche de diversification et une meilleure capacité à absorber la volatilité. L'utilisation du logarithme s'avère indispensable pour atténuer la forte asymétrie de la distribution des encours et linéariser cet effet.
+\end{itemize}
+
+Par souci de parcimonie, il a été décidé de faire une modélisation restreinte à deux variables explicatives\footnote{L'intégration initiale de l'ancienneté du contrat a été écartée suite aux premiers tests de calibration. Le coefficient obtenu s'avérant proche de zéro et de signe contraire aux attentes, cette variable présentait une trop forte colinéarité avec l'âge de l'assuré. Les détails de cette première calibration sont présentés en Annexe \ref{annexe:anciennete}.}. La combinaison linéaire de ces effets se traduit par l'équation suivante :
 \begin{equation}
-  \eta_i = \beta_0 + \beta_{\text{age}} \, \text{Age}_i + \beta_{\text{pm}} \, \log(\text{PM}_i) + \beta_{\text{anc}} \, \text{Anciennete}_i
+    \eta_i = \beta_0 + \beta_{\text{age}} \, \text{Age}_i + \beta_{\text{pm}} \, \log(\text{PM}_i)
 \end{equation}
-Pour garantir que cette part reste strictement comprise entre 0 et 1, une spécification de type \textit{Logit} \footnote{Le logit est une fonction de transformation qui mappe n'importe quel réel vers un intervalle $(0,1)$, utilisée ici pour modéliser une proportion} a été implémentée. La part investie en unités de compte est obtenue par la transformation logistique :
+
+\newpage
+
+Afin de garantir que la proportion modélisée reste strictement bornée entre 0 et 1, une spécification de type \textit{Logit}\footnote{Le modèle Logit s'appuie sur une fonction de transformation projetant l'ensemble des réels vers l'intervalle $(0,1)$. Il s'agit d'un standard actuariel pour la modélisation des proportions et des probabilités.} a été implémentée. La part investie en unités de compte est ainsi obtenue par la transformation logistique :
 \begin{equation}
-  p_{\text{UC},i} = \frac{1}{1 + \exp(-\eta_i)}
+    p_{\text{UC},i} = \frac{1}{1 + \exp(-\eta_i)}
 \end{equation}
-La part investie en fonds euros s'en déduit naturellement par $p_{\text{Euro},i} = 1 - p_{\text{UC},i}$.
+La part investie en fonds en euros s'en déduit naturellement par la relation $p_{\text{Euro},i} = 1 - p_{\text{UC},i}$.
 
 \subsubsection*{Hypothèses économiques et calibration}
 
-Faute de données pour une estimation par maximum de vraisemblance, les coefficients ont été calibrés par une méthode de \textit{matching de moments} \footnote{La méthode de matching des moments (ou méthode des moments) consiste à égaliser les moments théoriques d'une distribution (moyenne, variance, etc.) avec leurs équivalents observés dans les données réelles ou des cibles de marché. Dans notre cas, nous cherchons les paramètres qui permettent de retrouver la part globale d'UC du marché et les comportements par profils types.}. Cette technique d'optimisation a consisté à ajuster les $\beta_j$ pour que le portefeuille simulé atteigne une cible globale de marché (fixée à 40\,\% d'UC) tout en respectant des points de contrôle locaux (reproduction de profils "prudent", "équilibré" et "dynamique" pour des assurés types). Les profils de contrôle utilisés sont détaillés dans le Tableau \ref{tab:profils_calibration} :
+Faute de données individuelles complètes permettant une estimation par maximum de vraisemblance, les coefficients ont été calibrés par une méthode de \textit{matching de moments}\footnote{La méthode de matching de moments consiste à égaliser les moments théoriques d'une distribution avec leurs équivalents observés ou ciblés. Dans notre cas, il s'agit de trouver les paramètres permettant de reproduire la moyenne globale du marché et des points de passage locaux.}. Cette technique d'optimisation a consisté à ajuster les coefficients $\beta$ pour que le portefeuille simulé atteigne la cible macroéconomique globale (établie à 40\,\% d'UC), tout en forçant le modèle à respecter des points de contrôle locaux.
+
+En l'absence de base de données publique croisant l'âge et la part d'UC contrat par contrat, ces points de contrôle ont été définis \textbf{à dire d'expert}. Ils représentent des profils types d'assurés construits pour refléter les standards de la gestion de patrimoine et les politiques commerciales actuelles des assureurs français :
+\begin{itemize}
+    \item Les jeunes assurés, disposant d'un horizon de placement long, sont orientés vers des profils \og dynamiques \fg{} (forte part d'UC).
+    \item À l'inverse, les assurés d'âge avancé s'inscrivent dans une logique de \og sécurisation \fg{} du capital en vue de la transmission, ce qui se traduit par une prédominance écrasante du fonds en euros.
+\end{itemize}
+
+Ces profils de contrôle, qui ont servi de points d'ancrage pour l'algorithme d'optimisation, sont détaillés dans le Tableau \ref{tab:profils_calibration} :
 
 \begin{table}[H]
     \centering
-    \caption{Profils types utilisés pour la calibration des coefficients}
+    \caption{Profils types (à dire d'expert) utilisés pour la calibration du modèle}
     \label{tab:profils_calibration}
-    \begin{tabular}{ccccc}
+    \begin{tabular}{cccc}
         \toprule
-        Profil & Âge (ans) & PM (k€) & Ancienneté (ans) & Part UC Cible (\%) \\
+        Profil & Âge (ans) & PM (k€) & Part UC Cible (\%) \\
         \midrule
-        1 (Dynamique) & 30 & 10 & 2 & 60 \\
-        2 (Équilibré+) & 45 & 150 & 10 & 50 \\
-        3 (Prudent) & 70 & 50 & 20 & 25 \\
-        4 (Sécurisation) & 85 & 200 & 30 & 15 \\
+        1 (Dynamique) & 30 & 10 & 60 \\
+        2 (Équilibré+) & 45 & 150 & 50 \\
+        3 (Prudent) & 70 & 50 & 25 \\
+        4 (Sécurisation) & 85 & 200 & 15 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Après calibration, les coefficients obtenus pour ce modèle sont les suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$, $\beta_{\text{pm}} = 0.0746$ et $\beta_{\text{anc}} = 0.0008$. La part moyenne d'UC obtenue sur le portefeuille généré est de 39.98\,\%, confirmant l'atteinte de l'objectif global.
+\textcolor{blue}{METTRE A JOURS LES VALEURS ET REFAIRE TOURNER SANS L'ANCIENNETE}
+Après calibration, les coefficients obtenus pour ce modèle sont les suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$ et $\beta_{\text{pm}} = 0.0746$. La part moyenne d'UC obtenue sur le portefeuille généré est de 39.98\,\%, confirmant la parfaite atteinte de l'objectif global.
 
-Les paramètres $\beta_j$ du modèle ont été contraints pour refléter les comportements d'investissement types (faits stylisés) :
+Les paramètres $\beta_j$ du modèle reflètent rigoureusement les faits stylisés attendus :
 \begin{itemize}
-    \item \textbf{Aversion au risque et âge ($\beta_{\text{age}} = -0.0424$)} : Comme attendu, la part d'UC a tendance à décroître avec l'âge de l'assuré, traduisant une volonté de sécurisation progressive du patrimoine à l'approche ou pendant la retraite.
-    \item \textbf{Capacité d'absorption du risque et richesse ($\beta_{\text{pm}} = 0.0746$)} : Conformément aux observations de marché, les encours les plus importants sont associés à une plus forte diversification, augmentant mécaniquement la part d'UC.
-    \item \textbf{Effet générationnel ($\beta_{\text{anc}} = 0.0008$)} : Bien qu'une valeur négative fût attendue (les contrats les plus anciens historiquement favorisant les supports en euros), le coefficient calibré est légèrement positif.
+    \item \textbf{Aversion au risque et âge ($\beta_{\text{age}} = -0.0424$)} : Comme attendu (signe négatif), la part d'UC décroît avec l'âge de l'assuré, traduisant la volonté de sécurisation progressive du patrimoine.
+    \item \textbf{Capacité d'absorption du risque et richesse ($\beta_{\text{pm}} = 0.0746$)} : Conformément aux observations de marché (signe positif), les encours les plus importants sont associés à une plus forte diversification, augmentant mécaniquement la part d'UC.
 \end{itemize}
 
-L'effet du sexe de l'assuré n'ayant pas été documenté de manière significative par les études de marché, il n'a pas été retenu comme variable explicative dans cette calibration. 
-
-\subsubsection*{Limites de l'approche}
-
-Alors que l'hypothèse qualitative initiale prévoyait un effet négatif de l'ancienneté sur la part d'Unités de Compte ($\beta_{\text{anc}} \leq 0$), le processus de calibration par 'moment matching', guidé par les profils types et l'objectif de part moyenne globale d'UC, a abouti à un coefficient $\beta_{\text{anc}}$ légèrement positif (0.0008). Cette observation suggère que, dans le cadre des profils choisis et de la pondération des contraintes, l'effet de l'ancienneté sur l'allocation en UC est soit très faible, soit nuancé par d'autres dynamiques comportementales capturées par l'âge et la provision mathématique.
-
-Bien que cette spécification logistique soit une simplification de la réalité, elle fournit une décomposition cohérente et exploitable de la provision mathématique pour chaque assuré simulé. Cette méthode, bien que simplifiée, permettra de travailler sur des profils de contrat différenciés en termes d'allocation, ce qui est essentiel pour les analyses de sensibilité financière à venir.
-
+Bien que cette spécification logistique paramétrique constitue une simplification de la réalité, elle fournit une décomposition macro-économiquement cohérente de la provision mathématique pour chaque assuré simulé. Cette méthode permet ainsi de doter le portefeuille synthétique de profils d'allocation réalistes et différenciés, une condition \textit{sine qua non} pour garantir la pertinence des analyses de sensibilités financières menées dans la suite de ce mémoire.
 
 \subsubsection{Ajout du sexe pour finaliser le portefeuille}
 
-Pour finaliser le portefeuille, le sexe est une variable important à modéliser. Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés. En France, les données de l'INSEE indiquent que la répartition est légèrement en faveur des femmes, avec environ 52\,\% de femmes et 48\,\% d'hommes parmi les assurés en assurance vie \cite{insee_assurance_vie}. Cette répartition est donc utilisée pour générer le sexe de chaque individu du portefeuille synthétique, en tirant une variable binaire où $P(Sexe = Femme) = 0.52$ et $P(Sexe = Homme) = 0.48$.
+Pour finaliser le portefeuille, le sexe est une variable important à modéliser. Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés. En France, les données de l'INSEE indiquent que la répartition est légèrement en faveur des femmes, avec environ 52\,\% de femmes et 48\,\% d'hommes parmi les assurés en assurance vie \cite{repartition_hommes_femmes}. Cette répartition est donc utilisée pour générer le sexe de chaque individu du portefeuille synthétique, en tirant une variable binaire où $P(Sexe = Femme) = 0.52$ et $P(Sexe = Homme) = 0.48$.
 
 Ce processus itératif permet de générer un portefeuille synthétique de 1 000 000 contrats présentant des caractéristiques statistiques fidèles à la réalité du marché français, prêt à être utilisé pour les étapes d'agrégation.
 
@@ -556,7 +568,7 @@ Une fois l'âge et la date de souscription fixés via la copule bivariée, le re
 
 Cette séquence garantit que chaque ligne du portefeuille d'un million de contrats présente une cohérence interne parfaite, liant l'histoire de l'assuré (âge, date d'entrée) à sa richesse (PM) et aux caractéristiques de son produit (Frais, TMG, UC).
 
-\subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris}
+\subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris \textcolor{blue}{Partie à supprimer et présenter au fur et à mesure les stats du pf ? Présenter l'alloc d'actif utilisée à un moment peut être}}
 
 Une fois les caractéristiques individuelles ou agrégées des contrats générées (âge, ancienneté, provision mathématique, taux techniques), il est impératif de formater ces données brutes pour les rendre intelligibles par le modèle ALM.
 
@@ -583,11 +595,15 @@ L'ensemble de ces règles de transposition garantit que le portefeuille synthét
 
 \section{Présentation du portefeuille de référence généré}
 
+\textcolor{blue}{Ajouter des graphs, camenberts etc}
 \subsection{Analyse descriptive du portefeuille de référence}
 
 L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique de $1\,000\,000$ de contrats. L'analyse de ses caractéristiques servira à évaluer la pertinence des hypothèses utilisée et aidera à évaluer le profil de risque spécifique de ce portefeuille.
 
 \subsubsection*{Volumétrie et structure des encours}
+
+\textcolor{blue}{rajouter le taf moyen}
+
 Le portefeuille généré représente une Provision Mathématique (PM) totale de $220,21$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
 \begin{itemize}
     \item La gamme \textbf{Standard} ($\text{PM} \leq 200\,k\text{\euro}$) représente la majorité des volumes avec 81,78\,\% des contrats, mais concentre seulement 16,52\,\% des encours totaux.
@@ -600,15 +616,16 @@ Cette concentration, mettant en évidence un effet de Pareto \footnote{L'effet d
 L'âge moyen des assurés s'établit à $53,1$ ans, une valeur cohérente avec la structure des détenteurs d'assurance vie en France. L'ancienneté moyenne des contrats est quant à elle de $19,9$ ans, témoignant d'un portefeuille mature et fortement ancré dans le temps.
 
 \subsubsection*{Caractéristiques financières}
-La calibration des variables financières a porté ses fruits :
+L'analyse des caractéristiques financières du portefeuille simulé confirme la pertinence et la cohérence de la calibration :
 \begin{itemize}
-    \item \textbf{L'allocation d'actifs :} La part globale investie en Unités de Compte (UC) atteint $44,61\,\%$. Ce ratio, légèrement supérieur à la cible de calibration initiale, s'explique précisément par le poids massif de la gamme de gestion privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
+    \item \textbf{Répartition Euro/UC :} La part globale investie en UC atteint $44,61\,\%$. Ce ratio, légèrement supérieur à la cible de calibration initiale, s'explique précisément par le poids massif de la gamme de gestion privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
     \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,90\,\%$. Ce niveau, qui peut paraître élevé dans le contexte de taux de la dernière décennie, est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
     \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,67\,\%$, en parfaite adéquation avec la moyenne du marché pour des portefeuilles mixtes.
 \end{itemize}
 
 \subsection{Limitations du portefeuille généré}
 
+\textcolor{blue}{Lucas pas fan de mettre des limites ici}
 Bien que le générateur produise une base de données robuste et exploitable pour des projections ALM, la méthodologie stochastique employée présente certaines limites qu'il convient d'expliciter pour nuancer les futures analyses de sensibilités.
 
 \subsubsection*{Un effet de "sur-représentation patrimoniale"}
@@ -620,4 +637,4 @@ L'ancienneté moyenne frôlant les 20 ans résulte de la dérivation de l'âge �
 \subsubsection*{L'absence de dynamiques spécifiques à un assureur et de garanties complexes}
 Enfin, le portefeuille est généré de manière homogène sur la base de moyennes de place. Il ne capture pas l'histoire propre à une compagnie spécifique (par exemple, le lancement d'un produit phare ayant drainé 30\,\% de la collecte en 2012, ou la présence de clauses spécifiques comme des garanties plancher en cas de décès). De plus, la modélisation ne distingue pas les contrats alimentés par primes uniques de ceux alimentés par versements libres ou programmés, dont les comportements de rachat diffèrent significativement.
 
-
+Si ce portefeuille granulaire constitue une base d'étude robuste, sa taille rend son intégration directe dans un modèle ALM stochastique impossible en pratique. C'est pour surmonter cette barrière technique que le chapitre suivant introduira les algorithmes d'agrégation et la construction des \textit{Model Points}.
