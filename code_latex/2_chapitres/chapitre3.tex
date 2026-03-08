@@ -408,10 +408,9 @@ La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée
 
 Le principe s'articule en deux phases :
 \begin{enumerate}
-    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du moteur métier sous un scénario déterministe central sur un horizon de $T=20$ ans. Un vecteur de flux financiers est extrait de cette projection $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
-    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distan
-ce entre deux contrats est alors définie par leur proximité comportementale dans le temps :
-    
+    \item \textbf{Phase de Projection Proxy :} Chaque contrat individuel $i$ est projeté au sein du modèle ALM en mode passif seul sous un scénario déterministe central sur un horizon de $T=20$ ans. Un vecteur de flux financiers est extrait de cette projection $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
+    \item \textbf{Phase de Clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distance entre deux contrats est alors définie par leur proximité comportementale dans le temps :
+
 \begin{equation}
  d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} 
 \end{equation}
@@ -420,7 +419,7 @@ ce entre deux contrats est alors définie par leur proximité comportementale da
 \subsubsection{Niveaux de fidélité du moteur proxy}
 Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
 \begin{itemize}
-    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE ou les options de rachat dynamique.
+    \item \textbf{Mode Proxy (Simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE.
     \item \textbf{Mode Real OPS (Moteur Métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
 \end{itemize}
 
@@ -428,44 +427,46 @@ Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, pe
 
 L'avantage majeur est la réduction drastique du « biais d'agrégation » puisque le critère de regroupement est précisément l'indicateur calculé \textit{in fine} (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
 
-\subsection{Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}
 
-L'approche par calibration \textit{a posteriori}, dénommée \og Biais Zéro \fg{} dans cette étude, marque une rupture méthodologique avec les techniques de clustering spatial. Là où les méthodes classiques tentent d'ajuster des contrats à des lois de mortalité existantes, cette approche propose d'adapter les lois de sortie pour qu'elles correspondent parfaitement à un regroupement arbitraire de contrats.
+\subsection{Calibration de lois \textit{a posteriori} (Méthode \og Biais Zéro \fg{} et clés financières)}
 
-\subsubsection{Mécanique des décréments et bases de calibration}
+L'approche par calibration \textit{a posteriori}, dénommée \og Biais Zéro \fg{} dans cette étude, marque une rupture méthodologique fondamentale avec les techniques de \textit{clustering} traditionnelles. Le paradigme est ici inversé : au lieu de chercher à regrouper des polices démographiquement similaires pour leur appliquer des lois de comportement standards, cette méthode s'autorise à regrouper les contrats selon des critères purement financiers. Elle recalcule ensuite mathématiquement des probabilités de sortie \og sur-mesure \fg{} (taux de rachat et de mortalité induits) pour chaque groupe.
 
-Pour atteindre une erreur nulle sur le Best Estimate, la calibration doit respecter scrupuleusement l'ordonnancement des flux au sein du moteur de projection Polars. Le moteur applique la séquence suivante sur une période $[t, t+1]$ :
-\begin{enumerate}
-    \item \textbf{Revalorisation technique} : Application du TMG au prorata temporis sur la PM de début d'année.
-    \item \textbf{Calcul des rachats} : Les rachats s'appliquent sur la PM revalorisée à mi-période.
-    \item \textbf{Calcul des décès} : Les décès s'appliquent sur la PM nette des rachats.
-\end{enumerate}
+Cette méthode modifie la notion même de \textit{Model Point}. Contrairement aux approches déterministes ou spatiales, un \textit{Model Point} issu de cette calibration ne possède plus d'âge moyen, de sexe majoritaire ou d'ancienneté. Il se résume à une pure enveloppe de flux financiers, rattachée à une table de sortie ($q_x$, rachats) qui lui est exclusive et dont l'unique but est d'annuler mécaniquement le biais d'agrégation.
 
-Ainsi, les lois induites $q_{k,t}$ ne sont pas calculées sur la PM de début d'année, mais sur les \textbf{bases d'application exactes} (mi-période). Pour un groupe de contrats $k$, les probabilités de rachat ($q_{k,t}^{rt}$) et de décès ($q_{k,t}^{dc}$) sont définies par :
+\subsubsection{Définition des clés d'agrégation financières}
+
+Pour que la méthode du \og Biais Zéro \fg{} fonctionne intégralement, il est nécessaire de garantir une stricte fidélité dans la projection des flux de revalorisation futurs. 
+
+Contrairement aux flux de rachats et de décès qui sont linéaires (et peuvent donc être parfaitement lissés par des taux induits), la mécanique de Participation aux Bénéfices (PB) est intrinsèquement non linéaire, notamment en raison de la composante optionnelle des garanties financières ($\max(0, Tx_{\text{servi}} - TMG)$). Il est par conséquent mathématiquement impossible d'agréger des contrats aux caractéristiques financières hétérogènes sans créer de biais sur la revalorisation.
+
+La segmentation du portefeuille ne s'effectue donc pas sur l'estimation de flux projetés, mais sur une partition déterministe stricte : on regroupe exclusivement les contrats partageant les mêmes paramètres contractuels générateurs de flux. Le portefeuille est ainsi partitionné selon un triplet de variables (les clés d'agrégation) qui régissent la mécanique de revalorisation :
+\begin{itemize}
+    \item \textbf{Le TMG net} : Le Taux Minimum Garanti contractuel servi à l'assuré.
+    \item \textbf{Le TFGSE} : Le Taux de Frais de Gestion Sur Encours contractuel prélevé par l'assureur.
+    \item \textbf{Le TAF} : Le Taux d'Affectation des produits financiers (ou taux de participation aux bénéfices).
+\end{itemize}
+
+Cette segmentation garantit que le \textbf{Model Point Financier (MPF)} possède un seuil de rentabilité brut rigoureusement identique à celui des contrats individuels qui le composent :
+\begin{equation}
+    TMG_{brut} = \frac{TMG_{net} + TFGSE}{TAF}
+\end{equation}
+
+\subsubsection{Mécanique des décréments et modification du cœur ALM}
+
+Une fois les contrats regroupés selon leurs clés financières (formant ainsi les groupes $C_k$), il convient d'annuler l'erreur d'agrégation sur la dimension biométrique et comportementale. Pour estimer les probabilités sur-mesure, il est impératif de faire tourner le modèle ALM une première fois en vision granulaire (contrat par contrat) sur un scénario de base, en mode \og passif seul \fg{} (sans interaction avec l'actif ni participation aux bénéfices dynamique). 
+
+Cette exécution permet de récupérer les trajectoires exactes des flux de prestations et des bases d'application associées. Il convient de noter que ce calcul préliminaire n'alourdit pas le processus global : la projection des engagements en passif seul est, de toute manière, une étape réglementaire systématique et incontournable pour valider la qualité d'une agrégation sur le \textit{Best Estimate} avant toute projection stochastique complète.
+
+Pour atteindre une erreur nulle, la calibration des lois induites respecte scrupuleusement l'ordonnancement des flux au sein du moteur de projection (développé en Polars). Le moteur appliquant les rachats sur la PM revalorisée à mi-période, et les décès sur la PM nette des rachats, les lois induites $q_{k,t}$ sont calculées sur ces \textbf{bases d'application exactes}. Pour un \textit{Model Point} financier $k$, les probabilités de rachat ($q_{k,t}^{rt}$) et de décès ($q_{k,t}^{dc}$) sont définies par le ratio entre la somme des prestations réelles et la somme des encours exposés au risque :
 
 \begin{equation}
     q_{k,t}^{rt} = \frac{\sum_{i \in C_k} PR_{i,t}}{\sum_{i \in C_k} BR_{i,t}} \quad ; \quad q_{k,t}^{dc} = \frac{\sum_{i \in C_k} PD_{i,t}}{\sum_{i \in C_k} BD_{i,t}}
 \end{equation}
 
-Où $PR_{i,t}$ et $PD_{i,t}$ représentent respectivement les prestations pour rachats et pour décès du contrat $i$ à l'instant $t$. Les termes $BR_{i,t}$ et $BD_{i,t}$ désignent les bases d'application exactes associées.
+Où $PR_{i,t}$ et $PD_{i,t}$ représentent respectivement les montants de prestations pour rachats et pour décès projetés en passif seul. Les termes $BR_{i,t}$ et $BD_{i,t}$ désignent les bases d'application exactes à mi-période.
 
-Où la base de rachat intègre les intérêts techniques acquis à mi-période, et la base de décès est nette des rachats déjà effectués. Cette précision mathématique permet de capturer l'intégralité de la cinétique des flux, rendant le Model Point agnostique de la démographie réelle ($Age, Sexe$).
-
-\subsubsection{Définition des clés d'agrégation financières}
-
-Le portefeuille est partitionné selon un triplet de variables financières qui régissent la mécanique de revalorisation :
-\begin{itemize}
-    \item \textbf{Le TMG net} : Le taux minimum garanti servi à l'assuré.
-    \item \textbf{Le TFGSE} : Le taux de frais de gestion sur encours prélevé par l'assureur.
-    \item \textbf{Le TAF} : Le taux d'affectation des produits financiers.
-\end{itemize}
-
-Cette segmentation garantit que le \textbf{Model Point Financier (MPF)} possède un seuil de rentabilité brut identique à celui des contrats individuels :
-\begin{equation}
-    TMG_{brut} = \frac{TMG_{net} + TFGSE}{TAF}
-\end{equation}
-
-L'agrégation sur ces clés, combinée aux lois induites, permet d'atteindre le \og Biais Zéro \fg{} opérationnel, l'erreur résiduelle ne provenant plus que des arrondis numériques (estimée à $0,006\%$ dans nos tests).
+Sur le plan opérationnel, l'implémentation de cette méthode exige une adaptation du cœur du modèle ALM. Le module de vieillissement du passif ne doit plus faire évoluer l'âge ou l'ancienneté pour lire une table réglementaire externe, mais est reprogrammé pour lire et appliquer directement les vecteurs de probabilités de sortie ($q_{k,t}$) pré-calculés, rattachés à chaque \textit{Model Point}. Cette approche, en capturant l'intégralité de la cinétique des flux, permet d'atteindre le \og Biais Zéro \fg{} opérationnel sur l'ensemble des projections.
 
 \section{Conclusion}
 
