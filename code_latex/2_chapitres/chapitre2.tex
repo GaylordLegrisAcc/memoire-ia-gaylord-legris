@@ -606,24 +606,81 @@ L'ensemble de ces règles de transposition garantit que le portefeuille synthét
 L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique de $1\,000\,000$ de contrats. L'analyse de ses caractéristiques servira à évaluer la pertinence des hypothèses utilisée et aidera à évaluer le profil de risque spécifique de ce portefeuille.
 
 \subsubsection*{Volumétrie et structure des encours}
-Le portefeuille généré représente une Provision Mathématique (PM) totale de $222,07$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
+Le portefeuille généré représente une Provision Mathématique (PM) totale de $222,09$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
 \begin{itemize}
-    \item La gamme \textbf{Mass Market} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité des volumes avec 57,05\,\% des contrats, mais concentre seulement 4,22\,\% des encours totaux.
-    \item À l'inverse, la \textbf{Gestion Privée} ($\text{PM} > 500\,k\text{\euro}$) ne concerne que 7,93\,\% des polices mais centralise 69,17\,\% des engagements (PM).
+    \item La gamme \textbf{Mass Market} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité des volumes avec 57,05\% des contrats, mais concentre seulement 4,22\% des encours totaux, avec une PM moyenne par contrat de $16\,366\,\text{\euro}$.
+    \item Le segment \textbf{Patrimonial} ($50\,k\text{\euro} < \text{PM} \leq 500\,k\text{\euro}$) regroupe 35,02\% des contrats pour 26,67\% des encours, affichant une PM moyenne de $168\,962\,\text{\euro}$.
+    \item À l'inverse, la \textbf{Gestion Privée} ($\text{PM} > 500\,k\text{\euro}$) ne concerne que 7,93\% des polices mais centralise 69,11\% des engagements (PM), avec une PM moyenne s'élevant à $1,94$ million d'euros.
 \end{itemize}
 Cette concentration, mettant en évidence un effet de Pareto \footnote{L'effet de Pareto, ou règle des 80/20, appliqué ici à l'assurance-vie, illustre qu'une faible proportion de contrats (les plus gros patrimoines) représente la grande majorité des encours sous gestion
-}, tire la PM moyenne par contrat à un niveau relativement élevé de $222\,071\,\text{\euro}$, positionnant ce portefeuille synthétique sur un profil d'assureur fortement orienté vers la gestion de patrimoine.
+}, tire la PM moyenne par contrat à un niveau relativement élevé de $222\,093\,\text{\euro}$. En comparaison avec la moyenne nationale française, estimée autour de $50\,000\,\text{\euro}$ par contrat, ce portefeuille synthétique présente un profil "haut de gamme" fortement orienté vers la gestion de patrimoine.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/repartition_pm_gamme.png}
+        \caption{Répartition des encours (PM) par gamme.}
+        \label{fig:repartition_pm_gamme}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/pm_moyenne_gamme.png}
+        \caption{Provision Mathématique moyenne par gamme commerciale.}
+        \label{fig:pm_moyenne_gamme}
+    \end{minipage}
+\end{figure}
+
+\subsubsection*{Focus sur les segments Mass Market et Patrimonial}
+Afin de mieux comprendre la dynamique du portefeuille hors "très gros" contrats, une analyse du bloc regroupant le Mass Market et le segment Patrimonial a été effectuée. Ce bloc représente 92,07\% des contrats du portefeuille mais seulement 30,84\% des encours totaux (€68,49 milliards). 
+
+La PM moyenne de ce groupe élargi est de $74\,392\,\text{\euro}$, avec un âge moyen de $52,9$ ans et une part d'Unités de Compte de $40,55\%$, soit un profil plus proche des moyennes nationales que le segment de Gestion Privée (dont la part d'UC culmine à $45,72\%$).
 
 \subsubsection*{Profil démographique et ancienneté}
-L'âge moyen des assurés s'établit à $53,1$ ans, une valeur cohérente avec la structure des détenteurs d'assurance vie en France. L'ancienneté moyenne des contrats est quant à elle de $19,9$ ans, témoignant d'un portefeuille mature et fortement ancré dans le temps.
+L'âge moyen des assurés s'établit à $53,1$ ans, une valeur cohérente avec la structure des détenteurs d'assurance vie en France. L'ancienneté moyenne des contrats est quant à elle de $19,8$ ans, témoignant d'un portefeuille mature et fortement ancré dans le temps.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/dist_age.png}
+        \caption{Distribution des âges des assurés.}
+        \label{fig:dist_age}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/dist_anciennete.png}
+        \caption{Distribution de l'ancienneté des contrats.}
+        \label{fig:dist_anciennete}
+    \end{minipage}
+\end{figure}
 
 \subsubsection*{Caractéristiques financières}
 La calibration des variables financières a porté ses fruits :
 \begin{itemize}
-    \item \textbf{L'allocation d'actifs :} La part globale investie en Unités de Compte (UC) atteint $44,44\,\%$. Ce ratio, légèrement supérieur à la cible de calibration initiale, s'explique précisément par le poids massif de la Gestion Privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
-    \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,89\,\%$. Ce niveau, qui peut paraître élevé dans le contexte de taux de la dernière décennie, est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
-    \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,62\,\%$, en parfaite adéquation avec la moyenne du marché pour des portefeuilles mixtes.
+    \item \textbf{L'allocation d'actifs :} La part globale investie en Unités de Compte (UC) atteint $44,12\,\%$. Ce ratio, supérieur à la cible de calibration initiale (40\%), s'explique précisément par le poids massif de la Gestion Privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
+    \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,88\,\%$. Ce niveau est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
+    \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,67\,\%$, en parfaite adéquation avec la moyenne du marché.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/allocation_euro_uc.png}
+        \caption{Allocation globale Euro / UC.}
+        \label{fig:allocation_euro_uc}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/repartition_sexe.png}
+        \caption{Répartition par sexe des assurés.}
+        \label{fig:repartition_sexe}
+    \end{minipage}
+\end{figure}
 
 \subsection{Limitations du portefeuille généré}
 

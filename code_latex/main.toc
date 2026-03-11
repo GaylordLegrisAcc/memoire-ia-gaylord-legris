@@ -55,57 +55,57 @@
 \contentsline {subsection}{\numberline {2.2.3}Mise en correspondance avec le format final du modèle ALM et Partis Pris}{43}{subsection.2.2.3}%
 \contentsline {section}{\numberline {2.3}Présentation du portefeuille de référence généré}{44}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}Analyse descriptive du portefeuille de référence}{45}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Limitations du portefeuille généré}{46}{subsection.2.3.2}%
-\contentsline {chapter}{\numberline {3}Présentation des méthodes d'agrégation candidates}{47}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Les approches déterministes : Le standard de marché}{48}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Segmentation stricte par regroupement de caractéristiques}{49}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Approche par tranches (Banding) et pondération financière}{50}{subsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.2.1}Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}{51}{subsubsection.3.1.2.1}%
-\contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{51}{subsubsection.3.1.2.2}%
-\contentsline {section}{\numberline {3.2}Les approches statistiques spatiales (Apprentissage Non Supervisé)}{52}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Préparation de l'espace spatial : Techniques transverses}{53}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Partitionnement par inertie : \textit {k}-moyennes (K-Means) pondéré}{53}{subsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.1}Principe de l'algorithme}{54}{subsubsection.3.2.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2.2}Application aux données du portefeuille}{54}{subsubsection.3.2.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.3}Constitution des Model Points finaux}{55}{subsubsection.3.2.2.3}%
-\contentsline {subsection}{\numberline {3.2.3}Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}{56}{subsection.3.2.3}%
-\contentsline {subsubsection}{\numberline {3.2.3.1}Principes fondamentaux de DBSCAN}{56}{subsubsection.3.2.3.1}%
-\contentsline {subsubsection}{\numberline {3.2.3.2}Adaptation aux contraintes assurantielles}{57}{subsubsection.3.2.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.3.3}Gestion du bruit et réallocation des contrats}{58}{subsubsection.3.2.3.3}%
-\contentsline {subsection}{\numberline {3.2.4}L'extension hiérarchique adaptative : HDBSCAN (Distance d'accessibilité, extraction EOM vs Leaf)}{59}{subsection.3.2.4}%
-\contentsline {subsubsection}{\numberline {3.2.4.1}Transformation de l'espace : la distance d'accessibilité mutuelle}{59}{subsubsection.3.2.4.1}%
-\contentsline {subsubsection}{\numberline {3.2.4.2}Construction de l'Arbre Couvrant Minimum (MST)}{60}{subsubsection.3.2.4.2}%
-\contentsline {subsubsection}{\numberline {3.2.4.3}Construction de la hiérarchie des clusters}{61}{subsubsection.3.2.4.3}%
-\contentsline {subsubsection}{\numberline {3.2.4.4}Condensation de l'arbre}{61}{subsubsection.3.2.4.4}%
-\contentsline {subsubsection}{\numberline {3.2.4.5}Extraction des clusters stables}{62}{subsubsection.3.2.4.5}%
-\contentsline {subsubsection}{\numberline {3.2.4.6}Stratégies d'extraction des clusters : EOM vs Leaf}{62}{subsubsection.3.2.4.6}%
-\contentsline {subsubsection}{\numberline {3.2.4.7}Constitution finale des Model Points}{63}{subsubsection.3.2.4.7}%
-\contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{64}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Principe des Arbres de Décision (CART) appliqués au passif}{64}{subsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{64}{subsubsection.3.3.1.1}%
-\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (Refined vs Spread Focus)}{65}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{65}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{66}{subsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{66}{subsubsection.3.4.1.1}%
-\contentsline {subsection}{\numberline {3.4.2}Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}{67}{subsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.2.1}Mécanique des décréments et bases de calibration}{67}{subsubsection.3.4.2.1}%
-\contentsline {subsubsection}{\numberline {3.4.2.2}Définition des clés d'agrégation financières}{68}{subsubsection.3.4.2.2}%
-\contentsline {section}{\numberline {3.5}Conclusion}{68}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{70}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{71}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{72}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{73}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{73}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{74}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{75}{subsection.4.2.2}%
-\contentsline {chapter}{\numberline {5}Conclusion}{76}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{77}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{77}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{77}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{77}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{78}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{78}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{78}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{78}{section.5.3}%
-\contentsline {chapter}{Annexes}{80}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{84}{table.5.1}%
+\contentsline {subsection}{\numberline {2.3.2}Limitations du portefeuille généré}{47}{subsection.2.3.2}%
+\contentsline {chapter}{\numberline {3}Présentation des méthodes d'agrégation candidates}{49}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Les approches déterministes : Le standard de marché}{50}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Segmentation stricte par regroupement de caractéristiques}{51}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Approche par tranches (Banding) et pondération financière}{52}{subsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.1}Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}{53}{subsubsection.3.1.2.1}%
+\contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{53}{subsubsection.3.1.2.2}%
+\contentsline {section}{\numberline {3.2}Les approches statistiques spatiales (Apprentissage Non Supervisé)}{54}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Préparation de l'espace spatial : Techniques transverses}{55}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Partitionnement par inertie : \textit {k}-moyennes (K-Means) pondéré}{55}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}Principe de l'algorithme}{56}{subsubsection.3.2.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}Application aux données du portefeuille}{56}{subsubsection.3.2.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.3}Constitution des Model Points finaux}{57}{subsubsection.3.2.2.3}%
+\contentsline {subsection}{\numberline {3.2.3}Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}{58}{subsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.3.1}Principes fondamentaux de DBSCAN}{58}{subsubsection.3.2.3.1}%
+\contentsline {subsubsection}{\numberline {3.2.3.2}Adaptation aux contraintes assurantielles}{59}{subsubsection.3.2.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.3.3}Gestion du bruit et réallocation des contrats}{60}{subsubsection.3.2.3.3}%
+\contentsline {subsection}{\numberline {3.2.4}L'extension hiérarchique adaptative : HDBSCAN (Distance d'accessibilité, extraction EOM vs Leaf)}{61}{subsection.3.2.4}%
+\contentsline {subsubsection}{\numberline {3.2.4.1}Transformation de l'espace : la distance d'accessibilité mutuelle}{61}{subsubsection.3.2.4.1}%
+\contentsline {subsubsection}{\numberline {3.2.4.2}Construction de l'Arbre Couvrant Minimum (MST)}{62}{subsubsection.3.2.4.2}%
+\contentsline {subsubsection}{\numberline {3.2.4.3}Construction de la hiérarchie des clusters}{63}{subsubsection.3.2.4.3}%
+\contentsline {subsubsection}{\numberline {3.2.4.4}Condensation de l'arbre}{63}{subsubsection.3.2.4.4}%
+\contentsline {subsubsection}{\numberline {3.2.4.5}Extraction des clusters stables}{64}{subsubsection.3.2.4.5}%
+\contentsline {subsubsection}{\numberline {3.2.4.6}Stratégies d'extraction des clusters : EOM vs Leaf}{64}{subsubsection.3.2.4.6}%
+\contentsline {subsubsection}{\numberline {3.2.4.7}Constitution finale des Model Points}{65}{subsubsection.3.2.4.7}%
+\contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{66}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Principe des Arbres de Décision (CART) appliqués au passif}{66}{subsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{66}{subsubsection.3.3.1.1}%
+\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (Refined vs Spread Focus)}{67}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{67}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{68}{subsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{68}{subsubsection.3.4.1.1}%
+\contentsline {subsection}{\numberline {3.4.2}Calibration de lois a posteriori (Méthode "Biais Zéro" et clés financières)}{69}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}Mécanique des décréments et bases de calibration}{69}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}Définition des clés d'agrégation financières}{70}{subsubsection.3.4.2.2}%
+\contentsline {section}{\numberline {3.5}Conclusion}{70}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{72}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{73}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{74}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{75}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{75}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{76}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{77}{subsection.4.2.2}%
+\contentsline {chapter}{\numberline {5}Conclusion}{78}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{79}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{79}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{79}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{79}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{80}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{80}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{80}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{80}{section.5.3}%
+\contentsline {chapter}{Annexes}{82}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{86}{table.5.1}%

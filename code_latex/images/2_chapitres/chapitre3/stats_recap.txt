@@ -1,0 +1,56 @@
+============================================================
+📊 RAPPORT DÉTAILLÉ DU PORTEFEUILLE GÉNÉRÉ 📊
+============================================================
+
+--- VUE D'ENSEMBLE ---
+Nombre total de contrats : 1,000,000
+PM Totale : 222,092,544,019 € (222.09 Md€)
+PM Moyenne : 222,093 €
+Âge moyen : 53.1 ans
+Ancienneté moyenne : 19.8 ans
+
+--- INDICATEURS FINANCIERS ---
+Part globale d'UC : 44.12%
+PM Euro Totale : 124,095,005,764 €
+PM UC Totale : 97,997,538,256 €
+TMG moyen pondéré : 1.8802%
+Taux de frais moyen (TFGSE) : 0.6698%
+
+--- PERCENTILES DE LA PM ---
+10% : 6,345 €
+25% : 11,805 €
+50% (Médiane) : 37,236 €
+75% : 134,883 €
+90% : 394,312 €
+95% : 777,663 €
+99% : 2,942,425 €
+
+--- RÉPARTITION PAR GAMME COMMERCIALE ---
+                Nombre  Encours_Total    PM_Moyenne  Age_Moyen  Anciennete_Moyenne  Part_UC_Moyenne  %_Nombre  %_Encours
+Gamme                                                                                                                   
+Gestion Privée   79293   1.535984e+11  1.937099e+06  54.929451           21.015255         0.434504    7.9293  69.159635
+Mass Market     570597   9.338614e+09  1.636639e+04  52.011303           19.181732         0.386881   57.0597   4.204830
+Patrimonial     350110   5.915554e+10  1.689627e+05  54.441861           20.664498         0.403810   35.0110  26.635535
+
+--- COMPARAISON GROUPEE (Mass+Pat vs Gestion Privée) ---
+                    Nombre  Encours_Total    PM_Moyenne  Age_Moyen  Anciennete_Moyenne  Part_UC_Ponderee
+Gamme_Groupee                                                                                           
+Gestion Privée       79293   1.535984e+11  1.937099e+06  54.929451           21.015255          0.457181
+Mass + Patrimonial  920707   6.849415e+10  7.439299e+04  52.935552           19.745571          0.405513
+
+--- RÉPARTITION PAR SEXE ---
+              Nombre  Encours_Total     PM_Moyenne  Age_Moyen  Part_UC_Moyenne
+cd_asse_sexe                                                                  
+F             519617   1.147647e+11  220864.066979  53.114053         0.396377
+H             480383   1.073278e+11  223421.353644  53.071590         0.396809
+
+--- RÉPARTITION PAR TRANCHE D'ÂGE ---
+             Nombre  Encours_Total     PM_Moyenne  Part_UC_Moyenne
+Tranche_Age                                                       
+<30 ans       26557   5.243603e+08   19744.711215         0.625435
+30-45 ans    279097   4.715234e+10  168946.051444         0.535179
+45-60 ans    386494   1.031138e+11  266792.659145         0.399094
+60-75 ans    242610   6.142416e+10  253180.652029         0.269523
+>75 ans       65242   9.877928e+09  151404.426767         0.168161
+
+============================================================
