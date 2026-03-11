@@ -56,7 +56,7 @@ Enfin, la capacité à se positionner par rapport à ses concurrents est fondame
     \draw [arrow] (process) -- (output);
 
     \end{tikzpicture}
-    \caption{Schéma de la méthodologie de génération d'un portefeuille de passifs synthétique.}
+    \caption{Schéma de la méthodologie de génération d'un portefeuille de passifs synthétique. \textcolor{blue}{Moche à refaire}}
     \label{fig:methodologie_horizontale}
 \end{figure}
 
@@ -321,7 +321,7 @@ Gamma & 7 254 743 & 7 254 774 & 0.145 \\
 
 La détermination des \emph{taux minimums garantis} (TMG) par année de souscription s'appuie sur les plafonds réglementaires de taux techniques définis par le Code des assurances, tels qu'analysés dans la note \og Le taux technique en assurance vie \fg{} publiée par l'ACPR \cite{acpr66},et les travaux de l'ACPR sur l'assurance vie en environnement de taux bas \cite{acprTauxBas}, complétés par la veille de marché de Good Value for Money sur les caractéristiques des contrats d'assurance vie \cite{gvmTMG}.
 
-La note \cite{acpr66} rappelle notamment que, depuis les années 1990, le taux technique maximal autorisable sur les contrats d'assurance vie est encadré par une formule fonction du taux moyen des emprunts d'État (TME), avec un plafond de l'ordre de 4{,}5\,\% au début des années 1990, puis une baisse progressive de ce plafond au fil de la diminution des taux d'intérêt. Les travaux ultérieurs de l'ACPR montrent qu'en environnement de taux bas, le taux technique moyen effectivement pratiqué sur le stock de contrats s'est progressivement rapproché de 0\,\%, avec un taux moyen de l'ordre de 0{,}35--0{,}5\,\% au milieu des années 2010 \cite{acprTauxBas}.
+La note \cite{acpr66} rappelle notamment que, depuis les années 1990, le taux technique maximal autorisable sur les contrats d'assurance vie est encadré par une formule fonction du taux moyen des emprunts d'État (TME), avec un plafond de l'ordre de 4{,}5\,\% au début des années 1990, puis une baisse progressive de ce plafond au fil de la diminution des taux d'intérêt. Les travaux ultérieurs de l'ACPR montrent qu'en environnement de taux bas, le taux technique moyen effectivement pratiqué sur le stock de contrats s'est progressivement rapproché de 0\,\%, passant d'environ $0{,}50\,\%$ au milieu des années 2010 \cite{acprTauxBas} à $0{,}35\,\%$ sur la période récente \cite{acprRevalo2024}.
 
 Sur la base de ces éléments réglementaires et de marché, nous construisons une série historique de TMG par année de souscription. Pour chaque année $t$, nous retenons :
 \begin{itemize}
@@ -339,208 +339,202 @@ Dans le cadre de la modélisation ALM présentée dans la suite, cette série an
 
 \subsubsection*{Intégration du TAF et du TFGSE dans la modélisation des TMG}
 
-Au-delà du seul $TMG_t$, la valorisation des engagements en assurance vie dépend fortement des \emph{frais de gestion prélevés sur les encours} et de la \emph{participation aux bénéfices} (PB) effectivement redistribuée aux assurés. Pour capturer ces deux dimensions dans un cadre de modélisation discret, nous introduisons deux paramètres complémentaires pour chaque contrat :
+Au-delà du seul $TMG_t$, la valorisation des engagements en assurance vie dépend fortement des \emph{frais de gestion prélevés sur les encours} et de la \emph{participation aux bénéfices} (PB) effectivement redistribuée aux assurés. Pour capturer ces deux dimensions dans un cadre de modélisation discret, deux paramètres complémentaires sont introduits pour chaque contrat :
 \begin{itemize}
   \item le taux de frais de gestion sur encours $TFGSE$, appliqué annuellement sur la provision mathématique ;
-  \item le taux d'affectation des produits financiers $TAF$, représentant la part des produits
-        financiers attribuée aux assurés (taux servi et dotation à la provision pour participation
-        aux bénéfices).
+  \item le taux d'affectation des produits financiers $TAF$, représentant la part des produits financiers attribuée aux assurés (taux servi et dotation à la provision pour participation aux bénéfices).
 \end{itemize}
 
-Les données de marché publiées par France Assureurs sur l'assurance vie en unités de compte montrent qu'en 2024, les frais de gestion sur encours des contrats en unités de compte s'élèvent en moyenne à 0{,}88\,\% par an, avec une valeur de 0{,}83\,\% pour les gestions libres ou pilotées sans surcoût et un surcoût moyen de 0{,}36\,\% pour la gestion sous mandat \cite{faUC2024}. Pour les supports en euros, les mêmes travaux indiquent un taux de frais de gestion d'environ 0{,}66\,\% par an, ce qui situe la moyenne de marché entre 0{,}6\,\% et 0{,}7\,\% selon le type de contrat \cite{faUC2024}. Ces ordres de grandeur sont cohérents avec les comparatifs de frais publiés par différents acteurs de place, qui situent la plupart des contrats dans une fourchette de 0{,}5\,\% à 1{,}0\,\% de frais de gestion annuels sur encours.
+Les données de marché publiées par France Assureurs \cite{faUC2024} sur l'assurance vie en unités de compte montrent qu'en 2024, les frais de gestion sur encours des contrats en unités de compte s'élèvent en moyenne à 0{,}88\,\% par an, avec une valeur de 0{,}83\,\% pour les gestions libres ou pilotées. Pour les supports en euros, les mêmes travaux indiquent un taux de frais de gestion d'environ 0{,}66\,\% par an, ce qui situe la moyenne de marché entre 0{,}6\,\% et 0{,}7\,\% selon le type de contrat. Ces ordres de grandeur sont cohérents avec les comparatifs de frais publiés par différents acteurs de place, qui situent la plupart des contrats dans une fourchette de 0{,}5\,\% à 1{,}0\,\% de frais de gestion annuels sur encours.
 
-Dans le modèle, afin de rester cohérent avec cette distribution observée tout en conservant une structure discrète compatible avec l'agrégation ALM, nous retenons trois niveaux de $TFGSE$ :
+Dans le modèle, afin de rester cohérent avec cette distribution observée tout en conservant une structure discrète, l'approche retenue s'appuie sur les pratiques tarifaires documentées de contrats patrimoniaux de référence (à l'instar du contrat Cachemire 2 Serie 2 de La Banque Postale \cite{cgs_cachemire}). Trois niveaux de $TFGSE$ sont ainsi définis :
 \[
-  TFGSE \in \{0{,}50\%,\ 0{,}70\%,\ 0{,}90\%\}.
+  TFGSE \in \{0{,}60\,\%,\ 0{,}70\,\%,\ 0{,}85\,\%\}.
 \]
 Ces trois valeurs représentent respectivement :
 \begin{itemize}
-  \item un profil \og peu chargé \fg{} ($0{,}50\,$\%), typique de contrats compétitifs ou de gammes patrimoniales ;
-  \item un profil \og moyen \fg{} ($0{,}70\,$\%), proche de la moyenne observée sur les fonds en euros ;
-  \item un profil \og chargé \fg{} ($0{,}90\,$\%), représentant des contrats grand public avec une structure de frais élevée.
+  \item un profil \og haut de gamme \fg{} ($0{,}60\,\%$), typique des contrats de gestion privée très compétitifs ;
+  \item un profil \og moyen \fg{} ($0{,}70\,\%$), proche de la moyenne observée sur les fonds en euros et caractéristique des gammes patrimoniales ;
+  \item un profil \og standard \fg{} ($0{,}85\,\%$), représentant des contrats grand public avec une structure de frais plus classique.
 \end{itemize}
 Dans chaque cohorte d'année $t$, la probabilité d'appartenance à l'un de ces trois profils est ajustée de manière à ce que la moyenne pondérée de $TFGSE$ reste compatible avec les statistiques agrégées de marché, tout en reflétant une amélioration progressive des grilles tarifaires sur les générations récentes de contrats.
 
-Concernant la participation aux bénéfices, le cadre réglementaire impose une redistribution d'au moins 85\,\% des bénéfices financiers et 90\,\% des bénéfices techniques au profit des assurés, sous forme de PB et de dotation à la provision pour participation aux bénéfices (PPB). Les analyses de l'ACPR sur la revalorisation des contrats d'assurance vie mettent en évidence que, sur longue période, la part des produits financiers effectivement affectée aux assurés (taux servi + variation de PPB) se situe fréquemment au-delà de 80\,\% du résultat financier, les marges techniques des assureurs restant limitées \cite{acprTauxBas,acprRevalo2024}.
+Concernant la participation aux bénéfices (PB), le cadre réglementaire français (Code des assurances) impose aux organismes d'assurance vie une redistribution minimale. Celle-ci correspond à $85\,\%$ du solde du compte financier et à $90\,\%$ du solde du compte technique, allouée sous forme de revalorisation immédiate ou de dotation à la PPE. Dans la pratique, en raison des enjeux concurrentiels, il est observé que la part des résultats financiers effectivement redistribuée aux assurés excède régulièrement ces minima légaux. Les études de l'ACPR sur la revalorisation des contrats mettent en évidence une contrainte forte sur les marges conservées par les assureurs, le taux de redistribution dépassant fréquemment le seuil réglementaire pour s'aligner sur les attentes du marché \cite{acprTauxBas,acprRevalo2024}.
 
-Nous modélisons cette réalité au moyen d'un taux d'affectation des produits financiers $TAF$ discret, qui représente la part des produits financiers attribuée aux assurés sur un exercice donné. Trois niveaux sont retenus :
+Cette réalité est modélisée au moyen d'un taux d'affectation des produits financiers, noté $TAF$, de nature discrète, qui représente la part des produits financiers attribuée aux assurés sur un exercice donné. Afin de respecter le seuil légal de distribution de la marge financière, trois niveaux sont retenus :
 \[
-  TAF \in \{80\%,\ 90\%,\ 95\%\}.
+  TAF \in \{85\,\%,\ 90\,\%,\ 95\,\%\}.
 \]
 Ces niveaux correspondent à :
 \begin{itemize}
-  \item $80\,$\% : un comportement proche du plancher réglementaire, associé à des contrats peu généreux
-        en termes de participation aux bénéfices ;
-  \item $90\,$\% : un comportement \og moyen \fg{} de marché, cohérent avec les constats de l'ACPR
-        sur des marges techniques modérées ;
-  \item $95\,$\% : un profil particulièrement favorable aux assurés, typique de certains contrats
-        haut de gamme ou de gammes associatives affichant des taux servis durablement supérieurs
-        à la moyenne du marché.
+  \item $85\,\%$ : un comportement correspondant au plancher réglementaire, associé à des contrats standardisés ou peu généreux en termes de participation aux bénéfices ;
+  \item $90\,\%$ : un comportement \og moyen \fg{} de marché, cohérent avec les constats de l'ACPR sur des marges techniques modérées ;
+  \item $95\,\%$ : un profil particulièrement favorable aux assurés, typique de certains contrats haut de gamme ou de gammes associatives affichant des taux servis durablement supérieurs à la moyenne du marché.
 \end{itemize}
 
-Pour assurer la cohérence économique du modèle, une dépendance entre $TFGSE$ et $TAF$ sera introduite au travers de profils de contrat. Concrètement, pour chaque contrat synthétique, nous tirons d'abord un profil de frais parmi $\{0{,}50\%, 0{,}70\%, 0{,}90\%\}$, puis un niveau de $TAF$ parmi les trois valeurs $\{80\%, 90\%, 95\%\}$, avec une loi discrète conditionnelle. Par exemple, un contrat à faibles frais ($TFGSE = 0{,}50\,$\%) aura une probabilité plus forte d'être associé à un $TAF$ élevé (90--95\,\%), tandis qu'un contrat fortement chargé ($TFGSE = 0{,}90\,$\%) sera plus souvent associé à un $TAF$ dans la partie basse de la grille (80--85\,\%). Ce couplage reproduit qualitativement le fait que les contrats les plus compétitifs en frais sont également ceux qui, historiquement, affichent les meilleurs taux servis et une politique de PB plus favorable aux assurés.
+Pour assurer la cohérence économique du modèle, une dépendance entre le $TFGSE$ et le $TAF$ est introduite au travers de profils de contrats. Concrètement, pour chaque contrat synthétique, il est procédé au tirage d'un profil de frais parmi $\{0{,}60\,\%,\ 0{,}70\,\%,\ 0{,}85\,\%\}$, puis d'un niveau de $TAF$ parmi les trois valeurs $\{85\,\%,\ 90\,\%,\ 95\,\%\}$, au moyen d'une loi discrète conditionnelle. Par exemple, un contrat à faibles frais ($TFGSE = 0{,}60\,\%$) présente une probabilité plus forte d'être associé à un $TAF$ élevé ($95\,\%$), tandis qu'un contrat fortement chargé ($TFGSE = 0{,}85\,\%$) se voit plus souvent associé à un $TAF$ fixé sur le plancher légal ($85\,\%$). Ce couplage reproduit qualitativement le fait que les contrats les plus compétitifs en frais sont également ceux qui, historiquement, affichent les meilleurs taux servis et une politique de PB plus favorable aux assurés.
 
-Au total, pour une année de souscription $t$ donnée, chaque contrat du portefeuille synthétique est donc caractérisé par un triplet discret $(TMG_t, TFGSE, TAF)$, où :
+Au total, pour une année de souscription $t$ donnée, chaque contrat du portefeuille synthétique se trouve donc caractérisé par un triplet discret $(TMG_t, TFGSE, TAF)$, où :
 \begin{itemize}
-  \item $TMG_t$ est fixé par la table historique de la section précédente, construite à partir des plafonds de taux techniques ACPR ;
-  \item $TFGSE$ prend l'une des trois valeurs $\{0{,}50\%, 0{,}70\%, 0{,}90\%\}$ ;
-  \item $TAF$ prend l'une des trois valeurs $\{80\%, 90\%, 95\%\}$.
+  \item $TMG_t$ est fixé par la table historique de la section précédente, construite à partir des plafonds de taux techniques de l'ACPR ;
+  \item $TFGSE$ prend l'une des trois valeurs $\{0{,}60\,\%,\ 0{,}70\,\%,\ 0{,}85\,\%\}$ ;
+  \item $TAF$ prend l'une des trois valeurs $\{85\,\%,\ 90\,\%,\ 95\,\%\}$.
 \end{itemize}
-Ce choix de discrétisation permet de simplifier la génération du portfeuilles sur les aspects financiers et assurantiels tout en restant ancré sur des ordres de grandeur observés sur le marché français de l'assurance vie, tels que documentés par France Assureurs et l'ACPR \cite{acprTauxBas,acprRevalo2024,faUC2024}.
+Ce choix de discrétisation permet de simplifier la génération du portefeuille sur les aspects financiers et assurantiels tout en restant ancré sur des ordres de grandeur observés sur le marché français de l'assurance vie, tels que documentés par France Assureurs et l'ACPR.
 
 \subsubsection*{Corrélation des caractéristiques contractuelles avec la provision mathématique}
 
-Dans le modèle initial, les paramètres $(TMG_t, TFGSE, TAF)$ sont tirés indépendamment de
-l'année de souscription $t$. Cependant, pour refléter fidèlement la structure du portefeuille
-d'un assureur français, il est pertinent d'introduire une dépendance entre ces caractéristiques
-contractuelles et la \emph{provision mathématique} du contrat $PM_k$, qui sert de proxy naturel
-pour segmenter les contrats par gamme commerciale (Mass Market, Patrimonial, Gestion Privée).
+Afin de refléter fidèlement la structure du portefeuille d'un assureur français, une dépendance est introduite entre les paramètres contractuels et la $PM$ du contrat. Cette dernière constitue une manière simple de segmenter les contrats par gamme commerciale (Standard, Patrimonial, Gestion privée).
 
-Cette approche s'appuie sur deux observations de marché :
-\begin{enumerate}
-  \item Les frais de gestion sur encours $TFGSE$ sont généralement \emph{dégressifs} avec l'encours
-        du contrat : les contrats à forte provision mathématique (typiquement $>$ 100k€,
-        voire $>$ 500k€ pour la Gestion Privée) bénéficient de grilles tarifaires plus favorables
-        \cite{faUC2024}.
-  \item Les contrats à gros encours sont historiquement plus concentrés dans les gammes patrimoniales
-        et de Gestion Privée, qui affichent des politiques de participation aux bénéfices (PB) et
-        des taux minimums garantis (TMG) différenciés par rapport aux contrats retail
-        (petits patrimoines).
-\end{enumerate}
+Cette approche s'appuie sur des observations de marché : selon l'hypothèse prise précédemment, les $TFGSE$ sont structurellement dégressifs avec l'encours du contrat. À titre d'illustration, les conditions générales de contrats patrimoniaux de référence définissent explicitement une réduction des frais de gestion annuels dès lors que l'encours franchit certains seuils, typiquement $200\,000$\,\euro{} et $500\,000$\,\euro{} \cite{cgs_cachemire, faUC2024}. Les contrats présentant des encours importants se concentrent ainsi dans les gammes patrimoniales et de gestion privée, lesquelles affichent par ailleurs des politiques de participation aux bénéfices (PB) et des taux minimums garantis (TMG) différenciés par rapport aux contrats de la clientèle grand public.
 
 \subsubsection*{Définition des seuils de provision mathématique}
 
-Nous segmentons les contrats selon trois tranches de provision mathématique $PM_k$ :
-\begin{center}
-\begin{tabular}{lcc}
-  \hline
-  \textbf{Gamme} & \textbf{Tranche $PM_k$} & \textbf{Exemple typique} \\
-  \hline
-  Mass Market / Retail & $PM_k \leq 50\,000€$ & Contrats petit patrimoine \\
-  Patrimonial & $50\,000€ < PM_k \leq 500\,000€$ & Clientèle moyenne/haute gamme \\
-  Gestion Privée & $PM_k > 500\,000€$ & HNWI, family offices \\
-  \hline
-\end{tabular}
-\end{center}
+Les contrats sont segmentés selon trois tranches de provision mathématique $PM_k$ :
+\begin{table}[h!]
+  \centering
+  \caption{Segmentation des contrats selon la provision mathématique}
+  \label{tab:seuils_pm}
+  \begin{tabular}{lc}
+    \toprule
+    \textbf{Gamme commerciale (Typologie)} & \textbf{Tranche $PM_k$} \\
+    \midrule
+    Standard (Clientèle grand public) & $PM_k \leq 200\,000$\,\euro \\
+    Patrimonial (Clientèle aisée et haut de gamme) & $200\,000$\,\euro $< PM_k \leq 500\,000$\,\euro \\
+    Gestion privée (HNWI\footnotemark, Family offices\footnotemark) & $PM_k > 500\,000$\,\euro \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+% On recule le compteur d'un cran pour la première note
+\addtocounter{footnote}{-1}
+\footnotetext{High Net Worth Individuals : Personnes possédant plus de 1 million d'euros de patrimoine.}
+% On avance le compteur pour la seconde note
+\stepcounter{footnote}
+\footnotetext{Family offices : Structures de gestion patrimoniale pour des familles fortunées.}
 
-Ces seuils sont inspirés de la segmentation commerciale standard des acteurs français
-(AXA, CNP Assurances, Generali) et cohérents avec les statistiques agrégées de France Assureurs
-sur la structure par encours des contrats d'épargne individuelle \cite{faUC2024}.
+Ces seuils s'inspirent directement de la segmentation commerciale standard appliquée par les grands acteurs de la place, telle qu'illustrée par les paliers tarifaires des contrats patrimoniaux de référence \cite{cgs_cachemire}. Cette stratification permet de générer un portefeuille synthétique dont la structure de frais agrégée s'avère cohérente avec les moyennes documentées par France Assureurs \cite{faUC2024}.
 
 \subsubsection*{Lois conditionnelles par tranche de provision}
 
-Pour chaque contrat généré, après tirage de l'année $t$ et de la provision mathématique $PM_k$,
-les paramètres $(TFGSE, TAF)$ sont tirés selon la loi conditionnelle suivante :
+La distribution croisée exacte de ces caractéristiques n'étant pas publiquement disponible à une maille individuelle, la matrice des probabilités a été calibrée pour ce mémoire. Ce calibrage répond à un double objectif :
+\begin{enumerate}
+  \item Traduire mathématiquement la dynamique concurrentielle observée : la gamme \og Standard \fg{} est massivement orientée vers la tarification la moins favorable, tandis que la \og gestion privée \fg{} se voit attribuer majoritairement les conditions optimales.
+  \item Garantir que les moyennes pondérées finales du portefeuille synthétique convergent vers les statistiques de marché (notamment un $TFGSE$ moyen avoisinant les $0{,}70\,\%$).
+\end{enumerate}
 
-\begin{table}[h!]
+Pour chaque contrat généré, après le tirage de l'année $t$ et de la provision mathématique $PM_k$, les paramètres $(TFGSE, TAF)$ sont ainsi affectés selon la loi conditionnelle suivante :
+
+\begin{table}[H]
 \centering
 \caption{Lois discrètes conditionnelles de $(TFGSE, TAF)$ selon la tranche de provision mathématique}
 \label{tab:TFGSE_TAF_PM}
 \begin{tabular}{ll|ccc}
-  \hline
+  \toprule
   \multirow{2}{*}{\textbf{Gamme}} & \multirow{2}{*}{\textbf{Tranche $PM_k$}} &
-    \multicolumn{3}{c}{\textbf{Probabilités $P(TFGSE, TAF|PM_k)$}} \\
-  & & $(0{,}5\%,90\%)$ & $(0{,}7\%,90\%)$ & $(0{,}9\%,80\%)$ \\
-  \hline
-  Mass Market & $PM_k \leq 50k€$ & 0,20 & 0,40 & 0,40 \\
-  Patrimonial & $50k€ < PM_k \leq 500k€$ & 0,40 & 0,40 & 0,20 \\
-  Gestion Privée & $PM_k > 500k€$ & 0,60 & 0,30 & 0,10 \\
-  \hline
+    \multicolumn{3}{c}{\textbf{Probabilités $\mathbb{P}(TFGSE, TAF \mid PM_k)$}} \\
+  & & $(0{,}60\,\%,\ 95\,\%)$ & $(0{,}70\,\%,\ 90\,\%)$ & $(0{,}85\,\%,\ 85\,\%)$ \\
+  \midrule
+  Standard & $PM_k \leq 200$\,k\euro & 0,10 & 0,30 & 0,60 \\
+  Patrimonial & $200$\,k\euro $< PM_k \leq 500$\,k\euro & 0,30 & 0,50 & 0,20 \\
+  Gestion privée & $PM_k > 500$\,k\euro & 0,70 & 0,25 & 0,05 \\
+  \bottomrule
 \end{tabular}
 \end{table}
 
-Le TMG reste fonction de l'année $t$ uniquement ($TMG_t$ de la table~\ref{tab:TMG_historique}),
-mais la pondération des générations anciennes (TMG élevés) sera naturellement plus forte dans les
-tranches Gestion Privée, car ces contrats ont eu plus de temps pour accumuler des provisions élevées.
+Le $TMG$ reste fonction de l'année $t$ uniquement ($TMG_t$ de la table~\ref{tab:TMG_historique}). Toutefois, la pondération des générations anciennes (aux $TMG$ plus élevés) s'avère naturellement plus forte dans les tranches de gestion privée, l'accumulation des provisions nécessitant mécaniquement une antériorité plus longue du contrat.
 
 \subsubsection*{Algorithme de génération mis à jour}
 
-L'algorithme de génération de portefeuille devient :
+L'algorithme de génération du portefeuille s'établit de la façon suivante :
 \begin{enumerate}
-  \item Tirer l'année de souscription $t \in [1993,2024]$ selon la structure d'âge du portefeuille ;
-  \item Tirer la provision mathématique $PM_k$ (loi lognormale typique des encours assurance vie) ;
-  \item Identifier la tranche de $PM_k$ et tirer le couple $(TFGSE, TAF)$ selon la table~\ref{tab:TFGSE_TAF_PM} ;
-  \item Assigner $TMG_t$ selon la table historique ;
-  \item Calculer le TMG net : $TMG_t^{net} = \max(TM G_t - TFGSE, 0)$.
+  \item Tirage de l'année de souscription $t \in [1993,2024]$ selon la structure d'âge du portefeuille ;
+  \item Tirage de la provision mathématique $PM_k$ (loi log-normale typique des encours d'assurance vie) ;
+  \item Identification de la tranche de $PM_k$ et affectation du couple $(TFGSE, TAF)$ selon la table~\ref{tab:TFGSE_TAF_PM} ;
+  \item Assignation du $TMG_t$ selon la table historique .
 \end{enumerate}
 
 \subsubsection*{Vérification de cohérence avec les données agrégées}
 
 Cette structure assure plusieurs cohérences observables :
 \begin{itemize}
-  \item \textbf{TFGSE moyen} : la moyenne pondérée par les tranches de $PM_k$ retombe autour de
-        0,65--0,70\,\%, cohérent avec France Assureurs (fonds euros : 0,66\,\%) \cite{faUC2024}.
-  \item \textbf{TMG moyen} : les contrats anciens (TMG $>$ 2\,\%) sont naturellement plus présents
-        dans les tranches à gros $PM_k$, ce qui est cohérent avec le taux technique moyen actuel
-        du portefeuille (0,35--0,5\,\%) rapporté par l'ACPR \cite{acprTauxBas}.
-  \item \textbf{Relation frais-rendement} : les gros contrats (GP) ont à la fois des frais plus bas
-        et un TAF plus élevé, reproduisant le différentiel de performance observé entre gammes.
+  \item \textbf{TFGSE moyen} : la moyenne pondérée par les tranches de $PM_k$ retombe autour de $0{,}65\,\%$ à $0{,}70\,\%$, ce qui est cohérent avec les données de France Assureurs (fonds euros : $0{,}66\,\%$) \cite{faUC2024}.
+  \item \textbf{TMG moyen} : les contrats anciens ($TMG > 2\,\%$) se trouvent naturellement plus représentés dans les tranches à forte $PM_k$. Cette mécanique permet d'obtenir un taux technique moyen sur le portefeuille simulé compris entre $0{,}35\,\%$ et $0{,}50\,\%$, un niveau parfaitement conforme aux moyennes successives rapportées par l'ACPR (de $0{,}51\,\%$ en 2015 à environ $0{,}35\,\%$ sur la période récente) \cite{acprTauxBas, acprRevalo2024}.
+  \item \textbf{Relation frais-rendement} : les contrats de gestion privée présentent à la fois des frais plus bas et un $TAF$ plus élevé, reproduisant le différentiel de performance observé entre les gammes.
 \end{itemize}
 
-Cette approche par corrélation avec la provision mathématique permet ainsi de générer un
-portefeuille synthétique dont les caractéristiques microéconomiques (par contrat) sont
-cohérentes avec les statistiques macroéconomiques publiées, tout en conservant une structure
-parfaitement discrète et donc compatible avec l'agrégation ALM.
+Cette approche par corrélation avec la provision mathématique permet ainsi de générer un portefeuille synthétique dont les caractéristiques microéconomiques (par contrat) s'avèrent cohérentes avec les statistiques macroéconomiques publiées, tout en conservant une structure parfaitement discrète et donc compatible avec l'agrégation ALM.
 
 \subsubsection{Modélisation de l'allocation entre fonds en euros et unités de compte}
 
 La répartition de la Provision Mathématique (PM) entre le fonds en euros et les supports en unités de compte (UC) est une caractéristique essentielle pour modéliser un portefeuille d'assurance vie et pour mener à bien les analyses de sensibilités financières dans la suite de ce mémoire. 
 
-Cependant, les données publiques fournissent principalement des statistiques agrégées (part moyenne des UC autour de 40\,\% \textcolor{blue}{citer des trucs} sur les cotisations récentes, profils de risque types) et ne donnent pas accès à la répartition économique spécifique contrat par contrat. En l'absence de données individuelles permettant d'estimer un modèle statistique classique, une approche paramétrique a été retenue, calibrée pour reproduire les faits principaux observés sur le marché.
+Cependant, les données publiques fournissent principalement des statistiques agrégées. À titre d'exemple, la part des UC dans la collecte s'établit historiquement autour de 40\,\% sur le marché français \cite{france_assureurs, faUC2024}. Si ces publications renseignent sur les profils de risque types, elles ne donnent en revanche aucun accès à la répartition économique spécifique contrat par contrat. En l'absence de données individuelles permettant d'estimer un modèle statistique classique, une approche paramétrique a donc été retenue, calibrée pour reproduire fidèlement ces grands équilibres observés sur le marché.
 
 \subsubsection*{Spécification du modèle d'allocation}
 
-L'objectif est de modéliser la proportion $p_{\text{UC},i} \in (0,1)$ de la PM investie en unités de compte pour chaque contrat $i$. Le modèle repose sur un prédicteur linéaire $\eta_i$ combinant les caractéristiques du contrat et de l'assuré :
+L'objectif est de modéliser la proportion $p_{\text{UC},i} \in (0,1)$ de la Provision Mathématique investie en unités de compte pour chaque contrat $i$. Dans le cadre de cette approche paramétrique, ce modèle repose sur un prédicteur linéaire $\eta_i$ combinant les caractéristiques du contrat et de l'assuré.
+
+Le choix des variables explicatives retenues s'appuie sur les deux principaux facteurs comportementaux d'un contrat d'assurance vie :
+\begin{itemize}
+    \item \textbf{L'âge de l'assuré ($\text{Age}_i$)} : L'aversion au risque s'accentue généralement avec l'âge, les épargnants privilégiant la sécurisation de leur capital sur le fonds en euros à l'approche de la retraite.
+    \item \textbf{Le volume de l'épargne ($\log(\text{PM}_i)$)} : Il traduit un \og effet richesse \fg{}. Les encours les plus importants présentent souvent une part d'UC plus élevée, traduisant une recherche de diversification et une meilleure capacité à absorber la volatilité. L'utilisation du logarithme s'avère indispensable pour atténuer la forte asymétrie de la distribution des encours et linéariser cet effet.
+\end{itemize}
+
+Par souci de parcimonie, il a été décidé de faire une modélisation restreinte à deux variables explicatives\footnote{L'intégration initiale de l'ancienneté du contrat a été écartée suite aux premiers tests de calibration. Le coefficient obtenu s'avérant proche de zéro et de signe contraire aux attentes, cette variable présentait une trop forte colinéarité avec l'âge de l'assuré. Les détails de cette première calibration sont présentés en Annexe \ref{annexe:anciennete}.}. La combinaison linéaire de ces effets se traduit par l'équation suivante :
 \begin{equation}
-  \eta_i = \beta_0 + \beta_{\text{age}} \, \text{Age}_i + \beta_{\text{pm}} \, \log(\text{PM}_i) + \beta_{\text{anc}} \, \text{Anciennete}_i
+    \eta_i = \beta_0 + \beta_{\text{age}} \, \text{Age}_i + \beta_{\text{pm}} \, \log(\text{PM}_i)
 \end{equation}
-Pour garantir que cette part reste strictement comprise entre 0 et 1, une spécification de type \textit{Logit} \footnote{Le logit est une fonction de transformation qui mappe n'importe quel réel vers un intervalle $(0,1)$, utilisée ici pour modéliser une proportion} a été implémentée. La part investie en unités de compte est obtenue par la transformation logistique :
+
+\newpage
+
+Afin de garantir que la proportion modélisée reste strictement bornée entre 0 et 1, une spécification de type \textit{Logit}\footnote{Le modèle Logit s'appuie sur une fonction de transformation projetant l'ensemble des réels vers l'intervalle $(0,1)$. Il s'agit d'un standard actuariel pour la modélisation des proportions et des probabilités.} a été implémentée. La part investie en unités de compte est ainsi obtenue par la transformation logistique :
 \begin{equation}
-  p_{\text{UC},i} = \frac{1}{1 + \exp(-\eta_i)}
+    p_{\text{UC},i} = \frac{1}{1 + \exp(-\eta_i)}
 \end{equation}
-La part investie en fonds euros s'en déduit naturellement par $p_{\text{Euro},i} = 1 - p_{\text{UC},i}$.
+La part investie en fonds en euros s'en déduit naturellement par la relation $p_{\text{Euro},i} = 1 - p_{\text{UC},i}$.
 
 \subsubsection*{Hypothèses économiques et calibration}
 
-Faute de données pour une estimation par maximum de vraisemblance, les coefficients ont été calibrés par une méthode de \textit{matching de moments} \footnote{La méthode de matching des moments (ou méthode des moments) consiste à égaliser les moments théoriques d'une distribution (moyenne, variance, etc.) avec leurs équivalents observés dans les données réelles ou des cibles de marché. Dans notre cas, nous cherchons les paramètres qui permettent de retrouver la part globale d'UC du marché et les comportements par profils types.}. Cette technique d'optimisation a consisté à ajuster les $\beta_j$ pour que le portefeuille simulé atteigne une cible globale de marché (fixée à 40\,\% d'UC) tout en respectant des points de contrôle locaux (reproduction de profils "prudent", "équilibré" et "dynamique" pour des assurés types). Les profils de contrôle utilisés sont détaillés dans le Tableau \ref{tab:profils_calibration} :
+Faute de données individuelles complètes permettant une estimation par maximum de vraisemblance, les coefficients ont été calibrés par une méthode de \textit{matching de moments}\footnote{La méthode de matching de moments consiste à égaliser les moments théoriques d'une distribution avec leurs équivalents observés ou ciblés. Dans notre cas, il s'agit de trouver les paramètres permettant de reproduire la moyenne globale du marché et des points de passage locaux.}. Cette technique d'optimisation a consisté à ajuster les coefficients $\beta$ pour que le portefeuille simulé atteigne la cible macroéconomique globale (établie à 40\,\% d'UC), tout en forçant le modèle à respecter des points de contrôle locaux.
+
+En l'absence de base de données publique croisant l'âge et la part d'UC contrat par contrat, ces points de contrôle ont été définis \textbf{à dire d'expert}. Ils représentent des profils types d'assurés construits pour refléter les standards de la gestion de patrimoine et les politiques commerciales actuelles des assureurs français :
+\begin{itemize}
+    \item Les jeunes assurés, disposant d'un horizon de placement long, sont orientés vers des profils \og dynamiques \fg{} (forte part d'UC).
+    \item À l'inverse, les assurés d'âge avancé s'inscrivent dans une logique de \og sécurisation \fg{} du capital en vue de la transmission, ce qui se traduit par une prédominance écrasante du fonds en euros.
+\end{itemize}
+
+Ces profils de contrôle, qui ont servi de points d'ancrage pour l'algorithme d'optimisation, sont détaillés dans le Tableau \ref{tab:profils_calibration} :
 
 \begin{table}[H]
     \centering
-    \caption{Profils types utilisés pour la calibration des coefficients}
+    \caption{Profils types (à dire d'expert) utilisés pour la calibration du modèle}
     \label{tab:profils_calibration}
-    \begin{tabular}{ccccc}
+    \begin{tabular}{cccc}
         \toprule
-        Profil & Âge (ans) & PM (k€) & Ancienneté (ans) & Part UC Cible (\%) \\
+        Profil & Âge (ans) & PM (k€) & Part UC Cible (\%) \\
         \midrule
-        1 (Dynamique) & 30 & 10 & 2 & 60 \\
-        2 (Équilibré+) & 45 & 150 & 10 & 50 \\
-        3 (Prudent) & 70 & 50 & 20 & 25 \\
-        4 (Sécurisation) & 85 & 200 & 30 & 15 \\
+        1 (Dynamique) & 30 & 10 & 60 \\
+        2 (Équilibré+) & 45 & 150 & 50 \\
+        3 (Prudent) & 70 & 50 & 25 \\
+        4 (Sécurisation) & 85 & 200 & 15 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Après calibration, les coefficients obtenus pour ce modèle sont les suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$, $\beta_{\text{pm}} = 0.0746$ et $\beta_{\text{anc}} = 0.0008$. La part moyenne d'UC obtenue sur le portefeuille généré est de 39.98\,\%, confirmant l'atteinte de l'objectif global.
+\textcolor{blue}{METTRE A JOURS LES VALEURS ET REFAIRE TOURNER SANS L'ANCIENNETE}
+Après calibration, les coefficients obtenus pour ce modèle sont les suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$ et $\beta_{\text{pm}} = 0.0746$. La part moyenne d'UC obtenue sur le portefeuille généré est de 39.98\,\%, confirmant la parfaite atteinte de l'objectif global.
 
-Les paramètres $\beta_j$ du modèle ont été contraints pour refléter les comportements d'investissement types (faits stylisés) :
+Les paramètres $\beta_j$ du modèle reflètent rigoureusement les faits stylisés attendus :
 \begin{itemize}
-    \item \textbf{Aversion au risque et âge ($\beta_{\text{age}} = -0.0424$)} : Comme attendu, la part d'UC a tendance à décroître avec l'âge de l'assuré, traduisant une volonté de sécurisation progressive du patrimoine à l'approche ou pendant la retraite.
-    \item \textbf{Capacité d'absorption du risque et richesse ($\beta_{\text{pm}} = 0.0746$)} : Conformément aux observations de marché, les encours les plus importants sont associés à une plus forte diversification, augmentant mécaniquement la part d'UC.
-    \item \textbf{Effet générationnel ($\beta_{\text{anc}} = 0.0008$)} : Bien qu'une valeur négative fût attendue (les contrats les plus anciens historiquement favorisant les supports en euros), le coefficient calibré est légèrement positif.
+    \item \textbf{Aversion au risque et âge ($\beta_{\text{age}} = -0.0424$)} : Comme attendu (signe négatif), la part d'UC décroît avec l'âge de l'assuré, traduisant la volonté de sécurisation progressive du patrimoine.
+    \item \textbf{Capacité d'absorption du risque et richesse ($\beta_{\text{pm}} = 0.0746$)} : Conformément aux observations de marché (signe positif), les encours les plus importants sont associés à une plus forte diversification, augmentant mécaniquement la part d'UC.
 \end{itemize}
 
-L'effet du sexe de l'assuré n'ayant pas été documenté de manière significative par les études de marché, il n'a pas été retenu comme variable explicative dans cette calibration. 
-
-\subsubsection*{Limites de l'approche}
-
-Alors que l'hypothèse qualitative initiale prévoyait un effet négatif de l'ancienneté sur la part d'Unités de Compte ($\beta_{\text{anc}} \leq 0$), le processus de calibration par 'moment matching', guidé par les profils types et l'objectif de part moyenne globale d'UC, a abouti à un coefficient $\beta_{\text{anc}}$ légèrement positif (0.0008). Cette observation suggère que, dans le cadre des profils choisis et de la pondération des contraintes, l'effet de l'ancienneté sur l'allocation en UC est soit très faible, soit nuancé par d'autres dynamiques comportementales capturées par l'âge et la provision mathématique.
-
-Bien que cette spécification logistique soit une simplification de la réalité, elle fournit une décomposition cohérente et exploitable de la provision mathématique pour chaque assuré simulé. Cette méthode, bien que simplifiée, permettra de travailler sur des profils de contrat différenciés en termes d'allocation, ce qui est essentiel pour les analyses de sensibilité financière à venir.
-
+Bien que cette spécification logistique paramétrique constitue une simplification de la réalité, elle fournit une décomposition macro-économiquement cohérente de la provision mathématique pour chaque assuré simulé. Cette méthode permet ainsi de doter le portefeuille synthétique de profils d'allocation réalistes et différenciés, une condition \textit{sine qua non} pour garantir la pertinence des analyses de sensibilités financières menées dans la suite de ce mémoire.
 
 \subsubsection{Ajout du sexe pour finaliser le portefeuille}
 
-Pour finaliser le portefeuille, le sexe est une variable important à modéliser. Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés. En France, les données de l'INSEE indiquent que la répartition est légèrement en faveur des femmes, avec environ 52\,\% de femmes et 48\,\% d'hommes parmi les assurés en assurance vie \cite{insee_assurance_vie}. Cette répartition est donc utilisée pour générer le sexe de chaque individu du portefeuille synthétique, en tirant une variable binaire où $P(Sexe = Femme) = 0.52$ et $P(Sexe = Homme) = 0.48$.
+Pour finaliser le portefeuille, le sexe est une variable important à modéliser. Il est généré aléatoirement selon une loi de Bernoulli, calibrée sur la répartition hommes/femmes observée dans la population des assurés. En France, les données de l'INSEE indiquent que la répartition est légèrement en faveur des femmes, avec environ 52\,\% de femmes et 48\,\% d'hommes parmi les assurés en assurance vie \cite{repartition_hommes_femmes}. Cette répartition est donc utilisée pour générer le sexe de chaque individu du portefeuille synthétique, en tirant une variable binaire où $P(Sexe = Femme) = 0.52$ et $P(Sexe = Homme) = 0.48$.
 
 Ce processus itératif permet de générer un portefeuille synthétique de 1 000 000 contrats présentant des caractéristiques statistiques fidèles à la réalité du marché français, prêt à être utilisé pour les étapes d'agrégation.
 
@@ -567,14 +561,14 @@ Une fois l'âge et la date de souscription fixés via la copule bivariée, le re
 \begin{enumerate}
     \item \textbf{Génération du Patrimoine Global :} Pour l'âge de l'assuré, un montant de patrimoine brut est tiré aléatoirement dans la loi Lognormale spécifique à sa tranche d'âge.
     \item \textbf{Test de Détention et Calcul de la PM :} Une épreuve de Bernoulli détermine la détention d'une assurance vie. Pour les détenteurs, la PM est calculée par application du ratio financier cible (40\,\% du patrimoine financier).
-    \item \textbf{Assignation de la gamme et des paramètres financiers :} En fonction de la PM générée, le contrat est classé dans un segment (Mass Market, Patrimonial, Gestion Privée). Les taux de frais (TFGSE) et d'affectation (TAF) sont ensuite tirés selon la loi conditionnelle définie au tableau \ref{tab:TFGSE_TAF_PM}. Le TMG est lui déduit de l'année de souscription.
+    \item \textbf{Assignation de la gamme et des paramètres financiers :} En fonction de la PM générée, le contrat est classé dans un segment (Mass Market, Patrimonial, Gestion privée). Les taux de frais (TFGSE) et d'affectation (TAF) sont ensuite tirés selon la loi conditionnelle définie au tableau \ref{tab:TFGSE_TAF_PM}. Le TMG est lui déduit de l'année de souscription.
     \item \textbf{Allocation Euro/UC :} À l'aide du modèle Logit calibré sur l'âge, l'ancienneté et la PM, la part investie en unités de compte est déterminée.
     \item \textbf{Finalisation :} Le sexe de l'assuré est généré aléatoirement (52\,\% de femmes).
 \end{enumerate}
 
 Cette séquence garantit que chaque ligne du portefeuille d'un million de contrats présente une cohérence interne parfaite, liant l'histoire de l'assuré (âge, date d'entrée) à sa richesse (PM) et aux caractéristiques de son produit (Frais, TMG, UC).
 
-\subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris}
+\subsection{Mise en correspondance avec le format final du modèle ALM et Partis Pris \textcolor{blue}{Partie à supprimer et présenter au fur et à mesure les stats du pf ? Présenter l'alloc d'actif utilisée à un moment peut être}}
 
 Une fois les caractéristiques individuelles ou agrégées des contrats générées (âge, ancienneté, provision mathématique, taux techniques), il est impératif de formater ces données brutes pour les rendre intelligibles par le modèle ALM.
 
@@ -601,16 +595,20 @@ L'ensemble de ces règles de transposition garantit que le portefeuille synthét
 
 \section{Présentation du portefeuille de référence généré}
 
+\textcolor{blue}{Ajouter des graphs, camenberts etc}
 \subsection{Analyse descriptive du portefeuille de référence}
 
 L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique de $1\,000\,000$ de contrats. L'analyse de ses caractéristiques servira à évaluer la pertinence des hypothèses utilisée et aidera à évaluer le profil de risque spécifique de ce portefeuille.
 
 \subsubsection*{Volumétrie et structure des encours}
-Le portefeuille généré représente une Provision Mathématique (PM) totale de $222,09$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
+
+\textcolor{blue}{rajouter le taf moyen}
+
+Le portefeuille généré représente une Provision Mathématique (PM) totale de $220,09$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
 \begin{itemize}
-    \item La gamme \textbf{Mass Market} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité des volumes avec 57,05\% des contrats, mais concentre seulement 4,22\% des encours totaux, avec une PM moyenne par contrat de $16\,366\,\text{\euro}$.
-    \item Le segment \textbf{Patrimonial} ($50\,k\text{\euro} < \text{PM} \leq 500\,k\text{\euro}$) regroupe 35,02\% des contrats pour 26,67\% des encours, affichant une PM moyenne de $168\,962\,\text{\euro}$.
-    \item À l'inverse, la \textbf{Gestion Privée} ($\text{PM} > 500\,k\text{\euro}$) ne concerne que 7,93\% des polices mais centralise 69,11\% des engagements (PM), avec une PM moyenne s'élevant à $1,94$ million d'euros.
+    \item La gamme \textbf{standard} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité des volumes avec 57,05\% des contrats, mais concentre seulement 4,22\% des encours totaux, avec une PM moyenne par contrat de $16\,366\,\text{\euro}$.
+    \item Le segment \textbf{patrimonial} ($50\,k\text{\euro} < \text{PM} \leq 500\,k\text{\euro}$) regroupe 35,02\% des contrats pour 26,67\% des encours, affichant une PM moyenne de $168\,962\,\text{\euro}$.
+    \item À l'inverse, la \textbf{gestion privée} ($\text{PM} > 500\,k\text{\euro}$) ne concerne que 7,93\% des polices mais centralise 69,11\% des engagements (PM), avec une PM moyenne s'élevant à $1,94$ million d'euros.
 \end{itemize}
 Cette concentration, mettant en évidence un effet de Pareto \footnote{L'effet de Pareto, ou règle des 80/20, appliqué ici à l'assurance-vie, illustre qu'une faible proportion de contrats (les plus gros patrimoines) représente la grande majorité des encours sous gestion
 }, tire la PM moyenne par contrat à un niveau relativement élevé de $222\,093\,\text{\euro}$. En comparaison avec la moyenne nationale française, estimée autour de $50\,000\,\text{\euro}$ par contrat, ce portefeuille synthétique présente un profil "haut de gamme" fortement orienté vers la gestion de patrimoine.
@@ -658,11 +656,11 @@ L'âge moyen des assurés s'établit à $53,1$ ans, une valeur cohérente avec l
 \end{figure}
 
 \subsubsection*{Caractéristiques financières}
-La calibration des variables financières a porté ses fruits :
+L'analyse des caractéristiques financières du portefeuille simulé confirme la pertinence et la cohérence de la calibration :
 \begin{itemize}
-    \item \textbf{L'allocation d'actifs :} La part globale investie en Unités de Compte (UC) atteint $44,12\,\%$. Ce ratio, supérieur à la cible de calibration initiale (40\%), s'explique précisément par le poids massif de la Gestion Privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
-    \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,88\,\%$. Ce niveau est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
-    \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,67\,\%$, en parfaite adéquation avec la moyenne du marché.
+    \item \textbf{Répartition Euro/UC :} La part globale investie en UC atteint $44,12\,\%$. Ce ratio, légèrement supérieur à la cible de calibration initiale, s'explique précisément par le poids massif de la gamme de gestion privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
+    \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,88\,\%$. Ce niveau, qui peut paraître élevé dans le contexte de taux de la dernière décennie, est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
+    \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,67\,\%$, en parfaite adéquation avec la moyenne du marché pour des portefeuilles mixtes.
 \end{itemize}
 
 \begin{figure}[H]
@@ -684,6 +682,7 @@ La calibration des variables financières a porté ses fruits :
 
 \subsection{Limitations du portefeuille généré}
 
+\textcolor{blue}{Lucas pas fan de mettre des limites ici}
 Bien que le générateur produise une base de données robuste et exploitable pour des projections ALM, la méthodologie stochastique employée présente certaines limites qu'il convient d'expliciter pour nuancer les futures analyses de sensibilités.
 
 \subsubsection*{Un effet de "sur-représentation patrimoniale"}
@@ -695,4 +694,4 @@ L'ancienneté moyenne frôlant les 20 ans résulte de la dérivation de l'âge �
 \subsubsection*{L'absence de dynamiques spécifiques à un assureur et de garanties complexes}
 Enfin, le portefeuille est généré de manière homogène sur la base de moyennes de place. Il ne capture pas l'histoire propre à une compagnie spécifique (par exemple, le lancement d'un produit phare ayant drainé 30\,\% de la collecte en 2012, ou la présence de clauses spécifiques comme des garanties plancher en cas de décès). De plus, la modélisation ne distingue pas les contrats alimentés par primes uniques de ceux alimentés par versements libres ou programmés, dont les comportements de rachat diffèrent significativement.
 
-
+Si ce portefeuille granulaire constitue une base d'étude robuste, sa taille rend son intégration directe dans un modèle ALM stochastique impossible en pratique. C'est pour surmonter cette barrière technique que le chapitre suivant introduira les algorithmes d'agrégation et la construction des \textit{Model Points}.

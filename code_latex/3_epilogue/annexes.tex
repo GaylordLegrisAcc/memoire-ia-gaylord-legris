@@ -70,3 +70,15 @@
     \hline
   \end{tabular}
 \end{table}
+
+\subsection*{Calibration initiale du modèle d'allocation (Inclusion de l'ancienneté)}
+\phantomsection\label{annexe:anciennete}
+
+Lors de la phase de spécification du modèle Logit visant à répartir la Provision Mathématique entre le fonds en euros et les unités de compte, une troisième variable explicative avait été initialement retenue : l'ancienneté du contrat ($\text{Anciennete}_i$). L'objectif était de capter un effet générationnel, l'hypothèse économique sous-jacente étant que les contrats les plus anciens (souscrits dans un contexte de taux garantis élevés) étaient structurellement plus orientés vers le fonds en euros. Le prédicteur linéaire s'écrivait alors :
+\begin{equation*}
+    \eta_i = \beta_0 + \beta_{\text{age}} \, \text{Age}_i + \beta_{\text{pm}} \, \log(\text{PM}_i) + \beta_{\text{anc}} \, \text{Anciennete}_i
+\end{equation*}
+
+Cependant, la calibration par \textit{matching de moments} sur les profils de contrôle a abouti aux coefficients suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$, $\beta_{\text{pm}} = 0.0746$ et $\beta_{\text{anc}} = 0.0008$.
+
+Outre sa valeur quasi nulle traduisant un pouvoir explicatif marginal, le signe positif du coefficient $\beta_{\text{anc}}$ contredisait l'intuition économique de départ. Ce résultat s'explique par une forte colinéarité entre l'âge de l'assuré et l'ancienneté de son contrat. L'algorithme d'optimisation a par conséquent transféré l'essentiel du poids explicatif sur la variable d'âge, rendant l'ancienneté redondante. Par souci de robustesse et pour éviter tout sur-paramétrage (\textit{overfitting}), cette variable a donc été retirée du modèle final présenté dans le corps du mémoire.

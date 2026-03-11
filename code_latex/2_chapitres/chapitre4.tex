@@ -115,5 +115,12 @@ Plusieurs enseignements majeurs découlent de ces résultats :
 \end{enumerate}
 
 \subsection{Justification du choix de la méthode retenue}
+\section{A faire}
+Ce chapitre contiendra la méthodologie utilisée pour comparer les différentes méthodes d'agrégation. Notre critère de sélection sera la capicité à réduire le nombre de model point X limiter l'écart sur les BE centraux et choqués (cad les SCR). Pour comparer les résultats, on va prendre comme base de reference le portefeuille aggrégé avec la méthode standard par caractérique pure. En théorie, cette méthode ne génère aucun écart ni biais de regroupement sur le BE passif seul. Ce qui est vérifié. Pour la suite ce sera alors la base de comparaison car plus simple à éxecuter et plus rapide que le portefeuille full. Ensuite on va calibrer tous les modèles qui doivent être calibrer et montrer comment la calibration joue un rôle crucial pour réduire les biais de regroupement. Enfin on va présenter une matrice de résultats avec les différentes méthodes et différentes configurations (nombre de model point, critères d'agrégation, etc) et montrer que la méthode retenue est celle qui offre le meilleur compromis entre précision et taux de compression. ce qui fera plusieurs parties. donc dans l'ordre 
+1 - Présentation du protocole de test comparatif (portefeuille de référence, critères de sélection, etc)
+2 - calibration des méthodes qui nécessitent une calibration et démonstration de l'impact de la calibration sur la réduction du biais de regroupement
+3 - Présentation de la matrice de résultats (passif seul, passif seul choqué, alm central puis alm sto choqués) et justification du choix de la méthode retenue
+
+
 
 Au terme de cette analyse, la méthode \textbf{Calibration a posteriori (Biais Zéro)} est retenue pour la suite de ce mémoire. Elle offre le niveau de précision requis pour des analyses de sensibilité fines, garantissant que les variations de Best Estimate mesurées seront exclusivement dues aux chocs appliqués et non à un bruit de regroupement résiduel.
