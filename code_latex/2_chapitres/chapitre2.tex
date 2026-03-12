@@ -595,103 +595,112 @@ L'ensemble de ces règles de transposition garantit que le portefeuille synthét
 
 \section{Présentation du portefeuille de référence généré}
 
-\textcolor{blue}{Ajouter des graphs, camenberts etc}
-\subsection{Analyse descriptive du portefeuille de référence}
+\subsection{Analyse descriptive et évaluation critique du passif}
 
-L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique de $1\,000\,000$ de contrats. L'analyse de ses caractéristiques servira à évaluer la pertinence des hypothèses utilisée et aidera à évaluer le profil de risque spécifique de ce portefeuille.
+L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique d'un million de contrats, représentant un encours total de $222,09$ milliards d'euros. L'analyse détaillée de ses caractéristiques est une étape préalable indispensable. Elle permet non seulement de valider la cohérence des hypothèses de modélisation, mais surtout d'identifier les zones de risques (concentration, liquidité) qui émergent alors de ce portefeuille.
 
-\subsubsection*{Volumétrie et structure des encours}
+\subsubsection{Volumétrie, asymétrie extrême et limites de modélisation}
 
-\textcolor{blue}{rajouter le taf moyen}
-
-Le portefeuille généré représente une Provision Mathématique (PM) totale de $220,09$ milliards d'euros. L'analyse de la répartition de cette richesse révèle une forte asymétrie, caractéristique des portefeuilles d'assurance vie modernes :
-\begin{itemize}
-    \item La gamme \textbf{standard} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité des volumes avec 57,05\% des contrats, mais concentre seulement 4,22\% des encours totaux, avec une PM moyenne par contrat de $16\,366\,\text{\euro}$.
-    \item Le segment \textbf{patrimonial} ($50\,k\text{\euro} < \text{PM} \leq 500\,k\text{\euro}$) regroupe 35,02\% des contrats pour 26,67\% des encours, affichant une PM moyenne de $168\,962\,\text{\euro}$.
-    \item À l'inverse, la \textbf{gestion privée} ($\text{PM} > 500\,k\text{\euro}$) ne concerne que 7,93\% des polices mais centralise 69,11\% des engagements (PM), avec une PM moyenne s'élevant à $1,94$ million d'euros.
-\end{itemize}
-Cette concentration, mettant en évidence un effet de Pareto \footnote{L'effet de Pareto, ou règle des 80/20, appliqué ici à l'assurance-vie, illustre qu'une faible proportion de contrats (les plus gros patrimoines) représente la grande majorité des encours sous gestion
-}, tire la PM moyenne par contrat à un niveau relativement élevé de $222\,093\,\text{\euro}$. En comparaison avec la moyenne nationale française, estimée autour de $50\,000\,\text{\euro}$ par contrat, ce portefeuille synthétique présente un profil "haut de gamme" fortement orienté vers la gestion de patrimoine.
+La caractéristique la plus marquante de ce portefeuille est la surreprésentation des contrats avec des gros encours (supérieurs à $500\,k\text{\euro}$). L'analyse par gamme commerciale révèle une véritable asymétrie :
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/repartition_pm_gamme.png}
-        \caption{Répartition des encours (PM) par gamme.}
-        \label{fig:repartition_pm_gamme}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/pm_moyenne_gamme.png}
-        \caption{Provision Mathématique moyenne par gamme commerciale.}
-        \label{fig:pm_moyenne_gamme}
-    \end{minipage}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/pm_totale_gamme.png}
+    \caption{Répartition des encours totaux par Gamme commerciale.}
+    \label{fig:pm_totale_gamme}
 \end{figure}
 
-\subsubsection*{Focus sur les segments Mass Market et Patrimonial}
-Afin de mieux comprendre la dynamique du portefeuille hors "très gros" contrats, une analyse du bloc regroupant le Mass Market et le segment Patrimonial a été effectuée. Ce bloc représente 92,07\% des contrats du portefeuille mais seulement 30,84\% des encours totaux (€68,49 milliards). 
-
-La PM moyenne de ce groupe élargi est de $74\,392\,\text{\euro}$, avec un âge moyen de $52,9$ ans et une part d'Unités de Compte de $40,55\%$, soit un profil plus proche des moyennes nationales que le segment de Gestion Privée (dont la part d'UC culmine à $45,72\%$).
-
-\subsubsection*{Profil démographique et ancienneté}
-L'âge moyen des assurés s'établit à $53,1$ ans, une valeur cohérente avec la structure des détenteurs d'assurance vie en France. L'ancienneté moyenne des contrats est quant à elle de $19,8$ ans, témoignant d'un portefeuille mature et fortement ancré dans le temps.
+Le segment \og Standard \fg{} ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité absolue des polices (57\,\%), mais ne pèse que pour 4,2\,\% des encours totaux. À l'inverse, la clientèle de \og Gestion Privée \fg{} ($\text{PM} > 500\,k\text{\euro}$) ne rassemble que 7,9\,\% des assurés mais capte plus de 69\,\% de la Provision Mathématique globale, avec une moyenne avoisinant 1,93 million d'euros par contrat. Ce qui est une concentration extrême pour un portefeuille d'assurance vie classique.
+\newpage
+Cette concentration est formellement quantifiée par la courbe de Lorenz \footnote{La courbe de Lorenz est un outil graphique utilisé principalement pour représenter la répartition de la richesse (ici des encours dans un portefeuille).} :
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/dist_age.png}
-        \caption{Distribution des âges des assurés.}
-        \label{fig:dist_age}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/dist_anciennete.png}
-        \caption{Distribution de l'ancienneté des contrats.}
-        \label{fig:dist_anciennete}
-    \end{minipage}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre3/lorenz_pm.png}
+    \caption{Courbe de Lorenz de la Provision Mathématique et Indice de Gini.}
+    \label{fig:lorenz_pm}
 \end{figure}
 
-\subsubsection*{Caractéristiques financières}
-L'analyse des caractéristiques financières du portefeuille simulé confirme la pertinence et la cohérence de la calibration :
-\begin{itemize}
-    \item \textbf{Répartition Euro/UC :} La part globale investie en UC atteint $44,12\,\%$. Ce ratio, légèrement supérieur à la cible de calibration initiale, s'explique précisément par le poids massif de la gamme de gestion privée dans les encours (segment structurellement plus investi en UC grâce au modèle Logit).
-    \item \textbf{Le Taux Minimum Garanti (TMG) :} Le TMG moyen, pondéré par la PM, s'élève à $1,88\,\%$. Ce niveau, qui peut paraître élevé dans le contexte de taux de la dernière décennie, est la conséquence directe de la forte ancienneté moyenne du portefeuille (générations antérieures à 2005 bénéficiant de taux techniques généreux).
-    \item \textbf{Les frais :} Le taux de frais de gestion sur encours (TFGSE) moyen pondéré ressort à $0,67\,\%$, en parfaite adéquation avec la moyenne du marché pour des portefeuilles mixtes.
-\end{itemize}
+Avec un indice de Gini  \footnote{L'indice de Gini est une mesure de l'inégalité de répartition, variant entre 0 (égalité parfaite) et 1 (inégalité maximale).} s'élevant à $0,820$, le portefeuille présente une inégalité de répartition extrême. A titre de comparaison, en France, les inégalités de niveau de vie avaient un indice de Gini de $0.298$ en 2018 \cite{gini}. D'un point de vue critique, ce phénomène illustre une limite inhérente aux hypothèses de génération utilisées. Le modèle postule que la Provision Mathématique découle d'une règle proportionnelle stricte : 
+
+\begin{equation}
+    \text{PM} = \text{Patrimoine Brut} \times \text{Part Financière} \times 40\,\%
+\end{equation}    
+
+Si cette formule est pertinente pour les segments grand public et patrimoniaux, elle devient obsolète pour les \og ultra-riches \fg{} (queues de distribution de la loi log-normale), qui diversifient massivement leurs investissements (immobilier d'entreprise, \textit{private equity}) et ne logent pas mécaniquement 40\,\% de leur richesse sur un contrat d'assurance vie.
+
+Malgré ce biais, cette asymétrique constitue un bon cas d'usage de \textit{stress-test} pour l'agrégation. En effet, S2, le \textit{SCR Rachat Massif} sera dicté par cette minorité de très gros contrats. Une méthode de partitionnement déterministe classique lisserait ce segment à l'excès et il sera alors pertinent de trouver une méthode pour bien rassembler ce type de contrats.
+
+\subsubsection{Profil démographique, liquidité fiscale et biais de survivance}
+
+La dynamique démographique et temporelle du passif détermine l'exposition au risque de longévité et de rachat structurel. L'âge moyen des assurés s'établit à $53,1$ ans comme le montre la figure \ref{fig:dist_age}, une valeur relativement centrée et cohérente avec le marché français.
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/allocation_euro_uc.png}
-        \caption{Allocation globale Euro / UC.}
-        \label{fig:allocation_euro_uc}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre3/repartition_sexe.png}
-        \caption{Répartition par sexe des assurés.}
-        \label{fig:repartition_sexe}
-    \end{minipage}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre3/dist_age.png}
+    \caption{Distribution de l'âge des assurés.}
+    \label{fig:dist_age}
 \end{figure}
 
-\subsection{Limitations du portefeuille généré}
+Cependant, l'analyse de l'ancienneté des contrats met en lumière une autre singularité majeure de la base de données :
 
-\textcolor{blue}{Lucas pas fan de mettre des limites ici}
-Bien que le générateur produise une base de données robuste et exploitable pour des projections ALM, la méthodologie stochastique employée présente certaines limites qu'il convient d'expliciter pour nuancer les futures analyses de sensibilités.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre3/dist_anciennete.png}
+    \caption{Distribution de l'ancienneté des contrats.}
+    \label{fig:dist_anciennete}
+\end{figure}
 
-\subsubsection*{Un effet de "sur-représentation patrimoniale"}
-La cascade de génération lie mathématiquement la détention d'assurance vie au patrimoine global selon une loi Lognormale. Or, dans la réalité, les patrimoines extrêmement élevés (les "queues de distribution") diversifient fortement leurs actifs (immobilier d'entreprise, private equity, holdings) et ne logent pas systématiquement 40\,\% de leur richesse en assurance vie. Cela explique la sur-représentation des "gros contrats" dans le portefeuille par rapport à la moyenne nationale, lui conférant un profil atypique, très sensible aux comportements des clients fortunés.
+L'ancienneté moyenne atteint $19,8$ ans. Visuellement, la distribution ne traduit aucune cassure autour de la huitième année, date anniversaire qui marque pourtant historiquement un pic de rachats suite à l'optimisation de la fiscalité pour les contrats en France. 
 
-\subsubsection*{Le biais du survivant sur l'ancienneté}
-L'ancienneté moyenne frôlant les 20 ans résulte de la dérivation de l'âge à la souscription par rapport à l'âge actuel. Cependant, ce modèle statique ne simule pas l'historique de rachats (partiels ou totaux) qu'aurait subi un véritable portefeuille sur 20 ans. Les contrats simulés "naissent" directement avec leur encours actuel, ce qui lisse les dynamiques de marché passées et surestime potentiellement le poids des très vieux contrats.
+Ce phénomène s'explique par un \og biais de survivance \fg{} dans la méthode de génération. Les polices ont été créées en dérivant l'âge à la souscription depuis l'âge actuel, sans simuler l'historique d'écoulement du passif. En omettant l'application des lois de mortalité et les lois de rachats sur les deux dernières décennies, le portefeuille \og naît \fg{} directement avec son volume actuel. 
 
-\subsubsection*{L'absence de dynamiques spécifiques à un assureur et de garanties complexes}
-Enfin, le portefeuille est généré de manière homogène sur la base de moyennes de place. Il ne capture pas l'histoire propre à une compagnie spécifique (par exemple, le lancement d'un produit phare ayant drainé 30\,\% de la collecte en 2012, ou la présence de clauses spécifiques comme des garanties plancher en cas de décès). De plus, la modélisation ne distingue pas les contrats alimentés par primes uniques de ceux alimentés par versements libres ou programmés, dont les comportements de rachat diffèrent significativement.
+La conséquence directe sur la modélisation ALM est une liquidité écrasante des encours :
 
-Si ce portefeuille granulaire constitue une base d'étude robuste, sa taille rend son intégration directe dans un modèle ALM stochastique impossible en pratique. C'est pour surmonter cette barrière technique que le chapitre suivant introduira les algorithmes d'agrégation et la construction des \textit{Model Points}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/2_chapitres/chapitre3/liquidite_fiscale.png}
+    \caption{Proportion des encours selon la maturité fiscale.}
+    \label{fig:liquidite_fiscale}
+\end{figure}
+
+Près de $92,8\,\%$ des capitaux ont franchi le cap des 8 ans et sont affranchis de pénalités fiscales. Le frein contractuel à la sortie est donc quasi nul. En cas de choc de taux à la hausse, une fonction de rachat conjoncturel serait alors sollicitée à son maximum.
+\newpage
+Pour appréhender la géométrie de ce risque croisé, la visualisation spatiale de l'intensité financière globale (les encours cumulés) selon l'âge et l'ancienneté s'avère extrêmement pertinente :
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/2_chapitres/chapitre3/heatmap_age_anciennete.png}
+    \caption{Densité spatiale des encours cumulés selon le couple Âge / Ancienneté (échelle logarithmique).}
+    \label{fig:heatmap_age_anciennete}
+\end{figure}
+
+Cette carte de chaleur met en évidence la concentration hétérogène des capitaux (les zones les plus denses regroupant la majorité de la Provision Mathématique). C'est précisément dans cet espace bidimensionnel très polarisé que les futurs algorithmes de \textit{clustering} devront concentrer leurs \textit{cluters} pour éviter de lisser le risque.
+
+Sur le plan de la modélisation actif-passif (ALM) et des exigences S2, le couple Âge-Ancienneté est le moteur principal de la dynamique du passif. L'âge pilote à la fois la mortalité et l'allocation Euro/UC. L'ancienneté, quant à elle, régit presque exclusivement la fonction de rachat, en définissant la liquidité fiscale du contrat. Toute erreur de lissage dans ces zones denses déformerait les lois de comportements non-linéaires des assurés, entraînant une mauvaise évaluation du \textit{Best Estimate}.
+
+\newpage
+
+\subsubsection{Comportements financiers : Allocation et politique de frais}
+
+L'exposition aux risques de marché est rythmée par l'allocation des encours. La part globale investie sur les fonds Euro s'élève à 55,88\,\%. L'analyse croisée par âge démontre la pertinence des comportements simulés :
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/euro_uc_par_age.png}
+    \caption{Évolution de l'allocation entre Fonds Euro et Unités de Compte en fonction de l'âge.}
+    \label{fig:euro_uc_par_age}
+\end{figure}
+
+La figure \ref{fig:euro_uc_par_age} traduit le mécanisme classique de \og sécurisation \fg{} de l'épargne. Plus l'assuré vieillit, plus il arbitre ses encours vers le fonds Euro garanti, au détriment de la volatilité des UC. Préserver cette dynamique de désensibilisation lors de l'agrégation sera un critère important.
+
+Du point de vue du passif en fonds Euro, le TMG moyen est à $1,88\,\%$. Cela est dû à la très forte ancienneté du contrat. Enfin, la politique de prélèvement choisie respecte bien les 3 paliers de frais choisis lors de la modélisation :
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/frais_par_gamme.png}
+    \caption{TFGSE et TAF moyens par gamme.}
+    \label{fig:frais_par_gamme}
+\end{figure}
+
+Le TFGSE moyen est de $0,67\,\%$. La figure \ref{fig:frais_par_gamme} illustre une dégressivité des frais : les contrats de la Gestion Privée bénéficient de tarifs plus avantageux que la gamme Standard, tout en captant potentiellement un meilleur niveau de redistribution (TAF). Ce phénomène, conforme à la réalité du marché, traduit la volonté commerciale de fidéliser les patrimoines les plus rémunérateurs en volume, renforçant encore le poids stratégique de ce segment dans les projections futures.
