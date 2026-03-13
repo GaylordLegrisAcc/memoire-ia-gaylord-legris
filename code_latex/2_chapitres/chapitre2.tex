@@ -3,9 +3,9 @@
 \section{Objectifs stratégiques et contraintes techniques}
 La pertinence de l'analyse de sensibilité repose sur la qualité du portefeuille de passif initial. En l'absence de données réelles accessibles, pour des raisons évidentes de confidentialité liées à l'environnement du conseil, l'un des enjeux majeurs de ce mémoire consiste en l'élaboration d'un générateur de passifs réalistes. Cet outil a pour objectif de simuler un ensemble de contrats dont les caractéristiques biométriques et financières permettent une modélisation fidèle des engagements, constituant ainsi le socle de l’étude comparative sur l'agrégation.
 
-Ce chapitre a pour vocation de présenter cet outil et la manière dont il a été construits. Il sera également détaillé les besoins stratégiques et analytiques auxquels ce générateur répond, la méthodologie de génération retenue, les contraintes techniques rencontrées et les données qui ont été utilisées pour rendre le portefeuille le plus réaliste possible.
+Ce chapitre détaille la conception d'un outil de génération de passifs destiné à produire un portefeuille de contrats d'assurance vie représentatif du marché. Les enjeux analytiques justifiant le recours à une telle simulation pour l'étude de Solvabilité 2 sont d'abord présentés. La méthodologie de génération et les contraintes de calibration font ensuite l'objet d'une analyse spécifique. Enfin, les données utilisées sont explicitées pour démontrer la cohérence statistique et le réalisme du portefeuille obtenu.
 
- 
+ %
 \subsection{Définition du générateur de portefeuilles de passifs}
 Le générateur de portefeuille de passifs développé dans le cadre de ce mémoire est un outil conçu pour créer, de manière algorithmique, des ensembles de données synthétiques qui imitent avec réalisme des portefeuilles de contrats d'assurance-vie. Plutôt que de s'appuyer sur des données réelles, souvent confidentielles ou indisponibles, cet outil simule les caractéristiques fondamentales des assurés (âge, sexe, etc.) et de leurs contrats (type de produit, montant de la provision mathématique, date de souscription, etc.).
 
@@ -580,7 +580,7 @@ Enfin, la modélisation de la participation aux bénéfices et de la revalorisat
 
 \subsection{Analyse descriptive et évaluation critique du passif}
 
-L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique d'un million de contrats, représentant un encours total de $222,09$ milliards d'euros. L'analyse détaillée de ses caractéristiques est une étape préalable indispensable. Elle permet non seulement de valider la cohérence des hypothèses de modélisation, mais surtout d'identifier les zones de risques (concentration, liquidité) qui émergent alors de ce portefeuille.
+L'exécution de l'algorithme de génération a permis de constituer un portefeuille synthétique d'un million de contrats, représentant un encours total de $222,09$ milliards d'euros (montant uniquement associé à la PM des fonds Euro). L'analyse détaillée de ses caractéristiques est une étape préalable indispensable. Elle permet non seulement de valider la cohérence des hypothèses de modélisation, mais surtout d'identifier les zones de risques (concentration, liquidité) qui émergent alors de ce portefeuille.
 
 \subsubsection{Volumétrie, asymétrie extrême et limites de modélisation}
 
