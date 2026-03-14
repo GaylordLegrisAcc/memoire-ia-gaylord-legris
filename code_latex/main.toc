@@ -14,7 +14,7 @@
 \contentsline {subsubsection}{\numberline {1.2.1.1}L'évaluation des Actifs à la valeur de marché}{7}{subsubsection.1.2.1.1}%
 \contentsline {subsubsection}{\numberline {1.2.1.2}Les provisions techniques : Cœur de l'évaluation du passif}{8}{subsubsection.1.2.1.2}%
 \contentsline {subsubsection}{\numberline {1.2.1.3}Les fonds propres et les exigences de capital}{9}{subsubsection.1.2.1.3}%
-\contentsline {section}{\numberline {1.3}Les Générateurs de Scénarios Économiques (GSE)}{10}{section.1.3}%
+\contentsline {section}{\numberline {1.3}Les Générateurs de Scénarios Économiques (GSE)}{11}{section.1.3}%
 \contentsline {subsection}{\numberline {1.3.1}Le choix de l'univers de projection}{11}{subsection.1.3.1}%
 \contentsline {subsection}{\numberline {1.3.2}Les modèles de diffusion en univers risque neutre}{11}{subsection.1.3.2}%
 \contentsline {subsubsection}{\numberline {1.3.2.1}Modélisation des taux d'intérêt : le modèle de Hull \& White}{11}{subsubsection.1.3.2.1}%
@@ -30,8 +30,8 @@
 \contentsline {section}{\numberline {1.5}Gestion actif-passif et architecture du modèle de projection}{15}{section.1.5}%
 \contentsline {subsection}{\numberline {1.5.1}Mécanismes de projection et interactions actif-passif}{16}{subsection.1.5.1}%
 \contentsline {subsection}{\numberline {1.5.2}Algorithmes de projection du passif et valorisation du Best Estimate}{17}{subsection.1.5.2}%
-\contentsline {paragraph}{Définition des flux nets de trésorerie ($CF_t$)}{18}{equation.1.16}%
-\contentsline {paragraph}{Actualisation et agrégation}{19}{equation.1.17}%
+\contentsline {paragraph}{Définition des flux nets de trésorerie ($CF_t$)}{18}{equation.1.17}%
+\contentsline {paragraph}{Actualisation et agrégation}{19}{equation.1.18}%
 \contentsline {subsection}{\numberline {1.5.3}Limites actuelles du modèle}{19}{subsection.1.5.3}%
 \contentsline {chapter}{\numberline {2}Construction d'un générateur de portefeuilles de passifs}{20}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Objectifs stratégiques et contraintes techniques}{21}{section.2.1}%
@@ -91,23 +91,20 @@
 \contentsline {subsubsection}{\numberline {3.4.2.1}Définition des clés d'agrégation financières}{69}{subsubsection.3.4.2.1}%
 \contentsline {subsubsection}{\numberline {3.4.2.2}Mécanique des décréments et modification du cœur ALM}{70}{subsubsection.3.4.2.2}%
 \contentsline {section}{\numberline {3.5}Conclusion}{70}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Protocole d'analyse et résultats de l'agrégation}{72}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Définition du protocole de test comparatif}{73}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Constitution des portefeuilles de test}{74}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Définition des critères de sélection}{75}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Analyse comparative et choix de la méthode optimale}{75}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Synthèse des performances sur le passif seul}{76}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Justification du choix de la méthode retenue}{77}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}A faire}{77}{section.4.3}%
-\contentsline {chapter}{\numberline {5}Conclusion}{79}{chapter.5}%
-\contentsline {chapter}{Conclusion}{80}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{80}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{80}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{80}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{80}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{81}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{81}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{81}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{81}{section.5.3}%
-\contentsline {chapter}{Annexes}{83}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{88}{section*.9}%
+\contentsline {chapter}{\numberline {4}Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}{72}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Validation du périmètre de référence et neutralité de l'agrégation de base}{73}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{74}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Établissement du cadre d'analyse pour la sélection des modèles}{74}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Évaluation des indicateurs S2 du modèle de référence}{75}{subsection.4.1.3}%
+\contentsline {chapter}{\numberline {5}Conclusion}{76}{chapter.5}%
+\contentsline {chapter}{Conclusion}{77}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{77}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{77}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{77}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{77}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{78}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{78}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{78}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{78}{section.5.3}%
+\contentsline {chapter}{Annexes}{80}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{85}{section*.9}%

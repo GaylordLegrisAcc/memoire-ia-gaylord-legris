@@ -1,126 +1,62 @@
-\chapter{Protocole d'analyse et résultats de l'agrégation}
+\chapter{Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}
+\label{chap:application_numerique}
 
-Ce chapitre constitue le cœur expérimental de cette étude. Après avoir exposé les fondements théoriques des méthodes d'agrégation, il s'agit désormais de mettre en œuvre un cadre 
-rigoureux pour comparer leurs performances. L'objectif est double : quantifier précisément le risque de modèle induit par la réduction de dimension sur le passif seul, puis valide
-r la robustesse de la méthode sélectionnée à travers des analyses de sensibilité.
+Les chapitres précédents ont détaillé le cadre réglementaire de Solvabilité 2 ainsi que les fondements mathématiques des algorithmes de \textit{clustering} (K-Means, DBSCAN, HDBSCAN), des méthodes empiriques (Banding) et des méthodes associées aux cashflows. L'objectif de cette partie est de calibrer et utiliser ces différentes approches sur le portefeuille de passifs d'assurance vie créé lors du chapitre \ref{chap:generation_passifs}. L'efficacité de ces méthodes sera évaluée à travers une série de tests de sensibilité sur le modèle ALM, visant à mesurer la robustesse des modèles réduits sur différents types de lancements.
 
-\section{Définition du protocole de test comparatif}
+La démarche s'articule en trois étapes. La première consiste à définir le modèle de référence et à valider l'absence de biais lors d'une agrégation déterministe de base. Ensuite, la calibration des hyperparamètres des algorithmes d'aggrégation permet de sélectionner les modèles cibles grâce à l'analyse des frontières de Pareto. Enfin, la dernière phase soumet les modèles choisis aux différents chocs de sensibilités S2 pour évaluer leur robustesse sur les \textit{Best Estimate}.
 
-La sélection de la méthode d'agrégation optimale ne peut reposer sur une simple intuition statistique. Elle nécessite un cadre expérimental capable de simuler les conditions réell
-es d'une clôture prudentielle, en mettant en concurrence la simplicité des méthodes déterministes et la puissance des approches par apprentissage.
+\section{Validation du périmètre de référence et neutralité de l'agrégation de base}
+\label{sec:validation_reference}
 
-\subsection{Constitution des portefeuilles de test}
+Avant d'appliquer des algorithmes d'agrégation, un point de comparaison strict doit être établi afin d'évaluer les résultats sur un lancement de référence. Le portefeuille initial, généré lors du chapitre \ref{chap:generation_passifs}, est constitué d'un million de contrats. 
 
-L'étude s'appuie sur un portefeuille de référence, désigné par la suite comme le « Portefeuille Full », composé de \textbf{50 000 contrats individuels}. Ce volume a été choisi pou
-r représenter une taille critique permettant d'observer les phénomènes de compensation statistique tout en restant techniquement projetable en un temps raisonnable pour établir un
-e base de comparaison exacte.
+Une première étape d'agrégation basique est réalisée en regroupant les polices d'assurance qui présentent des caractéristiques strictement identiques (même âge, même ancienneté, même TMG, etc.). Cette opération permet de réduire la volumétrie à 26 272 \textit{Model Points}.
 
-Chaque contrat est défini par un vecteur de caractéristiques multidimensionnel $\mathbf{x}_i \in \mathbb{R}^{12}$, comprenant notamment :
-\begin{itemize}
-    \item \textbf{Variables de risques biométriques :} Âge de l'assuré (de 18 à 95 ans) et Sexe.
-    \item \textbf{Variables de structure fiscale :} Ancienneté du contrat (cruciale pour les lois de rachat et la fiscalité en cas de décès).
-    \item \textbf{Variables financières :} Provision Mathématique (PM), Taux Minimum Garanti (TMG) variant de 0\% à 4,5\%, et taux de chargement.
-\end{itemize}
+\subsection{Évaluation du Best Estimate central en passif seul}
 
-Le processus de mise en œuvre suit une architecture en trois étapes distinctes :
-\begin{enumerate}
-    \item \textbf{Phase de pré-traitement :} Standardisation (z-score) des variables continues et application du \textit{dithering} pour les méthodes de densité afin de fluidifier
- l'espace des données discrétisées.
-    \item \textbf{Génération des Model Points :} Application de chaque algorithme cible pour obtenir des portefeuilles compressés. Pour chaque méthode, nous avons fait varier les 
-hyperparamètres afin de générer une famille de portefeuilles allant de 25 à 5 000 lignes.
-    \item \textbf{Projection ALM Massive :} Chaque portefeuille compressé est injecté dans le moteur de projection complet (projection sur 50 ans, scénario central Best Estimate) 
-pour mesurer l'impact réel sur les flux.
-\end{enumerate}
+Afin de valider la neutralité de cette réduction, une projection en passif seul sur un scénario central déterministe est effectuée sur les deux périmètres : le portefeuille complet (1 million de contrats) et le portefeuille agrégé de base (26 272 MP). L'indicateur principal retenu pour vérifier la précision de la méthode est le \textit{Best Estimate} des engagements.
 
-\begin{figure}[H]
+% TODO : Insérer ici un petit tableau ou une phrase donnant la valeur exacte du BE pour le 1M et le 26k, montrant un écart de 0.00%.
+\begin{table}[htbp]
     \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Workflow du Protocole de Test]} \\
-        \textit{Schéma montrant le flux : Portefeuille Initial $\rightarrow$ Clustering $\rightarrow$ Vecteurs de flux $\rightarrow$ Moteur ALM $\rightarrow$ Comparaison BE}      
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Schéma de mise en œuvre du protocole de test comparatif}
-    \label{fig:workflow_test}
-\end{figure}
-
-\subsection{Définition des critères de sélection}
-
-Le choix final de la méthode repose sur un arbitrage multicritère, principalement axé sur la recherche d'un point optimal sur la « Courbe de Pareto » entre précision et taux de co
-mpression.
-
-\begin{itemize}
-    \item \textbf{La fidélité sur le Best Estimate (BE) :} Mesurée par l'erreur relative $\Delta_{BE} \%$. Une erreur supérieure à $0,05\%$ est considérée comme significative.    
-    
-\begin{equation}
- \Delta_{BE} \% = \frac{BE_{agr\acute{e}g\acute{e}} - BE_{r\acute{e}f\acute{e}rence}}{BE_{r\acute{e}f\acute{e}rence}} 
-\end{equation}
-    \item \textbf{La préservation de la "Pureté Financière" :} Capacité de la méthode à ne pas diluer les taux garantis (TMG) au sein des groupes.
-    \item \textbf{Le taux de compression :} On cherche à descendre en dessous de 1 000 Model Points pour garantir la fluidité des calculs stochastiques futurs.
-    \item \textbf{Le temps de constitution (Overhead) :} Le coût de préparation des données doit rester marginal par rapport au gain de temps de projection.
-\end{itemize}
-
-\section{Analyse comparative et choix de la méthode optimale}
-
-\subsection{Synthèse des performances sur le passif seul}
-
-L'analyse massive réalisée (plus de 150 simulations individuelles) a permis de dresser une matrice de performance exhaustive permettant d'isoler le comportement de chaque algorith
-me face à la compression.
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{llcccc}
-\toprule
-\textbf{Méthode} & \textbf{Variante / Paramètres} & \textbf{Nb MP} & \textbf{Erreur BE \%} & \textbf{Écart (M€)} & \textbf{Robustesse} \\
-\midrule
-\textit{Référence} & \textit{Portefeuille 50k lignes} & \textit{50 000} & \textit{0,000 \%} & \textit{0,0} & \textit{Absolue} \\
-\midrule
-\rowcolor{blue!10} \textbf{Biais Zéro} & \textbf{Triplet (TMG, TFG, TAF)} & \textbf{1 105} & \textbf{0,006 \%} & \textbf{0,8} & \textbf{Optimale} \\
-\rowcolor{blue!5} \textbf{Biais Zéro} & \textbf{Compression massive} & \textbf{2 060} & \textbf{-0,005 \%} & \textbf{-0,7} & \textbf{Excellente} \\
-\midrule
-\textbf{Banding} & Smart Fiscal (Anc 8 ans) & 1 253 & 0,0018 \% & 0,2 & Très stable \\
-\textbf{K-Means} & Pondéré PM (n=1000) & 999 & 0,0021 \% & 0,3 & Constante \\
-\textbf{HDBSCAN} & Selection: Leaf (Fin) & 1 013 & 0,0026 \% & 0,3 & Très sensible \\
-\midrule
-\textbf{Banding} & Classique (Age 5, Anc 5) & 483 & 0,0024 \% & 0,3 & Stable \\
-\textbf{CART} & Refined (Target PM/TMG) & 999 & -0,1081 \% & -13,5 & Biaisée \\
-\textbf{CART} & Spread Focus (TMG Only) & 26 & 0,1319 \% & 16,5 & Grossière \\
-\bottomrule
-\end{tabular}
-\caption{Matrice comparative des performances d'agrégation sur le Best Estimate}
-\label{tab:giga_matrice_resultats}
+    \begin{tabular}{|l|c|r|r|}
+        \hline
+        \textbf{Modèle} & \textbf{Nombre de lignes} & \textbf{BE Central (M\euro)} & \textbf{Écart relatif (\%)} \\
+        \hline
+        Portefeuille complet & 1 000 000 & [Valeur BE 1M] & {\text{Réf.}} \\
+        Agrégation de base & 26 272 & [Valeur BE 26k] & 0.00 \\
+        \hline
+    \end{tabular}
+    \caption{Comparaison du Best Estimate entre le portefeuille complet et l'agrégation de base.}
+    \label{tab:comparaison_1m_26k}
 \end{table}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[GRAPHIQUE : Courbe de Pareto Précision/Compression]} \\
-        \textit{Axes : X = Nb Model Points (log), Y = Erreur BE \% (log). \\ Courbes pour : Banding, K-Means, Biais Zéro.}
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Arbitrage Précision vs Nombre de Model Points par méthode}
-    \label{fig:pareto_agreg}
-\end{figure}
+Les contrats regroupés possédant des clés d'agrégation strictement identiques, ils réagissent de manière parfaitement similaire aux hypothèses du modèle ALM. Par conséquent, les flux de trésorerie projetés sont les mêmes et les résultats obtenus sont strictement égaux. 
 
-Plusieurs enseignements majeurs découlent de ces résultats :
-\begin{enumerate}
-    \item \textbf{La neutralisation du biais par calibration :} La méthode \og Biais Zéro \fg{} surpasse toutes les autres en termes de fidélité pure. En calibrant les probabilités de sortie sur les bases réelles à mi-période, l'agrégation devient quasiment transparente pour le calcul du Best Estimate.
-    \item \textbf{L'importance du triplet financier :} Les tests ont montré que le respect strict des clés $(TMG, TFGSE, TAF)$ est indispensable. Une agrégation ignorant les frais de gestion (TFGSE) génère un biais résiduel de plus de 2\%, quel que soit le protocole de calibration.
-    \item \textbf{L'efficacité du Banding Fiscal :} Le découpage métier autour de l'ancienneté de 8 ans reste une alternative très performante pour les méthodes déterministes.
-    \item \textbf{Le biais des approches CART :} Bien que très compressives, les méthodes par arbres de décision introduisent des ruptures artificielles dans la structure de revalorisation, nuisant Ã  la précision globale.
-\end{enumerate}
+Cette égalité parfaite permet de considérer le portefeuille complet et le portefeuille agrégé basique comme identiques d'un point de vue des résultats de projections. Le périmètre de 26 272 MP est ainsi validé comme nouveau modèle de référence (\textit{baseline}) pour le reste de l'étude. 
 
-\subsection{Justification du choix de la méthode retenue}
-\section{A faire}
-Ce chapitre contiendra la méthodologie utilisée pour comparer les différentes méthodes d'agrégation. Notre critère de sélection sera la capicité à réduire le nombre de model point X limiter l'écart sur les BE centraux et choqués (cad les SCR). Pour comparer les résultats, on va prendre comme base de reference le portefeuille aggrégé avec la méthode standard par caractérique pure. En théorie, cette méthode ne génère aucun écart ni biais de regroupement sur le BE passif seul. Ce qui est vérifié. Pour la suite ce sera alors la base de comparaison car plus simple à éxecuter et plus rapide que le portefeuille full. Ensuite on va calibrer tous les modèles qui doivent être calibrer et montrer comment la calibration joue un rôle crucial pour réduire les biais de regroupement. Enfin on va présenter une matrice de résultats avec les différentes méthodes et différentes configurations (nombre de model point, critères d'agrégation, etc) et montrer que la méthode retenue est celle qui offre le meilleur compromis entre précision et taux de compression. ce qui fera plusieurs parties. donc dans l'ordre 
-1 - Présentation du protocole de test comparatif (portefeuille de référence, critères de sélection, etc)
-2 - calibration des méthodes qui nécessitent une calibration et démonstration de l'impact de la calibration sur la réduction du biais de regroupement
-3 - Présentation de la matrice de résultats (passif seul, passif seul choqué, alm central puis alm sto choqués) et justification du choix de la méthode retenue
+\subsection{Établissement du cadre d'analyse pour la sélection des modèles}
 
+La suite des travaux de calibration s'appuie exclusivement sur ce nouveau portefeuille de référence. Pour choisir les meilleures méthodes de \textit{Machine Learning} candidates, les algorithmes seront testés et comparés via des lancements en passif seul déterministe sur un scénario central. 
 
+Ce n'est qu'à l'issue de cette phase de sélection que les modèles retenus seront soumis à des projections ALM complètes (en déterministe puis en stochastique) intégrant l'ensemble des chocs réglementaires Solvabilité 2.
 
-Au terme de cette analyse, la méthode \textbf{Calibration a posteriori (Biais Zéro)} est retenue pour la suite de ce mémoire. Elle offre le niveau de précision requis pour des analyses de sensibilité fines, garantissant que les variations de Best Estimate mesurées seront exclusivement dues aux chocs appliqués et non à un bruit de regroupement résiduel.
+\subsection{Évaluation des indicateurs S2 du modèle de référence}
+\label{subsec:evaluation_indicateurs_reference}
+
+L'établissement de la référence réglementaire exige d'analyser le comportement financier du modèle sous différentes configurations de projection. Cette étape est cruciale pour valider la cohérence mécanique des engagements avant toute tentative de réduction de dimension. Dans un premier temps, les projections centrales offrent une lecture directe des sensibilités du portefeuille. La comparaison s'articule autour de trois environnements de calcul :
+\begin{itemize}
+    \item \textbf{Passif seul déterministe} : isole la mécanique pure des flux de passifs, sans interaction avec les rendements d'actifs.
+    \item \textbf{ALM déterministe} : intègre la dynamique de participation aux bénéfices et le comportement des actifs face aux sorties de trésorerie.
+    \item \textbf{ALM stochastique} : intègre la volatilité des marchés et l'asymétrie des rendements financiers à travers la projection de scénarios économiques multiples.
+\end{itemize}
+
+% TODO: Insérer un tableau ou un graphique comparatif de ces trois BE centraux.
+Les écarts observés entre ces trois métriques illustrent le coût des garanties contractuelles et l'impact du partage de richesse entre l'assureur et les assurés. Le passage du périmètre passif seul à un environnement ALM déterministe modifie structurellement le niveau des engagements. En intégrant les actifs, le modèle simule la distribution de la richesse financière via le mécanisme de participation aux bénéfices, ce qui vient revaloriser les contrats et impacter directement les flux de trésorerie futurs. Ensuite, la transition vers l'ALM stochastique capture l'asymétrie financière des engagements : la volatilité des marchés génère des scénarios défavorables qui activent les garanties contractuelles (comme les TMG), représentant un coût pour l'assureur qui n'est pas linéairement compensé par les scénarios favorables. Cette asymétrie tend mécaniquement à accroître le Best Estimate moyen par rapport à une vision strictement déterministe.
+
+Au-delà de l'analyse des scénarios centraux, l'évaluation du profil de risque impose de soumettre ce modèle de référence aux divers chocs réglementaires en environnement ALM stochastique. L'exigence de capital unitaire ($SCR_x$) pour chaque sous-module de risque, ainsi que le capital global ($BSCR$) agrégé via la matrice de corrélation, sont calculés conformément à la méthodologie de la formule standard détaillée dans le premier chapitre du mémoire (cf. Section \ref{sec:s2}).
+
+Dans le cadre de ces projections, l'analyse se concentre sur l'absorption des chocs par la variation du \textit{Best Estimate} (soit $\Delta BE = BE_{\text{choc}} - BE_{\text{central}}$). Ces indicateurs unitaires et globaux, calculés sur le portefeuille de 26 272 \textit{Model Points}, constituent la base de comparaison pour la suite. 
+
+L'objectif des sections suivantes sera de mesurer à quel point les algorithmes d'agrégation parviennent à restituer ce même profil de risque avec un nombre de MP fortement restreint.
+
