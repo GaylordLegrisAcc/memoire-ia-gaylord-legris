@@ -384,3 +384,62 @@ Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèle
 
 La fiabilité de ces six modèles sera éprouvée dans l'ultime section de ce chapitre. Leur stabilité sera mesurée lors de projections intégrant l'interaction actif-passif (ALM) sous de multiples trajectoires économiques stochastiques, afin d'en déduire les exigences en capital réglementaire (SCR).
 
+\section{Évaluation des exigences de capital sous chocs Solvabilité 2}
+\label{sec:evaluation_scr}
+
+Cette section marque l'aboutissement de l'étude. Si l'évaluation des modèles candidats s'est jusqu'à présent concentrée sur la restitution du scénario central déterministe, la validité réglementaire d'un portefeuille agrégé repose sur sa capacité à reproduire la déformation du bilan face aux chocs économiques et biométriques. 
+
+Les six modèles candidats, ainsi que le modèle de référence (26 272 \textit{Model Points}), ont été soumis à un processus de projection complet en environnement ALM stochastique (1 000 scénarios économiques). Les exigences de capital unitaires ont été calculées pour les sous-modules de marché (Taux à la hausse et à la baisse, Actions) et de souscription Vie (Frais, Mortalité, Rachats à la hausse, à la baisse et massifs), avant d'être agrégées via la matrice de corrélation de la formule standard pour obtenir le Capital de Solvabilité Requis global ($BSCR$).
+
+\subsection{Synthèse des résultats et précision des modèles}
+
+Le modèle de référence établit la base de vérité avec un \textit{Best Estimate} (BE) central stochastique de 141.29 Md\euro{} et une exigence de capital globale ($BSCR$) de 56.72 Md\euro{}. Le tableau \ref{tab:resultats_bscr_finaux} synthétise la capacité de chaque modèle réduit à reproduire ces deux indicateurs clés.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|r|}
+        \hline
+        \textbf{Méthode d'agrégation} & \textbf{BE Central} & \textbf{Erreur BE} & \textbf{BSCR Agrégé} & \textbf{Erreur BSCR} \\
+        \hline
+        Baseline (Référence) & 141.29 Md\euro{} & \textit{Réf.} & 56.72 Md\euro{} & \textit{Réf.} \\
+        HDBSCAN (Candidat Topo) & 140.07 Md\euro{} & $-0.86\,\%$ & 57.21 Md\euro{} & $+0.86\,\%$ \\
+        DBSCAN & 139.98 Md\euro{} & $-0.93\,\%$ & 57.22 Md\euro{} & $+0.87\,\%$ \\
+        Banding Dynamique & 139.94 Md\euro{} & $-0.95\,\%$ & 57.22 Md\euro{} & $+0.87\,\%$ \\
+        K-Means Robuste & 139.92 Md\euro{} & $-0.97\,\%$ & 57.23 Md\euro{} & $+0.89\,\%$ \\
+        K-Means \textit{Lucky} & 139.90 Md\euro{} & $-0.98\,\%$ & 57.23 Md\euro{} & $+0.90\,\%$ \\
+        Biais Zéro & 128.63 Md\euro{} & $-8.96\,\%$ & 56.72 Md\euro{} & $+0.00\,\%^{*}$ \\
+        \hline
+    \end{tabular}
+    \caption{Évaluation des engagements et du BSCR en projection ALM stochastique.}
+    \label{tab:resultats_bscr_finaux}
+\end{table}
+
+\textit{*Note technique : Bien que l'erreur apparente sur le BSCR du Biais Zéro soit nulle, cette stabilité est un artefact mathématique masquant une dérive massive des provisions (-12.66 Md\euro{}), rendant le bilan économique inexploitable.}
+
+\subsection{Analyse technique et actuarielle}
+
+Les résultats exposés dans le tableau précédent mettent en exergue trois enseignements majeurs quant à la fiabilité des méthodes de réduction de dimension en univers incertain.
+
+\textbf{1. La robustesse des méthodes de clustering non supervisées} \\
+L'ensemble des méthodes statistiques et topologiques (Banding, K-Means, DBSCAN, HDBSCAN) parvient à reproduire l'exigence de capital avec une précision remarquable (erreur systématiquement inférieure à 0.90 \% sur le $BSCR$). C'est une validation opérationnelle forte : l'agrégation, bien que réduisant la volumétrie par vingt, ne dénature pas la sensibilité du risque. La légère sous-évaluation du BE central (autour de -0.90 \%) s'explique par un effet de moyennage inévitable qui lisse très légèrement l'asymétrie de la participation aux bénéfices face à la volatilité stochastique.
+
+\textbf{2. HDBSCAN : l'optimum opérationnel} \\
+Avec une erreur limitée à +0.86\% sur le $BSCR$ et -0.86\% sur le \textit{Best Estimate}, HDBSCAN confirme sa supériorité. En ne forçant pas arbitrairement le nombre de clusters, l'algorithme a su préserver la topologie naturelle du risque. Il capture fidèlement les queues de distribution du portefeuille (les contrats à fort TMG ou aux âges très avancés) qui sont précisément les polices réagissant le plus violemment aux chocs de taux et de longévité sous Solvabilité 2.
+
+\textbf{3. L'effondrement stochastique du Biais Zéro} \\
+C'est la surprise et l'enseignement majeur de cette phase de test. Alors que la méthode d'optimisation par "Biais Zéro" affichait une précision absolue (erreur de 0.0000\%) en passif seul déterministe, elle s'effondre en environnement ALM stochastique, amputant le \textit{Best Estimate} de près de 9\% (soit une sous-évaluation des passifs de 12.66 Md\euro{}). 
+
+Cette défaillance s'explique par la nature de sa calibration. Les poids des \textit{Model Points} sont optimisés pour corriger l'erreur sur une trajectoire de taux unique. Dès lors que le modèle est soumis à 1 000 trajectoires économiques aléatoires et à des déformations de courbe de taux (chocs \textit{Up/Down}), le partage de richesse de la participation aux bénéfices est bouleversé. Les poids figés du Biais Zéro ne sont plus optimaux et perdent leur neutralité technique. Le modèle compense mathématiquement son erreur centrale par une erreur identique sur les chocs, figeant le delta ($SCR$), mais détruisant la valeur réelle de la \textit{Net Asset Value} (NAV). 
+
+\section{Conclusion du chapitre : le choix du modèle cible}
+
+La confrontation des méthodes algorithmiques aux exigences calculatoires de la norme Solvabilité 2 permet de statuer définitivement sur le choix du modèle de compression, classant les approches en trois catégories :
+
+\begin{itemize}
+    \item \textbf{Le gagnant scientifique (HDBSCAN)} : Sa capacité à identifier la hiérarchie des densités sans forcer de partitionnement arbitraire permet de conserver la topologie exacte du risque. Sans biais de calibration, il s'impose comme la méthode la plus sûre pour un calcul de SCR précis et généralisable.
+    \item \textbf{Le compromis industriel (K-Means Robuste)} : Bien qu'il nécessite une validation de sa stabilité sur la frontière de Pareto pour éviter les optimums locaux (\textit{Lucky Runs}), sa facilité d'implémentation et son contrôle direct sur la volumétrie en font une alternative extrêmement solide. Affichant des erreurs inférieures à 1 %, il est idéal si les ressources de calcul sont strictement contraintes.
+    \item \textbf{Le péril de l'optimisation (Biais Zéro)} : Les résultats prouvent qu'une méthode d'ajustement des poids, redoutable d'efficacité pour des reportings rapides en passif seul, devient dangereuse dès lors qu'elle est confrontée à la dynamique non linéaire des interactions Actif-Passif en environnement stochastique. 
+\end{itemize}
+
+Ce chapitre clôt la démarche de modélisation en démontrant qu'une réduction intelligente de la dimension des données, pilotée par l'apprentissage non supervisé (HDBSCAN, K-Means), permet aux directions actuarielles de diviser drastiquement leurs temps de projection ALM sans compromettre la rigueur du bilan prudentiel.
