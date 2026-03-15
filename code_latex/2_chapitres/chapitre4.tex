@@ -187,14 +187,14 @@ Pour rendre l'agrégation la plus simple possible, le regroupement a été réal
     \label{tab:sensibilite_kmeans}
 \end{table}
 
-Si l'algorithme des K-Means offre une maîtrise stricte de la volumétrie en sortie, sa sensibilité vis-à-vis de l'erreur est non linéaire. Une compression extrême dénature logiquement la forme des flux futurs par la création de macro-contrats incohérents.
+Si l'algorithme des K-Means offre une maîtrise stricte de la volumétrie en sortie, sa sensibilité vis-à-vis de l'erreur est non linéaire. Une compression extrême dénature logiquement la forme des flux futurs par la création d'énormes \textit{Model Points} incohérents.
 
 La figure \ref{fig:visuel_kmeans_bad} démontre les limites de l'algorithme lorsqu'il est contraint de générer un nombre de clusters trop restreint ($k=100$). Les centroïdes capturent des barycentres qui traversent les strates de TMG, fusionnant ainsi des garanties financières distinctes au sein d'un même \textit{Model Point}. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/kmeans_k100.png}
-    \caption{Dérive algorithmique du K-Means ($k=100$) : création de macro-contrats incohérents qui ne respectent plus la stratification des taux garantis.}
+    \caption{Dérive algorithmique du K-Means ($k=100$) : création d'énormes \textit{Model Points} incohérents qui ne respectent plus la stratification des taux garantis.}
     \label{fig:visuel_kmeans_bad}
 \end{figure}
 
@@ -220,7 +220,7 @@ La figure \ref{fig:visuel_kmeans_bad} démontre les limites de l'algorithme lors
 
 Cet algorithme s'illustre par une forte instabilité aux frontières de ses hyperparamètres. Le rayon de voisinage $\epsilon$ agit comme un seuil critique de densité. Contrairement au K-Means, DBSCAN ne force pas la partition : une variation minime sur $\epsilon$ de 0.005 suffit à faire basculer le modèle d'une restitution optimale vers une fragmentation excessive du portefeuille. 
 
-Le risque principal de DBSCAN réside toutefois dans le sur-ajustement du rayon. Comme l'illustre la figure \ref{fig:visuel_dbscan_bad}, un paramètre trop permissif ($\epsilon=0.10$) entraîne une fusion indistincte des densités. L'algorithme agglomère l'écrasante majorité du portefeuille dans un seul cluster majeur, détruisant instantanément la lisibilité du passif.
+Le risque principal de DBSCAN réside toutefois dans le sur-ajustement du rayon. Comme l'illustre la figure \ref{fig:visuel_dbscan_bad}, un paramètre trop permissif ($\epsilon=0.10$) entraîne une fusion indistincte des densités. L'algorithme agglomère l'écrasante majorité du portefeuille dans des énormes clusters par TMG, détruisant instantanément la lisibilité du passif.
 
 \begin{figure}[H]
     \centering
@@ -230,34 +230,3 @@ Le risque principal de DBSCAN réside toutefois dans le sur-ajustement du rayon.
 \end{figure}
 
 L'ensemble de ces échecs de paramétrages souligne la nécessité de s'appuyer sur un critère objectif pour identifier les configurations alliant forte compression et respect de la topologie financière. Cette sélection sera réalisée dans la section suivante par l'analyse des frontières d'efficience.
-
-\subsection{Frontière d'efficience et sélection des modèles candidats}
-
-La confrontation du taux de compression et de l'erreur absolue sur une échelle logarithmique permet de tracer la frontière de Pareto, facilitant l'identification des meilleurs compromis.
-
-% [Ici, vous pouvez insérer l'image pareto_global_frontiers.pdf avec sa \begin{figure}]
-
-Lors de l'analyse de cette frontière, un phénomène d'optimum local a été identifié pour l'algorithme K-Means. Une projection isolée (\textit{Lucky Run} générant 949 MP) a affiché une erreur exceptionnellement basse ($-0.006\,\%$). Bien que ce point soit mathématiquement le plus précis, il résulte d'une initialisation aléatoire particulièrement favorable de l'algorithme. Dans une démarche de mise en production, la stabilité structurelle prime sur une performance isolée. Ce candidat a donc été rejeté au profit d'un paramétrage robuste situé sur le point d'inflexion naturel de la courbe ($k=1188$, générant 1 187 MP pour $+0.017\,\%$ d'erreur).
-
-La synthèse des paramétrages optimaux retenus pour la dernière étape de l'étude, respectant la contrainte opérationnelle fixée à 2 000 MP maximum, est présentée dans le tableau \ref{tab:synthese_calibration_finale}.
-
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{|l|l|r|r|}
-        \hline
-        \textbf{Méthode} & \textbf{Hyperparamètre Optimal} & \textbf{Nb MP} & \textbf{Erreur BE (Passif Seul)} \\
-        \hline
-        Banding Smart & Pas Âge = 3 / Anc = 6 & 1 865 & $-0.0026\,\%$ \\
-        K-Means & $k=1188$ (Candidat Robuste) & 1 187 & $+0.0177\,\%$ \\
-        DBSCAN & $\epsilon=0.02$, MS$=5$ & 1 389 & $+0.0052\,\%$ \\
-        HDBSCAN & MCS$=10$, Leaf & 1 247 & $+0.0270\,\%$ \\
-        Biais Zéro & Optimisation post-traitement & 444 & $0.0000\,\%$ \\
-        \hline
-    \end{tabular}
-    \caption{Synthèse des modèles retenus pour les projections stochastiques sous chocs Solvabilité 2.}
-    \label{tab:synthese_calibration_finale}
-\end{table}
-
-\textit{Note : La méthode du Biais Zéro, bien que n'étant pas un algorithme de partitionnement au sens strict, est incluse comme méthode de référence. En ajustant mathématiquement les poids, elle garantit un biais nul sur les engagements déterministes tout en divisant la volumétrie par trois par rapport aux méthodes statistiques (444 MP).}
-
-Ces cinq modèles réduits constituent les candidats finaux. La robustesse de leur calibration sera éprouvée dans la section suivante à travers le calcul des exigences en capital réglementaire (SCR) sous de multiples trajectoires économiques stochastiques.
