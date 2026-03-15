@@ -6,21 +6,21 @@
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/distribution_age_assures.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre2/distribution_age_assures.png}
 \caption{Distribution empirique de l'âge des assurés (Hommes et Femmes).}
 \label{fig:empirique}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/estimation_loi_gamma.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre2/estimation_loi_gamma.png}
 \caption{Ajustement de la loi Gamma sur la distribution empirique.}
 \label{fig:gamma}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/pyramide_age.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre2/pyramide_age.png}
 \caption{Pyramide des âges de la population française en 2024 \cite{pyramide_age}.}
 \label{fig:pyramide_age}
 \end{figure}
@@ -82,3 +82,35 @@ Lors de la phase de spécification du modèle Logit visant à répartir la Provi
 Cependant, la calibration par \textit{matching de moments} sur les profils de contrôle a abouti aux coefficients suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$, $\beta_{\text{pm}} = 0.0746$ et $\beta_{\text{anc}} = 0.0008$.
 
 Outre sa valeur quasi nulle traduisant un pouvoir explicatif marginal, le signe positif du coefficient $\beta_{\text{anc}}$ contredisait l'intuition économique de départ. Ce résultat s'explique par une forte colinéarité entre l'âge de l'assuré et l'ancienneté de son contrat. L'algorithme d'optimisation a par conséquent transféré l'essentiel du poids explicatif sur la variable d'âge, rendant l'ancienneté redondante. Par souci de robustesse et pour éviter tout sur-paramétrage (\textit{overfitting}), cette variable a donc été retirée du modèle final présenté dans le corps du mémoire.
+
+\section*{Chapitre 4}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{|p{4.5cm}|r|r|p{7cm}|}
+        \hline
+        \textbf{Configuration} & \textbf{Nb MP} & \textbf{Erreur BE} & \textbf{Analyse de l'effet observé} \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Banding (Sensibilité à la largeur de la fenêtre)}} \\
+        \hline
+        Pas 1 an / 1 an & 13 452 & $-0.0001\,\%$ & Précision quasi-totale, mais compression insuffisante. \\
+        Pas 3 ans / 6 ans & 1 865 & $-0.0026\,\%$ & Optimum Pareto : compression drastique sans perte de précision. \\
+        Pas 10 ans / 10 ans & 407 & $+0.1450\,\%$ & Sous-ajustement : les tranches moyennent des profils trop hétérogènes. \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{K-Means (Sensibilité au nombre de clusters $K$)}} \\
+        \hline
+        $k = 100$ & 99 & $-1.2450\,\%$ & Création de macro-contrats dénaturant la forme des flux. \\
+        $k = 1 188$ (Robuste) & 1 187 & $+0.0177\,\%$ & Candidat retenu : grande stabilité sur la frontière efficiente. \\
+        $k = 1 733$ & 1 732 & $-0.0004\,\%$ & Performance exceptionnelle, point le plus bas de la courbe. \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{DBSCAN (Sensibilité au rayon de voisinage $\epsilon$)}} \\
+        \hline
+        $\epsilon=0.10$ / MS=10 & 58 & $+0.9200\,\%$ & Fusion massive : le rayon est trop grand (un seul cluster majeur). \\
+        $\epsilon=0.02$ / MS=5 & 1 389 & $+0.0052\,\%$ & L'équilibre : le rayon capture finement les nuances du TMG. \\
+        $\epsilon=0.015$ / MS=5 & 3 345 & $+0.0133\,\%$ & Explosion granulométrique : le rayon est trop restrictif. \\
+        \hline
+    \end{tabular}
+    \caption{Extrait de la sensibilité des modèles aux hyperparamètres de regroupement.}
+    \label{tab:sensibilite_hyperparametres}
+\end{table}

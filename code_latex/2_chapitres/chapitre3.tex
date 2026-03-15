@@ -182,7 +182,7 @@ Cette méthode permet de définir automatiquement des Model Points situés au c�
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/kmeans_explication.png}
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre3/kmeans_explication.png}
     \caption{Visualisation de la méthode K-Means sur un jeu de données fictif \cite{kmeans}}
     \label{fig:kmeans_clusters}
 \end{figure}
@@ -212,7 +212,7 @@ Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/dbscan.png}
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre3/dbscan.png}
     \caption{Explication de l'algorithme DBSCAN (TODO : A refaire)}
     \label{fig:dbscan}
 \end{figure}
@@ -241,14 +241,14 @@ Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiq
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/dbscan.png}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/dbscan.png}
     \caption{Explication du reclassement du bruit (TODO : A refaire)}
     \label{fig:dbscan_bruit}
 \end{figure}
 
 
 \subsection{L'extension hiérarchique adaptative : HDBSCAN (distance d'accessibilité, extraction EOM vs Leaf)}
-
+\label{sec:presentation_hdbscan}
 Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuses. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche fusionne des clusters distincts dans les zones denses.
 
 Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes séquentielles majeures \cite{hdbscan} :
@@ -276,7 +276,7 @@ Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le p
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/hdbscan1.png}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/hdbscan1.png}
     \caption{Illustration de la distance d'accessibilité mutuelle \cite{hdbscan} \textcolor{blue}{citer tous les graphes de la section dans le texte pour relier l'explication}}
     \label{fig:mutual_reachability}
 \end{figure}
@@ -288,7 +288,7 @@ L'algorithme construit ensuite un graphe où chaque contrat est un sommet, reli�
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/hdbscan2.png}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/hdbscan2.png}
     \caption{Construction de l'Arbre Couvrant Minimum \cite{hdbscan}}
     \label{fig:mst}
 \end{figure}
@@ -298,7 +298,7 @@ En supprimant itérativement les arêtes du MST par ordre décroissant de poids,
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/hdbscan3.png}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/hdbscan3.png}
     \caption{Construction de la hiérarchie des clusters \cite{hdbscan}}
     \label{fig:hierarchy_clusters}
 \end{figure}
@@ -308,7 +308,7 @@ L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/2_chapitres/chapitre4/hdbscan4.png}
+    \includegraphics[width=0.5\textwidth]{images/2_chapitres/chapitre3/hdbscan4.png}
     \caption{Condensation de l'arbre hiérarchique \cite{hdbscan}}
     \label{fig:condensed_tree}
 \end{figure}
@@ -332,14 +332,14 @@ Deux stratégies de sélection des nœuds dans la hiérarchie ont été mises en
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/hdbscan6.png}
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/hdbscan6.png}
     \caption{Résultat final du clustering HDBSCAN \cite{hdbscan} \textcolor{blue}{citer les graphes et expliquer}}
     \label{fig:hdbscan_final}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/dbscan_hdbscan.jpg}
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre3/dbscan_hdbscan.jpg}
     \caption{Comparaison des approches DBSCAN et HDBSCAN \cite{dbscan_hdbscan} \textcolor{blue}{citer les graphes et expliquer}}
     \label{fig:hdbscan_comparison}
 \end{figure}

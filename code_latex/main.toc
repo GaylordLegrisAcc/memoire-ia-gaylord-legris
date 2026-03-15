@@ -96,15 +96,22 @@
 \contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{74}{subsection.4.1.1}%
 \contentsline {subsection}{\numberline {4.1.2}Établissement du cadre d'analyse pour la sélection des modèles}{74}{subsection.4.1.2}%
 \contentsline {subsection}{\numberline {4.1.3}Évaluation des indicateurs S2 du modèle de référence}{75}{subsection.4.1.3}%
-\contentsline {chapter}{\numberline {5}Conclusion}{76}{chapter.5}%
-\contentsline {chapter}{Conclusion}{77}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{77}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{77}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{77}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{77}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{78}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{78}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{78}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{78}{section.5.3}%
-\contentsline {chapter}{Annexes}{80}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{85}{section*.9}%
+\contentsline {section}{\numberline {4.2}Calibration des algorithmes et sélection des modèles candidats}{75}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Protocole \textit {Grid Search} et échantillonnage adaptatif}{76}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Sensibilité aux hyperparamètres et analyse des dynamiques d'agrégation}{77}{subsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{78}{subsubsection.4.2.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{79}{subsubsection.4.2.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{80}{subsubsection.4.2.2.3}%
+\contentsline {subsection}{\numberline {4.2.3}Frontière d'efficience et sélection des modèles candidats}{81}{subsection.4.2.3}%
+\contentsline {chapter}{\numberline {5}Conclusion}{83}{chapter.5}%
+\contentsline {chapter}{Conclusion}{84}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{84}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{84}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{84}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{84}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{85}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{85}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{85}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{85}{section.5.3}%
+\contentsline {chapter}{Annexes}{87}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{93}{table.5.2}%

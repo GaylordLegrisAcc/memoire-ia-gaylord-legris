@@ -99,7 +99,7 @@ La première étape a consisté à construire une distribution de probabilité r
 \item \textbf{Une étude statistique de l'INSEE} sur la détention d'assurance-vie par tranche d'âge en France \cite{insee_prop_av_age}
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/insee_prop_av_age.png}
+\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre2/insee_prop_av_age.png}
 \caption{Proportion de détention d'assurance-vie par tranche d'âge en France \cite{insee_prop_av_age}.}
 \label{fig:insee_prop_av_age}
 \end{figure}
@@ -119,7 +119,7 @@ Le résultat de ce processus est une fonction continue et lisse qui estime le ta
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/interpolation_prop_age.png}
+\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre2/interpolation_prop_age.png}
 \caption{Proportion de détention d'assurance-vie par âge en France par diverses méthodes d'interpolation. TODO : modifier légende et titre pour plus de lisibilité + refaire la modélisation avec 80 ans et non 82.5 ans}
 \label{fig:interpolation_prop_age}
 \end{figure}
@@ -139,7 +139,7 @@ Deux lois de probabilité continues ont été sélectionnées comme candidates p
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8 \textwidth]{images/2_chapitres/chapitre3/estimation_loi_beta.png}
+\includegraphics[width=0.8 \textwidth]{images/2_chapitres/chapitre2/estimation_loi_beta.png}
 \caption{Ajustement de la loi Beta sur la distribution empirique. TODO : Séparer une version homme et une femme et mettre en annexe}
 \label{fig:beta}
 \end{figure}
@@ -168,7 +168,7 @@ La distribution de l'âge à la souscription n'a pas été calibrée sur des don
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/derivation_dist_souscription.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre2/derivation_dist_souscription.png}
 \caption{Passage de la distribution empirique de l'âge à la souscription à la densité de probabilité du taux de souscription.}
 
 \end{figure}
@@ -202,7 +202,7 @@ Le \textbf{mélange gaussien à deux composantes (GMM)} s'est avéré être le m
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre3/calibration_loi_GMM_souscription.png}
+\includegraphics[width=0.9\textwidth]{images/2_chapitres/chapitre2/calibration_loi_GMM_souscription.png}
 \caption{Ajustement d'une GMM sur la distribution de l'âge à la souscription.}
 \label{fig:gmm_souscription}
 \end{figure}
@@ -586,7 +586,7 @@ La caractéristique la plus marquante de ce portefeuille est la surreprésentati
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/pm_totale_gamme.png}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre2/pm_totale_gamme.png}
     \caption{Répartition des encours totaux par Gamme commerciale.}
     \label{fig:pm_totale_gamme}
 \end{figure}
@@ -597,7 +597,7 @@ Cette concentration est formellement quantifiée par la courbe de Lorenz \footno
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre3/lorenz_pm.png}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre2/lorenz_pm.png}
     \caption{Courbe de Lorenz de la PM et indice de Gini.}
     \label{fig:lorenz_pm}
 \end{figure}
@@ -618,7 +618,7 @@ La dynamique démographique et temporelle du passif détermine l'exposition au r
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre3/dist_age.png}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre2/dist_age.png}
     \caption{Distribution de l'âge des assurés.}
     \label{fig:dist_age}
 \end{figure}
@@ -627,7 +627,7 @@ Cependant, l'analyse de l'ancienneté des contrats met en lumière une autre sin
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre3/dist_anciennete.png}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre2/dist_anciennete.png}
     \caption{Distribution de l'ancienneté des contrats.}
     \label{fig:dist_anciennete}
 \end{figure}
@@ -640,7 +640,7 @@ La conséquence directe sur la modélisation ALM est une liquidité écrasante d
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{images/2_chapitres/chapitre3/liquidite_fiscale.png}
+    \includegraphics[width=0.75\textwidth]{images/2_chapitres/chapitre2/liquidite_fiscale.png}
     \caption{Proportion des encours selon la maturité fiscale.}
     \label{fig:liquidite_fiscale}
 \end{figure}
@@ -651,7 +651,7 @@ Pour appréhender la géométrie de ce risque croisé, la visualisation spatiale
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/2_chapitres/chapitre3/heatmap_age_anciennete.png}
+    \includegraphics[width=0.85\textwidth]{images/2_chapitres/chapitre2/heatmap_age_anciennete.png}
     \caption{Densité spatiale des encours cumulés selon le couple Âge / Ancienneté (échelle logarithmique).}
     \label{fig:heatmap_age_anciennete}
 \end{figure}
@@ -668,7 +668,7 @@ L'exposition aux risques de marché est rythmée par l'allocation des encours. L
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/euro_uc_par_age.png}
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre2/euro_uc_par_age.png}
     \caption{Évolution de l'allocation entre Fonds Euro et Unités de Compte en fonction de l'âge.}
     \label{fig:euro_uc_par_age}
 \end{figure}
@@ -679,7 +679,7 @@ Du point de vue du passif en fonds Euro, le TMG moyen est à $1,88\,\%$. Cela es
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/frais_par_gamme.png}
+    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre2/frais_par_gamme.png}
     \caption{TFGSE et TAF moyens par gamme.}
     \label{fig:frais_par_gamme}
 \end{figure}
