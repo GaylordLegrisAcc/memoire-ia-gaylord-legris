@@ -102,16 +102,24 @@
 \contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{78}{subsubsection.4.2.2.1}%
 \contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{79}{subsubsection.4.2.2.2}%
 \contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{80}{subsubsection.4.2.2.3}%
-\contentsline {subsection}{\numberline {4.2.3}Frontière d'efficience et sélection des modèles candidats}{81}{subsection.4.2.3}%
-\contentsline {chapter}{\numberline {5}Conclusion}{83}{chapter.5}%
-\contentsline {chapter}{Conclusion}{84}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Résumé des résultats}{84}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{84}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{84}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{84}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{85}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{85}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{85}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{85}{section.5.3}%
-\contentsline {chapter}{Annexes}{87}{chapter*.8}%
-\contentsline {chapter}{Bibliographie}{93}{table.5.2}%
+\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{81}{subsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{82}{subsubsection.4.2.3.1}%
+\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{83}{subsubsection.4.2.3.2}%
+\contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{85}{subsubsection.4.2.3.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{86}{subsubsection.4.2.3.4}%
+\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{88}{subsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{88}{subsubsection.4.2.4.1}%
+\contentsline {subsubsection}{\numberline {4.2.4.2}Le moteur de Biais Zéro (Approche d'optimisation)}{88}{subsubsection.4.2.4.2}%
+\contentsline {subsection}{\numberline {4.2.5}Selection des candidats finaux}{89}{subsection.4.2.5}%
+\contentsline {chapter}{\numberline {5}Conclusion}{90}{chapter.5}%
+\contentsline {chapter}{Conclusion}{91}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Résumé des résultats}{91}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Synthèse des principaux résultats obtenus}{91}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Impact des méthodes d'agrégation sur les portefeuilles de passifs}{91}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Perspectives d'amélioration}{91}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Axes d'amélioration pour les générateurs de portefeuilles de passifs}{92}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Évolutions possibles des méthodes d'agrégation et de modélisation ALM}{92}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Autres domaines d'application des générateurs de portefeuilles de passifs}{92}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Conclusion Générale et Perspectives}{92}{section.5.3}%
+\contentsline {chapter}{Annexes}{94}{chapter*.8}%
+\contentsline {chapter}{Bibliographie}{100}{table.5.2}%

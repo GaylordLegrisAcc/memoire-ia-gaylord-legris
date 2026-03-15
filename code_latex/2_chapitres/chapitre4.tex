@@ -179,8 +179,8 @@ Pour rendre l'agrégation la plus simple possible, le regroupement a été réal
         \textbf{Configuration} & \textbf{Nb MP} & \textbf{Erreur BE} & \textbf{Analyse de l'effet observé} \\
         \hline
         $k = 100$ & 99 & $-1.2450\,\%$ & Création d'énormes MP dénaturant la forme des flux. \\
+        $k = 950 $ & 949 & $-0,0064\,\%$ & Performance exceptionnelle, optimum local. \\
         $k = 1 188$ & 1 187 & $+0.0177\,\%$ & Candidat robuste sur la frontière efficiente. \\
-        $k = 1 733$ & 1 732 & $-0.0004\,\%$ & Performance exceptionnelle, optimum local. \\
         \hline
     \end{tabular}
     \caption{Sensibilité du K-Means au nombre cible de clusters ($K$).}
@@ -230,3 +230,157 @@ Le risque principal de DBSCAN réside toutefois dans le sur-ajustement du rayon.
 \end{figure}
 
 L'ensemble de ces échecs de paramétrages souligne la nécessité de s'appuyer sur un critère objectif pour identifier les configurations alliant forte compression et respect de la topologie financière. Cette sélection sera réalisée dans la section suivante par l'analyse des frontières d'efficience.
+
+\subsection{Frontières d'efficience et choix des candidats finaux}
+
+La confrontation du taux de compression (axe des abscisses) et de l'erreur absolue de projection (axe des ordonnées en échelle logarithmique) permet de tracer la frontière d'efficience, ou frontière de Pareto, de chaque algorithme. Cette représentation isole les meilleurs compromis : les points situés sur cete courbe minimisent l'erreur pour un volume donné de \textit{Model Points}.
+
+Afin de justifier la sélection des modèles cibles, la frontière d'efficience de chaque méthode est analysée et complétée par une projection spatiale en trois dimensions du candidat optimal retenu.
+
+% --- BANDING ---
+\subsubsection{Le Banding : décroissance linéaire et maillage rigide}
+
+L'analyse de la frontière du Banding (Figure \ref{fig:pareto_banding}) confirme la mécanique empirique de l'approche. La courbe présente une décroissance quasi-linéaire de l'erreur sur l'échelle logarithmique. L'amélioration de la précision est strictement proportionnelle à la densification du maillage, sans effet de seuil brutal. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/pareto_banding.png}
+    \caption{Frontière d'efficience du Banding : décroissance régulière de l'erreur.}
+    \label{fig:pareto_banding}
+\end{figure}
+
+Le candidat retenu (pas d'âge de 3 ans et d'ancienneté de 6 ans, générant 1 865 MP) est visualisé sur la figure \ref{fig:visu_3d_banding}. L'espace est découpé de manière orthogonale. Si cette rigidité garantit une grande lisibilité métier, elle fragmente parfois inutilement des zones de faible densité qui auraient pu être fusionnées par un algorithme statistique.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/visu_3d_banding.png}
+    \caption{Projection 3D du candidat Banding (1 865 MP) : un découpage en grille stricte de l'espace.}
+    \label{fig:visu_3d_banding}
+\end{figure}
+
+% --- K-MEANS ---
+
+\subsubsection{Le K-Means : optimum local et respect des strates}
+
+Le K-Means offre un contrôle direct sur la volumétrie, l'algorithme génère une courbe de Pareto très dense. Comme l'illustre la figure \ref{fig:pareto_kmeans}, la recherche sur grille a isolé une anomalie positive remarquable (\textit{Outlier}): une configuration à 949 MP présentant une erreur quasi nulle ($-0,0064\,\%$). 
+
+\begin{figure}[htbp] % <--- [htbp] permet à LaTeX de respirer par rapport à [H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/pareto_kmeans.png}
+    \caption{Frontière d'efficience du K-Means : mise en évidence d'un optimum local très précis.}
+    \label{fig:pareto_kmeans}
+\end{figure}
+
+La figure \ref{fig:visu_3d_kmeans_outlier} expose la projection spatiale de cet optimum local. L'algorithme a ici réussi, par pur hasard statistique lors de l'initialisation des centroïdes, une segmentation des TMG d'une précision surprenante.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/outlier_949_space_3d.png}
+    \caption{Projection 3D de l'\textit{Outlier} à 949 MP : une projection chanceuse mais très précise.}
+    \label{fig:visu_3d_kmeans_outlier}
+\end{figure}
+
+Bien que ce point soit mathématiquement le plus précis de toute l'étude, on l'exclue de la courbe de Pareto car il semble trop parfait. Pour une mise en production réglementaire, la stabilité structurelle du modèle prime sur une performance isolée. Afin d'assurer la robustesse face aux chocs réglementaires stochastiques, le choix s'est porté sur un candidat robuste ($k=1188$), situé sur le coude naturel de la frontière d'efficience.
+
+La projection spatiale de ce candidat (Figure \ref{fig:visu_3d_kmeans_robust}) démontre que le respect de la stratification TMG est conservé. Les clusters épousent parfaitement les plateaux horizontaux de TMG, évitant tout lissage inter-strates qui fausserait la valeur temporelle des garanties financières en environnement ALM dynamique.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/best_clustering_space_3d.png}
+    \caption{Projection 3D du candidat retenu à 1 187 MP : respect scrupuleux de la stratification TMG pour un volume restreint.}
+    \label{fig:visu_3d_kmeans_robust}
+\end{figure}
+
+% --- DBSCAN ---
+\subsubsection{DBSCAN : capture des densités et instabilité de la frontière}
+
+Contrairement aux approches géométriques, la frontière de Pareto de DBSCAN (Figure \ref{fig:pareto_dbscan}) est marquée par de fortes ruptures de continuité. L'algorithme agissant par seuil de densité spatiale, l'erreur chute par paliers abrupts sans permettre un ciblage précis du nombre de \textit{Model Points}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/pareto_dbscan.png}
+    \caption{Frontière d'efficience de DBSCAN : une convergence marquée par des effets de seuil.}
+    \label{fig:pareto_dbscan}
+\end{figure}
+
+Le candidat optimal retenu (1 389 MP pour un paramètre $\epsilon=0.02$) illustre la force topologique de la méthode (Figure \ref{fig:visu_3d_dbscan}). L'algorithme concentre naturellement les clusters sur les zones à forte densité de contrats, tout en isolant efficacement les profils atypiques (\textit{outliers}). 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/visu_3d_dbscan.png}
+    \caption{Projection 3D du candidat DBSCAN (1 389 MP) : isolation du bruit et détection des cœurs denses.}
+    \label{fig:visu_3d_dbscan}
+\end{figure}
+
+Toutefois, l'analyse tridimensionnelle révèle une dérive géométrique propre à cette approche : la formation de clusters sous forme de lignes le long de l'axe des âges. Concrètement, l'algorithme tend à fusionner des polices partageant une ancienneté et un TMG identiques, mais couvrant un large spectre d'âges. 
+
+Ce phénomène de lissage s'explique par la mécanique de propagation de DBSCAN (regroupement de proche en proche par densité) combinée à la nature statistique des données en entrée. L'âge des assurés étant simulé selon une distribution normale continue, la distance spatiale entre les contrats sur cet axe est minime. À l'inverse, l'ancienneté et le TMG présentent une construction discrète en paliers. L'algorithme propage donc logiquement le regroupement le long de la seule dimension où la densité est continue, engendrant ainsi la création de ces clusters linéaires.
+
+% --- HDBSCAN ---
+\subsubsection{HDBSCAN : hiérarchisation optimale et extraction ciblée}
+
+La frontière d'efficience d'HDBSCAN (Figure \ref{fig:pareto_hdbscan}) révèle une forte concentration des résultats performants autour de la volumétrie cible (1 200 - 1 400 MP), spécifiquement lorsque la méthode d'extraction par les feuilles (\textit{Leaf}) est activée. La méthode démontre sa supériorité sur DBSCAN en contournant la nécessité de fixer un seuil de densité global $\epsilon$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre4/pareto_hdbscan.png}
+    \caption{Frontière d'efficience d'HDBSCAN : concentration des optimums sous la méthode d'extraction \textit{Leaf}.}
+    \label{fig:pareto_hdbscan}
+\end{figure}
+
+La projection spatiale du candidat retenu (1 247 MP) confirme cette robustesse (Figure \ref{fig:visu_3d_hdbscan}). HDBSCAN parvient à identifier des macro-clusters dans les strates clairsemées du portefeuille, tout en appliquant une granularité extrêmement fine dans les strates denses. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/visu_3d_hdbscan.png}
+    \caption{Projection 3D du candidat HDBSCAN (1 247 MP) : agrégation adaptative selon la densité locale.}
+    \label{fig:visu_3d_hdbscan}
+\end{figure}
+
+
+
+\subsection{Intégration des approches alternatives}
+
+Au-delà des agrégations fondées sur les variables statiques (Âge, Ancienneté, TMG), deux approches exploitant directement la modélisation financière complètent cette sélection.
+
+\subsubsection{Le Cash-Flow Matching (Approche par profil de risque)}
+Cette méthode applique l'algorithme K-Means directement sur les vecteurs de flux de trésorerie projetés sur 40 ans. Dans le \textit{Cash-Flow Matching}, toutes les dimensions sont de même nature monétaire et partagent la même importance relative. L'algorithme est ainsi naturellement calibré par la structure temporelle des engagements sans recourir à un \textit{Grid Search}. L'exécution unique a généré un modèle de 2 015 MP, affichant une erreur de $-0.0049\,\%$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/cf_matching_trajectories.png}
+    \caption{Exemple d'aggragation par la méthode des cashflows.}
+    \label{fig:visu_3d_cf_matching}
+\end{figure}
+
+Sur la figure \ref{fig:visu_3d_cf_matching}, les trajectoires de flux de trésorerie des MP sont projetées sur 40 ans. Pour construire les MP, l'algorithme a regroupé des contrats présentant des profils de flux similaires, indépendamment de leurs caractéristiques statiques. Cette approche permet de capturer directement la dynamique financière des engagements, offrant ainsi une bonne précision sur le \textit{Best Estimate}.
+
+\subsubsection{Le moteur de Biais Zéro (Approche d'optimisation)}
+Outil d'optimisation sous contraintes, ce post-traitement vise à annuler l'erreur d'un regroupement existant en ajustant mathématiquement le poids de chaque \textit{Model Point}. Ce processus force une restitution déterministe parfaite ($0.0000\,\%$ d'erreur) en réduisant drastiquement la volumétrie à seulement 444 MP.
+
+
+\subsection{Selection des candidats finaux}
+
+Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèles candidats sélectionnés. Ils respectent tous la contrainte opérationnelle d'un maximum de 2 000 MP et affichent une précision remarquable en passif seul déterministe.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|l|l|r|r|}
+        \hline
+        \textbf{Méthode} & \textbf{Nature} & \textbf{Paramétrage Optimal} & \textbf{Nb MP} & \textbf{Erreur Passif Seul} \\
+        \hline
+        Banding & Expertise métier & Pas Âge = 3 / Anc = 6 & 1 865 & $-0.0026\,\%$ \\
+        K-Means & Statistique & $k=1188$ (Robuste) & 1 187 & $+0.0177\,\%$ \\
+        DBSCAN & Topologique & $\epsilon=0.02$, MS$=5$ & 1 389 & $+0.0052\,\%$ \\
+        HDBSCAN & Topologique & MCS$=10$, Leaf & 1 247 & $+0.0270\,\%$ \\
+        CF Matching & Profil de risque & \textit{Directe (1 run)} & 2 015 & $-0.0049\,\%$ \\
+        Biais Zéro & Optimisation & \textit{Post-traitement} & 444 & $0.0000\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Synthèse des modèles retenus pour l'analyse des sensibilités sous chocs Solvabilité 2.}
+    \label{tab:synthese_calibration_finale}
+\end{table}
+
+La fiabilité de ces six modèles sera éprouvée dans l'ultime section de ce chapitre. Leur stabilité sera mesurée lors de projections intégrant l'interaction actif-passif (ALM) sous de multiples trajectoires économiques stochastiques, afin d'en déduire les exigences en capital réglementaire (SCR).
+
