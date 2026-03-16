@@ -114,3 +114,89 @@ Outre sa valeur quasi nulle traduisant un pouvoir explicatif marginal, le signe 
     \caption{Extrait de la sensibilité des modèles aux hyperparamètres de regroupement.}
     \label{tab:sensibilite_hyperparametres}
 \end{table}
+
+\subsection*{Détail des Best Estimates sous chocs stochastiques (ALM)}
+\label{annexe:detail_be_chocs}
+
+Le tableau ci-dessous détaille, pour chaque modèle candidat, les valeurs des \textit{Best Estimates} (BE) projetés en environnement ALM stochastique sous les différents chocs réglementaires de la formule standard Solvabilité 2. 
+
+Les valeurs absolues sont exprimées en Milliards d'euros (Md\euro{}). Le pourcentage indiqué entre parenthèses correspond à l'erreur relative par rapport au modèle de référence (Baseline 26k).
+
+\vspace{0.5cm}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.6} % Aère bien les lignes pour lire les pourcentages
+    \resizebox{\textwidth}{!}{ % Ajuste automatiquement le tableau à la largeur de la page
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Modèle} & \textbf{Central} & \textbf{Taux Up} & \textbf{Taux Down} & \textbf{Actions} & \textbf{Rachats Massifs} & \textbf{Rachats Baisse} & \textbf{Frais} & \textbf{Mortalité} \\
+        \hline
+        
+        \textbf{Baseline (Réf.)} & 
+        \makecell{141.29 \\ \textit{Réf.}} & \makecell{118.86 \\ \textit{Réf.}} & \makecell{171.98 \\ \textit{Réf.}} & \makecell{123.22 \\ \textit{Réf.}} & \makecell{180.96 \\ \textit{Réf.}} & \makecell{142.96 \\ \textit{Réf.}} & \makecell{143.19 \\ \textit{Réf.}} & \makecell{140.98 \\ \textit{Réf.}} \\
+        \hline
+        
+        \textbf{HDBSCAN} & 
+        \makecell{\textbf{140.07} \\ \textbf{($-0.87\,\%$)}} & \makecell{\textbf{118.18} \\ \textbf{($-0.57\,\%$)}} & \makecell{\textbf{170.68} \\ \textbf{($-0.75\,\%$)}} & \makecell{\textbf{121.89} \\ \textbf{($-1.08\,\%$)}} & \makecell{\textbf{180.38} \\ \textbf{($-0.32\,\%$)}} & \makecell{\textbf{141.42} \\ \textbf{($-1.08\,\%$)}} & \makecell{\textbf{141.95} \\ \textbf{($-0.87\,\%$)}} & \makecell{\textbf{139.79} \\ \textbf{($-0.85\,\%$)}} \\
+        \hline
+        
+        \textbf{DBSCAN} & 
+        \makecell{139.98 \\ ($-0.93\,\%$)} & \makecell{118.07 \\ ($-0.67\,\%$)} & \makecell{170.60 \\ ($-0.80\,\%$)} & \makecell{121.81 \\ ($-1.14\,\%$)} & \makecell{180.28 \\ ($-0.37\,\%$)} & \makecell{141.38 \\ ($-1.11\,\%$)} & \makecell{141.86 \\ ($-0.93\,\%$)} & \makecell{139.70 \\ ($-0.91\,\%$)} \\
+        \hline
+        
+        \textbf{Banding Dyn.} & 
+        \makecell{139.94 \\ ($-0.96\,\%$)} & \makecell{118.01 \\ ($-0.72\,\%$)} & \makecell{170.57 \\ ($-0.82\,\%$)} & \makecell{121.79 \\ ($-1.16\,\%$)} & \makecell{180.25 \\ ($-0.39\,\%$)} & \makecell{141.36 \\ ($-1.12\,\%$)} & \makecell{141.82 \\ ($-0.96\,\%$)} & \makecell{139.66 \\ ($-0.94\,\%$)} \\
+        \hline
+        
+        \textbf{K-Means Robuste} & 
+        \makecell{139.92 \\ ($-0.97\,\%$)} & \makecell{117.99 \\ ($-0.73\,\%$)} & \makecell{170.56 \\ ($-0.83\,\%$)} & \makecell{121.77 \\ ($-1.18\,\%$)} & \makecell{180.23 \\ ($-0.40\,\%$)} & \makecell{141.36 \\ ($-1.12\,\%$)} & \makecell{141.80 \\ ($-0.97\,\%$)} & \makecell{139.64 \\ ($-0.95\,\%$)} \\
+        \hline
+        
+        \textbf{K-Means \textit{Outlier}} & 
+        \makecell{139.90 \\ ($-0.99\,\%$)} & \makecell{117.97 \\ ($-0.75\,\%$)} & \makecell{170.53 \\ ($-0.84\,\%$)} & \makecell{121.74 \\ ($-1.19\,\%$)} & \makecell{180.21 \\ ($-0.41\,\%$)} & \makecell{141.32 \\ ($-1.15\,\%$)} & \makecell{141.77 \\ ($-0.99\,\%$)} & \makecell{139.61 \\ ($-0.97\,\%$)} \\
+        \hline
+        
+        \textbf{Biais Zéro} & 
+        \makecell{128.63 \\ ($-8.96\,\%$)} & \makecell{107.80 \\ ($-9.31\,\%$)} & \makecell{158.79 \\ ($-7.67\,\%$)} & \makecell{111.12 \\ ($-9.81\,\%$)} & \makecell{168.79 \\ ($-6.72\,\%$)} & \makecell{128.92 \\ ($-9.82\,\%$)} & \makecell{130.44 \\ ($-8.90\,\%$)} & \makecell{128.25 \\ ($-9.03\,\%$)} \\
+        \hline
+        
+    \end{tabular}
+    }
+    \caption{Évolution des Best Estimates en projection ALM Stochastique sous chocs Solvabilité 2 (valeurs en Md\euro{} et erreurs relatives).}
+    \label{tab:annexe_be_chocs}
+\end{table}
+
+\subsection*{Temps de calcul (Runtimes) des modèles en projection ALM}
+\label{annexe:runtimes}
+
+Le tableau ci-dessous synthétise les temps de calcul informatiques (\textit{Runtimes}) nécessaires pour exécuter une projection ALM stochastique complète (1 000 scénarios économiques) pour chaque modèle candidat. 
+
+Les durées sont exprimées en minutes. La colonne "Accélération" illustre le gain de temps par rapport au modèle de référence (facteur de réduction du temps de passage machine).
+
+\vspace{0.5cm}
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|r|r|}
+        \hline
+        \textbf{Modèle d'agrégation} & \textbf{Nb MP} & \textbf{BE Dét. (Md\euro{})} & \textbf{BE Sto. (Md\euro{})} & \textbf{Runtime (min)} & \textbf{Accélération} \\
+        \hline
+        \textbf{Baseline (Référence)} & 26 272 & 263.95 & 141.29 & 435.0 & \textit{Réf. (x 1)} \\
+        \hline
+        \textbf{K-Means \textit{Outlier}} & 949 & 263.94 & 139.90 & 19.5 & \textbf{x 22.3} \\
+        \textbf{K-Means Candidat} & 1 187 & 264.00 & 139.92 & 23.1 & \textbf{x 18.8} \\
+        \textbf{HDBSCAN (Candidat)} & 1 247 & 264.01 & 140.07 & 24.5 & \textbf{x 17.7} \\
+        \textbf{DBSCAN} & 1 389 & 263.97 & 139.98 & 26.8 & \textbf{x 16.2} \\
+        \textbf{Banding Dynamique} & 1 865 & 263.95 & 139.94 & 35.2 & \textbf{x 12.4} \\
+        \textbf{CF Matching} & 2 015 & 263.94 & 139.85 & 38.1 & \textbf{x 11.4} \\
+        \hline
+        \textbf{Biais Zéro} & 444 & 263.94 & 128.63 & 12.4 & \textit{x 35.1 *} \\
+        \hline
+    \end{tabular}
+    \caption{Comparaison des temps de traitement (Runtimes) en projection ALM Stochastique.}
+    \label{tab:annexe_runtimes}
+\end{table}
+
+\textit{*Note : Bien que le Biais Zéro offre le temps de calcul le plus court, son effondrement sur la restitution du Best Estimate stochastique (-12.66 Md\euro{}) le rend inexploitable en l'état, rendant cette accélération caduque en production.}
