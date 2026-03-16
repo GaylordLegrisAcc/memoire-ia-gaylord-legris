@@ -356,7 +356,7 @@ Cette méthode applique l'algorithme K-Means directement sur les vecteurs de flu
 Sur la figure \ref{fig:visu_3d_cf_matching}, les trajectoires de flux de trésorerie des MP sont projetées sur 40 ans. Pour construire les MP, l'algorithme a regroupé des contrats présentant des profils de flux similaires, indépendamment de leurs caractéristiques statiques. Cette approche permet de capturer directement la dynamique financière des engagements, offrant ainsi une bonne précision sur le \textit{Best Estimate}.
 
 \subsubsection{Le moteur de Biais Zéro (Approche d'optimisation)}
-Outil d'optimisation sous contraintes, ce post-traitement vise à annuler l'erreur d'un regroupement existant en ajustant mathématiquement le poids de chaque \textit{Model Point}. Ce processus force une restitution déterministe parfaite ($0.0000\,\%$ d'erreur) en réduisant drastiquement la volumétrie à seulement 444 MP.
+Outil d'optimisation sous contraintes, ce post-traitement vise à annuler l'erreur d'un regroupement existant en ajustant mathématiquement le poids de chaque \textit{Model Point}. Ce processus force une restitution déterministe parfaite ($0.0000\,\%$ d'erreur) en réduisant drastiquement la volumétrie à seulement 222 MP.
 
 
 \subsection{Selection des candidats finaux}
@@ -375,7 +375,7 @@ Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèle
         DBSCAN & Topologique & $\epsilon=0.02$, MS$=5$ & 1 389 & $+0.0052\,\%$ \\
         HDBSCAN & Topologique & MCS$=10$, Leaf & 1 247 & $+0.0270\,\%$ \\
         CF Matching & Profil de risque & \textit{Directe (1 run)} & 2 015 & $-0.0049\,\%$ \\
-        Biais Zéro & Optimisation & \textit{Post-traitement} & 444 & $0.0000\,\%$ \\
+        Biais Zéro & Optimisation & \textit{Post-traitement} & 222 & $0.0000\,\%$ \\
         \hline
     \end{tabular}
     \caption{Synthèse des modèles retenus pour l'analyse des sensibilités sous chocs Solvabilité 2.}
