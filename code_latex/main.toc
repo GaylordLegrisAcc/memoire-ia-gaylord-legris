@@ -75,11 +75,11 @@
 \contentsline {subsubsection}{\numberline {3.2.4.1}Étape 1 : Transformation de l'espace (la distance d'accessibilité mutuelle)}{62}{subsubsection.3.2.4.1}%
 \contentsline {subsubsection}{\numberline {3.2.4.2}Transformation de l'espace : la distance d'accessibilité mutuelle}{62}{subsubsection.3.2.4.2}%
 \contentsline {subsubsection}{\numberline {3.2.4.3}Construction de l'arbre couvrant minimum (MST)}{63}{subsubsection.3.2.4.3}%
-\contentsline {subsubsection}{\numberline {3.2.4.4}Construction de la hiérarchie des clusters}{64}{subsubsection.3.2.4.4}%
+\contentsline {subsubsection}{\numberline {3.2.4.4}Construction de la hiérarchie des clusters}{63}{subsubsection.3.2.4.4}%
 \contentsline {subsubsection}{\numberline {3.2.4.5}Condensation de l'arbre}{64}{subsubsection.3.2.4.5}%
-\contentsline {subsubsection}{\numberline {3.2.4.6}Extraction des clusters stables}{65}{subsubsection.3.2.4.6}%
-\contentsline {subsubsection}{\numberline {3.2.4.7}Stratégies d'extraction des clusters : EOM vs Leaf}{65}{subsubsection.3.2.4.7}%
-\contentsline {subsubsection}{\numberline {3.2.4.8}Constitution finale des Model Points}{66}{subsubsection.3.2.4.8}%
+\contentsline {subsubsection}{\numberline {3.2.4.6}Extraction des clusters stables}{64}{subsubsection.3.2.4.6}%
+\contentsline {subsubsection}{\numberline {3.2.4.7}Stratégies d'extraction des clusters : EOM vs Leaf}{64}{subsubsection.3.2.4.7}%
+\contentsline {subsubsection}{\numberline {3.2.4.8}Constitution finale des Model Points}{65}{subsubsection.3.2.4.8}%
 \contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{66}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Principe des arbres de décision (CART) appliqués au passif}{67}{subsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{67}{subsubsection.3.3.1.1}%

@@ -187,9 +187,11 @@ Cette méthode permet de définir automatiquement des Model Points situés au c�
     \label{fig:kmeans_clusters}
 \end{figure}
 
-Bien que l'algorithme des K-Means s'avère performant pour minimiser la variance au sein des groupes, il repose sur une hypothèse géométrique forte : il tend à construire des partitions sphériques (ou convexes) de tailles comparables. Or, la réalité d'un portefeuille d'assurance vie se caractérise souvent par des densités très hétérogènes et des formes irrégulières. Par exemple, la commercialisation massive d'une génération spécifique de produits sur une courte période crée une concentration locale de polices dont la forme dans l'espace des données est non convexe. \textcolor{blue}{Expliquer le terme convexe à un moment du mémoire}
+Bien que l'algorithme des K-Means s'avère performant pour minimiser la variance au sein des groupes, il repose sur une hypothèse géométrique forte : il tend à construire des partitions sphériques (ou convexes) de tailles comparables. D'un point de vue mathématique, un \textit{cluster} est dit convexe si, pour tout couple de points $A$ et $B$ appartenant à cet espace, l'intégralité du segment de droite $[AB]$ y est également incluse. 
 
-Pour capter ces niches complexes sans forcer l'homogénéité des volumes ni fixer \textit{a priori} le nombre de \textit{Model Points}, il convient de s'affranchir de la notion de distance pure au profit d'une analyse de la concentration locale des données.
+La fonction objectif du K-Means reposant sur la minimisation de la variance intra-classe via la distance euclidienne, l'algorithme trace des frontières de séparation strictement linéaires et rigides (les cellules de Voronoï). Or, la réalité d'un portefeuille d'assurance vie se caractérise souvent par des densités très hétérogènes et des formes irrégulières. Par exemple, la commercialisation massive d'une génération spécifique de produits sur une courte période crée une concentration locale de polices dont la forme dans l'espace des données est non convexe. Face à de telles structures, le K-Means s'avère incapable d'en épouser les contours et aura tendance à scinder arbitrairement ce profil de risque.
+
+Pour capter ces groupes complexes sans forcer l'homogénéité des volumes ni fixer \textit{a priori} le nombre de \textit{Model Points}, il convient de s'affranchir de la notion de distance pure au profit d'une analyse de la concentration locale des données.
 
 C'est pour répondre à ce besoin que des méthodes basées sur la densité peuvent être mises en place, à l'image de l'algorithme DBSCAN (\textit{Density-Based Spatial Clustering of Applications with Noise}) et de son extension hiérarchique HDBSCAN.
 
@@ -210,12 +212,50 @@ Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son 
     \item Tout point n'appartenant à aucun cluster est considéré comme du \textbf{bruit} (\textit{outlier}).
 \end{itemize}
 
+Afin d'illustrer la mécanique de cet algorithme, la Figure \ref{fig:theorie_dbscan} propose une représentation simplifiée. Dans la pratique, l'espace vectoriel d'un portefeuille d'assurance vie est moins linéaire et présente des hétérogénéités de densité nettement plus complexes à appréhender. Néanmoins, cette abstraction permet de visualiser clairement la logique de classification opérée par l'algorithme DBSCAN.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre3/dbscan.png}
-    \caption{Explication de l'algorithme DBSCAN (TODO : A refaire)}
-    \label{fig:dbscan}
+    \begin{tikzpicture}[scale=1.1,
+        % Styles des points
+        core/.style={circle, draw=accCore3, fill=accCore1, inner sep=2pt, minimum size=6pt},
+        border/.style={circle, draw=accCore2, fill=acc3, inner sep=2pt, minimum size=6pt},
+        noise/.style={circle, draw=gray!80, fill=gray!30, inner sep=2pt, minimum size=6pt},
+        % Styles des zones (pointillés, opaques)
+        core_eps/.style={circle, draw=accCore2, dashed, fill=accCore2, fill opacity=0.1, minimum size=3.5cm},
+        border_eps/.style={circle, draw=acc3, dashed, fill=acc3, fill opacity=0.1, minimum size=3.5cm}]
+        
+        % DESSIN DES CERCLES (en arrière-plan)
+        \node[core_eps] at (-0.8, 0) {};   % Cercle du Cœur Gauche
+        \node[core_eps] at (0.8, 0) {};    % Cercle du Cœur Droit
+        \node[border_eps] at (-2.2, 0) {}; % Cercle du Frontière Gauche
+        \node[border_eps] at (2.2, 0) {};  % Cercle du Frontière Droit
+        % Le point de bruit n'a volontairement pas de cercle
+
+        % DESSIN DES POINTS (au premier plan)
+        % Noyau dense : chaque point au centre a 3 points dans son rayon
+        \node[core] (C1) at (-0.8, 0) {};
+        \node[core] (C2) at (0.8, 0) {};
+        
+        % Points frontières : ils n'ont que 2 points dans leur rayon, mais touchent un coeur
+        \node[border] (B1) at (-2.2, 0) {};
+        \node[border] (B2) at (2.2, 0) {};
+        
+        % Point de bruit : Totalement isolé
+        \node[noise] (N) at (0, 2.2) {}; 
+
+        % LÉGENDE INTÉGRÉE (Très épurée)
+        \draw[rounded corners, draw=accCore2, fill=white, thick] (-6.0, -2.8) rectangle (6.0, -1.8);
+        
+        \node[core] at (-5.2, -2.3) {}; \node[right] at (-5, -2.3) {\small Cœur ($\geq 3$ pts)};
+        \node[border] at (-1.0, -2.3) {}; \node[right] at (-0.8, -2.3) {\small Frontière ($< 3$ pts)};
+        \node[noise] at (3, -2.3) {}; \node[right] at (3.2, -2.3) {\small Bruit (Isolé)};
+        
+    \end{tikzpicture}
+    \caption{Mécanique de l'algorithme DBSCAN ($MinPts = 3$) : Évaluation des densités locales par superposition des voisinages $\epsilon$.}
+    \label{fig:theorie_dbscan}
 \end{figure}
+
 
 \subsubsection{Adaptation aux contraintes assurantielles}
 L'application directe de DBSCAN aux données brutes du portefeuille d'assurance vie utilisé se heurte à deux obstacles majeurs nécessitant des adaptations spécifiques implémentées dans le protocole : Le problème de la discrétisation et la gestion du bruit.
@@ -238,14 +278,6 @@ Les contrats classés comme \og bruit \fg{} par DBSCAN (zones de faible densité
 Il a donc fallu implémenter une étape de post-traitement systématique : une réallocation via un algorithme des \textbf{$k$-plus proches voisins ($k$-NN)} avec $k=1$. Chaque contrat identifié comme bruit $x_{noise}$ est réaffecté au cluster validé $C_j$ le plus proche :
 $ Class(x_{noise}) = Class(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)) $
 Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiques aux segments les plus ressemblants.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/dbscan.png}
-    \caption{Explication du reclassement du bruit (TODO : A refaire)}
-    \label{fig:dbscan_bruit}
-\end{figure}
-
 
 \subsection{L'extension hiérarchique adaptative : HDBSCAN (distance d'accessibilité, extraction EOM vs Leaf)}
 \label{sec:presentation_hdbscan}
