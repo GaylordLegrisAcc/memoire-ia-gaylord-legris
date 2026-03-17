@@ -127,8 +127,8 @@ Deux lois de probabilité continues ont été sélectionnées comme candidates p
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8 \textwidth]{images/2_chapitres/chapitre2/estimation_loi_beta.png}
-\caption{Ajustement de la loi Beta sur la distribution empirique. TODO : Séparer une version homme et une femme et mettre en annexe}
+\includegraphics[width=0.8 \textwidth]{images/2_chapitres/chapitre2/estimation_loi_beta_femmes.png}
+\caption{Ajustement de la loi Beta sur la distribution empirique pour les femmes (hommes en annexe : figure \ref{fig:beta_hommes}).}
 \label{fig:beta}
 \end{figure}
 
@@ -233,7 +233,7 @@ Moins de 30 ans & 9.9233 & 1.7713 \\
 
 
 
-Sur la base des calibrations précédentes, une population synthétique de 500 000 individus a été générée. Pour chaque individu, un âge a été tiré selon la loi Bêta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation observée dans la réalité (TODO : rajouter un graphe 3D si c'est possible/lisible).
+Sur la base des calibrations précédentes, une population synthétique de 1 000 000 de contrats a été générée. Pour chaque individu, un âge a été tiré selon la loi Bêta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation souhaitée.
 
 La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance-vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation n'est pas linéaire. Pour les patrimoines les plus modestes, qui n'ont pas encore la capacité d'investir dans l'immobilier, la part des actifs financiers est relativement élevée. À mesure que le patrimoine augmente, une part significative est allouée à l'immobilier, ce qui diminue mécaniquement la part relative du patrimoine financier. Ce phénomène s'inverse cependant pour les patrimoines les plus élevés, où la diversification vers des actifs financiers redevient prépondérante, entraînant une remontée de leur part dans le patrimoine total, ce n'est pas observable sur le graphique \ref{fig:composition_patrimoine} car les données sont agrégées par décile.
 

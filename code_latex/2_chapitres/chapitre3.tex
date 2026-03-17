@@ -279,111 +279,98 @@ Il a donc fallu implémenter une étape de post-traitement systématique : une r
 $ Class(x_{noise}) = Class(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)) $
 Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiques aux segments les plus ressemblants.
 
-\subsection{L'extension hiérarchique adaptative : HDBSCAN (distance d'accessibilité, extraction EOM vs Leaf)}
+\subsection{L'extension hiérarchique adaptative : HDBSCAN}
 \label{sec:presentation_hdbscan}
-Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques comme le fait l'algorithme K-Means, il conserve une limite majeure : l'utilisation d'un seuil de densité global ($\varepsilon$) unique. Dans un portefeuille d'assurance vie, la densité des données est hétérogène. Certaines zones, correspondant aux produits récemment commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits de niche, sont beaucoup plus diffuses. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche fusionne des clusters distincts dans les zones denses.
 
-Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables. Son fonctionnement se décompose en cinq étapes séquentielles majeures \cite{hdbscan} :
-\begin{enumerate}
-    \item La transformation de l'espace métrique (pour isoler le bruit) ;
-    \item La construction d'un graphe (arbre couvrant minimum) ;
-    \item La formation de la hiérarchie des clusters ;
-    \item La condensation de l'arbre hiérarchique ;
-    \item L'extraction dynamique des clusters finaux.
-\end{enumerate}
+Bien que l'algorithme DBSCAN permette de créer des clusters sur des données non sphériques, il conserve une limite majeure inhérente à sa conception : l'utilisation d'un seuil de densité global ($\varepsilon$) unique. Or, dans un portefeuille d'assurance vie, la densité des données est structurellement hétérogène. Certaines zones, correspondant aux produits récemment commercialisés, présentent une très forte concentration de contrats, tandis que d'autres, regroupant des générations anciennes ou des produits à part, s'avèrent beaucoup plus diffuses. L'application d'un $\varepsilon$ unique conduit inévitablement à un compromis insatisfaisant : un seuil strict fragmente les zones diffuses en bruit, tandis qu'un seuil lâche fusionne des clusters distincts dans les zones denses.
 
-Les sous-parties suivantes détaillent la mécanique mathématique de chacune de ces étapes.
+Pour répondre à cette problématique, l'algorithme \textbf{HDBSCAN} (\textit{Hierarchical Density-Based Spatial Clustering of Applications with Noise}) propose une approche hiérarchique permettant de détecter des clusters de densités variables \cite{hdbscan}. Son fonctionnement repose sur une séquence de cinq étapes mathématiques :
 
-\subsubsection{Étape 1 : Transformation de l'espace (la distance d'accessibilité mutuelle)}
-Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la distance d'accessibilité mutuelle.
-
-\subsubsection{Transformation de l'espace : la distance d'accessibilité mutuelle}
-Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la distance d'accessibilité mutuelle.
+\subsubsection*{Étape 1 : Transformation de l'espace par la distance d'accessibilité mutuelle}
+Afin de rendre l'algorithme plus robuste aux points aberrants (bruit), HDBSCAN ne travaille pas directement sur la distance euclidienne brute, mais définit une nouvelle métrique : la distance d'accessibilité mutuelle (\textit{mutual reachability distance}). 
 
 \begin{equation}
  d_{mreach}(a, b) = \max \{ \text{core}_k(a), \text{core}_k(b), d(a, b) \} 
 \end{equation}
 
-Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Cette métrique permet de pondérer la distance entre deux points par leur densité locale : si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant ainsi sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les points aberrants en les repoussant hors des zones de forte concentration, ce qui stabilise la formation des clusters.
+Où $\text{core}_k(x)$ est la distance du point $x$ à son $k$-ième voisin le plus proche. Comme l'illustre la Figure \ref{fig:mutual_reachability}, cette métrique permet de pondérer la distance entre deux points par leur densité locale. Si un point se trouve dans une zone de faible densité, sa distance de cœur sera élevée, augmentant mécaniquement sa distance mutuelle $d_{mreach}$ avec les autres points. Cette transformation a pour effet d'isoler les valeurs aberrantes en les repoussant hors des zones de forte concentration, stabilisant ainsi la formation des futurs clusters.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/hdbscan1.png}
-    \caption{Illustration de la distance d'accessibilité mutuelle \cite{hdbscan} \textcolor{blue}{citer tous les graphes de la section dans le texte pour relier l'explication}}
+    \caption{Illustration de la distance d'accessibilité mutuelle \cite{hdbscan} : les points isolés sont mathématiquement repoussés.}
     \label{fig:mutual_reachability}
 \end{figure}
 
-Ayant établi une mesure de distance robuste aux valeurs aberrantes, l'algorithme procède ensuite à la structuration topologique des données.
-
-\subsubsection{Construction de l'arbre couvrant minimum (MST)}
-L'algorithme construit ensuite un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un arbre couvrant minimum (\textit{Minimum Spanning Tree} - MST) est généré pour connecter l'ensemble des points en minimisant le poids total des arêtes.
+\subsubsection*{Étape 2 : Construction de l'arbre couvrant minimum (MST)}
+Ayant établi cette mesure, l'algorithme modélise les données sous la forme d'un graphe où chaque contrat est un sommet, relié aux autres par des arêtes pondérées par la distance $d_{mreach}$. Un arbre couvrant minimum (\textit{Minimum Spanning Tree} - MST), présenté en Figure \ref{fig:mst}, est alors généré pour connecter l'ensemble du portefeuille en minimisant le poids total des arêtes.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/hdbscan2.png}
-    \caption{Construction de l'Arbre Couvrant Minimum \cite{hdbscan}}
+    \includegraphics[width=0.5\textwidth]{images/2_chapitres/chapitre3/hdbscan2.png}
+    \caption{Construction de l'Arbre Couvrant Minimum reliant les points selon la nouvelle métrique \cite{hdbscan}.}
     \label{fig:mst}
 \end{figure}
 
-\subsubsection{Construction de la hiérarchie des clusters}
-En supprimant itérativement les arêtes du MST par ordre décroissant de poids, l'algorithme déconnecte progressivement le graphe. Cela crée une structure dendrogrammatique (arbre hiérarchique) représentant l'ensemble des regroupements possibles, du plus global (un seul cluster) au plus fin (chaque point est un cluster).
+\subsubsection*{Étape 3 : Formation de la hiérarchie des clusters}
+En supprimant itérativement les arêtes du MST par ordre décroissant de poids (c'est-à-dire en retirant d'abord les connexions les plus faibles), l'algorithme déconnecte progressivement le graphe. Cette démarche, illustrée par la Figure \ref{fig:hierarchy_clusters}, crée une structure dendrogrammatique (un arbre hiérarchique) représentant l'ensemble des regroupements possibles, du plus global (un cluster unique englobant tout le portefeuille) au plus fin (chaque contrat forme son propre cluster).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre3/hdbscan3.png}
-    \caption{Construction de la hiérarchie des clusters \cite{hdbscan}}
+    \includegraphics[width=0.4\textwidth]{images/2_chapitres/chapitre3/hdbscan3.png}
+    \caption{Dendrogramme de la hiérarchie des clusters issue de la découpe du MST \cite{hdbscan}.}
     \label{fig:hierarchy_clusters}
 \end{figure}
 
-\subsubsection{Condensation de l'arbre}
-L'arbre hiérarchique complet étant trop complexe, il est condensé. À chaque séparation, la taille minimale des nouveaux groupes formés est vérifiée si les nouveaux groupes formés atteignent une taille minimale ($MinPts$). Si ce n'est pas le cas, les points sont considérés comme du bruit détaché du cluster principal. Si les deux branches sont suffisamment grandes, il est considéré qu'il y a naissance de deux vrais clusters. Cette étape simplifie drastiquement l'arbre en ne conservant que les branches significatives.
+\subsubsection*{Étape 4 : Condensation de l'arbre}
+L'arbre hiérarchique brut s'avérant trop complexe pour être exploité tel quel, il doit être condensé (Figure \ref{fig:condensed_tree}). À chaque séparation de l'arbre, l'algorithme vérifie si les nouveaux groupes formés atteignent la taille minimale requise ($MinPts$). Si l'un des sous-groupes est inférieur à ce seuil, ses points sont considérés comme du bruit s'étant détaché du cluster principal. En revanche, si les deux branches respectent le critère $MinPts$, il est acté qu'il y a naissance de deux véritables clusters distincts. Cette étape simplifie drastiquement le dendrogramme en ne conservant que les branches massives et significatives.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{images/2_chapitres/chapitre3/hdbscan4.png}
-    \caption{Condensation de l'arbre hiérarchique \cite{hdbscan}}
+    \caption{Condensation de l'arbre hiérarchique par élimination des micro-scissions \cite{hdbscan}.}
     \label{fig:condensed_tree}
 \end{figure}
 
-\subsubsection{Extraction des clusters stables}
-Contrairement aux méthodes hiérarchiques classiques qui coupent l'arbre à un niveau fixe, HDBSCAN sélectionne les clusters en maximisant une mesure de stabilité appelée \textit{Excess of Mass} (eom). La stabilité d'un cluster est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{d
-eath}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
+\subsubsection*{Étape 5 : Extraction dynamique des clusters finaux (EOM vs Leaf)}
+L'aboutissement de la méthode HDBSCAN (Figure \ref{fig:hdbscan_final}) réside dans sa capacité à sélectionner les clusters les plus pertinents sans couper l'arbre à un niveau horizontal fixe. L'algorithme sélectionne les clusters en maximisant une mesure de stabilité. La stabilité $\mathcal{S}$ d'un cluster $C$ est définie par la somme, pour tous ses points, de la différence entre la densité à laquelle le point quitte le cluster ($\lambda_{death}$) et celle où le cluster est apparu ($\lambda_{birth}$) :
 
 \begin{equation}
  \mathcal{S}(C) = \sum_{x \in C} (\lambda_{death}(x) - \lambda_{birth}(C)) 
 \end{equation}
-L'algorithme remonte l'arbre condensé et sélectionne l'ensemble de clusters disjoints qui maximise cette stabilité globale.
 
-\subsubsection{Stratégies d'extraction des clusters : EOM vs Leaf}
-Deux stratégies de sélection des nœuds dans la hiérarchie ont été mises en concurrence :
+Lors de l'extraction, deux stratégies de sélection des nœuds dans la hiérarchie peuvent être mises en concurrence :
 \begin{itemize}
-    \item \textbf{EOM (Excess of Mass) :} C'est la méthode par défaut de l'algorithme, elle sélectionne les clusters présentant la plus grande stabilité en surface dans l'arbre hiérarchique. Cette méthodologie permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale et adaptative de la population des assurés sans paramétrage complexe d'un rayon de voisinage.
-    \item \textbf{Leaf (Feuilles) :} Cette variante force l'algorithme à sélectionner uniquement les nœuds terminaux de l'arbre condensé (les feuilles). Elle garantit l'homogénéité maximale au sein de chaque Model Point en évitant toute fusion, au prix d'un nombre de MP plus important.
+    \item \textbf{Extraction EOM (\textit{Excess of Mass}) :} Méthode par défaut, elle sélectionne les clusters présentant la plus grande stabilité en surface dans l'arbre. Elle permet d'identifier simultanément des micro-clusters très compacts et des macro-clusters plus étendus, offrant une segmentation optimale sans imposer de rayon rigide.
+    \item \textbf{Extraction Leaf (Feuilles) :} Cette variante force l'algorithme à sélectionner uniquement les nœuds terminaux de l'arbre condensé. Elle garantit une homogénéité maximale au sein de chaque groupe en évitant toute macro-fusion, au prix d'une volumétrie finale de \textit{Model Points} (MP) structurellement plus importante.
 \end{itemize}
-
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre3/hdbscan6.png}
-    \caption{Résultat final du clustering HDBSCAN \cite{hdbscan} \textcolor{blue}{citer les graphes et expliquer}}
+    \caption{Sélection finale adaptative (EOM) : les clusters de densités variables sont correctement isolés \cite{hdbscan}.}
     \label{fig:hdbscan_final}
 \end{figure}
+
+Afin de synthétiser visuellement l'apport de cette extension hiérarchique, la Figure \ref{fig:hdbscan_comparison} confronte le partitionnement d'un espace hétérogène par DBSCAN et HDBSCAN. Là où le DBSCAN classique (à gauche) échoue à classifier simultanément les zones diffuses et les zones denses à cause de son paramètre global $\varepsilon$, le HDBSCAN (à droite) épouse parfaitement les différentes structures de densité.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre3/dbscan_hdbscan.jpg}
-    \caption{Comparaison des approches DBSCAN et HDBSCAN \cite{dbscan_hdbscan} \textcolor{blue}{citer les graphes et expliquer}}
+    \caption{Comparaison des approches : Échec du DBSCAN classique (gauche) face à la flexibilité adaptative du HDBSCAN (droite) sur des densités hétérogènes \cite{dbscan_hdbscan}.}
     \label{fig:hdbscan_comparison}
 \end{figure}
 
-\subsubsection{Constitution finale des Model Points}
-Une fois la partition optimale obtenue (via DBSCAN ou HDBSCAN) et le bruit réalloué, la construction des Model Points suit la logique de conservation des flux financiers. Pour chaque cluster $j$, le Model Point est défini par le barycentre pondéré des contrats :
+\subsubsection*{Constitution finale des Model Points et approches hybrides}
+Une fois la partition optimale obtenue et le bruit réalloué (par minimisation de la distance aux centroïdes), la construction des \textit{Model Points} doit respecter la conservation stricte des flux financiers. Pour chaque cluster $j$, le profil caractéristique du Model Point ($\mu_j$) est défini par le barycentre pondéré des $i$ contrats le composant, en retenant la Provision Mathématique ($PM$) comme pondération naturelle :
 
-$ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i} $
+\begin{equation}
+ \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i}
+\end{equation}
 
-Cette méthode assure que le Model Point se situe au centre de gravité financier de son groupe, minimisant ainsi le biais d'agrégation sur les projections futures.
+Cette méthode de calcul assure que le \textit{Model Point} se situe exactement au centre de gravité financier de son groupe, minimisant de fait le biais d'agrégation initial sur le bilan. 
 
-\textcolor{blue}{refaire les modélisations en utilisant un peu toutes les méthodes}
+Il convient par ailleurs de souligner qu'en environnement de production, il est possible d'hybrider ces algorithmes. Par exemple, une première segmentation peut être opérée pour scinder les macro-risques ou les produits, suivie d'une application de HDBSCAN au sein de chaque poche pour en extraire la segmentation fine.
 
 Bien que les algorithmes de \textit{clustering} spatial offrent des solutions robustes pour regrouper les contrats selon leurs similarités géométriques, ils opèrent de manière non supervisée. Ils structurent l'espace des données sans tenir compte de l'impact financier réel de ces regroupements sur le modèle ALM. Pour pallier cette limite et orienter la construction des \textit{Model Points} autour d'un enjeu actuariel précis, il convient d'explorer une seconde grande famille d'algorithmes : les méthodes supervisées. Celles-ci utilisent une variable cible (telle que la provision mathématique ou un flux de trésorerie) pour guider mathématiquement la partition du portefeuille.
 

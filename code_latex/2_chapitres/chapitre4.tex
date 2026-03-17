@@ -16,15 +16,14 @@ Une première étape d'agrégation basique est réalisée en regroupant les poli
 
 Afin de valider la neutralité de cette réduction, une projection en passif seul sur un scénario central déterministe est effectuée sur les deux périmètres : le portefeuille complet (1 million de contrats) et le portefeuille agrégé de base (26 272 MP). L'indicateur principal retenu pour vérifier la précision de la méthode est le \textit{Best Estimate} des engagements.
 
-% TODO : Insérer ici un petit tableau ou une phrase donnant la valeur exacte du BE pour le 1M et le 26k, montrant un écart de 0.00%.
 \begin{table}[htbp]
     \centering
     \begin{tabular}{|l|c|r|r|}
         \hline
-        \textbf{Modèle} & \textbf{Nombre de lignes} & \textbf{BE Central (M\euro)} & \textbf{Écart relatif (\%)} \\
+        \textbf{Modèle} & \textbf{Nombre de lignes} & \textbf{BE Central (Md\euro)} & \textbf{Écart relatif (\%)} \\
         \hline
-        Portefeuille complet & 1 000 000 & [Valeur BE 1M] & {\text{Réf.}} \\
-        Agrégation de base & 26 272 & [Valeur BE 26k] & 0.00 \\
+        Portefeuille complet & 1 000 000 & 263.95 & {\text{Réf.}} \\
+        Agrégation de base & 26 272 & 263.95 & 0.00 \\
         \hline
     \end{tabular}
     \caption{Comparaison du Best Estimate entre le portefeuille complet et l'agrégation de base.}
