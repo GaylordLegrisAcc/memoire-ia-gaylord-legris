@@ -62,7 +62,7 @@
 \contentsline {subsubsection}{\numberline {3.1.2.1}Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}{55}{subsubsection.3.1.2.1}%
 \contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{55}{subsubsection.3.1.2.2}%
 \contentsline {section}{\numberline {3.2}Les approches statistiques spatiales (Apprentissage non supervisé)}{56}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Préparation de l'espace spatial : techniques transverses}{57}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.1}Préparation de l'espace vectoriel : techniques transverses}{57}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}Partitionnement par inertie : \textit {k}-moyennes (K-Means) pondéré}{58}{subsection.3.2.2}%
 \contentsline {subsubsection}{\numberline {3.2.2.1}Principe de l'algorithme}{58}{subsubsection.3.2.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2.2}Application aux données du portefeuille}{58}{subsubsection.3.2.2.2}%
@@ -73,40 +73,40 @@
 \contentsline {subsubsection}{\numberline {3.2.3.3}Gestion du bruit et réallocation des contrats}{62}{subsubsection.3.2.3.3}%
 \contentsline {subsection}{\numberline {3.2.4}L'extension hiérarchique adaptative : HDBSCAN}{62}{subsection.3.2.4}%
 \contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{67}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Principe des arbres de décision (CART) appliqués au passif}{67}{subsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{67}{subsubsection.3.3.1.1}%
-\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (refined vs spread focus)}{68}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{68}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{69}{subsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{69}{subsubsection.3.4.1.1}%
-\contentsline {subsection}{\numberline {3.4.2}Calibration de lois \textit {a posteriori} (Méthode \textit {Biais Zéro} et clés financières)}{70}{subsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.2.1}Définition des clés d'agrégation financières}{70}{subsubsection.3.4.2.1}%
-\contentsline {subsubsection}{\numberline {3.4.2.2}Mécanique des décréments et modification du cœur ALM}{71}{subsubsection.3.4.2.2}%
-\contentsline {section}{\numberline {3.5}Conclusion}{71}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}{73}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Validation du périmètre de référence et neutralité de l'agrégation de base}{74}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{75}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Établissement du cadre d'analyse pour la sélection des modèles}{75}{subsection.4.1.2}%
-\contentsline {subsection}{\numberline {4.1.3}Évaluation des indicateurs S2 du modèle de référence}{76}{subsection.4.1.3}%
-\contentsline {section}{\numberline {4.2}Calibration des algorithmes et sélection des modèles candidats}{77}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Protocole \textit {Grid Search} et échantillonnage adaptatif}{78}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Sensibilité aux hyperparamètres et analyse des dynamiques d'agrégation}{79}{subsection.4.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{80}{subsubsection.4.2.2.1}%
-\contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{81}{subsubsection.4.2.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{82}{subsubsection.4.2.2.3}%
-\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{83}{subsection.4.2.3}%
-\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{84}{subsubsection.4.2.3.1}%
-\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{85}{subsubsection.4.2.3.2}%
-\contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{87}{subsubsection.4.2.3.3}%
-\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{88}{subsubsection.4.2.3.4}%
-\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{90}{subsection.4.2.4}%
-\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{90}{subsubsection.4.2.4.1}%
-\contentsline {subsubsection}{\numberline {4.2.4.2}Le moteur de Biais Zéro (Approche d'optimisation)}{90}{subsubsection.4.2.4.2}%
-\contentsline {subsection}{\numberline {4.2.5}Selection des candidats finaux}{91}{subsection.4.2.5}%
-\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{91}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Évaluation sur le Best Estimate ALM déterministe}{92}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Évaluation stochastique et sensibilités réglementaires (BSCR)}{93}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{95}{subsection.4.3.3}%
-\contentsline {chapter}{Conclusion}{98}{chapter*.8}%
-\contentsline {chapter}{Annexes}{101}{chapter*.9}%
-\contentsline {chapter}{Bibliographie}{109}{table.4.14}%
+\contentsline {subsection}{\numberline {3.3.1}Principe des arbres de décision (CART) appliqués au passif}{68}{subsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{68}{subsubsection.3.3.1.1}%
+\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (refined vs spread focus)}{69}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{69}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{70}{subsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{70}{subsubsection.3.4.1.1}%
+\contentsline {subsection}{\numberline {3.4.2}Calibration de lois \textit {a posteriori} (Méthode \textit {Biais Zéro} et clés financières)}{71}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}Définition des clés d'agrégation financières}{71}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}Mécanique des décréments et modification du cœur ALM}{72}{subsubsection.3.4.2.2}%
+\contentsline {section}{\numberline {3.5}Conclusion}{72}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}{74}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Validation du périmètre de référence et neutralité de l'agrégation de base}{75}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{76}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Établissement du cadre d'analyse pour la sélection des modèles}{76}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Évaluation des indicateurs S2 du modèle de référence}{77}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Calibration des algorithmes et sélection des modèles candidats}{78}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Protocole \textit {Grid Search} et échantillonnage adaptatif}{79}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Sensibilité aux hyperparamètres et analyse des dynamiques d'agrégation}{80}{subsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{81}{subsubsection.4.2.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{82}{subsubsection.4.2.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{83}{subsubsection.4.2.2.3}%
+\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{84}{subsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{85}{subsubsection.4.2.3.1}%
+\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{86}{subsubsection.4.2.3.2}%
+\contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{88}{subsubsection.4.2.3.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{89}{subsubsection.4.2.3.4}%
+\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{91}{subsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{91}{subsubsection.4.2.4.1}%
+\contentsline {subsubsection}{\numberline {4.2.4.2}Le moteur de Biais Zéro (Approche d'optimisation)}{91}{subsubsection.4.2.4.2}%
+\contentsline {subsection}{\numberline {4.2.5}Sélection des candidats finaux}{92}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{92}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Évaluation sur le Best Estimate ALM déterministe}{93}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Évaluation stochastique et sensibilités réglementaires (BSCR)}{94}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{96}{subsection.4.3.3}%
+\contentsline {chapter}{Conclusion}{99}{chapter*.8}%
+\contentsline {chapter}{Annexes}{102}{chapter*.9}%
+\contentsline {chapter}{Bibliographie}{110}{table.4.14}%

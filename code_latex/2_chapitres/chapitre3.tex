@@ -56,7 +56,7 @@ Cependant, elle présente des limites intrinsèques :
 
 Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
 
-Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivant ont été retenus :
+Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivants ont été retenus :
 \begin{itemize}
     \item Un pas de 2 ans pour l'âge de l'assuré ;
     \item Un pas de 5 ans pour l'ancienneté du contrat.
@@ -105,7 +105,7 @@ Cette famille de méthodes repose sur les techniques d'apprentissage non supervi
 
 Toutefois, avant même d'aborder la mécanique interne des algorithmes de partitionnement, une étape préliminaire s'avère indispensable pour garantir la pertinence mathématique des distances calculées.
 
-\subsection{Préparation de l'espace spatial : techniques transverses}
+\subsection{Préparation de l'espace vectoriel : techniques transverses}
 Au-delà du choix de l'algorithme de clustering, la performance de l'agrégation dépend fortement de la préparation des données et des contraintes métier imposées lors du processus.
 
 \subsubsection*{Stratification par risques majeurs (TMG et Sexe)}
@@ -201,9 +201,14 @@ C'est pour répondre à ce besoin que des méthodes basées sur la densité peuv
 L'algorithme DBSCAN définit un cluster comme une zone de forte densité séparée par des zones de faible densité. Il repose sur deux paramètres clés : un rayon de voisinage $\varepsilon$ (\textit{epsilon}) et un nombre minimum de points $MinPts$.
 
 Mathématiquement, la notion de densité est formalisée par le voisinage $\varepsilon$ d'un point $x$, noté $N_\varepsilon(x)$ :
-$ N_\varepsilon(x) = \{ y \in D \mid d(x,y) \le \varepsilon \} $
+\begin{equation}
+    N_\varepsilon(x) = \{ y \in D \mid d(x,y) \le \varepsilon \}
+\end{equation}
 
-Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son voisinage contient au moins $MinPts$ points : $|N_\varepsilon(x)| \ge MinPts$.
+Un point $x$ est qualifié de \textbf{point cœur} (\textit{core point}) si son voisinage contient au moins $MinPts$ points :
+\begin{equation}
+    |N_\varepsilon(x)| \ge MinPts
+\end{equation}
 
 À partir de cette définition, les clusters sont construits par propagation de la propriété de \textit{densité-accessibilité} :
 \begin{itemize}
@@ -263,9 +268,9 @@ L'application directe de DBSCAN aux données brutes du portefeuille d'assurance 
 Les variables de gestion (âge, ancienneté) sont traditionnellement stockées de manière discrète. Cette structure crée une grille artificielle où plusieurs contrats se superposent exactement sur les mêmes coordonnées $(x,y)$. Cela fausse le calcul de densité locale : un point isolé sur la grille peut artificiellement paraître très dense simplement parce qu'il superpose plusieurs contrats identiques au mêmes caractéristiques.
 
 Pour y remédier, une technique de \textbf{Dithering} (bruitage uniforme) peut être utilisée. Avant l'étape de clustering, une perturbation aléatoire $u_i$ est ajoutée aux variables temporelles de chaque contrat $x_i$ :
-
-$ \tilde{x}_{i, d} = x_{i, d} + u_{i, d} \quad \text{avec} \quad u_{i, d} \sim \mathcal{U}([-0.5, 0.5]) $
-
+\begin{equation}
+    \tilde{x}_{i, d} = x_{i, d} + u_{i, d} \quad \text{avec} \quad u_{i, d} \sim \mathcal{U}([-0.5, 0.5])
+\end{equation}
 Cette transformation permet alors de fluidifier l'espace et d'éviter une trop grande densité des contrats, sans altérer les propriétés statistiques globales du portefeuille (l'espérance de la perturbation étant nulle).
 
 \subsubsection{Gestion du bruit et réallocation des contrats}
@@ -276,7 +281,9 @@ $\sum PM_{MP} = \sum PM_{contrats}$.
 Les contrats classés comme \og bruit \fg{} par DBSCAN (zones de faible densité ou points isolés) ne peuvent être ignorés.
 
 Il a donc fallu implémenter une étape de post-traitement systématique : une réallocation via un algorithme des \textbf{$k$-plus proches voisins ($k$-NN)} avec $k=1$. Chaque contrat identifié comme bruit $x_{noise}$ est réaffecté au cluster validé $C_j$ le plus proche :
-$ Class(x_{noise}) = Class(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)) $
+\begin{equation}
+    \operatorname{Class}(x_{noise}) = \operatorname{Class}\left(\underset{y \in \text{Clustered}}{\text{argmin}} \ d(x_{noise}, y)\right)
+\end{equation}
 Cela garantit qu'aucun contrat n'est perdu tout en rattachant les profils atypiques aux segments les plus ressemblants.
 
 \subsection{L'extension hiérarchique adaptative : HDBSCAN}
