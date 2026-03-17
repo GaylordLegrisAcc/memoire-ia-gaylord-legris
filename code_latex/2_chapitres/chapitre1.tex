@@ -295,8 +295,7 @@ Les paragraphes suivants détaillent la mécanique actuarielle de projection sur
 
 \subsubsection*{Algorithme de projection des flux de passif}
 
-\textcolor{blue}{Ici il faut faire attention : les presta sont appliquées à mi période et calculées à mi période ou à fin de période ?}
-La projection des engagements s'effectue selon une logique de flux en fin de période, adaptée pour simuler la survenance continue des événements. Pour chaque année projetée $t$, l'évolution de la$PM$ suit la séquence d'opérations suivante :
+Afin de refléter fidèlement la réalité économique de la survenance des sinistres et des rachats, le modèle repose sur une hypothèse de sortie à mi-période. Pour chaque année projetée $t$, l'évolution de la provision mathématique ($PM$) suit la séquence d'opérations vectorisées suivante :
 
 \begin{enumerate}
     \item \textbf{Vieillissement et mise à jour des statuts :}
@@ -310,28 +309,73 @@ La projection des engagements s'effectue selon une logique de flux en fin de pé
     \end{itemize}
 
     \item \textbf{Valorisation intermédiaire et calcul des prestations :}
-    Afin de simuler une distribution uniforme des décès et des rachats au cours de l'année, le modèle calcule une PM revalorisée à mi-période ($t+0.5$) sur laquelle sont appliqués les taux de sortie.
-    \[ PM_{t+0.5} = PM_{t} \times (1 + TMG)^{0.5} \]
-    Les flux de prestations ($P_{MP,t}$) versées sur un \textit{Model Point} l'année $t$ sont alors déduits :
+    Le modèle calcule d'abord une provision mathématique revalorisée à mi-période ($t+0.5$) avec un taux de rendement équivalent :
     \begin{equation}
-        P_{MP,t} = \underbrace{PM_{MP,t+0.5} \times q_{MP,x+t}}_{\text{Prestations Décès}} + \underbrace{PM_{MP,t+0.5} \times (1-q_{MP,x+t}) \times \alpha_{MP,t}}_{\text{Prestations Rachat}}
+        PM_{t+0.5} = PM_{t} \times \left(1 + \left((1 + TMG)^{0.5} - 1\right)\right)
+    \end{equation}
+    Ensuite il traite les événements de manière séquentielle. Les rachats totaux ($RT_t$) sont d'abord prélevés sur l'encours à mi-période, puis les prestations pour cause de décès ($DC_t$) s'appliquent sur l'encours résiduel. Les flux de prestations brutes ($P_{MP,t}$) s'écrivent donc :
+    \begin{equation}
+        RT_t = PM_{t+0.5} \times \alpha_t
+    \end{equation}
+    \begin{equation}
+        DC_t = (PM_{t+0.5} - RT_t) \times q_{x+t}
+    \end{equation}
+    \begin{equation}
+        P_{MP,t} = RT_t + DC_t
     \end{equation}
     Cette approche assure la cohérence entre la valeur de l'épargne acquise au moment du départ et les montants effectivement versés.
 
     \item \textbf{Prélèvement des frais et capitalisation du stock restant :}
-    Les chargements ($Ch_{MP,t}$) et frais de gestion ($Fg_{MP,t}$) sont prélevés sur l'encours. \textcolor{blue}{remarque d'Aurélien : frais sont pris à part sur les montants de chargement et non sur l'encours direct => marge de gestion ??} Le stock restant continue de capitaliser au TMG sur la seconde moitié de l'année. La PM d'un \textit{Model Point} avant participation aux bénéfices s'écrit alors : 
+    Dans le cadre de cette modélisation, l'absorption des coûts par le fonds est traduite par un prélèvement direct sur les encours et sur les flux (sans modélisation d'une marge de gestion extracomptable). On distingue les frais de gestion directement prélevés sur l'encours ($FGSE_t$) et les frais généraux ($FGX_t$) qui se décomposent en un taux sur l'encours et un taux sur les prestations brutes :
     \begin{equation}
-        PM_{MP,t+1}^{\text{avant PB}} = PM_{MP,t} \times (1 + TMG_{MP}) - P_{MP,t} \times (1 + TMG_{MP})^{0.5} - (Ch_{MP,t} + Fg_{MP,t})
+        Frais_{MP,t} = (tx_{fgse} + tx_{fgx\_pm}) \times PM_{t+0.5} + tx_{fgx\_prst} \times P_{MP,t}
+    \end{equation}
+    Le stock restant continue de capitaliser au TMG sur la seconde moitié de l'année. La PM d'un \textit{Model Point} avant participation aux bénéfices s'écrit alors : 
+    \begin{equation}
+        PM_{MP,t+1}^{\text{avant PB}} = PM_{MP,t} \times (1 + TMG_{MP}) - P_{MP,t} \times (1 + TMG_{MP})^{0.5} - Frais_{MP,t}
     \end{equation}
 
     \item \textbf{Revalorisation finale et participation aux bénéfices :}
-    En fin d'année, l'interaction centrale de l'ALM s'opère via la distribution de la performance financière. Le module détermine le taux de revalorisation global ($Tx_{\text{servi}, t}$) en simulant la stratégie discrétionnaire de l'assureur selon le mécanisme suivant :
+    En fin d'année, l'interaction centrale de l'ALM s'opère via la distribution de la performance financière. Le module détermine le taux de revalorisation global ($Tx_{\text{servi}, t}$) en simulant la stratégie discrétionnaire de l'assureur. Comme illustré à la Figure \ref{fig:mecanique_pb}, ce mécanisme se décompose en plusieurs étapes séquentielles :
     \begin{itemize}
-        \item Calcul du résultat financier (produits financiers nets de charges) ;
-        \item Détermination de l'assiette de PB réglementaire ;
-        \item Application de la politique commerciale (recherche d'un taux cible concurrentiel) ;
-        \item Dotation ou reprise à la PPE pour lisser les rendements dans le temps. \textcolor{blue}{rq lucas : schéma serait pas mal surtout si tu as des mécanismes pour servir le tx cible}
+        \item Le calcul du résultat financier (produits financiers nets de charges) ;
+        \item La détermination de l'assiette de PB réglementaire ;
+        \item L'application de la politique commerciale (recherche d'un taux cible concurrentiel) ;
+        \item La dotation ou reprise à la PPE pour lisser les rendements dans le temps.
     \end{itemize}
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[node distance=2cm, auto, 
+            % Définition des styles avec les couleurs Accenture et retour à la ligne automatique
+            box/.style={rectangle, draw=accCore2, fill=acc5, thick, minimum width=4cm, minimum height=1.2cm, text centered, rounded corners=3pt, font=\sffamily\small\color{accCore3}, text width=3.8cm},
+            sidebox/.style={rectangle, draw=acc1, fill=acc4, thick, minimum width=4cm, minimum height=1.2cm, text centered, rounded corners=3pt, font=\sffamily\small\color{accCore3}, text width=3.8cm},
+            finalbox/.style={rectangle, draw=accCore1, fill=acc3, thick, minimum width=4cm, minimum height=1.2cm, text centered, rounded corners=3pt, font=\sffamily\small\bfseries\color{white}, text width=3.8cm},
+            arrow/.style={thick,->,>=stealth, draw=accCore2}]
+            
+            % Ligne 1 (de gauche à droite)
+            \node (fin) [box] {1. Rendement Financier de l'Actif};
+            \node (tmg) [box, right of=fin, xshift=3.5cm] {2. Servir le TMG (Taux Minimum Garanti)};
+            \node (pbreg) [box, right of=tmg, xshift=3.5cm] {3. Calcul de la PB Réglementaire};
+            
+            % Ligne 2 (descente et retour vers la gauche)
+            \node (ppe) [box, below of=pbreg, yshift=-1.2cm] {4. Dotation ou Reprise de la PPE};
+            \node (servi) [finalbox, left of=ppe, xshift=-3.5cm] {5. Taux de revalorisation servi à l'assuré};
+            
+            % Taux cible placé sous la PPE pour ne pas encombrer
+            \node (cible) [sidebox, below of=ppe, yshift=-1.2cm] {Taux Cible de Marché};
+            
+            % Tracé des flèches avec placement ajusté des textes
+            \draw [arrow] (fin) -- node[anchor=south, font=\sffamily\scriptsize\color{accCore2}] {Couverture} (tmg);
+            \draw [arrow] (tmg) -- node[anchor=south, font=\sffamily\scriptsize\color{accCore2}] {Partage} (pbreg);
+            \draw [arrow] (pbreg) -- node[anchor=west, font=\sffamily\scriptsize\color{accCore2}] {Comparaison} (ppe);
+            \draw [arrow] (cible) -- node[anchor=west, font=\sffamily\scriptsize\color{accCore2}] {Besoin rendement} (ppe);
+            \draw [arrow] (ppe) -- node[anchor=south, font=\sffamily\scriptsize\color{accCore2}] {Attribution} (servi);
+        \end{tikzpicture}
+        \caption{Mécanique en cascade de l'attribution de la Participation aux Bénéfices (PB)}
+        \label{fig:mecanique_pb}
+    \end{figure}
+
     Une fois ce taux global défini, la participation aux bénéfices additionnelle ($PB_{MP,t}$) est allouée à chaque \textit{Model Point}. Elle n'est versée que si le taux servi excède le taux déjà garanti contractuellement :
     \begin{equation}
         PB_{MP,t} = \overline{PM}_{MP,t} \times \max\left(0, Tx_{\text{servi}, t} - TMG_{MP}\right)
@@ -353,20 +397,17 @@ Pour chaque pas de temps $t$ et chaque scénario, le modèle agrège les flux en
 \begin{equation}
     CF_t = \text{Prestations}_{t} + \text{Frais de Gestion}_{t} - \text{Primes}_{t}
 \end{equation}
-\textcolor{blue}{commissions prises en compte dans le modèle ? Si oui ajouter à la formule ci-dessus}
 
-À noter que les chargements prélevés sur l'épargne ne constituent pas des flux de trésorerie (ils restent au sein de l'entreprise), mais viennent diminuer la dette envers les assurés.
+Dans un souci de restriction du périmètre d'étude, les commissions de distribution et d'acquisition ne sont pas modélisées dans les flux sortants. À noter également que les chargements prélevés sur l'épargne ne constituent pas des flux de trésorerie.
 
 \paragraph{Actualisation et agrégation}
 L'actualisation repose sur l'utilisation de \textbf{déflateurs stochastiques} $D(0,t)$, fournis par le GSE en cohérence avec la courbe des taux sans risque. Le déflateur intègre intrinsèquement le facteur d'actualisation et la mesure de probabilité risque-neutre $\mathbb{Q}$.
 
-Le Best Estimate est obtenu par la moyenne arithmétique (méthode de Monte-Carlo) sur l'ensemble des $N$ scénarios simulés :
+En cohérence avec l'hypothèse de sortie à mi-période posée précédemment, l'actualisation des flux s'effectue au temps $t-0.5$. Le Best Estimate est obtenu par la moyenne arithmétique (méthode de Monte-Carlo) sur l'ensemble des $N$ scénarios simulés :
 
 \begin{equation}
-    BE = \frac{1}{N} \sum_{s=1}^{N} \left( \sum_{t=1}^{T} CF_{s,t} \times D_{s}(0,t) \right)
+    BE = \frac{1}{N} \sum_{s=1}^{N} \left( \sum_{t=1}^{T} CF_{s,t} \times D_{s}(0, t-0.5) \right)
 \end{equation}
-
-\textcolor{blue}{si flux pas tous en fun de période, revoir la formule}
 
 Cette approche par déflateurs permet de valoriser de manière cohérente les options et garanties financières (l'effet cliquet des TMG) qui ne seraient pas capturées par une simple actualisation déterministe.
 
