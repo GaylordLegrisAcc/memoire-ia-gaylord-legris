@@ -311,7 +311,7 @@ Afin de refléter fidèlement la réalité économique de la survenance des sini
     \item \textbf{Valorisation intermédiaire et calcul des prestations :}
     Le modèle calcule d'abord une provision mathématique revalorisée à mi-période ($t+0.5$) avec un taux de rendement équivalent :
     \begin{equation}
-        PM_{t+0.5} = PM_{t} \times \left(1 + \left((1 + TMG)^{0.5} - 1\right)\right)
+        PM_{t+0.5} = PM_{t} \times (1 + TMG)^{0.5}
     \end{equation}
     Ensuite il traite les événements de manière séquentielle. Les rachats totaux ($RT_t$) sont d'abord prélevés sur l'encours à mi-période, puis les prestations pour cause de décès ($DC_t$) s'appliquent sur l'encours résiduel. Les flux de prestations brutes ($P_{MP,t}$) s'écrivent donc :
     \begin{equation}
