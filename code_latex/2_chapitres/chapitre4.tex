@@ -50,8 +50,33 @@ L'établissement de la référence réglementaire exige d'analyser le comporteme
     \item \textbf{ALM stochastique} : intègre la volatilité des marchés et l'asymétrie des rendements financiers à travers la projection de scénarios économiques multiples.
 \end{itemize}
 
-% TODO: Insérer un tableau ou un graphique comparatif de ces trois BE centraux.
-Les écarts observés entre ces trois métriques illustrent le coût des garanties contractuelles et l'impact du partage de richesse entre l'assureur et les assurés. Le passage du périmètre passif seul à un environnement ALM déterministe modifie structurellement le niveau des engagements. En intégrant les actifs, le modèle simule la distribution de la richesse financière via le mécanisme de participation aux bénéfices, ce qui vient revaloriser les contrats et impacter directement les flux de trésorerie futurs. Ensuite, la transition vers l'ALM stochastique capture l'asymétrie financière des engagements : la volatilité des marchés génère des scénarios défavorables qui activent les garanties contractuelles (comme les TMG), représentant un coût pour l'assureur qui n'est pas linéairement compensé par les scénarios favorables. Cette asymétrie tend mécaniquement à accroître le Best Estimate moyen par rapport à une vision strictement déterministe.
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|l|r|}
+        \hline
+        \textbf{Environnement de projection} & \textbf{Best Estimate de référence (Md\euro)} \\
+        \hline
+        Passif seul déterministe & 263,95 \\
+        ALM déterministe & 205,91 \\
+        ALM stochastique & 141,29 \\
+        \hline
+    \end{tabular}
+    \caption{Évolution du Best Estimate central du modèle de référence selon l'environnement de projection.}
+    \label{tab:comparaison_be_environnements}
+\end{table}
+
+Comme l'illustre le tableau \ref{tab:comparaison_be_environnements}, les écarts significatifs observés entre ces trois métriques traduisent la valorisation des interactions actif-passif et le coût des garanties contractuelles. 
+
+Dans un premier temps, le passage du périmètre passif seul à un environnement ALM déterministe réduit structurellement le niveau des engagements nets. En intégrant les actifs, le modèle simule la distribution de la richesse financière via le mécanisme de participation aux bénéfices, ce qui vient revaloriser les contrats tout en finançant une partie des sorties de trésorerie futures grâce aux rendements modélisés.
+
+Ensuite, la transition vers l'ALM stochastique capture l'asymétrie financière des engagements. Si la volatilité des marchés génère des scénarios défavorables activant les garanties contractuelles (coût asymétrique des TMG), on observe dans cet environnement une diminution marquée du \textit{Best Estimate} moyen (141,29 Md\euro{}) par rapport à la vision strictement déterministe. 
+
+Cette baisse significative, qui se traduit mathématiquement par une Valeur Temporelle des Options et Garanties (TVOG) négative, s'explique principalement par la flexibilité du passif et la capacité d'absorption des pertes de la participation aux bénéfices (FDB - \textit{Future Discretionary Benefits}) :
+\begin{itemize}
+    \item \textbf{L'asymétrie de la revalorisation (Flexibilité de la PB) :} Dans le scénario central déterministe, la stabilité des rendements d'actifs permet de simuler une distribution de participation aux bénéfices importante et continue. En revanche, en environnement stochastique, la forte volatilité engendre de nombreuses trajectoires défavorables où le rendement financier est insuffisant. Dans ces scénarios contraints, le modèle ALM annule la distribution de PB discrétionnaire, limitant la revalorisation servie au seul taux minimum garanti (TMG). L'absence de distribution dans ces scénarios défavorables fait chuter drastiquement les flux de trésorerie sortants moyens par rapport à la vision déterministe initiale.
+    \item \textbf{La convexité de l'actualisation \textit{Market-Consistent} :} L'évaluation stochastique implique que l'impact d'une hausse des taux n'est pas symétrique à celui d'une baisse. Dans les scénarios économiques de forte hausse des taux, les facteurs d'actualisation chutent de manière géométrique. La valeur présente des engagements dans ces trajectoires s'en trouve massivement écrasée, tirant la moyenne stochastique globale vers le bas avec une force qui surcompense le coût des garanties (TMG) activées dans les scénarios de taux bas.
+\end{itemize}
 
 Au-delà de l'analyse des scénarios centraux, l'évaluation du profil de risque impose de soumettre ce modèle de référence aux divers chocs réglementaires en environnement ALM stochastique. L'exigence de capital unitaire ($SCR_x$) pour chaque sous-module de risque, ainsi que le capital global ($BSCR$) agrégé via la matrice de corrélation, sont calculés conformément à la méthodologie de la formule standard détaillée dans le premier chapitre du mémoire (cf. Section \ref{sec:s2}).
 
@@ -449,7 +474,7 @@ Le tableau \ref{tab:resultats_bscr_finaux} synthétise la capacité de chaque mo
         Banding Dynamique & 139.94 Md\euro{} & $-0.95\,\%$ & 57.22 Md\euro{} & $+0.87\,\%$ \\
         K-Means Robuste & 139.92 Md\euro{} & $-0.97\,\%$ & 57.23 Md\euro{} & $+0.89\,\%$ \\
         K-Means \textit{Outlier} & 139.90 Md\euro{} & $-0.98\,\%$ & 57.23 Md\euro{} & $+0.90\,\%$ \\
-        Biais Zéro & 128.63 Md\euro{} & $-8.96\,\%$ & 56.72 Md\euro{} & $+0.00\,\%^{*}$ \\
+        Biais Zéro & 128.63 Md\euro{} & $-8.96\,\%$ & 56.72 Md\euro{} & $+0.00\,\%$ \\
         \hline
     \end{tabular}
     \caption{Évaluation des engagements et du BSCR en projection ALM stochastique : HDBSCAN montre les meilleurs résultats en stochastique.}
