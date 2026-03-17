@@ -3,7 +3,7 @@
 
 Les chapitres précédents ont détaillé le cadre réglementaire de Solvabilité 2 ainsi que les fondements mathématiques des algorithmes de \textit{clustering} (K-Means, DBSCAN, HDBSCAN), des méthodes empiriques (Banding) et des méthodes associées aux cashflows. L'objectif de cette partie est de calibrer et utiliser ces différentes approches sur le portefeuille de passifs d'assurance vie créé lors du chapitre \ref{chap:generation_passifs}. L'efficacité de ces méthodes sera évaluée à travers une série de tests de sensibilité sur le modèle ALM, visant à mesurer la robustesse des modèles réduits sur différents types de lancements.
 
-La démarche s'articule en trois étapes. La première consiste à définir le modèle de référence et à valider l'absence de biais lors d'une agrégation déterministe de base. Ensuite, la calibration des hyperparamètres des algorithmes d'aggrégation permet de sélectionner les modèles cibles grâce à l'analyse des frontières de Pareto. Enfin, la dernière phase soumet les modèles choisis aux différents chocs de sensibilités S2 pour évaluer leur robustesse sur les \textit{Best Estimate}.
+La démarche s'articule en trois étapes. La première consiste à définir le modèle de référence et à valider l'absence de biais lors d'une agrégation déterministe de base. Ensuite, la calibration des hyperparamètres des algorithmes d'agrégation permet de sélectionner les modèles cibles grâce à l'analyse des frontières de Pareto. Enfin, la dernière phase soumet les modèles choisis aux différents chocs de sensibilités S2 pour évaluer leur robustesse sur les \textit{Best Estimate}.
 
 \section{Validation du périmètre de référence et neutralité de l'agrégation de base}
 \label{sec:validation_reference}
