@@ -11,102 +11,102 @@
 \contentsline {subsection}{\numberline {1.1.2}Les principaux supports d'investissement}{5}{subsection.1.1.2}%
 \contentsline {section}{\numberline {1.2}Le cadre prudentiel Solvabilité II}{6}{section.1.2}%
 \contentsline {subsection}{\numberline {1.2.1}Le pilier 1 : exigences quantitatives et bilan prudentiel}{7}{subsection.1.2.1}%
-\contentsline {subsubsection}{\numberline {1.2.1.1}L'évaluation des Actifs à la valeur de marché}{7}{subsubsection.1.2.1.1}%
+\contentsline {subsubsection}{\numberline {1.2.1.1}L'évaluation des Actifs à la valeur de marché}{8}{subsubsection.1.2.1.1}%
 \contentsline {subsubsection}{\numberline {1.2.1.2}Les provisions techniques : Cœur de l'évaluation du passif}{8}{subsubsection.1.2.1.2}%
 \contentsline {subsubsection}{\numberline {1.2.1.3}Les fonds propres et les exigences de capital}{9}{subsubsection.1.2.1.3}%
 \contentsline {section}{\numberline {1.3}Les Générateurs de Scénarios Économiques (GSE)}{11}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}Le choix de l'univers de projection}{11}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {1.3.2}Les modèles de diffusion en univers risque neutre}{11}{subsection.1.3.2}%
-\contentsline {subsubsection}{\numberline {1.3.2.1}Modélisation des taux d'intérêt : le modèle de Hull \& White}{11}{subsubsection.1.3.2.1}%
-\contentsline {subsubsection}{\numberline {1.3.2.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}{12}{subsubsection.1.3.2.2}%
-\contentsline {section}{\numberline {1.4}La représentation du passif : le concept de \textit {Model Point}}{13}{section.1.4}%
-\contentsline {subsection}{\numberline {1.4.1}Enjeux de l'agrégation et réduction de la dimension}{14}{subsection.1.4.1}%
-\contentsline {subsection}{\numberline {1.4.2}Cadre réglementaire et exigences de validation}{14}{subsection.1.4.2}%
-\contentsline {subsubsection}{\numberline {1.4.2.1}Le principe de matérialité et justification des approximations}{14}{subsubsection.1.4.2.1}%
-\contentsline {subsection}{\numberline {1.4.3}Dispositif de contrôle de la qualité de l'agrégation}{15}{subsection.1.4.3}%
-\contentsline {subsubsection}{\numberline {1.4.3.1}Tests de reproduction des métriques statiques}{15}{subsubsection.1.4.3.1}%
-\contentsline {subsubsection}{\numberline {1.4.3.2}Contrôles du profil de risque et des queues de distribution}{15}{subsubsection.1.4.3.2}%
-\contentsline {subsubsection}{\numberline {1.4.3.3}Tests de sensibilité et stabilité dynamique}{15}{subsubsection.1.4.3.3}%
-\contentsline {section}{\numberline {1.5}Gestion actif-passif et architecture du modèle de projection}{15}{section.1.5}%
-\contentsline {subsection}{\numberline {1.5.1}Mécanismes de projection et interactions actif-passif}{16}{subsection.1.5.1}%
-\contentsline {subsection}{\numberline {1.5.2}Algorithmes de projection du passif et valorisation du Best Estimate}{17}{subsection.1.5.2}%
-\contentsline {paragraph}{Définition des flux nets de trésorerie ($CF_t$)}{19}{equation.1.21}%
-\contentsline {paragraph}{Actualisation et agrégation}{19}{equation.1.22}%
-\contentsline {subsection}{\numberline {1.5.3}Limites actuelles du modèle}{19}{subsection.1.5.3}%
-\contentsline {chapter}{\numberline {2}Construction d'un générateur de portefeuilles de passifs}{21}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Objectifs stratégiques et contraintes techniques}{22}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Définition du générateur de portefeuilles de passifs}{22}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}Besoins métiers : simulation de nouveaux produits et analyse concurrentielle}{22}{subsection.2.1.2}%
-\contentsline {subsection}{\numberline {2.1.3}Défis de la modélisation : réalisme, volumétrie et flexibilité}{24}{subsection.2.1.3}%
-\contentsline {section}{\numberline {2.2}Méthodologie de génération et modélisation statistique}{25}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Approche stochastique par lois de probabilité}{25}{subsection.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.1.1}Modélisation de l'âge des assurés}{25}{subsubsection.2.2.1.1}%
-\contentsline {subsubsection}{\numberline {2.2.1.2}Modélisation de l'âge à la souscription}{28}{subsubsection.2.2.1.2}%
-\contentsline {subsubsection}{\numberline {2.2.1.3}Modélisation de la (PM}{31}{subsubsection.2.2.1.3}%
-\contentsline {subsubsection}{\numberline {2.2.1.4}Modélisation des variables financières reliées à la revalorisation du passif : TMG, TAF et TFGSE}{33}{subsubsection.2.2.1.4}%
-\contentsline {subsubsection}{\numberline {2.2.1.5}Modélisation de l'allocation entre fonds en euros et unités de compte}{38}{subsubsection.2.2.1.5}%
-\contentsline {subsubsection}{\numberline {2.2.1.6}Ajout du sexe pour finaliser le portefeuille}{40}{subsubsection.2.2.1.6}%
-\contentsline {subsection}{\numberline {2.2.2}Synthèse et génération du portefeuille final}{40}{subsection.2.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.2.1}Modélisation de la dépendance des âges par copule}{41}{subsubsection.2.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.2.2}Algorithme global de génération en cascade}{41}{subsubsection.2.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Hypothèses de projection et paramétrage ALM}{41}{subsection.2.2.3}%
-\contentsline {section}{\numberline {2.3}Présentation du portefeuille de référence généré}{42}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Analyse descriptive et évaluation critique du passif}{43}{subsection.2.3.1}%
-\contentsline {subsubsection}{\numberline {2.3.1.1}Volumétrie, asymétrie extrême et limites de modélisation}{43}{subsubsection.2.3.1.1}%
-\contentsline {subsubsection}{\numberline {2.3.1.2}Profil démographique, liquidité fiscale et biais de survivance}{45}{subsubsection.2.3.1.2}%
-\contentsline {subsubsection}{\numberline {2.3.1.3}Comportements financiers : Allocation et politique de frais}{48}{subsubsection.2.3.1.3}%
-\contentsline {chapter}{\numberline {3}Présentation des méthodes d'agrégation candidates}{50}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Les approches déterministes : Le standard de marché}{51}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Segmentation stricte par regroupement de caractéristiques}{52}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Approche par tranches (Banding) et pondération financière}{53}{subsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.2.1}Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}{54}{subsubsection.3.1.2.1}%
-\contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{54}{subsubsection.3.1.2.2}%
-\contentsline {section}{\numberline {3.2}Les approches statistiques spatiales (Apprentissage non supervisé)}{55}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Préparation de l'espace spatial : techniques transverses}{56}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Partitionnement par inertie : \textit {k}-moyennes (K-Means) pondéré}{57}{subsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.1}Principe de l'algorithme}{57}{subsubsection.3.2.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2.2}Application aux données du portefeuille}{57}{subsubsection.3.2.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.3}Constitution des Model Points finaux}{58}{subsubsection.3.2.2.3}%
-\contentsline {subsection}{\numberline {3.2.3}Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}{59}{subsection.3.2.3}%
-\contentsline {subsubsection}{\numberline {3.2.3.1}Principes fondamentaux de DBSCAN}{59}{subsubsection.3.2.3.1}%
-\contentsline {subsubsection}{\numberline {3.2.3.2}Adaptation aux contraintes assurantielles}{60}{subsubsection.3.2.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.3.3}Gestion du bruit et réallocation des contrats}{61}{subsubsection.3.2.3.3}%
-\contentsline {subsection}{\numberline {3.2.4}L'extension hiérarchique adaptative : HDBSCAN}{61}{subsection.3.2.4}%
-\contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{66}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Principe des arbres de décision (CART) appliqués au passif}{66}{subsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{66}{subsubsection.3.3.1.1}%
-\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (refined vs spread focus)}{67}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{67}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{68}{subsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{68}{subsubsection.3.4.1.1}%
-\contentsline {subsection}{\numberline {3.4.2}Calibration de lois \textit {a posteriori} (Méthode \textit {Biais Zéro} et clés financières)}{69}{subsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.2.1}Définition des clés d'agrégation financières}{69}{subsubsection.3.4.2.1}%
-\contentsline {subsubsection}{\numberline {3.4.2.2}Mécanique des décréments et modification du cœur ALM}{70}{subsubsection.3.4.2.2}%
-\contentsline {section}{\numberline {3.5}Conclusion}{70}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}{72}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Validation du périmètre de référence et neutralité de l'agrégation de base}{73}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{74}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Établissement du cadre d'analyse pour la sélection des modèles}{74}{subsection.4.1.2}%
-\contentsline {subsection}{\numberline {4.1.3}Évaluation des indicateurs S2 du modèle de référence}{75}{subsection.4.1.3}%
-\contentsline {section}{\numberline {4.2}Calibration des algorithmes et sélection des modèles candidats}{76}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Protocole \textit {Grid Search} et échantillonnage adaptatif}{77}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Sensibilité aux hyperparamètres et analyse des dynamiques d'agrégation}{78}{subsection.4.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{79}{subsubsection.4.2.2.1}%
-\contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{80}{subsubsection.4.2.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{81}{subsubsection.4.2.2.3}%
-\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{82}{subsection.4.2.3}%
-\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{83}{subsubsection.4.2.3.1}%
-\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{84}{subsubsection.4.2.3.2}%
-\contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{86}{subsubsection.4.2.3.3}%
-\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{87}{subsubsection.4.2.3.4}%
-\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{89}{subsection.4.2.4}%
-\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{89}{subsubsection.4.2.4.1}%
-\contentsline {subsubsection}{\numberline {4.2.4.2}Le moteur de Biais Zéro (Approche d'optimisation)}{89}{subsubsection.4.2.4.2}%
-\contentsline {subsection}{\numberline {4.2.5}Selection des candidats finaux}{90}{subsection.4.2.5}%
-\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{90}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Évaluation sur le Best Estimate ALM déterministe}{91}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Évaluation stochastique et sensibilités réglementaires (BSCR)}{92}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{94}{subsection.4.3.3}%
-\contentsline {chapter}{Conclusion}{97}{chapter*.8}%
-\contentsline {chapter}{Annexes}{100}{chapter*.9}%
-\contentsline {chapter}{Bibliographie}{108}{table.4.14}%
+\contentsline {subsection}{\numberline {1.3.1}Le choix de l'univers de projection}{12}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Les modèles de diffusion en univers risque neutre}{12}{subsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.2.1}Modélisation des taux d'intérêt : le modèle de Hull \& White}{12}{subsubsection.1.3.2.1}%
+\contentsline {subsubsection}{\numberline {1.3.2.2}Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}{13}{subsubsection.1.3.2.2}%
+\contentsline {section}{\numberline {1.4}La représentation du passif : le concept de \textit {Model Point}}{14}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Enjeux de l'agrégation et réduction de la dimension}{15}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Cadre réglementaire et exigences de validation}{15}{subsection.1.4.2}%
+\contentsline {subsubsection}{\numberline {1.4.2.1}Le principe de matérialité et justification des approximations}{15}{subsubsection.1.4.2.1}%
+\contentsline {subsection}{\numberline {1.4.3}Dispositif de contrôle de la qualité de l'agrégation}{16}{subsection.1.4.3}%
+\contentsline {subsubsection}{\numberline {1.4.3.1}Tests de reproduction des métriques statiques}{16}{subsubsection.1.4.3.1}%
+\contentsline {subsubsection}{\numberline {1.4.3.2}Contrôles du profil de risque et des queues de distribution}{16}{subsubsection.1.4.3.2}%
+\contentsline {subsubsection}{\numberline {1.4.3.3}Tests de sensibilité et stabilité dynamique}{16}{subsubsection.1.4.3.3}%
+\contentsline {section}{\numberline {1.5}Gestion actif-passif et architecture du modèle de projection}{16}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Mécanismes de projection et interactions actif-passif}{17}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Algorithmes de projection du passif et valorisation du Best Estimate}{18}{subsection.1.5.2}%
+\contentsline {paragraph}{Définition des flux nets de trésorerie ($CF_t$)}{20}{equation.1.21}%
+\contentsline {paragraph}{Actualisation et agrégation}{20}{equation.1.22}%
+\contentsline {subsection}{\numberline {1.5.3}Limites actuelles du modèle}{20}{subsection.1.5.3}%
+\contentsline {chapter}{\numberline {2}Construction d'un générateur de portefeuilles de passifs}{22}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Objectifs stratégiques et contraintes techniques}{23}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Définition du générateur de portefeuilles de passifs}{23}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Besoins métiers : simulation de nouveaux produits et analyse concurrentielle}{23}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Défis de la modélisation : réalisme, volumétrie et flexibilité}{25}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Méthodologie de génération et modélisation statistique}{26}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Approche stochastique par lois de probabilité}{26}{subsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.1.1}Modélisation de l'âge des assurés}{26}{subsubsection.2.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.2.1.2}Modélisation de l'âge à la souscription}{29}{subsubsection.2.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.2.1.3}Modélisation de la (PM}{32}{subsubsection.2.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.2.1.4}Modélisation des variables financières reliées à la revalorisation du passif : TMG, TAF et TFGSE}{34}{subsubsection.2.2.1.4}%
+\contentsline {subsubsection}{\numberline {2.2.1.5}Modélisation de l'allocation entre fonds en euros et unités de compte}{39}{subsubsection.2.2.1.5}%
+\contentsline {subsubsection}{\numberline {2.2.1.6}Ajout du sexe pour finaliser le portefeuille}{41}{subsubsection.2.2.1.6}%
+\contentsline {subsection}{\numberline {2.2.2}Synthèse et génération du portefeuille final}{41}{subsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.1}Modélisation de la dépendance des âges par copule}{42}{subsubsection.2.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2.2}Algorithme global de génération en cascade}{42}{subsubsection.2.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Hypothèses de projection et paramétrage ALM}{42}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Présentation du portefeuille de référence généré}{43}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Analyse descriptive et évaluation critique du passif}{44}{subsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.1.1}Volumétrie, asymétrie extrême et limites de modélisation}{44}{subsubsection.2.3.1.1}%
+\contentsline {subsubsection}{\numberline {2.3.1.2}Profil démographique, liquidité fiscale et biais de survivance}{46}{subsubsection.2.3.1.2}%
+\contentsline {subsubsection}{\numberline {2.3.1.3}Comportements financiers : Allocation et politique de frais}{49}{subsubsection.2.3.1.3}%
+\contentsline {chapter}{\numberline {3}Présentation des méthodes d'agrégation candidates}{51}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Les approches déterministes : Le standard de marché}{52}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Segmentation stricte par regroupement de caractéristiques}{53}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Approche par tranches (Banding) et pondération financière}{54}{subsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.1}Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}{55}{subsubsection.3.1.2.1}%
+\contentsline {subsubsection}{\numberline {3.1.2.2}Limites de l'approche et variance intra-classe}{55}{subsubsection.3.1.2.2}%
+\contentsline {section}{\numberline {3.2}Les approches statistiques spatiales (Apprentissage non supervisé)}{56}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Préparation de l'espace spatial : techniques transverses}{57}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Partitionnement par inertie : \textit {k}-moyennes (K-Means) pondéré}{58}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}Principe de l'algorithme}{58}{subsubsection.3.2.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}Application aux données du portefeuille}{58}{subsubsection.3.2.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.3}Constitution des Model Points finaux}{59}{subsubsection.3.2.2.3}%
+\contentsline {subsection}{\numberline {3.2.3}Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}{60}{subsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.3.1}Principes fondamentaux de DBSCAN}{60}{subsubsection.3.2.3.1}%
+\contentsline {subsubsection}{\numberline {3.2.3.2}Adaptation aux contraintes assurantielles}{61}{subsubsection.3.2.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.3.3}Gestion du bruit et réallocation des contrats}{62}{subsubsection.3.2.3.3}%
+\contentsline {subsection}{\numberline {3.2.4}L'extension hiérarchique adaptative : HDBSCAN}{62}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}L'approche par segmentation supervisée}{67}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Principe des arbres de décision (CART) appliqués au passif}{67}{subsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.1.1}Formalisation mathématique du critère de partitionnement}{67}{subsubsection.3.3.1.1}%
+\contentsline {subsection}{\numberline {3.3.2}Définition des variables cibles (refined vs spread focus)}{68}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Les approches dynamiques basées sur l'écoulement des flux}{68}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}{69}{subsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.1}Niveaux de fidélité du moteur proxy}{69}{subsubsection.3.4.1.1}%
+\contentsline {subsection}{\numberline {3.4.2}Calibration de lois \textit {a posteriori} (Méthode \textit {Biais Zéro} et clés financières)}{70}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}Définition des clés d'agrégation financières}{70}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}Mécanique des décréments et modification du cœur ALM}{71}{subsubsection.3.4.2.2}%
+\contentsline {section}{\numberline {3.5}Conclusion}{71}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}{73}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Validation du périmètre de référence et neutralité de l'agrégation de base}{74}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{75}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Établissement du cadre d'analyse pour la sélection des modèles}{75}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Évaluation des indicateurs S2 du modèle de référence}{76}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Calibration des algorithmes et sélection des modèles candidats}{77}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Protocole \textit {Grid Search} et échantillonnage adaptatif}{78}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Sensibilité aux hyperparamètres et analyse des dynamiques d'agrégation}{79}{subsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{80}{subsubsection.4.2.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{81}{subsubsection.4.2.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{82}{subsubsection.4.2.2.3}%
+\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{83}{subsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{84}{subsubsection.4.2.3.1}%
+\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{85}{subsubsection.4.2.3.2}%
+\contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{87}{subsubsection.4.2.3.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{88}{subsubsection.4.2.3.4}%
+\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{90}{subsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{90}{subsubsection.4.2.4.1}%
+\contentsline {subsubsection}{\numberline {4.2.4.2}Le moteur de Biais Zéro (Approche d'optimisation)}{90}{subsubsection.4.2.4.2}%
+\contentsline {subsection}{\numberline {4.2.5}Selection des candidats finaux}{91}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{91}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Évaluation sur le Best Estimate ALM déterministe}{92}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Évaluation stochastique et sensibilités réglementaires (BSCR)}{93}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{95}{subsection.4.3.3}%
+\contentsline {chapter}{Conclusion}{98}{chapter*.8}%
+\contentsline {chapter}{Annexes}{101}{chapter*.9}%
+\contentsline {chapter}{Bibliographie}{109}{table.4.14}%

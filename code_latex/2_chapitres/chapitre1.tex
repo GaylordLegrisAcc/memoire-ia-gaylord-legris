@@ -43,12 +43,25 @@ Les \textbf{unités de compte (UC)} offrent une exposition directe aux marchés 
 
 Ces supports d'investissement s'articulent autour de deux grandes familles de contrats. D'une part, les contrats dits \og monosupports \fg{} ne permettent d'investir que sur le fonds en euros. D'autre part, les contrats \og multisupports \fg{}, qui constituent aujourd'hui le standard du marché, offrent la possibilité de combiner un fonds en euros avec plusieurs types de supports en unités de compte. \footnote{Il est intéressant de noter qu'un contrat intégralement investi en unités de compte est considéré techniquement comme un contrat multisupports, bien que cette configuration s'avère rare en pratique.} Dans le cadre de cette étude, le portefeuille analysé se compose exclusivement de contrats multisupports, présentant une allocation représentative du marché français, soit approximativement 60\,\% en fonds en euros et 40\,\% en unités de compte.
 
-\begin{figure}[H]
+\begin{table}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre1/assurance-vie-stats.png}
-    \caption{Le marché de l'assurance vie en France en 2024 \textbf{(Sépérateur de milliers + réorg : EURO|UC|ENSEMBLE + Var. et non Var dans colonne Ensemble) + indiquer que Var c'est par rapport à 2023}}
-    \label{fig:marches_assurance_vie}
-\end{figure}
+    \renewcommand{\arraystretch}{1.3} 
+    \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        \textbf{Indicateurs (Md\euro)} & \textbf{Fonds en euros} & \textbf{Unités de compte} & \textbf{Ensemble} & \textbf{Var. / 2023} \\
+        \midrule
+        \textbf{Cotisations}    & 108,6 & 66,3  & 174,9 & $+14,7\,\%$ \\
+        \textbf{Prestations}    & 113,3 & 33,1  & 146,4 & $-3,1\,\%$ \\
+        \textbf{Collecte nette} & $-4,7$& 33,2  & 28,5  & $+27,1$ Md\euro{} \\
+        \midrule
+        \textbf{Encours}        & 1~398,6 & 587,1 & 1~985,8 & $+3,9\,\%$ \\
+        \quad \textit{dont prov. mathématiques} & 1~345,0 & 587,1 & 1~932,2 & $+4,4\,\%$ \\
+        \quad \textit{dont prov. part. bénéfices} & 53,6 & \textit{n.a.} & 53,6 & $-11,1\,\%$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Le marché de l'assurance vie en France en 2024 (Évolution par rapport à 2023)}
+    \label{tab:marches_assurance_vie}
+\end{table}
 
 Ces contrats sont soumis à un ensemble de réglementations prudentielles visant à garantir la solvabilité des assureurs et la protection des assurés. La directive Solvabilité II encadre ces exigences à l'échelle européenne. La partie suivante détaille le cadre réglementaire de Solvabilité II, ses implications pour les assureurs vie, ainsi que les outils de modélisation stochastique utilisés pour répondre à ces exigences.
 
@@ -65,13 +78,47 @@ Le Pilier 1 définit les exigences quantitatives, au cœur desquelles se trouve 
     \text{Actifs} = \text{Provisions Techniques} + \text{Fonds Propres}
 \end{equation}
 Chaque terme de cette équation sera détaillé successivement.
-
 \begin{figure}[H]
     \centering
-    % --- NOTE : L'image du bilan est placée ici pour introduire visuellement la structure qui sera suivie. ---
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre1/bilanS2.png}
-    \caption{Bilan économique sous Solvabilité II (Mieux refléter la structure passif = actif) \textcolor{blue}{Modifier le graphique car la S1 et S2 mélangés}}
-    \label{fig:Bilan_economique_S2}
+    \begin{tikzpicture}[
+        start chain=going above,
+        node distance=0pt,
+        % Styles des blocs
+        base/.style={draw=accCore3, thick, minimum width=4.5cm, text centered, font=\sffamily\bfseries, align=center, on chain},
+        actif/.style={base, fill=acc5, minimum height=8cm},
+        be/.style={base, fill=acc4, minimum height=3.5cm},
+        rm/.style={base, fill=acc3, minimum height=1cm},
+        mcr/.style={base, fill=acc2, minimum height=0.8cm, font=\sffamily\bfseries\small, text=white},
+        scr/.style={base, fill=accCore2, minimum height=1.2cm, font=\sffamily\bfseries\small, text=white},
+        excess/.style={base, fill=accCore3, minimum height=1.5cm, font=\sffamily\bfseries\small, text=white}
+    ]
+
+    % Colonne Actif - On force l'ancrage sur le bas (south) au point 0,0
+    \node[actif, anchor=south] (ACT) at (0,0) {Valeur de marché \\ des actifs};
+
+    % Colonne Passif - On force l'ancrage sur le bas (south) au point 5,0
+    \node[be, anchor=south] (BE) at (5,0) {Best Estimate \\ (BE)};
+    \node[rm] (RM) {Risk Margin \\ (RM)};
+    \node[mcr] (MCR) {MCR};
+    \node[scr] (SCR) {SCR};
+    \node[excess] (EX) {Capital \\ Excédentaire};
+
+    % En-têtes (positionnés par rapport au haut des colonnes pour être toujours propres)
+    \node[font=\sffamily\bfseries\large, color=accCore3, above=0.5cm of ACT.north] {ACTIFS};
+    \node[font=\sffamily\bfseries\large, color=accCore3, above=0.5cm of EX.north] {PASSIFS};
+
+    % Accolades et labels à droite
+    \draw[decorate, decoration={brace, amplitude=8pt}, thick, draw=accCore3]
+        ([xshift=0.2cm]RM.north east) -- ([xshift=0.2cm]BE.south east) 
+        node[midway, right=10pt, font=\sffamily\bfseries\small, color=accCore3, align=left] {Provisions \\ Techniques (PT)};
+
+    \draw[decorate, decoration={brace, amplitude=8pt}, thick, draw=accCore1]
+        ([xshift=0.2cm]EX.north east) -- ([xshift=0.2cm]MCR.south east) 
+        node[midway, right=10pt, font=\sffamily\bfseries, color=accCore1, align=left] {Fonds \\ Propres \\ (NAV)};
+
+    \end{tikzpicture}
+    \caption{Bilan prudentiel détaillé sous Solvabilité II}
+    \label{fig:Bilan_economique_S2_detaille}
 \end{figure}
 
 
