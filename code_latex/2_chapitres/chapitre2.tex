@@ -22,42 +22,30 @@ Deuxièmement, le générateur est un outil précieux pour piloter la stratégie
 Enfin, la capacité à se positionner par rapport à ses concurrents est fondamentale. Faute d'accès aux portefeuilles détaillés des autres acteurs, un assureur doit s'appuyer sur des reconstitutions. En se basant sur des données publiques (rapports annuels ou publications réglementaires comme les Rapport sur la Solvabilité et la Situation Financière) ou des statistiques sectorielles, le générateur peut permettre la création d'un portefeuille représentatif du marché, ou simuler le portefeuille probable d'un concurrent spécifique. Ces portefeuilles synthétiques deviennent alors une base solide pour des analyses comparatives (\textit{benchmarking}). Ils permettent non seulement d'évaluer la performance relative, mais aussi de comparer les profils de risque, d'anticiper les stratégies concurrentes et d'identifier les meilleures pratiques du marché. Il convient toutefois de souligner les limites d'une telle démarche. Une analyse ALM complète et réaliste d'un concurrent ne peut se contenter de la seule modélisation du passif. Elle exigerait également de simuler son portefeuille d'actifs et de disposer d'informations précises sur ses ressources financières et ses fonds propres. Or, ces données sont rarement publiques. Par conséquent, l'analyse comparative reste nécessairement partielle, se concentrant sur les caractéristiques intrinsèques du portefeuille de passifs reconstitué.
 \bigskip
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
-    \begin{tikzpicture}[
-        node distance=1ex,
-        box/.style={
-            rectangle,
-            rounded corners=4pt,
-            draw=gray,
-            fill=white,
-            very thin,
-            inner sep=15pt,
-            minimum width=3cm,
-            minimum height=2cm,
-            align=center,
-            font=\sffamily\bfseries\color{black}
-        },
-        arrow/.style={
-            -Latex,
-            very thin,
-            color=accenture,
-            line width=2pt
-        }
-    ]
-
-    % Nodes
-    \node[box] (input) {Données d'entrée :\\- Rapports d'assureurs\\- Marché français};
-    \node[box, right=4ex of input] (process) {Modélisation et calibrage :\\- Distributions\\- Corrélations};
-    \node[box, right=4ex of process] (output) {Portefeuille synthétique};
-
-    % Arrows
-    \draw [arrow] (input) -- (process);
-    \draw [arrow] (process) -- (output);
-
+    \begin{tikzpicture}[node distance=1.2cm, auto, 
+        % Définition des styles avec la charte Accenture
+        box/.style={rectangle, draw=accCore2, fill=acc5, thick, minimum width=7cm, minimum height=0.9cm, text centered, rounded corners=3pt, font=\sffamily\small\color{accCore3}},
+        finalbox/.style={rectangle, draw=accCore1, fill=acc3, thick, minimum width=7cm, minimum height=0.9cm, text centered, rounded corners=3pt, font=\sffamily\small\bfseries\color{black}},
+        arrow/.style={thick,->,>=stealth, draw=accCore2}]
+        
+        % Placement des noeuds en cascade verticale
+        \node (data) [box] {1. Collecte des données de marché (INSEE, FFA)};
+        \node (calib) [box, below of=data, yshift=-0.2cm] {2. Calibrage des lois de probabilité (Âge, Ancienneté, PM)};
+        \node (mc) [box, below of=calib, yshift=-0.2cm] {3. Tirages stochastiques par méthode de Monte-Carlo};
+        \node (rules) [box, below of=mc, yshift=-0.2cm] {4. Dérivation et application des règles métier (TMG, Frais)};
+        \node (output) [finalbox, below of=rules, yshift=-0.2cm] {5. Portefeuille de Passifs Synthétique (1 million de contrats)};
+        
+        % Tracé des flèches descendantes
+        \draw [arrow] (data) -- (calib);
+        \draw [arrow] (calib) -- (mc);
+        \draw [arrow] (mc) -- (rules);
+        \draw [arrow] (rules) -- (output);
+        
     \end{tikzpicture}
-    \caption{Schéma de la méthodologie de génération d'un portefeuille de passifs synthétique. \textcolor{blue}{Moche à refaire}}
-    \label{fig:methodologie_horizontale}
+    \caption{Méthodologie globale de génération stochastique du portefeuille de passifs}
+    \label{fig:methodo_generation}
 \end{figure}
 
 \subsection{Défis de la modélisation : réalisme, volumétrie et flexibilité}
@@ -113,14 +101,14 @@ L'approche a consisté à définir d'abord des points de données représentatif
     \item Pour la tranche des 70 ans et plus, un âge représentatif de 80 ans a été choisi car à partir de cet âge la souscription/résiliation du contrat d'assurance est rare.
 \end{itemize}
 
-Une fois ces points définis, une interpolation PCHIP (\textit{Piecewise Cubic Hermite Interpolating Polynomial} : interpolation par morceaux concervant la monotonie et utilisant des polynômes de degré trois) a été appliquée sur la partie de la courbe de 0 à 80 ans. Cette méthode a été privilégiée car elle évite les oscillations artificielles qu'une interpolation cubique aurait généré et garantit que la proportion de détention reste croissante comme ce que suggérent les données . Pour les âges plus avancés, une interpolation linéaire a été utilisée pour assurer une transition douce, suivie d'un plateau constant après 80 ans. Cette dernière hypothèse modélise une stabilisation du comportement de détention chez les assurés les plus âgés avec une absence de rachats.
+Une fois ces points définis, une interpolation PCHIP (\textit{Piecewise Cubic Hermite Interpolating Polynomial} : interpolation par morceaux concervant la monotonie et utilisant des polynômes de degré trois) a été appliquée sur la partie de la courbe de 0 à 80 ans. Cette méthode a été privilégiée car elle évite les oscillations artificielles qu'une interpolation cubique (\ref{annexe:cubic_spline}) aurait généré et garantit que la proportion de détention reste croissante comme ce que suggérent les données . Pour les âges plus avancés, une interpolation linéaire a été utilisée pour assurer une transition douce, suivie d'un plateau constant après 80 ans. Cette dernière hypothèse modélise une stabilisation du comportement de détention chez les assurés les plus âgés avec une absence de rachats.
 
 Le résultat de ce processus est une fonction continue et lisse qui estime le taux de détention d'assurance-vie pour chaque âge entre 18 et 100 ans, comme illustré par la figure \ref{fig:interpolation_prop_age}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre2/interpolation_prop_age.png}
-\caption{Proportion de détention d'assurance-vie par âge en France par diverses méthodes d'interpolation. TODO : modifier légende et titre pour plus de lisibilité + refaire la modélisation avec 80 ans et non 82.5 ans}
+\includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre2/interpolation_prop_age_PCHIP.png}
+\caption{Interpolation de la distribution des âges des assurés à partir des données de marché par la méthode PCHIP.}
 \label{fig:interpolation_prop_age}
 \end{figure}
 
@@ -144,21 +132,23 @@ Deux lois de probabilité continues ont été sélectionnées comme candidates p
 \label{fig:beta}
 \end{figure}
 
-Le tableau \ref{tab:stats} confirme cette observation. La loi Beta présente une statistique K-S inférieure (traduisant une distance maximale plus faible entre la distribution théorique et empirique) ainsi que des scores AIC et BIC plus bas, indiquant un meilleur ajustement global. C'est donc cette loi qui a été retenue pour modéliser l'âge des assurés dans le portefeuille synthétique.
+Afin de valider la supériorité de la distribution Beta pour la modélisation de l'âge, elle a été confrontée à une distribution Gamma. Les critères d'information d'Akaike (AIC) et bayésien (BIC) ont été calculés séparément pour les hommes et les femmes. Comme le résume le tableau \ref{tab:aic_bic_age}, la loi Beta minimise systématiquement ces deux critères, confirmant sa meilleure adéquation pour capturer la structure démographique bornée du portefeuille.
 
 \begin{table}[H]
-\centering
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Métrique} & \textbf{Loi Gamma} & \textbf{Loi Beta} & \textbf{Meilleur Modèle} \\
-\midrule
-Statistique K-S (D) & 0.0396 & 0.0271 & Beta \\
-AIC (Akaike) & 1 674 497 & 1 668 357 & Beta \\
-BIC (Bayésien) & 1 674 527 & 1 668 378 & Beta \\
-\bottomrule
-\end{tabular}
-\caption{Tableau comparatif des métriques d'ajustement (population masculine). TODO : mettre aussi les résultats pour la population féminine, mettre également des valeurs en gras}
-\label{tab:stats}
+    \centering
+    \begin{tabular}{|l|l|r|r|}
+        \hline
+        \textbf{Sexe} & \textbf{Distribution} & \textbf{AIC} & \textbf{BIC} \\
+        \hline
+        Femmes & \textbf{Beta} & \textbf{1 689 442,39} & \textbf{1 689 462,80} \\
+        Femmes & Gamma & 1 698 107,24 & 1 698 137,85 \\
+        \hline
+        Hommes & \textbf{Beta} & \textbf{1 668 213,64} & \textbf{1 668 234,05} \\
+        Hommes & Gamma & 1 675 053,68 & 1 675 084,30 \\
+        \hline
+    \end{tabular}
+    \caption{Comparaison des critères de sélection (AIC/BIC) pour la modélisation de l'âge.}
+    \label{tab:aic_bic_age}
 \end{table}
 
 \subsubsection{Modélisation de l'âge à la souscription}
@@ -180,25 +170,26 @@ Plusieurs lois de probabilité ont été testées pour modéliser cette distribu
     \item La \textbf{loi de Weibull} : courante en analyse de survie, sa densité est donnée par $f(x; \lambda, k) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}e^{-(x/\lambda)^k}$.
     \item Le \textbf{modèle de mélange gaussien (GMM)} : il s'agit d'une combinaison linéaire de plusieurs lois normales, permettant de s'ajuster à des distributions multimodales. Sa densité est $f(x) = \sum_{i=1}^{K} w_i \frac{1}{\sigma_i\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu_i}{\sigma_i}\right)^2}$.
 \end{itemize}
-Le tableau \ref{tab:stats_souscription} présente les résultats.
+
+Concernant l'âge à la souscription, la présence d'une bimodalité empirique requiert une modélisation spécifique. Le Tableau \ref{tab:aic_bic_souscription} compare l'ajustement de plusieurs distributions usuelles avec celui d'un modèle de mélange gaussien à deux composantes (GMM). 
 
 \begin{table}[H]
-\centering
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-\textbf{Distribution} & \textbf{AIC} & \textbf{BIC} & \textbf{K-S (D)} \\
-\midrule
-GMM (n=2) & 1 125 603 & 1 125 654 & 0.0485 \\
-Beta & 1 385 454 & 1 385 495 & 0.0845 \\
-Gamma & 1 400 178 & 1 400 208 & 0.1110 \\
-Weibull & 1 437 176 & 1 437 207 & 0.1544 \\
-\bottomrule
-\end{tabular}
-\caption{Tableau comparatif des métriques d'ajustement pour l'âge à la souscription. TODO : mettre également des valeurs en gras}
-\label{tab:stats_souscription}
+    \centering
+    \begin{tabular}{|l|r|r|}
+        \hline
+        \textbf{Distribution} & \textbf{AIC} & \textbf{BIC} \\
+        \hline
+        \textbf{GMM (n=2)} & \textbf{1 285 480,48} & \textbf{1 285 531,51} \\
+        Beta & 1 384 735,54 & 1 384 776,36 \\
+        Gamma & 1 399 276,74 & 1 399 307,36 \\
+        Weibull & 1 433 735,50 & 1 433 766,11 \\
+        \hline
+    \end{tabular}
+    \caption{Comparaison des critères d'information pour l'âge à la souscription.}
+    \label{tab:aic_bic_souscription}
 \end{table}
 
-Le \textbf{mélange gaussien à deux composantes (GMM)} s'est avéré être le modèle le plus performant, avec des scores AIC et BIC nettement inférieurs. Cela s'explique car 2 pics de souscription sont observables sur la distribution. Cette bimodalité, illustrée par la calibration de la loi GMM en figure \ref{fig:gmm_souscription}, est une caractéristique de marché que les lois de probabilité plus simples ne peuvent capturer.
+Les résultats démontrent que le GMM surperforme largement les distributions simples classiques en minimisant drastiquement l'AIC et le BIC, s'imposant ainsi comme le choix optimal. Cela s'explique car 2 pics de souscription sont observables sur la distribution. Cette bimodalité, illustrée par la calibration de la loi GMM en figure \ref{fig:gmm_souscription}, est une caractéristique de marché que les lois de probabilité plus simples ne peuvent capturer.
 
 \begin{figure}[H]
 \centering
@@ -519,13 +510,27 @@ Ces profils de contrôle, qui ont servi de points d'ancrage pour l'algorithme d'
     \end{tabular}
 \end{table}
 
-\textcolor{blue}{METTRE A JOURS LES VALEURS ET REFAIRE TOURNER SANS L'ANCIENNETE}
-Après calibration, les coefficients obtenus pour ce modèle sont les suivants : $\beta_0 = 1.0039$, $\beta_{\text{age}} = -0.0424$ et $\beta_{\text{pm}} = 0.0746$. La part moyenne d'UC obtenue sur le portefeuille généré est de 39.98\,\%, confirmant la parfaite atteinte de l'objectif global.
+Après calibration, la part moyenne d'UC obtenue sur le portefeuille généré est de 39,98\,\%, confirmant l'atteinte de l'objectif global. Les coefficients optimisés pour ce modèle sont synthétisés dans le Tableau \ref{tab:coefficients_logit}.
 
-Les paramètres $\beta_j$ du modèle reflètent rigoureusement les faits stylisés attendus :
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|c|r|c|}
+        \hline
+        \textbf{Variable} & \textbf{Coefficient ($\beta$)} & \textbf{Erreur Type} & \textbf{z-stat} & \textbf{p-value} \\
+        \hline
+        Intercept ($\beta_0$) & $1,0039$ & $0,015$ & $68,87$ & $< 0,0001$ \\
+        Âge ($\beta_{\text{age}}$) & $-0,0424$ & $0,000$ & $-252,08$ & $< 0,0001$ \\
+        Log(PM) ($\beta_{\text{pm}}$) & $0,0746$ & $0,001$ & $61,13$ & $< 0,0001$ \\
+        \hline
+    \end{tabular}
+    \caption{Coefficients du modèle d'allocation Logit et tests de significativité.}
+    \label{tab:coefficients_logit}
+\end{table}
+
+La significativité globale du modèle est confirmée par les p-values ($< 0,0001$). Les paramètres $\beta$ obtenus reflètent par ailleurs les faits attendus et dictés par nos profils de contrôle :
 \begin{itemize}
-    \item \textbf{Aversion au risque et âge ($\beta_{\text{age}} = -0.0424$)} : Comme attendu (signe négatif), la part d'UC décroît avec l'âge de l'assuré, traduisant la volonté de sécurisation progressive du patrimoine.
-    \item \textbf{Capacité d'absorption du risque et richesse ($\beta_{\text{pm}} = 0.0746$)} : Conformément aux observations de marché (signe positif), les encours les plus importants sont associés à une plus forte diversification, augmentant mécaniquement la part d'UC.
+    \item \textbf{Aversion au risque et âge ($\beta_{\text{age}} = -0,0424$)} : Comme attendu (signe négatif), la part d'UC décroît de manière très significative avec l'âge de l'assuré, traduisant la volonté de sécurisation progressive du patrimoine.
+    \item \textbf{Capacité d'absorption du risque et richesse ($\beta_{\text{pm}} = 0,0746$)} : Conformément aux observations de marché (signe positif), les encours les plus importants sont associés à une plus forte diversification, augmentant mécaniquement la part d'UC.
 \end{itemize}
 
 Bien que cette spécification logistique paramétrique constitue une simplification de la réalité, elle fournit une décomposition économiquement cohérente de la PM pour chaque assuré simulé. Cette méthode permet ainsi de doter le portefeuille synthétique de profils d'allocation réalistes et différenciés, une condition \textit{sine qua non} pour garantir la pertinence des analyses de sensibilités financières menées dans la suite de ce mémoire.
