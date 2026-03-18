@@ -1,14 +1,14 @@
 \chapter{Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}
 \label{chap:application_numerique}
 
-Les chapitres précédents ont détaillé le cadre réglementaire de Solvabilité 2 ainsi que les fondements mathématiques des algorithmes de \textit{clustering} (K-Means, DBSCAN, HDBSCAN), des méthodes empiriques (Banding) et des méthodes associées aux cashflows. L'objectif de cette partie est de calibrer et utiliser ces différentes approches sur le portefeuille de passifs d'assurance vie créé lors du chapitre \ref{chap:generation_passifs}. L'efficacité de ces méthodes sera évaluée à travers une série de tests de sensibilité sur le modèle ALM, visant à mesurer la robustesse des modèles réduits sur différents types de lancements.
+Les chapitres précédents ont détaillé le cadre réglementaire de Solvabilité 2 ainsi que les fondements mathématiques des algorithmes de \textit{clustering} (K-Means, DBSCAN, HDBSCAN), des méthodes empiriques (Banding) et des méthodes associées aux cashflows. L'objectif de cette partie est de calibrer et utiliser ces différentes approches sur le portefeuille de passifs d'assurance vie créé lors du chapitre \ref{chap:generation_passifs}. L'efficacité de ces méthodes sera évaluée à travers une série de tests de sensibilités sur le modèle ALM, visant à mesurer la robustesse des modèles réduits sur différents types de lancements.
 
-La démarche s'articule en trois étapes. La première consiste à définir le modèle de référence et à valider l'absence de biais lors d'une agrégation déterministe de base. Ensuite, la calibration des hyperparamètres des algorithmes d'agrégation permet de sélectionner les modèles cibles grâce à l'analyse des frontières de Pareto. Enfin, la dernière phase soumet les modèles choisis aux différents chocs de sensibilités S2 pour évaluer leur robustesse sur les \textit{Best Estimate}.
+La démarche s'articule en trois étapes. La première consiste à définir le portefeuille aggrégé de référence et à valider l'absence de biais lors d'une agrégation déterministe de base. Ensuite, la calibration des hyperparamètres des algorithmes d'agrégation permet de sélectionner les modèles cibles grâce à une étude comparative des résultats. Enfin, la dernière phase soumet les modèles choisis aux différents chocs de sensibilités S2 pour évaluer leur robustesse sur les \textit{Best Estimate}.
 
 \section{Validation du périmètre de référence et neutralité de l'agrégation de base}
 \label{sec:validation_reference}
 
-Avant d'appliquer des algorithmes d'agrégation, un point de comparaison strict doit être établi afin d'évaluer les résultats sur un lancement de référence. Le portefeuille initial, généré lors du chapitre \ref{chap:generation_passifs}, est constitué d'un million de contrats. 
+Avant d'appliquer des algorithmes d'agrégation, un point de comparaison doit être établi afin d'évaluer les résultats sur une base de référence. Le portefeuille initial, généré lors du chapitre \ref{chap:generation_passifs}, est constitué d'un million de contrats. 
 
 Une première étape d'agrégation basique est réalisée en regroupant les polices d'assurance qui présentent des caractéristiques strictement identiques (même âge, même ancienneté, même TMG, etc.). Cette opération permet de réduire la volumétrie à 26 272 \textit{Model Points}.
 
@@ -33,12 +33,6 @@ Afin de valider la neutralité de cette réduction, une projection en passif seu
 Les contrats regroupés possédant des clés d'agrégation strictement identiques, ils réagissent de manière parfaitement similaire aux hypothèses du modèle ALM. Par conséquent, les flux de trésorerie projetés sont les mêmes et les résultats obtenus sont strictement égaux. 
 
 Cette égalité parfaite permet de considérer le portefeuille complet et le portefeuille agrégé basique comme identiques d'un point de vue des résultats de projections. Le périmètre de 26 272 MP est ainsi validé comme nouveau modèle de référence (\textit{baseline}) pour le reste de l'étude. 
-
-\subsection{Établissement du cadre d'analyse pour la sélection des modèles}
-
-La suite des travaux de calibration s'appuie exclusivement sur ce nouveau portefeuille de référence. Pour choisir les meilleures méthodes de \textit{Machine Learning} candidates, les algorithmes seront testés et comparés via des lancements en passif seul déterministe sur un scénario central. 
-
-Ce n'est qu'à l'issue de cette phase de sélection que les modèles retenus seront soumis à des projections ALM complètes (en déterministe puis en stochastique) intégrant l'ensemble des chocs réglementaires Solvabilité 2.
 
 \subsection{Évaluation des indicateurs S2 du modèle de référence}
 \label{subsec:evaluation_indicateurs_reference}
@@ -72,7 +66,7 @@ Dans un premier temps, le passage du périmètre passif seul à un environnement
 
 Ensuite, la transition vers l'ALM stochastique capture l'asymétrie financière des engagements. Si la volatilité des marchés génère des scénarios défavorables activant les garanties contractuelles (coût asymétrique des TMG), on observe dans cet environnement une diminution marquée du \textit{Best Estimate} moyen (141,29 Md\euro{}) par rapport à la vision strictement déterministe. 
 
-Cette baisse significative, qui se traduit mathématiquement par une Valeur Temporelle des Options et Garanties (TVOG) négative, démontre que la forte capacité d'absorption des pertes par les provisions techniques (FDB - \textit{Future Discretionary Benefits}) fait plus que compenser le coût des garanties financières (TMG) dans les scénarios défavorables. Ce phénomène atypique s'explique par deux mécanismes principaux :
+Cette baisse significative, qui se traduit mathématiquement par une TVOG négative, démontre que la forte capacité d'absorption des pertes par les provisions techniques fait plus que compenser le coût des garanties financières (TMG) dans les scénarios défavorables. Ce phénomène atypique s'explique par deux mécanismes principaux :
 \begin{itemize}
     \item \textbf{L'asymétrie de la revalorisation (Flexibilité de la PB) :} Dans le scénario central déterministe, la stabilité des rendements d'actifs permet de simuler une distribution de participation aux bénéfices importante et continue. En revanche, en environnement stochastique, la forte volatilité engendre de nombreuses trajectoires défavorables où le rendement financier est insuffisant. Dans ces scénarios contraints, le modèle ALM annule la distribution de PB discrétionnaire, limitant la revalorisation servie au seul taux minimum garanti (TMG). L'absence de distribution dans ces scénarios défavorables fait chuter drastiquement les flux de trésorerie sortants moyens par rapport à la vision déterministe initiale.
     \item \textbf{La convexité de l'actualisation \textit{Market-Consistent} :} L'évaluation stochastique implique que l'impact d'une hausse des taux n'est pas symétrique à celui d'une baisse. Dans les scénarios économiques de forte hausse des taux, les facteurs d'actualisation chutent de manière géométrique. La valeur présente des engagements dans ces trajectoires s'en trouve massivement écrasée, tirant la moyenne stochastique globale vers le bas avec une force qui surcompense le coût des garanties (TMG) activées dans les scénarios de taux bas.
@@ -80,14 +74,21 @@ Cette baisse significative, qui se traduit mathématiquement par une Valeur Temp
 
 Au-delà de l'analyse des scénarios centraux, l'évaluation du profil de risque impose de soumettre ce modèle de référence aux divers chocs réglementaires en environnement ALM stochastique. L'exigence de capital unitaire ($SCR_x$) pour chaque sous-module de risque, ainsi que le capital global ($BSCR$) agrégé via la matrice de corrélation, sont calculés conformément à la méthodologie de la formule standard détaillée dans le premier chapitre du mémoire (cf. Section \ref{sec:s2}).
 
-Dans le cadre de ces projections, l'analyse se concentre sur l'absorption des chocs par la variation du \textit{Best Estimate} (soit $\Delta BE = BE_{\text{choc}} - BE_{\text{central}}$). Ces indicateurs unitaires et globaux, calculés sur le portefeuille de 26 272 \textit{Model Points}, constituent la base de comparaison pour la suite. 
+Dans le cadre de ces projections, l'analyse se portera sur l'absorption des chocs par la variation du \textit{Best Estimate} (soit $\Delta BE = BE_{\text{choc}} - BE_{\text{central}}$). Ces indicateurs unitaires et globaux, calculés sur le portefeuille de 26 272 \textit{Model Points}, constituent la base de comparaison pour la suite. 
 
 L'objectif des sections suivantes sera de mesurer à quel point les algorithmes d'agrégation parviennent à restituer ce même profil de risque avec un nombre de MP fortement restreint.
+
+\subsection{Établissement du cadre d'analyse pour la sélection des modèles}
+
+La suite des travaux de calibration s'appuie exclusivement sur ce nouveau portefeuille de référence. Pour choisir les meilleures méthodes de \textit{Machine Learning} candidates, les algorithmes seront testés et comparés via des lancements en passif seul déterministe sur un scénario central. 
+
+Ce n'est qu'à l'issue de cette phase de sélection que les modèles retenus seront soumis à des projections ALM complètes (en déterministe puis en stochastique) intégrant l'ensemble des chocs réglementaires Solvabilité 2.
+
 
 \section{Calibration des algorithmes et sélection des modèles candidats}
 \label{sec:calibration_pareto}
 
-L'agrégation de base validée dans la section précédente a permis de définir un périmètre de référence technique sans perte d'information (26 272 \textit{Model Points} pour un \textit{Best Estimate} de 263,95 Md\euro). L'objectif de cette phase est de justifier méthodiquement le choix des hyperparamètres pour chaque méthode de compression. Afin de garantir des temps de calcul compatibles avec des projections stochastiques multi-chocs, une limite supérieure stricte de 2 000 \textit{Model Points} a été fixée pour la sélection des modèles finaux. Car au delà de ce seuil, les temps de calcul \footnote{Les temps de calculs seront renseignés en annexe \label{tab:annexe_runtimes} et non dans le corps du mémoire car ces temps sont subjectifs et dépendent du modèle ALM, de la machine ainsi que du paramètrage du lancement (nombre de simulations, de MP Actifs, de MP Passifs, etc.)} deviennent trop importants pour une utilisation opérationnelle dans un contexte de production ALM. 
+L'agrégation de base validée dans la section précédente a permis de définir un périmètre de référence technique sans perte d'information (26 272 \textit{Model Points} pour un \textit{Best Estimate} de 263,95 Md\euro). L'objectif de cette phase est de justifier méthodiquement le choix des hyperparamètres pour chaque méthode de compression. Afin de garantir des temps de calcul compatibles avec des projections stochastiques multi-chocs, une limite supérieure stricte de 2 000 \textit{Model Points} a été fixée pour la sélection des modèles finaux. Car au delà de ce seuil, les temps de calcul \footnote{Les temps de calculs seront renseignés en annexe \ref{tab:annexe_runtimes} et non dans le corps du mémoire car ces temps sont subjectifs et dépendent du modèle ALM, de la machine ainsi que du paramètrage du lancement (nombre de simulations, de MP Actifs, de MP Passifs, etc.)} deviennent trop importants pour une utilisation opérationnelle dans un contexte de production ALM. 
 
 \subsection{Protocole \textit{Grid Search} et échantillonnage adaptatif}
 
@@ -102,7 +103,7 @@ Le tableau \ref{tab:grid_search_params} synthétise l'architecture de cet espace
         \hline
         \textbf{Méthode} & \textbf{Hyperparamètres} & \textbf{Valeurs ou spectres testés} & \textbf{Combinaisons} \\
         \hline
-        \textbf{Banding} & Pas d'âge \newline Pas d'ancienneté & 14 modalités (1 à 15 ans + approches \textit{dynamiques}) \newline 10 modalités (1 à 10 ans + \textit{dynamiques fiscal}) & 140 \\
+        \textbf{Banding} & Tranches d'âge \newline Tranches d'ancienneté & 14 modalités (1 à 15 ans + approches \textit{dynamiques}) \newline 10 modalités (1 à 10 ans + \textit{dynamiques fiscal}) & 140 \\
         \hline
         \textbf{K-Means} & $K$ (Nombre de clusters) & 100 modalités (de 100 à 5 000 par incréments) & 100 \\
         \hline

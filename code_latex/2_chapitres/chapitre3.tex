@@ -428,30 +428,24 @@ Toutes les méthodes de partitionnement spatial abordées jusqu'ici, qu'elles so
 
 \section{Les approches dynamiques basées sur l'écoulement des flux}
 
-\subsection{Appariement comportemental (Cash-Flow Matching) et niveaux de fidélité (Proxy vs Real OPS)}
+\subsection{Appariement comportemental (Cash-Flow Matching)}
 
-La méthode de \textit{Cash-Flow Matching} constitue l'approche la plus avancée de ce protocole. Elle repose sur un changement de paradigme : les contrats sont regroupés selon leur \textbf{profil de risque dynamique}.
+L'approche par \textit{Cash-Flow Matching} consiste à changer de regard sur le portefeuille : au lieu de regrouper les contrats selon des critères comme l'âge ou le sexe, on les rassemble parce qu'ils se comportent de la même manière dans le temps. 
 
-Le principe s'articule en deux phases :
+Le fonctionnement concret suit deux étapes principales :
+
 \begin{enumerate}
-    \item \textbf{Phase de projection proxy :} Chaque contrat individuel $i$ est projeté au sein du modèle ALM en mode passif seul sous un scénario déterministe central sur un horizon de $T=20$ ans. Un vecteur de flux financiers est extrait de cette projection $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, ..., f_{i,T}]$, où $f_{i,t}$ représente la somme des prestations (rachats, décès, termes) et de la marge financière à l'année $t$.
-    \item \textbf{Phase de clustering :} L'algorithme des K-Means est ensuite appliqué non pas sur les données de gestion, mais sur ces vecteurs de flux $\mathbf{CF}_i$. La distance entre deux contrats est alors définie par leur proximité comportementale dans le temps :
-
-\begin{equation}
- d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2} 
-\end{equation}
+    \item \textbf{La projection de référence :} On utilise le moteur de projection du passif seul pour projeter chaque contrat un par un sous un scénario central. Pour chaque année $t$, on extrait le flux financier total (prestations de rachats, décès et marge financière). On obtient ainsi, pour chaque police, une "trajectoire" de flux qui servira de base à la calibration : $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, \dots, f_{i,T}]$.
+    
+    \item \textbf{Le regroupement (Clustering) :} Ces trajectoires sont placées sur un plan à $T$ dimensions (une dimension par année). L'algorithme des \textit{K-Means} identifie ensuite les contrats dont les courbes de flux sont les plus proches les unes des autres. La ressemblance entre deux contrats ne dépend donc plus de leur profil démographique, mais de la proximité de leurs sorties d'argent réelles :
+    \begin{equation}
+        d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2}
+    \end{equation}
 \end{enumerate}
 
-\subsubsection{Niveaux de fidélité du moteur proxy}
-Cette approche a été déclinée en deux versions selon la complexité du moteur de projection utilisé pour générer les vecteurs $\mathbf{CF}_i$ :
-\begin{itemize}
-    \item \textbf{Mode proxy (simple) :} Utilise un modèle simplifié, souvent linéaire ou déterministe de premier ordre, pour projeter les flux. C'est une méthode rapide mais qui peut négliger les effets de second ordre comme l'épuisement de la PPE.
-    \item \textbf{Mode Real OPS (moteur métier) :} Utilise le véritable moteur de calcul Polars développé pour ce mémoire. Bien que plus coûteux en temps de préparation (env. 30s), il garantit que le clustering s'opère sur la réalité économique exacte du contrat, capturant l'intégralité des non-linéarités (participation aux bénéfices, rachats structurels, fiscalité).
-\end{itemize}
+Une fois les groupes formés, on recalcule la moyenne pondérée des valeurs biométriques (âge, ancienneté) pour définir le nouveau profil du \textit{Model Point}. Pour s'assurer de ne perdre aucun flux, les PM de tous les contrats du groupe sont sommées.
 
-Cette approche, désignée sous le terme \textbf{Real OPS} dans cette étude, permet de capturer intrinsèquement toutes les non-linéarités du modèle ALM. Deux contrats présentant des caractéristiques très différentes (par exemple, un assuré jeune sur un contrat ancien et un assuré âgé sur un contrat récent) peuvent être regroupés s'ils génèrent des flux de sortie statistiquement équivalents.
-
-L'avantage majeur est la réduction drastique du biais d'agrégation puisque le critère de regroupement est précisément l'indicateur calculé \textit{in fine} (le Best Estimate). L'inconvénient réside dans le coût computationnel de la pré-projection initiale, qui doit être compensé par le gain de temps lors des lancements ALM ultérieurs.
+Cette méthode permet de regrouper des contrats qui évoluent de la même manière sur le long terme. Elle capte naturellement toutes les complexités du modèle sans qu'on ait besoin de les dicter à l'algorithme. Même si cette technique demande une phase de calcul initiale pour projeter le portefeuille, ce temps est est compensé par les lancements futurs agrégés.
 
 
 \subsection{Calibration de lois \textit{a posteriori} (Méthode \textit{Biais Zéro} et clés financières)}
