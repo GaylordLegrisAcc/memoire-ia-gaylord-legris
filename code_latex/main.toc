@@ -93,19 +93,20 @@
 \contentsline {subsubsection}{\numberline {4.2.2.1}Les méthodes empiriques : le Banding}{82}{subsubsection.4.2.2.1}%
 \contentsline {subsubsection}{\numberline {4.2.2.2}L'approche géométrique : le K-Means}{83}{subsubsection.4.2.2.2}%
 \contentsline {subsubsection}{\numberline {4.2.2.3}Les méthodes topologiques : le cas de DBSCAN}{84}{subsubsection.4.2.2.3}%
-\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{85}{subsection.4.2.3}%
-\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{85}{subsubsection.4.2.3.1}%
-\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{87}{subsubsection.4.2.3.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.4}Les méthodes hiérarchiques : le cas de HDBSCAN}{86}{subsubsection.4.2.2.4}%
+\contentsline {subsection}{\numberline {4.2.3}Frontières d'efficience et choix des candidats finaux}{87}{subsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.3.1}Le Banding : décroissance linéaire et maillage rigide}{87}{subsubsection.4.2.3.1}%
+\contentsline {subsubsection}{\numberline {4.2.3.2}Le K-Means : optimum local et respect des strates}{89}{subsubsection.4.2.3.2}%
 \contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{89}{subsubsection.4.2.3.3}%
-\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{90}{subsubsection.4.2.3.4}%
-\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{92}{subsection.4.2.4}%
-\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{92}{subsubsection.4.2.4.1}%
-\contentsline {subsubsection}{\numberline {4.2.4.2}Le moteur de Biais Zéro (Approche d'optimisation)}{92}{subsubsection.4.2.4.2}%
-\contentsline {subsection}{\numberline {4.2.5}Sélection des candidats finaux}{93}{subsection.4.2.5}%
-\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{93}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Évaluation sur le Best Estimate ALM déterministe}{94}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Évaluation stochastique et sensibilités réglementaires (BSCR)}{95}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{97}{subsection.4.3.3}%
-\contentsline {chapter}{Conclusion}{100}{chapter*.8}%
-\contentsline {chapter}{Annexes}{103}{chapter*.9}%
-\contentsline {chapter}{Bibliographie}{111}{table.4.14}%
+\contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{92}{subsubsection.4.2.3.4}%
+\contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{93}{subsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{93}{subsubsection.4.2.4.1}%
+\contentsline {subsubsection}{\numberline {4.2.4.2}La méthode de calibration de lois \textit {a posteriori} (Biais Zéro)}{94}{subsubsection.4.2.4.2}%
+\contentsline {subsection}{\numberline {4.2.5}Sélection des candidats finaux}{95}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{95}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Résultats des agrégations sur le Best Estimate ALM déterministe}{96}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Résultats stochastique et calcul du SCR}{97}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{99}{subsection.4.3.3}%
+\contentsline {chapter}{Conclusion}{102}{chapter*.8}%
+\contentsline {chapter}{Annexes}{105}{chapter*.9}%
+\contentsline {chapter}{Bibliographie}{113}{table.4.15}%

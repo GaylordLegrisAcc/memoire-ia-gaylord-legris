@@ -450,7 +450,7 @@ Cette méthode permet de regrouper des contrats qui évoluent de la même maniè
 
 
 \subsection{Calibration de lois \textit{a posteriori} (Méthode \textit{Biais Zéro} et clés financières)}
-
+\label{sec:biais_zero}
 L'approche par calibration \textit{a posteriori}, dénommée \textit{Biais Zéro} dans cette étude, marque une rupture méthodologique fondamentale avec les techniques de \textit{clustering} traditionnelles. Le paradigme est ici inversé : au lieu de chercher à regrouper des polices démographiquement similaires pour leur appliquer des lois de comportement standards, cette méthode s'autorise à regrouper les contrats selon des critères purement financiers. Elle recalcule ensuite mathématiquement des probabilités de sortie \og sur-mesure \fg{} (taux de rachat et de mortalité induits) pour chaque groupe.
 
 Cette méthode modifie la notion même de \textit{Model Point}. Contrairement aux approches déterministes ou spatiales, un \textit{Model Point} issu de cette calibration ne possède plus d'âge moyen, de sexe majoritaire ou d'ancienneté. Il se résume à une pure enveloppe de flux financiers, rattachée à une table de sortie ($q_x$, rachats) qui lui est exclusive et dont l'unique but est d'annuler mécaniquement le biais d'agrégation.
