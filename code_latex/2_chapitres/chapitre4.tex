@@ -148,18 +148,8 @@ La volumétrie de base établie par cette grille a conduit à une évaluation gl
 
 \subsection{Sensibilité aux hyperparamètres et analyse des dynamiques d'agrégation}
 
-L'étendue des tests réalisés permet de mesurer la sensibilité de chaque modèle à ses paramètres clés. Avant d'isoler les mécaniques propres à chaque famille d'algorithmes, il convient d'observer la structure du portefeuille. La figure \ref{fig:espace_3d_structure} illustre la répartition spatiale du million de contrats initiaux selon les trois variables les plus discriminantes pour les flux futurs : l'âge, l'ancienneté et le TMG.
+L'efficacité du processus d'agrégation repose directement sur le choix des algorithmes de partitionnement et sur le calibrage fin de leurs hyperparamètres. Cette section a pour objectif d'analyser les différentes dynamiques d'agrégation appliquées au portefeuille de référence. Afin d'appréhender visuellement la pertinence des regroupements obtenus et la distribution des contrats au sein des futurs \textit{Model Points}, le comportement de chaque algorithme sera mis en perspective à l'aide des projections spatiales 3D introduites précédemment (cf. page \pageref{expl:graph_3d}). L'exploration de ces méthodes débute par l'approche déterministe la plus classique en modélisation ALM : la méthode \textit{Banding} présentée dans le chapitre \ref{sec:banding}.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/2_chapitres/chapitre4/space_3d_structure.png}
-    \caption{Espace des contrats par Âge, Ancienneté et TMG.}
-    \label{fig:espace_3d_structure}
-\end{figure}
-
-Ce premier graphique met en évidence que le TMG (axe vertical) segmente naturellement le portefeuille en plateaux horizontaux très nets. L'enjeu pour les algorithmes sera de respecter scrupuleusement ces couches tout en découpant finement les zones à forte densité (les âges médians avec 5 à 10 ans d'ancienneté). L'analyse détaillée des paramétrages extrêmes met en évidence les dérives algorithmiques qui surviennent lorsque les hyperparamètres choisis ne conviennent pas.
-
-% ---------------------------------------------------------
 \subsubsection{Les méthodes empiriques : le Banding}
 
 \begin{table}[H]

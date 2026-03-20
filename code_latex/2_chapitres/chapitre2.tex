@@ -683,7 +683,7 @@ L'exposition aux risques de marché est rythmée par l'allocation des encours. L
 
 La figure \ref{fig:euro_uc_par_age} traduit le mécanisme classique de sécurisation de l'épargne. Plus l'assuré vieillit, plus il arbitre ses encours vers le fonds Euro garanti, au détriment de la volatilité des UC. Préserver cette dynamique de désensibilisation lors de l'agrégation sera un critère important.
 
-Du point de vue du passif en fonds Euro, le TMG moyen est à $1,88\,\%$. Cela est dû à la très forte ancienneté du contrat. Enfin, la politique de prélèvement choisie respecte bien les 3 paliers de frais choisis lors de la modélisation :
+Du point de vue du passif en fonds Euro, le TMG moyen s'établit à $1,88\,\%$. Ce niveau s'explique par la très forte ancienneté du portefeuille. Enfin, la politique de prélèvement respecte les trois paliers de frais définis lors de la modélisation :
 
 \begin{figure}[H]
     \centering
@@ -692,4 +692,24 @@ Du point de vue du passif en fonds Euro, le TMG moyen est à $1,88\,\%$. Cela es
     \label{fig:frais_par_gamme}
 \end{figure}
 
-Le TFGSE moyen est de $0,67\,\%$. La figure \ref{fig:frais_par_gamme} illustre une dégressivité des frais : les contrats de la gestion privée bénéficient de tarifs plus avantageux que la gamme standard, tout en captant potentiellement un meilleur niveau de redistribution (TAF). Ce phénomène, conforme à la réalité du marché, traduit la volonté commerciale de fidéliser les patrimoines les plus rémunérateurs en volume, renforçant encore le poids stratégique de ce segment dans les projections futures.
+Le TFGSE moyen ressort à $0,67\,\%$. La figure \ref{fig:frais_par_gamme} illustre une dégressivité des frais : les contrats de la gestion privée bénéficient de tarifs plus avantageux que la gamme standard, tout en captant potentiellement un meilleur niveau de redistribution (TAF). Ce phénomène, conforme à la réalité du marché, traduit la volonté commerciale de fidéliser les patrimoines les plus rémunérateurs en volume, renforçant encore le poids stratégique de ce segment dans les projections futures.
+
+\bigskip
+
+Afin de synthétiser ces caractéristiques et d'introduire la problématique de l'agrégation qui sera au cœur de la suite de ce mémoire, il convient d'observer la structure du portefeuille de manière visuelle. La figure \ref{fig:espace_3d_structure} illustre la répartition spatiale du million de contrats initiaux selon les trois variables les plus discriminantes pour les flux futurs : l'âge, l'ancienneté et le TMG.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/space_3d_structure.png}
+    \caption{Espace des contrats selon l'Âge, l'Ancienneté et le TMG : focus sur des \textit{clusters} basés sur le TMG.}
+    \label{fig:espace_3d_structure}
+\end{figure}
+
+\label{expl:graph_3d}
+Ce premier graphique met en évidence que le TMG (représenté sur l'axe vertical) segmente naturellement le portefeuille en plateaux horizontaux très nets. Ce type de représentation 3D sera utilisé à plusieurs reprises dans la suite du mémoire afin de visualiser la structure du portefeuille et d'évaluer l'impact des différentes méthodes d'agrégation. Il permet notamment de mettre en évidence les différents \textit{clusters}, c'est à dire les contrats qui seront agrégés ensemble. 
+
+Sur cette figure, chaque point représente un contrat individuel dans l'espace défini par l'âge, l'ancienneté et le TMG. Les couleurs, quant à elles, désignent les contrats regroupés au sein d'un même cluster d'agrégation. Ainsi, le point central représentatif du cluster final n'est pas directement observable, ce sont les points individuels qui le composent qui sont mis en évidence. 
+
+À titre illustratif, les couleurs de ce graphique représentent une hypothèse d'agrégation regroupant les contrats ayant le même TMG. C'est la raison pour laquelle une couleur unique par tranche est observable sur l'axe vertical. Les points partageant une même couleur correspondent aux contrats qui seraient agrégés ensemble lors du processus. Cette approche permet de visualiser aisément la manière dont les contrats sont regroupés selon leurs caractéristiques communes et la façon dont les différentes méthodes d'agrégation partitionnent l'espace des contrats.
+
+Dans le prochain chapitre, les différentes méthodes d'agrégations seront présentées puis appliquées dans le chapitre final avec ce genre de représentations 3D. 
