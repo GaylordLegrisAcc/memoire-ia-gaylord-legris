@@ -396,7 +396,7 @@ La projection spatiale du candidat retenu (1 247 MP) confirme cette robustesse (
 
 Au-delà des agrégations fondées sur les variables statiques (Âge, Ancienneté, TMG), deux approches exploitant directement la modélisation financière complètent cette sélection.
 
-\subsubsection{Le Cash-Flow Matching (Approche par profil de risque)}
+\subsubsection{Le \textit{Cash-Flow Matching} (Approche par profil de risque)}
 Cette méthode applique l'algorithme K-Means directement sur les vecteurs de flux de trésorerie projetés sur 40 ans. Dans le \textit{Cash-Flow Matching}, ce n'est plus les variables statiques qui déterminent les regroupements, mais les \textit{cashflows} qu'un contrat peut génerer. L'algorithme est ainsi naturellement calibré par la structure temporelle des engagements sans recourir à un \textit{Grid Search}. L'exécution unique a généré un modèle de 1 015 MP, affichant une erreur de $-0{,}0049\,\%$.
 
 \begin{figure}[H]
@@ -435,7 +435,7 @@ Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèle
         K-Means & $k=1\,039$ & 1 039 & $+0.0035\,\%$ \\
         DBSCAN & $\epsilon=0.0177$, MS$=5$ & 1 047 & $+0.0124\,\%$ \\
         HDBSCAN & $c=10$, $s=5$, \textit{leaf} (wt$=50$) & 967 & $+0.0398\,\%$ \\
-        CF Matching & \textit{Directe sur flux (1 run)} & 1 015 & $-0.0049\,\%$ \\
+        \textit{Cash-Flow Matching} & \textit{Directe sur flux (1 run)} & 1 015 & $-0.0049\,\%$ \\
         Calibration \textit{a posteriori} & Triplet (TMG, TAF, TFGSE) & 222 & $0.0000\,\%$ \\
         \hline
     \end{tabular}
@@ -445,100 +445,237 @@ Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèle
 
 La fiabilité de ces six modèles sera testée dans la section suivante. Leur robustesse et leur cohérence seront mesurées lors de projections intégrant l'interaction actif-passif (ALM) sous de multiples trajectoires économiques stochastiques, afin d'en déduire les exigences en capital réglementaire (SCR) et d'évaluer leur comportement face à différents chocs de taux.
 
-\section{Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}
+\section{Évaluation de la robustesse financière des modèles sur des projections stochastiques et chocs réglementaires S2}
 \label{sec:evaluation_scr}
 
-Si l'évaluation des modèles candidats s'est jusqu'à présent concentrée sur un scénario central en mode passif seul, la validité d'un portefeuille agrégé repose avant tout sur sa capacité à reproduire la déformation du bilan face aux interactions financières et aux chocs réglementaires. 
+Si l'évaluation des modèles candidats s'est jusqu'à présent concentrée sur un environnement déterministe figé, la validité d'un portefeuille agrégé repose avant tout sur sa capacité à reproduire la déformation du bilan face aux interactions financières et aux chocs réglementaires. 
 
-Pour visualiser la résilience des algorithmes face à la complexification du modèle, la figure \ref{fig:evolution_erreur_modeles} retrace l'évolution de l'erreur relative selon quatre paliers de projection : le Passif Seul Déterministe, l'ALM Déterministe (intégration de la participation aux bénéfices), l'ALM Stochastique (intégration de la volatilité pour calcul du BSCR).
+Pour visualiser la résilience des algorithmes face à la complexification du modèle, la figure \ref{fig:evolution_erreur_modeles} retrace l'évolution de l'erreur relative selon les paliers de projection.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/2_chapitres/chapitre4/evolution_erreur_modeles.png}
-    \caption{Évolution de l'erreur relative des modèles selon le niveau de complexité de la projection. \textcolor{blue}{à refaire + titre à revoir}}
+    \caption{Évolution de l'erreur d'approximation selon la complexité de la projection \textcolor{blue}{A refaire}.}
     \label{fig:evolution_erreur_modeles}
 \end{figure}
 
-Cette trajectoire visuelle permet d'identifier à quel stade exact chaque approche algorithmique atteint ses limites. L'analyse détaillée de cette dérive financière s'articule dans les sous-sections suivantes.
+L'analyse détaillée de ces résultats s'articule dans les sous-sections suivantes, en confrontant les algorithmes sur le scénario central EIOPA , puis à des chocs de sensibilités de plus et moins 100 points de base sur la courbe des taux.
 
-\subsection{Résultats des agrégations sur le Best Estimate ALM déterministe}
+\newpage
 
-Le passage d'une projection passif seul à un environnement ALM déterministe modifie structurellement le niveau des engagements. L'intégration du portefeuille d'actifs et de ses rendements déclenche la distribution de la richesse financière via la PB, revalorisant ainsi les contrats. Ce premier test vérifie si les \textit{Model Points} capturent correctement la distribution de cette richesse.
+\subsection{Résultats en projection ALM stochastique (Scénario Central)}
 
-Le tableau \ref{tab:resultats_alm_det} présente les écarts relatifs des modèles candidats par rapport au \textit{Best Estimate} de référence sur ce périmètre.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|l|r|r|}
-        \hline
-        \textbf{Méthode d'agrégation} & \textbf{BE ALM Déterministe} & \textbf{Erreur relative} \\
-        \hline
-        Baseline (Référence) & 205{,}91 Md\euro{} & \textit{Réf.} \\
-        Banding Dynamique & 205{,}06 Md\euro{} & $-0{,}41\,\%$ \\
-        HDBSCAN (Candidat Topo) & 205{,}04 Md\euro{} & $-0{,}42\,\%$ \\
-        K-Means Robuste & 205{,}00 Md\euro{} & $-0{,}44\,\%$ \\
-        DBSCAN & 205{,}01 Md\euro{} & $-0{,}44\,\%$ \\
-        K-Means \textit{Outlier} & 204{,}98 Md\euro{} & $-0{,}45\,\%$ \\
-        CF Matching & 204{,}64 Md\euro{} & $-0{,}62\,\%$ \\
-        Biais Zéro & 193{,}72 Md\euro{} & $-5{,}92\,\%$ \\
-        \hline
-    \end{tabular}
-    \caption{Évaluation des engagements en projection ALM déterministe central.}
-    \label{tab:resultats_alm_det}
-\end{table}
-
-Les résultats révèlent une première rupture majeure pour les méthodes d'ajustement direct. Le \textbf{Biais Zéro}, qui affichait une précision absolue en passif seul, se dégrade significativement avec une erreur approchant le $-6\,\%$. Le \textbf{CF Matching} voit également son erreur décupler ($-0{,}62\,\%$). Ce phénomène met en lumière un sur-ajustement (\textit{overfitting}) de ces méthodes sur les flux de passifs bruts. Dès lors que l'interaction avec l'actif modifie la forme des flux via la PB, les pondérations statiques du Biais Zéro et les clusters construits sur les \textit{cashflows} bruts du CF Matching deviennent inadaptés.
-
-À l'inverse, les méthodes de \textit{clustering} traditionnelles (Banding, HDBSCAN, K-Means) qui agrègent sur les caractéristiques statiques profondes des contrats (Âge, Ancienneté, TMG) se montrent nettement plus résilientes, limitant l'erreur autour de $-0{,}43\,\%$. Elles assurent une meilleure modélisation de la distribution de la participation aux bénéfices. Cependant, la dérive de près de $-0{,}45\,\%$ observée pour tous les candidats de \textit{clustering} souligne que la compression du portefeuille, même réalisée de plusieurs manières différentes, engendre une perte d'information structurelle qui se traduit par une sous-estimation systématique du BE en environnement ALM.
-
-\subsection{Résultats stochastique et calcul du SCR}
-
-La véritable mise à l'épreuve s'effectue en environnement stochastique (1 000 scénarios économiques). Les algorithmes doivent ici restituer l'asymétrie financière des engagements face à la volatilité et absorber les chocs de la formule standard (hausse/baisse des taux, actions, etc.).
-
-Le tableau \ref{tab:resultats_bscr_finaux} synthétise la capacité de chaque modèle à reproduire le BE central stochastique et le Capital de Solvabilité Requis global ($BSCR$) \textcolor{blue}{Renommer tous les BSCR en SCR}.
+Dans un environnement ALM stochastique, les différentes méthodes d'agrégation doivent restituer l'asymétrie financière des engagements face à la volatilité des marchés (calcul du \textit{Best Estimate} central) et absorber les chocs de la formule standard pour déduire au mieux le SCR. Le tableau \ref{tab:resultats_central_alm} synthétise ces résultats projetés sur la courbe des taux de référence de l'EIOPA.
 
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.4}
     \begin{tabular}{|l|r|r|r|r|}
         \hline
-        \textbf{Méthode d'agrégation} & \textbf{BE Central (Sto)} & \textbf{Erreur BE} & \textbf{BSCR Agrégé} & \textbf{Erreur BSCR} \\
+        \textbf{Méthode d'agrégation} & \textbf{BE Central} & \textbf{Erreur BE} & \textbf{SCR Global} & \textbf{Erreur SCR} \\
         \hline
-        Baseline (Référence) & 141.29 Md\euro{} & \textit{Réf.} & 56.72 Md\euro{} & \textit{Réf.} \\
-        \textbf{HDBSCAN} & \textbf{140.07 Md\euro{}} & $\textbf{-0{,}86\,\%}$ & \textbf{57.21 Md\euro{}} & $\textbf{+0{,}86\,\%}$ \\
-        DBSCAN & 139{,}98 Md\euro{} & $-0{,}93\,\%$ & 57{,}22 Md\euro{} & $+0{,}87\,\%$ \\
-        Banding Dynamique & 139.94 Md\euro{} & $-0{,}95\,\%$ & 57.22 Md\euro{} & $+0{,}87\,\%$ \\
-        K-Means Robuste & 139.92 Md\euro{} & $-0{,}97\,\%$ & 57.23 Md\euro{} & $+0{,}89\,\%$ \\
-        K-Means \textit{Outlier} & 139.90 Md\euro{} & $-0{,}98\,\%$ & 57.23 Md\euro{} & $+0{,}90\,\%$ \\
-        Biais Zéro & 128.63 Md\euro{} & $-8{,}96\,\%$ & 56.72 Md\euro{} & $+0{,}00\,\%$ \\
+        Baseline (Référence) & 129{,}72 Md\euro{} & \textit{Réf.} & 79{,}95 Md\euro{} & \textit{Réf.} \\
+        \textit{Cash-Flow Matching} & 127{,}99 Md\euro{} & $-1{,}33\,\%$ & 81{,}30 Md\euro{} & $+1{,}69\,\%$ \\
+        DBSCAN & 128{,}40 Md\euro{} & $-1{,}02\,\%$ & 78{,}55 Md\euro{} & $-1{,}74\,\%$ \\
+        HDBSCAN & 128{,}44 Md\euro{} & $-0{,}98\,\%$ & 78{,}54 Md\euro{} & $-1{,}76\,\%$ \\
+        Banding Dynamique & 128{,}44 Md\euro{} & $-0{,}99\,\%$ & 78{,}52 Md\euro{} & $-1{,}79\,\%$ \\
+        K-Means \textit{Outlier} & 128{,}40 Md\euro{} & $-1{,}01\,\%$ & 78{,}50 Md\euro{} & $-1{,}81\,\%$ \\
+        K-Means Robuste & 128{,}41 Md\euro{} & $-1{,}01\,\%$ & 78{,}49 Md\euro{} & $-1{,}83\,\%$ \\
+        Calibration \textit{a posteriori} & 117{,}41 Md\euro{} & $-9{,}48\,\%$ & 18{,}33 Md\euro{} & $-77{,}07\,\%$ \\
         \hline
     \end{tabular}
-    \caption{Évaluation des engagements et du BSCR en projection ALM stochastique : HDBSCAN montre les meilleurs résultats en stochastique.}
-    \label{tab:resultats_bscr_finaux}
+    \caption{Évaluation globale des engagements et du SCR en projection ALM stochastique.}
+    \label{tab:resultats_central_alm}
 \end{table}
 
-Comme l'indique le tableau \ref{tab:resultats_bscr_finaux}, le modèle \textit{Biais Zéro} affiche paradoxalement une erreur nulle sur le BSCR. Cet artefact mathématique s'explique par la nature différentielle du calcul du SCR ($\Delta NAV$). Les lois de décréments étant figées par la calibration initiale, l'erreur d'agrégation en environnement stochastique se traduit par un biais de translation constant qui affecte identiquement le \textit{Best Estimate} central et le \textit{Best Estimate} choqué. Par soustraction entre les deux bilans, ce biais s'annule virtuellement, masquant ainsi une dérive de $-12{,}66$ Md\euro{} sur l'évaluation intrinsèque du bilan central, rendant ce calcul de solvabilité inexploitable en pratique.
+Les résultats révèlent une première rupture pour la méthode de calibration \textit{a posteriori}. Si elle affichait une précision absolue en passif seul, l'erreur atteint ici $-9{,}48\,\%$ sur le BE et provoque un effondrement de l'exigence en capital ($-77{,}07\,\%$ sur le SCR). Le fait de figer les lois de rachats et de mortalité sur un scénario initial rend le modèle inerte face à l'interaction actif-passif. Une calibration effectuée directement sur les flux de sorties d'un modèle ALM, plutôt que sur un modèle passif seul, permettrait potentiellement d'améliorer les résultats sur les projections stochastiques.
 
-L'analyse détaillée des chocs unitaires et du $BSCR$ met en évidence une dynamique commune à l'ensemble des méthodes de \textit{clustering} testées : une sous-évaluation systématique du BE central stochastique (comprise entre $-0{,}86\,\%$ et $-0{,}98\,\%$). Dans cet environnement probabilisé, les scénarios économiques défavorables frappent asymétriquement les contrats extrêmes (forts TMG). En moyennant ces profils au sein des clusters, les algorithmes lissent cette asymétrie, réduisant mécaniquement le coût modélisé des garanties. En partant d'un BE central sous-estimé, le modèle amplifie alors directement l'ampleur de la déformation du bilan en cas de choc réglementaire. Par conséquent, les modèles sous-estimant le BE surestiment logiquement le $BSCR$ (autour de $+0{,}88\,\%$).
+Si l'on écarte cette méthode, l'ensemble des autres algorithmes semblent évoluer avec des résultats ttrès similaires, affichant tous une erreur globale sur le SCR comprise entre $1{,}6\,\%$ et $1{,}8\,\%$ en valeur absolue. On constate par ailleurs que les deux paramétrages du K-Means (Robuste et \textit{Outlier}) produisent des résultats quasi-identiques, ce qui confirme que la déformation induite par l'algorithme est de nature structurelle et non liée à une initialisation hasardeuse des centroïdes. Toutefois, cette apparente homogénéité du SCR global masque des comportements fondamentalement différents. Pour en comprendre les dynamiques, l'analyse a été scindée entre le SCR Marché et le SCR Vie.
 
-Au sein de cette tendance globale, HDBSCAN se place en tête. Avec une erreur limitée à $-0{,}86\,\%$ sur le BE stochastique, il s'impose comme le modèle le plus précis dans le cadre de cette étude. En isolant les profils atypiques plutôt qu'en forçant un partitionnement global, il préserve mieux les queues de distribution du portefeuille. L'analyse détaillée des sous-modules de risque, dont l'intégralité des résultats est reportée en Annexe \ref{tab:annexe_be_chocs}, vient confirmer cette dynamique. À titre d'exemple, sur le choc \textit{Equity} (baisse des actions), l'algorithme HDBSCAN parvient à restreindre son erreur à $-1{,}07\,\%$, contre une dérive atteignant près de $-1{,}20\,\%$ pour le K-Means (\textit{Outlier}).
+\subsubsection{Analyse de la déformation du Risque de Marché}
 
-Ils montrent que, même avec une compression drastique (moins de 1 400 MP), les modèles de \textit{clustering} parviennent à reproduire le BE central stochastique avec une erreur contenue sous la barre des 1\,\%. Cette performance est d'autant plus marquante que les modèles ont été calibrés uniquement sur un scénario central déterministe, sans aucune optimisation prévue pour absorber des chocs stochastiques. Cela confirme que la structure de risque capturée par les algorithmes de \textit{clustering} est suffisamment solide pour résister naturellement à la complexification du modèle ALM. C'est un constat très encourageant qui valide le potentiel d'industrialisation de ces méthodes pour les calculs réglementaires Solvabilité 2. \textcolor{blue}{Renommer Solvabilité II en Solvabilité 2}
+Le tableau \ref{tab:resultats_central_marche} isole le comportement des algorithmes face aux chocs purement financiers, en se concentrant sur l'ensemble des sous-modules du risque de marché : Taux, Actions et Immobilier.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{|l|r|r|r|r|}
+        \hline
+        \multirow{2}{*}{\textbf{Méthode d'agrégation}} & \multicolumn{4}{c|}{\textbf{Erreur relative sur le SCR Marché}} \\
+        \cline{2-5}
+        & \textbf{Taux} & \textbf{Actions} & \textbf{Immobilier} & \textbf{Total Marché} \\
+        \hline
+        \textit{Cash-Flow Matching} & \textbf{$-0{,}15\,\%$} & \textbf{$+1{,}08\,\%$} & \textbf{$+0{,}84\,\%$} & \textbf{$+0{,}24\,\%$} \\
+        DBSCAN & $-6{,}60\,\%$ & $-2{,}50\,\%$ & $-5{,}91\,\%$ & $-5{,}42\,\%$ \\
+        K-Means \textit{Outlier} & $-6{,}64\,\%$ & $-2{,}45\,\%$ & $-5{,}92\,\%$ & $-5{,}43\,\%$ \\
+        K-Means Robuste & $-6{,}64\,\%$ & $-2{,}46\,\%$ & $-5{,}94\,\%$ & $-5{,}44\,\%$ \\
+        HDBSCAN & $-6{,}61\,\%$ & $-2{,}55\,\%$ & $-5{,}92\,\%$ & $-5{,}44\,\%$ \\
+        Banding Dynamique & $-6{,}67\,\%$ & $-2{,}52\,\%$ & $-5{,}85\,\%$ & $-5{,}46\,\%$ \\
+        Calibration \textit{a posteriori} & $-85{,}61\,\%$ & $-74{,}25\,\%$ & $-100{,}00\,\%$ & $-83{,}09\,\%$ \\
+        \hline
+    \end{tabular}
+    }
+    \caption{Décomposition exhaustive de l'erreur sur le module Risque de Marché (Scénario Central) : le \textit{Cash-Flow Matching} affiche une précision nettement supérieure sur l'ensemble des chocs financiers.}
+    \label{tab:resultats_central_marche}
+\end{table}
+
+Pour l'ensemble des approches de \textit{clustering} spatial, topologique et empirique (K-Means, DBSCAN, HDBSCAN, Banding), les résultats montrent une déformation significative du risque de marché. En lissant les caractéristiques contractuelles au sein des clusters, ces approches écrasent les asymétries du passif et sous-évaluent mécaniquement la TVOG. Ce biais structurel pénalise lourdement le calcul du risque de taux d'intérêt (avec des erreurs oscillant entre $-6{,}6\,\%$ et $-6{,}7\,\%$), mais se propage également sur les chocs Actions (autour de $-2{,}5\,\%$) et Immobilier (près de $-5{,}9\,\%$). L'accumulation de ces déficits entraîne une sous-évaluation d'environ $-5{,}4\,\%$ sur l'ensemble du risque de marché.
+
+À l'inverse, l'approche par \textit{Cash-Flow Matching} démontre une robustesse nettement supérieure face aux chocs financiers. En s'affranchissant des variables statiques pour agréger les contrats directement sur la structure temporelle de leurs flux futurs, l'algorithme préserve nativement la duration globale du passif. Par conséquent, l'erreur mesurée sur le SCR Taux est très faible ($-0{,}15\,\%$), et les dérives sur les autres classes d'actifs restent contenues, garantissant une modélisation fidèle du risque de marché dans son ensemble contrairement aux autres modèles ($+0{,}24\,\%$).
+
+\subsubsection{Analyse de la déformation du Risque Vie}
+
+Si le module marché est défavorable au \textit{clustering} classique, il convient de comprendre pourquoi l'erreur sur le SCR global de ces algorithmes (Tableau \ref{tab:resultats_central_alm}) restait si proche de 0. L'explication se trouve dans le risque de souscription Vie (Tableau \ref{tab:resultats_central_vie}), où l'on observe la déformation de l'ensemble des composantes biométriques et comportementales.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|r|}
+        \hline
+        \multirow{2}{*}{\textbf{Méthode d'agrégation}} & \multicolumn{4}{c|}{\textbf{Erreur relative sur le SCR Vie}} \\
+        \cline{2-5}
+        & \textbf{Rachats} & \textbf{Frais} & \textbf{Mortalité} & \textbf{Total Vie} \\
+        \hline
+        \textit{Cash-Flow Matching} & \textbf{$+5{,}21\,\%$} & $-1{,}46\,\%$ & $0{,}00\,\%$ & \textbf{$+5{,}03\,\%$} \\
+        K-Means Robuste & $+6{,}55\,\%$ & $-1{,}01\,\%$ & $0{,}00\,\%$ & $+6{,}35\,\%$ \\
+        K-Means \textit{Outlier} & $+6{,}59\,\%$ & $-1{,}01\,\%$ & $0{,}00\,\%$ & $+6{,}39\,\%$ \\
+        Banding Dynamique & $+6{,}73\,\%$ & $-1{,}03\,\%$ & $0{,}00\,\%$ & $+6{,}53\,\%$ \\
+        DBSCAN & $+6{,}74\,\%$ & $-1{,}05\,\%$ & $0{,}00\,\%$ & $+6{,}56\,\%$ \\
+        HDBSCAN & $+6{,}79\,\%$ & $-1{,}08\,\%$ & $0{,}00\,\%$ & $+6{,}58\,\%$ \\
+        Calibration \textit{a posteriori} & $-67{,}47\,\%$ & $-4{,}71\,\%$ & N/A & $-65{,}66\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Décomposition exhaustive de l'erreur sur les sous-modules du Risque Vie (Scénario Central).}
+    \label{tab:resultats_central_vie}
+\end{table}
+
+L'analyse de ce tableau révèle que les modèles spatiaux, qui lissaient le risque de marché, génèrent ici une erreur en sens opposé : une surestimation systématique du module Vie (comprise entre $+6{,}3\,\%$ et $+6{,}6\,\%$), très majoritairement pilotée par le risque de rachat conjoncturel. L'agrégation de contrats présentant des caractéristiques potentiellement hétérogènes génère une volatilité artificielle sur les flux de sorties, créant des effets de falaise (\textit{cliff effects}) lorsque la moyenne du \textit{Model Point} franchit certains seuils de rachat. On observe également une légère sous-évaluation du risque de frais (\textit{Expense}) de l'ordre de $-1\,\%$. Probablement dû au lissage des taux de chargement au sein des clusters réduisant l'assiette prélevée lors de la projection.
+
+Un point d'attention particulier concerne le risque de Mortalité, dont l'erreur ressort à $0{,}00\,\%$ pour l'ensemble des méthodes comparées. Ce résultat, loin d'être une anomalie, traduit une réalité financière propre aux portefeuilles d'épargne dans le contexte actuel de taux. Le modèle (\textit{Baseline}) affiche lui-même un SCR nul sur ce module. En l'absence de garantie de prévoyance lourde (type garantie plancher), le choc réglementaire de hausse de la mortalité se traduit par une liquidation anticipée des provisions mathématiques sans générer de perte pour l'assureur. Le SCR étant capé à 0 en cas de choc favorable, les algorithmes d'agrégation ont simplement hérité de cette caractéristique du portefeuille de référence. 
+
+Pour évaluer véritablement la capacité des algorithmes à restituer le risque de mortalité, il est nécessaire de s'affranchir du plafonnement réglementaire du SCR à zéro et d'analyser directement la déformation intrinsèque des engagements sous ce choc biométrique (\textit{BE Mortality}). 
+
+Dans un portefeuille d'épargne classique, une hausse de la mortalité se traduit par une liquidation anticipée des provisions mathématiques, libérant l'assureur de ses garanties futures. Cet effet est visible sur le modèle de référence (\textit{Baseline}), dont l'engagement passe de 129{,}72 Md\euro{} en central à 129{,}36 Md\euro{} sous choc, matérialisant un "gain" d'environ 360 millions d'euros. Le tableau \ref{tab:comparaison_be_mortalite} vérifie si les modèles compressés parviennent à restituer cette même dynamique.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|rr|r|}
+        \hline
+        \multirow{2}{*}{\textbf{Méthode d'agrégation}} & \multicolumn{2}{c|}{\textbf{Valeur des Engagements (Md\euro{})}} & \textbf{Erreur relative} \\
+        \cline{2-3}
+        & \textbf{BE Central} & \textbf{BE Mortalité} & \textbf{Sur BE Mortalité} \\
+        \hline
+        Baseline (Référence) & 129{,}72 & 129{,}36 & \textit{Réf.} \\
+        \hline
+        \textit{Cash-Flow Matching} & 127{,}99 & 127{,}64 & $-1{,}32\,\%$ \\
+        DBSCAN & 128{,}40 & 128{,}07 & $-0{,}99\,\%$ \\
+        HDBSCAN & 128{,}44 & 128{,}12 & $-0{,}96\,\%$ \\
+        K-Means \textit{Outlier} & 128{,}40 & 128{,}08 & $-0{,}99\,\%$ \\
+        K-Means Robuste & 128{,}41 & 128{,}09 & $-0{,}98\,\%$ \\
+        Banding Dynamique & 128{,}44 & 128{,}11 & $-0{,}96\,\%$ \\
+        Calibration \textit{a posteriori} & 117{,}41 & 117{,}02 & $-9{,}54\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Évaluation de la déformation des engagements sous choc réglementaire de mortalité.}
+    \label{tab:comparaison_be_mortalite}
+\end{table}
+
+La lecture de ces résultats confirme que l'agrégation n'altère pas la structure démographique globale du passif. L'erreur relative observée sous le choc mortalité reste parfaitement stable (autour de $-1\,\%$ pour les approches spatiales) et ne subit aucune dérive de modélisation supplémentaire par rapport à l'évaluation en scénario central.
+
+L'analyse de la variation absolue illustre parfaitement cette stabilité. À titre d'exemple, le modèle K-Means Robuste voit son engagement chuter de 128{,}41 à 128{,}09 Md\euro{}, reproduisant une libération de provision de 320 millions d'euros. Cette dynamique d'écoulement est cohérente avec la réaction du portefeuille réel. La légère sous-évaluation financière constatée sur le montant final n'est donc pas liée à une perte d'information sur l'âge ou la probabilité de décès des assurés lors de l'agrégation : elle découle exclusivement de la perte de TVOG que l'on retrouve sur le BE central.
+
+Cette observation est d'autant plus remarquable pour des méthodes de \textit{Machine Learning} non supervisées. Bien qu'elles puissent mathématiquement fusionner des contrats d'âges hétérogènes pour optimiser la variance intra-cluster, le centre de gravité démographique des \textit{Model Points} reste suffisamment fidèle pour que la loi de mortalité choquée s'applique avec la même intensité que sur le modèle de référence. L'approche par \textit{Cash-Flow Matching}, bien qu'uniquement pilotée par la similarité des flux de trésorerie sans aucune variable d'âge en entrée, démontre une résilience équivalente en restituant naturellement le profil de décrément du portefeuille.
+
+Grâce à la matrice de corrélation de Solvabilité 2, la forte surévaluation d'environ $+6{,}5\,\%$ du risque Vie vient diversifier et compenser de manière la sous-évaluation d'environ $-5{,}4\,\%$ observée sur le module Marché. L'apparente précision du SCR global des algorithmes spatiaux et empiriques (K-Means, DBSCAN, Banding) repose donc en réalité sur une stricte erreur compensatoire inter-modules. 
+
+De son côté, le \textit{Cash-Flow Matching} présente un profil de risque différent sur ce module. Bien qu'il s'en sorte globalement mieux sur les rachats ($+5{,}21\,\%$), l'erreur sur le total Vie reste perfectible ($+5{,}03\,\%$). Le regroupement exclusif par similarité de \textit{cashflows} peut ponctuellement fusionner des assurés dont les comportements structurels (âge, ancienneté fiscale) divergent face à un choc comportemental. 
+
+En conclusion sur ce scénario central, l'homogénéité apparente du SCR global masque des comportements algorithmiques fondamentalement différents. À ce stade de l'étude, l'approche par \textit{Cash-Flow Matching} démontre une supériorité structurelle sur les autres méthodes. En préservant la convexité du passif, elle restitue le risque financier avec une grande précision, sans s'en remettre à des effets de compensation inter-modules de la formule standard, contrairement aux algorithmes de partitionnement spatial. Afin de confirmer cette robustesse méthodologique et de vérifier si ces modèles conservent leur cohérence dans des environnements économiques contraints, la section suivante évaluera leur comportement face à des chocs de $\pm 100$ points de base sur la courbe des taux de référence.
+
+\subsection{Analyse des sensibilités : Chocs sur la courbe des taux de référence}
+
+Afin d'éprouver la robustesse des modèles face à des conditions de marché extrêmes, deux projections additionnelles ont été menées en appliquant un choc translationnel de $\pm 100$ points de base sur la courbe des taux sans risque de l'EIOPA.
+
+\subsubsection{Scénario de baisse des taux (Courbe Moins : -100 bps)}
+
+Dans un environnement de taux bas, la valeur intrinsèque des garanties croît fortement, rendant le passif extrêmement sensible aux rachats conjoncturels. Le tableau \ref{tab:resultats_choc_moins} détaille les dérives observées sur les sous-modules de risques.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Méthode d'agrégation} & \textbf{Erreur SCR Marché} & \textbf{Erreur SCR Vie} & \textbf{Erreur SCR Global} \\
+        \hline
+        \textbf{\textit{Cash-Flow Matching}} & \textbf{$+2{,}61\,\%$} & \textbf{$+9{,}51\,\%$} & $+5{,}57\,\%$ \\
+        K-Means Robuste & $-4{,}41\,\%$ & $+16{,}92\,\%$ & $+4{,}95\,\%$ \\
+        HDBSCAN & $-4{,}20\,\%$ & $+17{,}18\,\%$ & $+5{,}18\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Sensibilité des modèles face à un choc de taux à la baisse (-100 bps).}
+    \label{tab:resultats_choc_moins}
+\end{table}
+
+Ce scénario met en lumière les limites du \textit{clustering} géométrique. En regroupant des contrats aux TMG hétérogènes, la baisse des rendements obligataires déclenche des « effets de falaise » (\textit{cliff effects}). La moyenne du cluster franchit soudainement les seuils de déclenchement, ce qui génère une volatilité artificielle massive des flux de sorties. L'erreur sur le SCR Vie (porté par le risque de rachat) explose à près de $+17\,\%$ pour le K-Means et HDBSCAN. Le \textit{Cash-Flow Matching}, bien qu'affecté, est la seule approche à maintenir cette dérive sous la barre des $10\,\%$.
+
+\subsubsection{Scénario de hausse des taux (Courbe Plus : +100 bps)}
+
+À l'inverse, une remontée soudaine de la courbe des taux a pour effet de désensibiliser le coût des garanties, transférant la pression sur le risque de marché et les plus-values latentes.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Méthode d'agrégation} & \textbf{Erreur SCR Marché} & \textbf{Erreur SCR Vie} & \textbf{Erreur SCR Global} \\
+        \hline
+        \textbf{\textit{Cash-Flow Matching}} & \textbf{$-1{,}70\,\%$} & $-1{,}61\,\%$ & \textbf{$-1{,}67\,\%$} \\
+        HDBSCAN & $-6{,}02\,\%$ & $+1{,}60\,\%$ & $-4{,}11\,\%$ \\
+        K-Means Robuste & $-6{,}03\,\%$ & $+1{,}47\,\%$ & $-4{,}15\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Sensibilité des modèles face à un choc de taux à la hausse (+100 bps).}
+    \label{tab:resultats_choc_plus}
+\end{table}
+
+Dans ce contexte, la hiérarchie financière reprend ses droits. Le \textit{Cash-Flow Matching} écrase la concurrence en garantissant une réplication quasi-parfaite des déformations du bilan, stabilisant l'erreur du SCR Global à $-1{,}67\,\%$. Les algorithmes géométriques, lissant toujours la convexité du passif, peinent à capter la réaction du marché obligataire, affichant des sous-évaluations structurelles au-delà des $-6\,\%$ sur le SCR Marché.
+
+\subsection{Performance opérationnelle : Analyse des temps de calcul}
+
+Au-delà de la fidélité de restitution des bilans prudentiels, le véritable apport des algorithmes d'agrégation se mesure à l'aune du gain de temps de calcul (\textit{Runtime}). En environnement stochastique, la lourdeur des projections imbriquées constitue un frein majeur à la production des arrêtés réglementaires.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Méthode} & \textbf{Volumétrie (MP)} & \textbf{Temps d'exécution (s)} & \textbf{Facteur de réduction} \\
+        \hline
+        Baseline (Réf. Normale) & 26 272 & 28 787 s ($\approx$ 8h00) & \textit{Réf.} \\
+        \hline
+        \textbf{K-Means Robuste} & 1 039 & 556 s ($\approx$ 9 min) & $\div$ \textbf{51} \\
+        \textbf{HDBSCAN} & 967 & 521 s ($\approx$ 8 min) & $\div$ \textbf{55} \\
+        Banding Dynamique & 1 172 & 646 s ($\approx$ 10 min) & $\div$ \textbf{44} \\
+        \textit{Cash-Flow Matching} & 1 015 & 1 837 s ($\approx$ 30 min) & $\div$ \textbf{15} \\
+        \hline
+    \end{tabular}
+    \caption{Temps de calcul comparés pour une projection ALM stochastique (Scénario Central).}
+    \label{tab:runtimes_comparaison}
+\end{table}
+
+Le tableau \ref{tab:runtimes_comparaison} illustre l'impact spectaculaire de la réduction de la dimensionnalité. Là où le modèle exhaustif exige 8 heures de traitement pour le scénario central (et jusqu'à plus de 18 heures pour certains scénarios choqués), l'ensemble des modèles de \textit{Machine Learning} ramène ce délai à quelques minutes. Les méthodes spatiales (HDBSCAN, K-Means) excellent particulièrement, divisant le temps de calcul par plus de 50. Si le \textit{Cash-Flow Matching} nécessite un effort de projection supérieur (environ 30 minutes), ce temps reste amplement compatible avec les contraintes industrielles et constitue un investissement justifié au regard de sa précision supérieure sur les chocs Solvabilité 2.
 
 \subsection{Conclusion de l'étude comparative}
 
-L'objectif de ce chapitre était d'éprouver la viabilité opérationnelle des algorithmes d'agrégation face aux exigences de la directive Solvabilité 2. L'étude démontre qu'une compression drastique, ramenant le portefeuille d'un million de contrats à moins de 2 000 \textit{Model Points}, est réalisable sans dénaturer le profil de risque, sous réserve d'une sélection méthodique de l'algorithme.
+L'objectif de ce chapitre était d'éprouver la viabilité opérationnelle des algorithmes d'agrégation face aux exigences de la directive Solvabilité 2. L'étude démontre qu'une compression drastique de la volumétrie est réalisable, levant un verrou technologique majeur dans les directions actuarielles, sous réserve d'une sélection méthodique de l'algorithme.
 
-La confrontation des méthodes permet d'établir une cartographie claire de leurs forces et faiblesses :
+La confrontation des méthodes permet d'établir une cartographie claire :
 \begin{itemize}
-    \item \textbf{Le candidat performant mais complexe à calibrer (HDBSCAN) :} Sa capacité à cartographier naturellement le risque par hiérarchie de densité, sans forcer de partitionnement arbitraire, permet de conserver la structure exacte du portefeuille. Il s'agit de la méthode la plus sûre et précise. Toutefois, sa forte sensibilité aux hyperparamètres et l'impossibilité de cibler un volume exact de MP en sortie en font un choix plus risqué pour une industrialisation rapide et automatisée en production.
-    \item \textbf{Le bon compromis industriel (K-Means Robuste) :} Bien qu'il nécessite une vérification par frontière de Pareto pour éviter le piège des optimums locaux (sur-ajustement), l'avantage strict de ce modèle réside dans sa simplicité de mise en œuvre. Son contrôle direct sur la volumétrie (paramètre $K$) et sa robustesse relative en font une alternative particulièrement solide pour les processus où le temps de calcul est contraint.
-    \item \textbf{La rigidité opérationnelle (Banding) :} Bien qu'auditable, très lisible et érigée en standard de marché, cette méthode empirique montre ici ses limites. Elle requiert une volumétrie nettement supérieure (près de 1 900 MP) pour égaler la précision d'un K-Means à 1 200 MP, pénalisant ainsi mécaniquement les temps de traitement du modèle de projection ALM stochastique.
-    \item \textbf{Le problème de l'\textit{overfitting} (Biais Zéro, CF-Matching) :} Ces approches, redoutables en environnement déterministe statique, s'effondrent dès lors que la dynamique non linéaire de la participation aux bénéfices est sollicitée. Elles illustrent le danger d'une optimisation excessive sur une cible unique. Elles pourraient théoriquement être calibrées sur de multiples trajectoires pour absorber les chocs stochastiques, mais cela exigerait une complexification du processus de calibration qui dépasse le cadre de ce mémoire.
+    \item \textbf{Le modèle de référence ALM (\textit{Cash-Flow Matching}) :} En agrégeant sur les flux financiers plutôt que sur la signalétique, cette approche limite les effets de lissage asymétrique. Elle s'impose comme la méthodologie de pointe pour reproduire avec une grande fidélité la déformation d'un bilan sous chocs de taux, en faisant le candidat idéal pour les exercices réglementaires et ORSA.
+    \item \textbf{L'équilibre industriel (K-Means / HDBSCAN) :} S'ils peinent à restituer parfaitement la convexité des garanties sous scénarios de taux bas (à cause d'une moyenne des TMG), ces algorithmes brillent par une performance opérationnelle inégalée. En divisant les temps de traitement par 50, ils offrent des proxys d'une qualité redoutable pour des analyses d'estimations rapides ou de pré-clôture.
+    \item \textbf{Les approches à proscrire (Calibration a posteriori) :} Le naufrage de l'approche d'optimisation forcée des poids démontre le danger d'un sur-ajustement sur une trajectoire centrale unique. Sans dynamique intrinsèque, le modèle est incapable de réagir à la volatilité, violant les fondements mêmes de Solvabilité 2.
 \end{itemize}
 
-Au-delà de la précision financière, le véritable apport de ces méthodes se mesure en gain de temps de calcul (\textit{Runtime}). Comme détaillé en Annexe \ref{annexe:runtimes}, la projection stochastique complète du modèle de référence (26 272 MP) nécessite plus de 7 heures de traitement. \textcolor{blue}{Beaucoup plus parler des runtimes} En comparaison, les modèles optimisés par \textit{Machine Learning} comme le K-Means Robuste ou HDBSCAN accomplissent la même tâche en moins de 25 minutes. Cette réduction drastique, divisant les temps d'exécution par près de vingt, lève un verrou majeur pour la production des arrêtés réglementaires.
-
-Ce constat confirme que le \textit{Machine Learning} non supervisé apporte une réponse concrète au défi de l'industrialisation des calculs ALM : il permet d'optimiser de manière efficace le ratio entre la précision du bilan prudentiel et le temps de calcul machine. Il ouvre ainsi la voie à une nouvelle génération de modèles de projection plus agiles, capables de s'adapter rapidement aux évolutions réglementaires et économiques, tout en assurant une maîtrise rigoureuse du risque modélisé. Les implications stratégiques de ces résultats, ainsi que la réponse définitive à la problématique soulevée en introduction, seront synthétisées dans la conclusion générale de ce mémoire.
-
+Ce constat confirme que le \textit{Machine Learning} non supervisé apporte une réponse concrète et auditable au défi de l'industrialisation des modèles. Les implications stratégiques de ces résultats seront synthétisées dans la conclusion générale de ce mémoire.

@@ -100,13 +100,18 @@
 \contentsline {subsubsection}{\numberline {4.2.3.3}DBSCAN : capture des densités et instabilité de la frontière}{89}{subsubsection.4.2.3.3}%
 \contentsline {subsubsection}{\numberline {4.2.3.4}HDBSCAN : hiérarchisation optimale et extraction ciblée}{92}{subsubsection.4.2.3.4}%
 \contentsline {subsection}{\numberline {4.2.4}Intégration des approches alternatives}{93}{subsection.4.2.4}%
-\contentsline {subsubsection}{\numberline {4.2.4.1}Le Cash-Flow Matching (Approche par profil de risque)}{93}{subsubsection.4.2.4.1}%
+\contentsline {subsubsection}{\numberline {4.2.4.1}Le \textit {Cash-Flow Matching} (Approche par profil de risque)}{93}{subsubsection.4.2.4.1}%
 \contentsline {subsubsection}{\numberline {4.2.4.2}La méthode de calibration de lois \textit {a posteriori} (Biais Zéro)}{94}{subsubsection.4.2.4.2}%
 \contentsline {subsection}{\numberline {4.2.5}Sélection des candidats finaux}{95}{subsection.4.2.5}%
-\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sous chocs Solvabilité 2}{95}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Résultats des agrégations sur le Best Estimate ALM déterministe}{96}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Résultats stochastique et calcul du SCR}{97}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Conclusion de l'étude comparative}{99}{subsection.4.3.3}%
-\contentsline {chapter}{Conclusion}{102}{chapter*.8}%
-\contentsline {chapter}{Annexes}{105}{chapter*.9}%
-\contentsline {chapter}{Bibliographie}{113}{table.4.15}%
+\contentsline {section}{\numberline {4.3}Évaluation de la robustesse financière des modèles sur des projections stochastiques et chocs réglementaires S2}{95}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Résultats en projection ALM stochastique (Scénario Central)}{97}{subsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.1.1}Analyse de la déformation du Risque de Marché}{97}{subsubsection.4.3.1.1}%
+\contentsline {subsubsection}{\numberline {4.3.1.2}Analyse de la déformation du Risque Vie}{98}{subsubsection.4.3.1.2}%
+\contentsline {subsection}{\numberline {4.3.2}Analyse des sensibilités : Chocs sur la courbe des taux de référence}{101}{subsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.2.1}Scénario de baisse des taux (Courbe Moins : -100 bps)}{101}{subsubsection.4.3.2.1}%
+\contentsline {subsubsection}{\numberline {4.3.2.2}Scénario de hausse des taux (Courbe Plus : +100 bps)}{101}{subsubsection.4.3.2.2}%
+\contentsline {subsection}{\numberline {4.3.3}Performance opérationnelle : Analyse des temps de calcul}{102}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Conclusion de l'étude comparative}{102}{subsection.4.3.4}%
+\contentsline {chapter}{Conclusion}{105}{chapter*.8}%
+\contentsline {chapter}{Annexes}{108}{chapter*.9}%
+\contentsline {chapter}{Bibliographie}{116}{table.4.20}%
