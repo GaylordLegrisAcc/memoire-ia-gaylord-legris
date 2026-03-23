@@ -429,25 +429,42 @@ Toutes les méthodes de partitionnement spatial abordées jusqu'ici, qu'elles so
 
 \section{Les approches dynamiques basées sur l'écoulement des flux}
 
-\subsection{Appariement comportemental (Cash-Flow Matching)}
+\subsection{Appariement comportemental (\textit{Cash-Flow Matching})}
+\label{sec:methodo_cf_matching}
 
-L'approche par \textit{Cash-Flow Matching} consiste à changer de regard sur le portefeuille : au lieu de regrouper les contrats selon des critères comme l'âge ou le sexe, on les rassemble parce qu'ils se comportent de la même manière dans le temps. 
+L'approche par appariement des flux de trésorerie (\textit{Cash-Flow Matching}) propose un changement de méthode dans la compression du portefeuille. Plutôt que de partitionner les contrats sur la base de leurs caractéristiques statiques à l'instant initial (âge, ancienneté, encours), l'algorithme les agrège selon l'homogénéité de leur comportement au cours des projections. L'hypothèse est alors que deux polices présentant des profils d'écoulement de trésorerie temporels similaires réagiront de manière similaires aux déformations de l'environnement financier.
 
-Le fonctionnement concret suit deux étapes principales :
+Le fonctionnement de cette approche s'articule autour de quatre étapes successives :
 
 \begin{enumerate}
-    \item \textbf{La projection de référence :} On utilise le moteur de projection du passif seul pour projeter chaque contrat un par un sous un scénario central. Pour chaque année $t$, on extrait le flux financier total (prestations de rachats, décès et marge financière). On obtient ainsi, pour chaque police, une "trajectoire" de flux qui servira de base à la calibration : $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, \dots, f_{i,T}]$.
+    \item \textbf{Génération des trajectoires de référence :} 
+    La première étape nécessite l'utilisation du moteur de projection en passif seul. Chaque contrat du portefeuille est projeté individuellement sous un scénario économique central. Pour chaque année $t$ (sur un horizon de projection $T$), on extrait la somme des flux financiers sortants (prestations de rachats, décès et marges financières). On obtient ainsi, pour chaque police $i$, une signature temporelle : $\mathbf{CF}_i = [f_{i,1}, f_{i,2}, \dots, f_{i,T}]$.
     
-    \item \textbf{Le regroupement (Clustering) :} Ces trajectoires sont placées sur un plan à $T$ dimensions (une dimension par année). L'algorithme des \textit{K-Means} identifie ensuite les contrats dont les courbes de flux sont les plus proches les unes des autres. La ressemblance entre deux contrats ne dépend donc plus de leur profil démographique, mais de la proximité de leurs sorties d'argent réelles :
+    \item \textbf{Normalisation et enrichissement du vecteur d'apprentissage :} 
+    Afin d'éviter que l'algorithme ne regroupe les contrats uniquement par taille (effet volume), les flux annuels sont normalisés par la Provision Mathématique (PM) initiale du contrat. L'objectif est de comparer des \textit{profils d'écoulement}. Par ailleurs, pour garantir une pertinence financière, des variables discriminantes lourdes (telles que le Taux Minimum Garanti) sont concaténées à ce vecteur temporel, après standardisation.
+    
+    \item \textbf{Partitionnement géométrique (\textit{Clustering}) :} 
+    Ces vecteurs enrichis sont placés dans un espace multidimensionnel. L'algorithme des \textit{K-Means} est appliqué pour identifier les contrats dont les courbes de flux et les taux garantis sont les plus proches. La dissimilarité minimisée par l'algorithme (la distance euclidienne $d$) entre deux contrats $i$ et $j$ se traduit mathématiquement par :
     \begin{equation}
-        d(i, j) = \sqrt{\sum_{t=1}^{T} w_t (f_{i,t} - f_{j,t})^2}
+        d(i, j) = \sqrt{\sum_{t=1}^{T} \left( \frac{f_{i,t}}{PM_i} - \frac{f_{j,t}}{PM_j} \right)^2 + \alpha \cdot (TMG_i - TMG_j)^2}
     \end{equation}
+    Où :
+    \begin{itemize}
+        \item $d(i, j)$ représente la distance euclidienne mesurant la dissimilarité de comportement entre les contrats $i$ et $j$ ;
+        \item $f_{i,t}$ et $f_{j,t}$ correspondent aux flux financiers sortants projetés à l'année $t$ pour chacun des deux contrats ;
+        \item $\alpha$ est un scalaire de pondération (hyperparamètre) permettant d'équilibrer l'importance de l'écart de taux garanti face à la variance des flux d'écoulement temporels.
+    \end{itemize}
+    
+    \item \textbf{Agrégation et méthode du profil dominant :} 
+    Une fois les clusters formés, les caractéristiques du \textit{Model Point} synthétique sont recalculées pour assurer la conservation exacte des volumes et de la duration :
+    \begin{itemize}
+        \item Les variables additives (Provisions Mathématiques, nombre de contrats) sont sommées.
+        \item Les variables continues (âge, ancienneté, TMG) font l'objet d'une moyenne pondérée par les PM.
+        \item Les variables catégorielles strictes (comme le sexe, qui pilote les tables de mortalité) sont assignées selon la \textbf{méthode du profil dominant}. Le \textit{Model Point} hérite de la modalité représentant le poids de PM majoritaire au sein de son cluster. Cette technique permet de forcer le respect de la volumétrie cible de compression (ex: $1\,000$ MP) sans dédoubler mécaniquement les clusters mixtes, acceptant une légère approximation marginale plutôt qu'une modélisation parfaite de la convexité financière.
+    \end{itemize}
 \end{enumerate}
 
-Une fois les groupes formés, on recalcule la moyenne pondérée des valeurs biométriques (âge, ancienneté) pour définir le nouveau profil du \textit{Model Point}. Pour s'assurer de ne perdre aucun flux, les PM de tous les contrats du groupe sont sommées.
-
-Cette méthode permet de regrouper des contrats qui évoluent de la même manière sur le long terme. Elle capte naturellement toutes les complexités du modèle sans qu'on ait besoin de les dicter à l'algorithme. Même si cette technique demande une phase de calcul initiale pour projeter le portefeuille, ce temps est est compensé par les lancements futurs agrégés.
-
+Cette approche s'affranchit des biais de lissage empirique. Elle capte naturellement la complexité de l'interaction Actif-Passif sans qu'il soit nécessaire de spécifier des règles de regroupement métier \textit{a priori}. Bien que cette technique exige un investissement calculatoire initial (la projection du ligne à ligne), ce temps de préparation est amplement rentabilisé lors des évaluations réglementaires. En effet, les \textit{Model Points} ainsi construits sont fidèles à la dynamique de flux du portefeuille, garantissant une bonne précision dans les projections stochastiques ultérieures.
 
 \subsection{Calibration de lois \textit{a posteriori} (Méthode \textit{Biais Zéro} et clés financières)}
 \label{sec:biais_zero}
