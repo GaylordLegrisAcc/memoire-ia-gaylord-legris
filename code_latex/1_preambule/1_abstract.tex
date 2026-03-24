@@ -2,4 +2,11 @@
 % Ajouter manuellement cette section à la table des matières
 \addcontentsline{toc}{chapter}{Abstract}
 
-It's a brief sum up in english !
+The Solvency II directive requires insurance undertakings to conduct a prospective assessment of their financial commitments, necessitating the deployment of stochastic Asset-Liability Management (ALM) models. These projections require considerable computational power, making the policy-by-policy processing of life insurance contracts operationally prohibitive. To overcome this constraint, reducing the dimensionality of the portfolio through an aggregation process into \textit{Model Points} proves essential. However, excessive clustering risks smoothing financial guarantees, thereby altering the reproduction of the balance sheet structure in the face of market shocks and distorting the measurement of the Solvency Capital Requirement (SCR).
+
+The objective of this thesis is to analyze the impact of various aggregation methods on the valuation of the \textit{Best Estimate} and the SCR. The study relies on the stochastic generation of a reference portfolio of one million policies, representative of the French market. A deterministic approach by class segmentation (\textit{Banding}) is compared against spatial unsupervised machine learning algorithms (\textit{K-Means}, \textit{HDBSCAN}) as well as a dynamic flow-based method (\textit{Cash-Flow Matching}). 
+
+The analysis demonstrates that dimensionality reduction allows processing times to be divided by a factor of nearly fifty. Faced with asymmetric interest rate shocks, spatial algorithms, and particularly the \textit{K-Means} method, offer the best operational compromise. By preserving the granularity of minimum guaranteed rates and policy seniority, these models accurately capture the financial mechanics of the opportunity cost inherent in lapse risk. Conversely, the approach based on \textit{Cash-Flow Matching} tends to smooth tax-related information, inducing a mechanical overvaluation of the associated SCR.
+
+\vspace{0.5cm}
+\noindent \textbf{Keywords:} life insurance, ALM, Solvency II, aggregation, \textit{Model Points}, \textit{Machine Learning}, \textit{K-Means}, sensitivity analysis, SCR, \textit{Best Estimate}.

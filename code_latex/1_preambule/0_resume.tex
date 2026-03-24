@@ -1,4 +1,12 @@
 \chapter*{Résumé}
 % Ajouter manuellement cette section à la table des matières
 \addcontentsline{toc}{chapter}{Résumé}
-Petit résumé en français de mon mémoire ?
+
+La directive Solvabilité 2 impose aux organismes d'assurance une évaluation prospective de leurs engagements financiers, nécessitant le déploiement de modèles de gestion actif-passif (ALM) stochastiques. Ces projections requièrent une puissance de calcul considérable, rendant le traitement unitaire des contrats d'assurance vie opérationnellement prohibitif. Pour pallier cette contrainte, la réduction de la dimension du portefeuille par un processus d'agrégation en \textit{Model Points} s'avère indispensable. Toutefois, un regroupement trop prononcé risque de lisser les garanties financières, altérant ainsi la restitution de la structure du bilan face aux chocs de marché et faussant la mesure de l'exigence en capital (SCR).
+
+L'objectif de ce mémoire est d'analyser l'impact de différentes méthodes d'agrégation sur l'évaluation du \textit{Best Estimate} et du Capital de Solvabilité Requis (SCR). L'étude s'appuie sur la génération stochastique d'un portefeuille de référence d'un million de polices, représentatif du marché français. Une approche déterministe par découpage en classes (\textit{Banding}) y est confrontée à des algorithmes d'apprentissage non supervisé spatiaux (\textit{K-Means}, \textit{HDBSCAN}) ainsi qu'à une méthode dynamique par les flux (\textit{Cash-Flow Matching}). 
+
+L'analyse démontre que l'allègement de la dimensionnalité permet de diviser les temps de traitement par un facteur proche de cinquante. Face à des chocs de taux d'intérêt asymétriques, les algorithmes spatiaux, et particulièrement la méthode \textit{K-Means}, offrent le meilleur compromis opérationnel. En préservant la granularité des taux minimums garantis et de l'anciennetédu contrat, ces modèles capturent avec précision la mécanique financière du coût d'opportunité inhérent au risque de rachat. À l'inverse, l'approche fondée sur le \textit{Cash-Flow Matching} tend à lisser l'information fiscale, induisant une surévaluation mécanique du SCR associé. 
+
+\vspace{0.5cm}
+\noindent \textbf{Mots-clés :} assurance vie, ALM, Solvabilité 2, agrégation, \textit{Model Points}, \textit{Machine Learning}, \textit{K-Means}, analyse de sensibilités, SCR, \textit{Best Estimate}.
