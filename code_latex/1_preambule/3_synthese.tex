@@ -1,5 +1,176 @@
 \chapter*{Synthèse}
-% Ajouter manuellement cette section à la table des matières
 \addcontentsline{toc}{chapter}{Synthèse}
 
-Un long résumé en français de mon mémoire 
+\subsection*{Introduction et contexte normatif}
+La directive Solvabilité 2 impose aux organismes d'assurance une évaluation rigoureuse de leurs engagements financiers, nécessitant le recours systématique à des modèles de gestion actif-passif (ALM) stochastiques. Ces projections exigent une puissance de calcul considérable, soulevant des défis opérationnels majeurs liés aux temps d'exécution. La problématique centrale de cette étude consiste ainsi à concilier la réduction de la dimension du portefeuille de passifs, via un processus d'agrégation, avec la préservation de la fidélité des indicateurs de risque réglementaires lors de la réalisation d'analyses de sensibilités. L'étude s'appuie sur un portefeuille de référence simulé de 1\,000\,000 de polices, généré pour refléter fidèlement les caractéristiques techniques du marché français de l'assurance vie.
+
+\subsection*{Périmètre de modélisation et indicateurs de risque}
+Afin de mesurer l'impact de l'agrégation sur le profil de risque, l'analyse se concentre principalement sur la restitution de deux indicateurs réglementaires majeurs : le \textit{Best Estimate} (BE) et le capital de solvabilité requis (SCR).
+
+L'évaluation de ces métriques est réalisée à travers une complexification progressive de la chaîne de modélisation. Dans un premier temps, un modèle en passif seul est exploité pour isoler l'écoulement naturel des flux et la sinistralité. Ensuite, un modèle ALM déterministe est introduit pour intégrer la revalorisation financière simple, suivi du modèle ALM stochastique complet. Ce dernier s'avère indispensable pour appréhender les interactions non linéaires entre les rendements financiers et les comportements des assurés, telles que l'exercice des options de rachat, la désensibilisation des taux minimums garantis (TMG) ou l'activation de la participation aux bénéfices.
+
+La valorisation nécessite l'intégration de divers environnements économiques. À cet effet, les travaux s'appuient sur les courbes des taux sans risque publiées par l'EIOPA, incluant la correction pour volatilité (VA). Pour la mesure des sensibilités réglementaires, trois situations économiques distinctes sont modélisées à l'aide des extrants d'un générateur de scénarios économiques (GSE) : la trajectoire stochastique centrale, ainsi que deux chocs parallèles appliqués à la courbe des taux de référence, s'élevant respectivement à $+100$ et $-100$ points de base.
+
+\subsection*{Principe d'agrégation et définition des \textit{Model Points}}
+Face au volume massif des contrats individuels du portefeuille de référence, l'évaluation ligne à ligne s'avère techniquement prohibitive pour des calculs stochastiques en production. La technique usuelle d'optimisation consiste à regrouper les polices présentant des profils de risque similaires au sein de portefeuilles virtuels de taille réduite. 
+
+Chaque regroupement forme un \textit{Model Point} (MP), défini comme un contrat synthétique dont les caractéristiques (telles que l'âge, l'ancienneté, ou le taux technique), pondérées par les provisions mathématiques, visent à répliquer le comportement financier de l'ensemble des contrats sous-jacents. L'enjeu technique majeur réside dans la méthode de sélection et de constitution de ces \textit{Model Points}. Une agrégation trop prononcée risque d'engendrer un lissage des garanties spécifiques, altérant la restitution de la convexité du bilan face aux chocs asymétriques de marché et faussant, \textit{in fine}, la mesure de l'exigence en capital.
+
+\subsection*{Génération stochastique du portefeuille de référence}
+En l'absence d'accès à la maille unitaire d'un portefeuille réel pour des raisons de confidentialité, l'étude s'appuie sur la création d'un portefeuille synthétique de 1\,000\,000 de contrats. Afin de garantir la représentativité de ce portefeuille de passifs, un générateur stochastique de polices a été développé. Ce dernier repose sur la calibration de lois de probabilité à partir de données publiques du marché français (ACPR, INSEE, France Assureurs, conditions générales de contrats d'assurance vie).
+
+La génération s'articule autour d'une approche par générations, assurant la cohérence temporelle et financière des caractéristiques techniques simulées. Pour chaque variable aléatoire modélisée, une démarche d'ajustement statistique comparative a été menée, consistant à calibrer et à confronter plusieurs lois de probabilité théoriques. Les distributions finalement retenues, exposées ci-après, correspondent à celles démontrant la meilleure adéquation avec les observations empiriques du marché :
+\begin{itemize}
+    \item \textbf{Âge de l'assuré :} Modélisé par une loi Bêta, calibrée spécifiquement pour reproduire la structure démographique asymétrique des détenteurs d'assurance vie ;
+    \item \textbf{Sexe :} Généré via une loi de Bernoulli, paramétrée selon la répartition observée sur le marché ;
+    \item \textbf{Ancienneté du contrat :} Simulée par un modèle de mélange gaussien (\textit{Gaussian Mixture Model} - GMM). Cette sélection s'est avérée indispensable pour reproduire fidèlement les différentes vagues historiques de collecte (chocs de souscription) ;
+    \item \textbf{Provisions mathématiques (PM) :} Le montant des encours est généré par une loi Log-Normale, capturant l'asymétrie de la distribution des richesses et l'existence de contrats à forts capitaux ;
+    \item \textbf{Caractéristiques techniques conditionnelles :} Les paramètres financiers, tels que le taux minimum garanti (TMG), la proportion d'unités de compte (UC) et les structures de frais, ne sont pas tirés de manière indépendante. Ils sont affectés de façon conditionnelle à l'année de souscription, reflétant ainsi la réalité historique des taux techniques réglementaires et l'évolution de l'offre commerciale.
+\end{itemize}
+
+Cette méthodologie de simulation permet de restituer la forte hétérogénéité et les corrélations structurelles que pourrait avoir un portefeuille réel de passif d'assurance.
+
+\subsection*{Typologie des méthodes d'agrégation}
+Afin de confronter différentes logiques de réduction de dimension, une typologie des modèles étudiés est établie. L'approche de référence (\textit{Baseline}) correspond à une agrégation stricte à iso-caractéristiques, c'est-à-dire un regroupement exclusif des polices partageant rigoureusement les mêmes attributs techniques (âge, ancienneté, taux minimum garanti, etc.), n'induisant de ce fait aucune perte d'information.
+
+Cette ligne de base est comparée à la méthode déterministe usuelle par découpage en classes (\textit{Banding}), qui introduit mécaniquement des écarts intra-classe, ainsi qu'à des algorithmes d'apprentissage non supervisé (\textit{Machine Learning}) et à une méthode dynamique : 
+\begin{itemize}
+    \item \textbf{L'algorithme \textit{K-Means} :} Fondé sur un partitionnement par centroïdes, il vise à minimiser la variance intra-classe des \textit{Model Points} en s'appuyant sur les caractéristiques statiques des contrats ;
+    \item \textbf{Les algorithmes \textit{DBSCAN} et \textit{HDBSCAN} :} Basés sur l'estimation de la densité locale, ils permettent d'isoler les profils atypiques (gestion du bruit). Le traitement des variables discrètes par ces modèles spatiaux requiert au préalable l'implémentation d'une technique d'ajout de bruit blanc uniforme (\textit{Dithering}) ;
+    \item \textbf{Le \textit{Cash-Flow Matching} :} Contrairement aux approches précédentes s'appliquant sur les caractéristiques statiques à la date d'arrêté, cette technique dynamique s'appuie sur l'algorithme \textit{K-Means} pour regrouper les polices présentant des trajectoires d'écoulement futur des flux de trésorerie similaires.
+\end{itemize}
+
+Le protocole de sélection des hyperparamètres optimaux s'appuie sur une recherche exhaustive sur grille (\textit{Grid Search}). Pour chaque algorithme, l'objectif consiste à identifier la configuration offrant l'optimum de Pareto. Ce dernier est défini par le meilleur compromis entre une contrainte opérationnelle stricte de compression (ciblant un regroupement entre de 800 et 1\,200 \textit{Model Points}) et la minimisation de l'erreur relative sur le \textit{Best Estimate} évalué à l'aide du modèle en passif seul.
+
+\subsection*{Paramétrage optimal des modèles d'agrégation}
+Le protocole de recherche sur grille a permis d'isoler les configurations maximisant la fidélité de la projection tout en respectant la contrainte de compression. Le tableau \ref{tab:synthese_calibration_finale} synthétise les hyperparamètres retenus pour chaque algorithme.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|l|r|r|}
+        \hline
+        \textbf{Méthode} & \textbf{Paramétrage Optimal} & \textbf{Nb MP} & \textbf{Erreur Passif Seul} \\
+        \hline
+        Banding & Tranches 5 ans / 6 ans & 1\,172 & $+0{,}0292\,\%$ \\
+        K-Means & $k=1\,039$ & 1\,039 & $+0{,}0035\,\%$ \\
+        DBSCAN & $\epsilon=0{,}0177$, MS$=5$ & 1\,047 & $+0{,}0124\,\%$ \\
+        HDBSCAN & $c=10$, $s=5$, \textit{leaf} (wt$=50$) & 967 & $+0{,}0398\,\%$ \\
+        \textit{Cash-Flow Matching} & \textit{Directe sur flux (1 run)} & 1\,000 & $-0{,}0049\,\%$ \\
+        Calibration \textit{a posteriori} & Triplet (TMG, TAF, TFGSE) & 222 & $0{,}0000\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Synthèse des modèles retenus pour l'analyse des sensibilités sous chocs Solvabilité 2.}
+    \label{tab:synthese_calibration_finale}
+\end{table}
+
+Les résultats en passif seul démontrent une excellente capacité de compression des algorithmes spatiaux et dynamiques, maintenant une erreur relative marginale sur l'écoulement des flux purs. La méthode de calibration \textit{a posteriori} est également intégrée à des fins de comparaison, illustrant l'approche naïve d'un moyennage post-génération.
+
+\subsection*{Analyse des résultats en projection ALM stochastique sur le scénario EIOPA}
+L'évaluation de la performance des modèles est ensuite transposée dans un environnement ALM stochastique complet. Le tableau \ref{tab:resultats_central_alm} expose les erreurs relatives observées sur le \textit{Best Estimate} (BE) et le SCR global.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|r|}
+        \hline
+        \textbf{Méthode d'agrégation} & \textbf{BE Central} & \textbf{Erreur BE} & \textbf{SCR Global} & \textbf{Erreur SCR} \\
+        \hline
+        Baseline (Référence) & 209{,}93 Md\euro{} & \textit{Réf.} & 26{,}91 Md\euro{} & \textit{Réf.} \\
+        Banding Dynamique & 209{,}02 Md\euro{} & $-0{,}43\,\%$ & 27{,}47 Md\euro{} & $+2{,}10\,\%$ \\
+        HDBSCAN & 209{,}05 Md\euro{} & $-0{,}42\,\%$ & 27{,}47 Md\euro{} & $+2{,}10\,\%$ \\
+        K-Means & 208{,}95 Md\euro{} & $-0{,}46\,\%$ & 27{,}49 Md\euro{} & $+2{,}17\,\%$ \\
+        DBSCAN & 208{,}97 Md\euro{} & $-0{,}46\,\%$ & 27{,}49 Md\euro{} & $+2{,}18\,\%$ \\
+        \textit{Cash-Flow Matching} & 208{,}41 Md\euro{} & $-0{,}72\,\%$ & 27{,}70 Md\euro{} & $+2{,}94\,\%$ \\
+        Calibration \textit{a posteriori} & 198{,}31 Md\euro{} & $-5{,}53\,\%$ & 19{,}27 Md\euro{} & $-28{,}38\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Évaluation globale des engagements et du SCR en projection ALM stochastique.}
+    \label{tab:resultats_central_alm}
+\end{table}
+
+L'analyse révèle que les méthodes de partitionnement spatial (notamment l'algorithme \textit{HDBSCAN}) et le \textit{Banding Dynamique} offrent une restitution très précise du profil de risque, avec une erreur résiduelle sur le SCR global avoisinant $+2{,}10\,\%$. À l'inverse, l'approche par calibration \textit{a posteriori} engendre une dégradation significative des métriques, sous-estimant l'exigence en capital de plus de $28\,\%$. Ce biais s'explique par le lissage artificiel des garanties asymétriques, qui fausse l'évaluation de la valeur temps des options et garanties financières en projection stochastique.
+
+Afin de comprendre l'origine de l'erreur résiduelle des meilleurs modèles, une décomposition sur les modules de risque Marché et Vie est réalisée (Tableau \ref{tab:resultats_modules}).
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Méthode d'agrégation} & \textbf{Erreur SCR Marché} & \textbf{Erreur SCR Vie} & \textbf{Erreur SCR Global} \\
+        \hline
+        Banding Dynamique & $+1{,}89\,\%$ & $+3{,}55\,\%$ & $+2{,}10\,\%$ \\
+        HDBSCAN & $+1{,}87\,\%$ & $+3{,}71\,\%$ & $+2{,}10\,\%$ \\
+        K-Means Robuste & $+1{,}92\,\%$ & $+3{,}87\,\%$ & $+2{,}17\,\%$ \\
+        \textit{Cash-Flow Matching} & $+2{,}42\,\%$ & $+6{,}50\,\%$ & $+2{,}94\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Décomposition de l'erreur sur les principaux modules de risque.}
+    \label{tab:resultats_modules}
+\end{table}
+
+Il est observé que les approches spatiales statiques (\textit{HDBSCAN}, \textit{K-Means}, \textit{Banding}) restituent fidèlement la convexité du bilan face aux chocs de marché, avec une erreur sur le SCR Taux quasiment nulle. L'algorithme \textit{HDBSCAN} affiche toutefois une précision marginalement supérieure à celle du \textit{K-Means}. En isolant efficacement les polices présentant des caractéristiques extrêmes grâce à la gestion du bruit, \textit{HDBSCAN} évite la dilution des taux minimums garantis (TMG) élevés au sein de centroïdes moyens. Cette préservation de la stratification des TMG garantit la juste évaluation des garanties financières face à la volatilité stochastique.
+
+À l'inverse, la méthode du \textit{Cash-Flow Matching} affiche une déviation prononcée sur le module Vie, et plus spécifiquement sur le risque de rachat. Basée exclusivement sur la similarité morphologique des flux projetés en scénario central, cette approche fait abstraction des caractéristiques biométriques et fiscales individuelles. Elle fusionne ainsi des contrats récents (fiscalement pénalisés) avec des contrats matures. Lors de l'application du choc réglementaire de rachat, ou lors d'une forte hausse des taux d'intérêt, cette perte d'information sur l'ancienneté fiscale altère l'évaluation du coût d'opportunité lié aux sorties anticipées. Le lissage des déterminants comportementaux génère alors une réaction disproportionnée du passif compressé, gonflant artificiellement l'exigence en capital. L'approche spatiale statique, en conservant les variables structurelles comme axes de regroupement, confirme ainsi sa supériorité technique pour la restitution des chocs asymétriques Solvabilité 2.
+
+\subsection*{Analyse des sensibilités face aux environnements asymétriques}
+Afin d'éprouver la robustesse des modèles face à des conditions économiques fortement déformées, l'évaluation a été étendue à des chocs de la courbe des taux d'intérêt s'élevant à $+100$ et $-100$ points de base. L'analyse de ces sensibilités met en exergue le comportement fortement non linéaire du risque de rachat, qui constitue le principal levier de déformation du SCR Vie.
+
+Dans un scénario de baisse des taux, le rendement des actifs peine à couvrir les garanties offertes par les taux minimums garantis (TMG). La rentabilité projetée des contrats étant faible, une sortie anticipée des assurés ne génère qu'un manque à gagner marginal pour l'assureur, ce qui se traduit par une exigence en capital au titre du risque de rachat très restreinte. À l'inverse, lors d'une hausse brutale des taux, le portefeuille dégage un rendement nettement supérieur aux garanties versées. La sortie d'un assuré prive alors la compagnie d'importantes marges financières futures. C'est la matérialisation de ce fort coût d'opportunité qui génère une augmentation massive de l'exigence en capital réglementaire. 
+
+Le tableau \ref{tab:sensibilites_scr_synthese} retrace la capacité des modèles à restituer ces asymétries.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \multirow{2}{*}{\textbf{Méthode d'agrégation}} & \textbf{Baisse (-100 bps)} & \multicolumn{2}{c|}{\textbf{Hausse (+100 bps)}} \\
+        \cline{2-4}
+        & \textbf{Erreur SCR Global} & \textbf{Erreur SCR Global} & \textbf{dont Erreur SCR Rachats} \\
+        \hline
+        Banding Dynamique & $+1{,}17\,\%$ & $+1{,}23\,\%$ & $+4{,}55\,\%$ \\
+        HDBSCAN & $+1{,}16\,\%$ & $+1{,}24\,\%$ & $+4{,}68\,\%$ \\
+        K-Means Robuste & $+1{,}21\,\%$ & $+1{,}25\,\%$ & $+4{,}72\,\%$ \\
+        \textit{Cash-Flow Matching} & $+1{,}39\,\%$ & $+1{,}27\,\%$ & $+6{,}23\,\%$ \\
+        \hline
+    \end{tabular}
+    \caption{Évolution de l'erreur relative sur le SCR Global et le SCR Rachats selon la déformation de la courbe des taux.}
+    \label{tab:sensibilites_scr_synthese}
+\end{table}
+
+Les méthodes spatiales (notamment \textit{Banding}, \textit{HDBSCAN} et \textit{K-Means}) démontrent leur capacité à restituer fidèlement cette asymétrie. En préservant la granularité des TMG et de l'ancienneté fiscale lors du partitionnement, ces algorithmes évaluent le coût d'opportunité avec une grande précision (l'erreur sur le SCR global avoisinant $+1{,}25\,\%$ lors du choc à la hausse). La méthode du \textit{Cash-Flow Matching}, en revanche, accuse une déviation supérieure sur le risque de rachat (erreur de $+6{,}23\,\%$). En agrégeant les contrats sur la seule base de leurs flux en scénario central, elle lisse implicitement la fiscalité, altérant la capture de ce comportement asymétrique face aux chocs.
+
+\subsection*{Performance opérationnelle et gains de temps de calcul}
+Au-delà de la fidélité de la restitution prudentielle, l'intérêt fondamental de la réduction de dimension réside dans le gain de performance opérationnelle. La complexité d'une projection ALM stochastique est directement proportionnelle au nombre de polices évaluées à chaque pas de temps. Le tableau \ref{tab:runtimes_synthese} illustre cet apport décisif.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Méthode} & \textbf{Volumétrie (MP)} & \textbf{Temps d'exécution} & \textbf{Facteur de réduction} \\
+        \hline
+        Baseline (Référence) & 26\,272 & $\approx$ 8 h 00 (28\,783 s) & \textit{Réf.} \\
+        HDBSCAN & 967 & $\approx$ 10 min 00 (600 s) & $\div 48$ \\
+        \textit{Cash-Flow Matching} & 1\,000 & $\approx$ 10 min 27 (627 s) & $\div 46$ \\
+        K-Means Robuste & 1\,039 & $\approx$ 11 min 11 (671 s) & $\div 43$ \\
+        Banding Dynamique & 1\,172 & $\approx$ 11 min 51 (711 s) & $\div 40$ \\
+        \hline
+    \end{tabular}
+    \caption{Temps de calcul comparés pour une projection ALM stochastique complète (Scénario Central).}
+    \label{tab:runtimes_synthese}
+\end{table}
+
+La compression du passif permet de diviser les temps de traitement par un facteur avoisinant 48. Une projection exigeant initialement une journée entière de calcul est ramenée à une dizaine de minutes. Cet allègement drastique de la charge calculatoire, couplé à une diminution significative de l'empreinte mémoire, lève un verrou technologique majeur. Il rend possible la multiplication des scénarios de gestion au sein d'environnements informatiques standards, sans compromettre la précision du bilan.
+
+\subsection*{Conclusion et perspectives}
+L'objectif de cette étude consistait à démontrer qu'une compression massive d'un portefeuille de passifs est réalisable sans sacrifier la rigueur de l'évaluation Solvabilité 2. Les travaux confirment que les algorithmes d'apprentissage non supervisé constituent un levier stratégique pour la modélisation ALM, à la condition stricte de retenir des méthodes préservant la stratification des garanties financières.
+
+\begin{itemize}
+    \item \textbf{L'optimum industriel :} Si l'algorithme \textit{HDBSCAN} affiche une précision théorique remarquable grâce à sa gestion de la densité locale, sa mécanique rend le ciblage précis d'une volumétrie complexe. L'algorithme \textit{K-Means} s'impose ainsi comme le meilleur compromis opérationnel : il offre un contrôle direct sur le nombre de \textit{Model Points} générés, tout en restituant une fidélité financière équivalente face aux chocs asymétriques.
+    \item \textbf{La limite des approches dynamiques :} La méthode novatrice du \textit{Cash-Flow Matching} prouve son efficacité sur les projections centrales, mais son lissage des déterminants individuels la pénalise lors de l'évaluation des chocs réglementaires comportementaux.
+\end{itemize}
+
+En perspective, l'intégration de la fiscalité individuelle comme dimension explicite au sein des modèles dynamiques pourrait corriger les biais observés lors des rachats massifs. Par ailleurs, la nature intrinsèque de l'algorithme \textit{HDBSCAN} offre une voie de recherche particulièrement pertinente : plutôt que de contraindre la volumétrie finale, cette méthode permettrait de déterminer de façon organique le nombre optimal de \textit{Model Points} nécessaires pour structurer un portefeuille. L'intégration approfondie des algorithmes de \textit{Machine Learning} ouvre ainsi une nouvelle dimension pour le pilotage des risques en assurance vie, s'affranchissant définitivement des standards volumétriques arbitraires.
