@@ -210,11 +210,11 @@ Le Générateur de Scénarios Économiques est un outil mathématique central da
 
 \subsection{Le choix de l'univers de projection}
 
-La modélisation stochastique s'appuie historiquement sur deux cadres distincts, dont les finalités diffèrent complètement : l'univers \og monde réel \fg{} ($\mathbb{P}$) et l'univers \og risque neutre \fg{} ($\mathbb{Q}$). 
+La modélisation stochastique s'appuie historiquement sur deux cadres distincts, dont les finalités diffèrent fondamentalement : l'univers monde réel ($\mathbb{P}$) et l'univers risque neutre ($\mathbb{Q}$). 
 
-Le monde réel ($\mathbb{P}$) intègre des primes de risque afin de refléter une évolution économique plausible, le rendant indispensable pour le pilotage stratégique prospectif associé au Pilier 2 dans le cadre de Solvabilité II. Toutefois, les travaux menés au sein de ce mémoire se concentrant exclusivement sur l'évaluation des provisions techniques (\textit{Best Estimate}) et des exigences de capital (SCR) relevant du Pilier 1, seul l'univers risque neutre ($\mathbb{Q}$) sera exploité. 
+Le monde réel ($\mathbb{P}$) intègre des primes de risque afin de refléter une évolution économique plausible, le rendant indispensable pour le pilotage stratégique prospectif associé au Pilier 2 dans le cadre de Solvabilité II. Toutefois, les travaux menés au sein de ce mémoire se concentrant exclusivement sur l'évaluation des provisions techniques (\textit{Best Estimate}) et des exigences de capital (SCR) relevant du Pilier 1, seul l'univers risque neutre ($\mathbb{Q}$) est exploité. 
 
-L'\textbf{univers Risque Neutre ($\mathbb{Q}$)} est un cadre de valorisation théorique requis pour les calculs \textit{market-consistent}. Son objectif n'est pas de prédire l'évolution réelle des marchés, mais de calculer une valeur juste en se fondant sur les prix observés. Dans cet univers, on suppose qu'il y a Absence d'Opportunité d'Arbitrage (AOA), ce qui implique que le rendement espéré de n'importe quel actif est strictement égal au taux d'intérêt sans risque. Cette construction, fondée sur l'absence d'opportunité d'arbitrage, est indispensable pour valoriser de manière cohérente le coût des garanties financières complexes. La valeur $V_0$ d'un flux de trésorerie futur $CF_T$ est alors son espérance mathématique sous cette probabilité risque neutre, actualisée au taux sans risque $r(s)$ :
+L'univers risque neutre ($\mathbb{Q}$) est un cadre de valorisation théorique requis pour les calculs \textit{market-consistent}. Son objectif n'est pas de prédire l'évolution conjoncturelle des marchés, mais de calculer une valeur juste en se fondant sur les prix observés. Dans cet univers, l'hypothèse d'Absence d'Opportunité d'Arbitrage (AOA) est posée, ce qui implique que le rendement espéré de n'importe quel actif est strictement égal au taux d'intérêt sans risque. Cette construction mathématique est indispensable pour valoriser de manière cohérente le coût des garanties financières complexes. La valeur $V_0$ d'un flux de trésorerie futur $CF_T$ est alors son espérance mathématique sous cette probabilité risque neutre, actualisée au taux sans risque $r(s)$ :
 \begin{equation}
     V_0 = \mathbb{E}^{\mathbb{Q}} \left[ CF_T \cdot e^{-\int_0^T r(s)ds} \right]
     \label{eq:valeur_risque_neutre}
@@ -225,46 +225,84 @@ L'\textbf{univers Risque Neutre ($\mathbb{Q}$)} est un cadre de valorisation th�
 Afin de générer ces trajectoires économiques, le GSE s'appuie sur des équations différentielles stochastiques spécifiques au comportement de chaque classe d'actifs.
 
 \subsubsection{Modélisation des taux d'intérêt : le modèle de Hull \& White}
-Pour les taux d'intérêt, le modèle de \textbf{Hull \& White à un facteur} est une référence dans le cadre réglementaire. Son principal avantage est sa capacité à se calibrer parfaitement à la courbe des taux sans risque initiale, telle que fournie par l'EIOPA.
+Pour la diffusion des taux d'intérêt, le modèle de Hull \& White à un facteur constitue une référence dans le cadre réglementaire. Son principal avantage réside dans sa capacité à se calibrer parfaitement sur la courbe des taux sans risque initiale, telle que fournie par l'EIOPA.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre1/courbe_EIOPA.png}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre1/gse_env_ref.png}
     \caption{Courbe des taux sans risque sans \textit{Volatility Adjustment} sur 40 ans au 31/12/2024 publiée par l'EIOPA}
     \label{fig:courbe_EIOPA}
 \end{figure}
 
-Cette flexibilité est obtenue grâce à un paramètre de retour à la moyenne $\theta(t)$ qui dépend du temps. Son équation différentielle stochastique (EDS) s'écrit :
+Cette flexibilité est obtenue grâce à un paramètre de retour à la moyenne $\theta(t)$ dépendant du temps. L'équation différentielle stochastique (EDS) associée s'écrit :
 \begin{equation}
-    dr_t = (\theta(t) - ar_t)dt + \sigma dW^{\mathbb{Q}}_t
+    dr_t = (\theta(t) - a r_t)dt + \sigma dW^{\mathbb{Q}}_t
     \label{eq:hull_white}
 \end{equation}
-où $r_t$ est le taux d’intérêt court, $a$ la vitesse de retour à la moyenne, $\sigma$ la volatilité et $W^{\mathbb{Q}}_t$ un mouvement brownien sous la mesure risque neutre. Pour des raisons de calcul, nous utilisons la solution discrète de cette EDS :
+où $r_t$ représente le taux d’intérêt court, $a$ la vitesse de retour à la moyenne, $\sigma$ la volatilité et $W^{\mathbb{Q}}_t$ un mouvement brownien sous la mesure risque neutre. Pour des raisons d'implémentation numérique, la solution discrétisée de cette EDS est privilégiée :
 \begin{equation}
     r_{t+h} = r_t e^{-ah} + \theta(t+h) - \theta(t)e^{-ah} + \sigma \sqrt{\frac{1 - e^{-2ah}}{2a}} Z
     \label{eq:hull_white_discrete}
 \end{equation}
 
 \subsubsection{Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}
-Pour les actifs risqués comme les actions ou l'immobilier, le modèle de \textbf{Black \& Scholes} est couramment utilisé. Conformément à la logique risque neutre, le rendement espéré est le taux sans risque $r_t$. L'EDS du prix de l'actif $S_t$ est :
+Pour les actifs risqués tels que les actions ou l'immobilier, le modèle de Black \& Scholes est couramment retenu. Conformément à la logique risque neutre, le rendement espéré correspond au taux sans risque $r_t$. L'EDS régissant la dynamique du prix de l'actif $S_t$ est la suivante :
 \begin{equation}
     dS_t = r_t S_t dt + \sigma S_t dW^{\mathbb{Q}}_t
     \label{eq:black_scholes_q}
 \end{equation}
-où $S_t$ est le prix de l'actif, $r_t$ le taux sans risque et $\sigma$ la volatilité de l'actif. La solution de cette EDS est donnée par :
+où $S_t$ désigne le prix de l'actif, $r_t$ le taux sans risque et $\sigma$ la volatilité de l'actif. La solution de cette EDS est donnée par :
 \begin{equation}
     S_t = S_0 \exp\left( \int_0^t \left(r_s - \frac{\sigma^2}{2}\right)ds + \int_0^t \sigma dW^{\mathbb{Q}}_s \right)
 \end{equation}
-En pratique, on utilise sa solution discrétisée pour simuler les trajectoires de prix sur un pas de temps $h$ :
+En pratique, l'utilisation de sa solution discrétisée permet de simuler les trajectoires de prix sur un pas de temps $h$ :
 \begin{equation}
     S_{t+h} = S_t \exp\left( \left(r_t - \frac{\sigma^2}{2}\right)h + \sigma\sqrt{h}Z \right)
     \label{eq:black_scholes_q_discrete}
 \end{equation}
 où $Z$ est une variable aléatoire suivant une loi normale centrée réduite $\mathcal{N}(0,1)$.
+
+\subsection{Calibration des scénarios de sensibilité et construction des courbes de taux}
+\label{subsec:calibration_chocs_taux}
+
+Afin d'évaluer la résilience du bilan et de mener l'analyse de sensibilités du dernier chapitre de cette étude, il est nécessaire de construire des univers économiques alternatifs. Ces environnements reposent sur des courbes de taux de référence choquées à hauteur de $+100$ et $-100$ points de base (bps) par rapport à la courbe centrale publiée par l'EIOPA.
+
+La méthodologie de construction de ces courbes s'articule autour des exigences de la directive Solvabilité II, garantissant la cohérence de l'extrapolation asymptotique. Le processus mis en œuvre se décompose en trois étapes successives :
+\begin{enumerate}
+    \item \textit{Application du choc sur la partie liquide :} un choc additif parallèle (respectivement $+100$ bps et $-100$ bps) est appliqué sur les vingt premières années de la courbe des taux de référence de l'EIOPA, en excluant au préalable le \textit{Volatility Adjustment} (VA).
+    \item \textit{Extrapolation de la courbe sans VA :} l'algorithme de Smith-Wilson\footnote{La méthode de Smith-Wilson constitue le standard mathématique exigé par l'EIOPA dans le cadre de Solvabilité II pour l'extrapolation de la courbe des taux sans risque vers le taux ultime à terme. Les développements théoriques sous-jacents à cet algorithme dépassent le périmètre de cette étude et ne sont pas détaillés.} est ensuite exécuté sur ces courbes choquées afin d'assurer une convergence lisse et continue vers le taux ultime à terme (\textit{Ultimate Forward Rate} ou UFR) fixé réglementairement à un horizon de 60 ans.
+    \item \textit{Dérivation et intégration du VA :} la chronique de VA est isolée en calculant le différentiel entre la courbe EIOPA de référence incluant le VA et celle l'excluant. Le choc de sensibilité est appliqué sur la courbe sans VA extrapolée, puis la composante VA est réintégrée à l'issue du processus pour obtenir la courbe directrice de l'environnement de sensibilité.
+\end{enumerate}
+
+Cette approche permet de préserver la mécanique de convergence lointaine tout en translatant les taux courts et moyens. Il est primordial de distinguer la notion d'environnement économique global de celle de scénario de projection. Chaque environnement (sensibilité à $+100$ bps, sensibilité à $-100$ bps) constitue un univers complet, distinct de l'univers de référence détaillé précédemment.
+
+Au sein de chacun de ces environnements, le Générateur de Scénarios Économiques est sollicité pour produire deux jeux de données distincts : d'une part, un jeu de 1\,000 scénarios stochastiques risque neutre, indispensable pour l'évaluation \textit{market-consistent} des provisions techniques (\textit{Best Estimate}), et d'autre part, les trois trajectoires déterministes réglementaires (scénario central, chocs \textit{Rates Up} et \textit{Rates Down}), nécessaires au calcul du capital de solvabilité requis (SCR Taux).
+
+Les figures ci-dessous illustrent, pour chaque environnement de sensibilité choqué, le faisceau des trois courbes réglementaires générées pour l'évaluation du SCR. L'effet de la translation parallèle initiale couplé à la convergence asymptotique vers l'UFR y est distinctement observable.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        % Renseigner le bon chemin d'accès vers le graphique généré par Python pour l'environnement UP
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre1/gse_env_plus.png}
+        \caption{Courbes choqué à $+100$ bps}
+        \label{fig:courbes_env_plus}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        % Renseigner le bon chemin d'accès vers le graphique généré par Python pour l'environnement DOWN
+        \includegraphics[width=\textwidth]{images/2_chapitres/chapitre1/gse_env_moins.png}
+        \caption{Courbes choqué à $-100$ bps}
+        \label{fig:courbes_env_moins}
+    \end{minipage}
+\end{figure}
+
+À partir de ces trois courbes de référence sans VA (EIOPA, EIOPA $+100$ bps, EIOPA $-100$ bps), le Générateur de Scénarios Économiques est sollicité pour produire trois jeux distincts de 1\,000 scénarios stochastiques qui seront utilisés pour projeter le passif et évaluer les indicateurs de risque (BE, SCR) dans les différents environnements économiques.
+
 \bigskip
 
-Une fois cet environnement financier stochastique modélisé, la seconde brique fondamentale de l'évaluation des sensibilités réside dans la projection du passif. Face à la volumétrie massive des contrats d'assurance vie, une modélisation exhaustive contrat par contrat s'avère opérationnellement inenvisageable sur un grand nombre de scénarios. Il est dès lors impératif de recourir à des techniques de réduction de la taille du portefeuille, concept qui introduit la nécessité de regrouper les contrats sous forme de \textit{Model Points}.
-
+Une fois cet environnement financier stochastique modélisé et calibré, la seconde brique fondamentale de l'évaluation des sensibilités réside dans la projection du passif. Face à la volumétrie importante des contrats d'assurance vie, une modélisation exhaustive, contrat par contrat, s'avère opérationnellement inenvisageable sur un nombre étendu de scénarios économiques. Il est dès lors impératif de recourir à des techniques de réduction de la taille du portefeuille, concept qui introduit la nécessité d'agréger les données sous forme de \textit{Model Points}.
 \section{La représentation du passif : le concept de \textit{Model Point}}
 \label{sec:mp}
 
