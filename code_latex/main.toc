@@ -76,8 +76,9 @@
 \contentsline {section}{\numberline {3.3}Les approches dynamiques basées sur l'écoulement des flux}{71}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Appariement comportemental (\textit {Cash-Flow Matching})}{72}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Calibration de lois \textit {a posteriori} (Méthode \textit {Biais Zéro} et clés financières)}{73}{subsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.2.1}Définition des clés d'agrégation financières}{73}{subsubsection.3.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.3.2.2}Mécanique des décréments et modification du cœur ALM}{74}{subsubsection.3.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.3.2.1}Définition des clés d'agrégation financières}{74}{subsubsection.3.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.3.2.2}Mécanique des décréments et modification du modèle ALM}{74}{subsubsection.3.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.3.2.3}Limites de la méthode face aux chocs de sensibilités}{75}{subsubsection.3.3.2.3}%
 \contentsline {chapter}{\numberline {4}Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}{76}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Validation du périmètre de référence et neutralité de l'agrégation de base}{77}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Évaluation du Best Estimate central en passif seul}{77}{subsection.4.1.1}%
