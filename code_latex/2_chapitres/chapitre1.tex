@@ -148,7 +148,7 @@ La différence de valeur entre ces deux approches est capturée par le concept d
 
 Le \textbf{Best Estimate (BE)}, ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements de l'assureur. Son calcul est réalisé sur un horizon long (40-60 ans) en \textit{run-off} (portefeuille en extinction, pas de nouvelles souscriptions). Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
 \begin{equation}
-    BEL = \mathbb{E}^{\mathbb{Q}} \left[ \sum_{j=1}^{T} CF(j) \cdot e^{-\int_0^j r(s)ds} \right] \approx \frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{T}\frac{CF_{i}(j)}{(1+r_{i,j})^{j}}
+    BE = \mathbb{E}^{\mathbb{Q}} \left[ \sum_{j=1}^{T} CF(j) \cdot e^{-\int_0^j r(s)ds} \right] \approx \frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{T}\frac{CF_{i}(j)}{(1+r_{i,j})^{j}}
 \end{equation}
 Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent.
 \bigskip
@@ -156,9 +156,9 @@ Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ l
 
 La \textbf{marge de risque} (\textit{Risk Margin} - RM) complète le Best Estimate. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de coût du capital (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
 \begin{equation}
-    RM = \text{CoC}_{\text{rate}} \times \sum_{j=0}^{T} \frac{\text{SCR}_{\text{non-fi}}(j)}{(1+r_{j+1})^{j+1}}
+    RM = \textit{CoC}_{\textit{rate}} \times \sum_{j=0}^{T} \frac{\textit{SCR}_{\text{non-fi}}(j)}{(1+r_{j+1})^{j+1}}
 \end{equation}
-Où $\text{CoC}_{\text{rate}}$ est le coût du capital (fixé à 6\%), et $\text{SCR}_{\text{non-fi}}(j)$ est la part du SCR couvrant les risques non-financiers à l'année $j$.
+Où $\textit{CoC}_{\textit{rate}}$ est le coût du capital (fixé à $6\,\%$), et $\textit{SCR}_{\text{non-fi}}(j)$ représente la projection de la part du \textit{SCR} couvrant les risques non-financiers à l'année $j$. Le taux $r_{j+1}$ correspond au taux \textit{spot} sans risque à l'échéance $j+1$ extrait de la courbe de référence utilisée pour l'évaluation du \textit{BE}.
 
 \subsubsection{Les fonds propres et les exigences de capital}
 
@@ -175,13 +175,9 @@ Le calcul du SCR s'effectue le plus souvent via la formule standard définie par
     SCR_{x}^{\text{net}} = \Delta NAV = NAV_{\text{central}} - NAV_{\text{choc } x}
 \end{equation}
 
-Dans le cadre de ce mémoire, où l'accent est mis sur la modélisation des passifs, la variation de la valeur des actifs lors des chocs au passif est nulle. Par conséquent, la variation de la NAV se traduit directement par la variation du Best Estimate face au choc étudié :
-\begin{equation}
-    SCR_{x} = BE_{\text{choc } x} - BE_{\text{central}}
-\end{equation}
 Cette exigence en capital est dite "nette" car elle prend en compte la capacité d'absorption des pertes des provisions techniques ($Adj_{FDB}$), matérialisant l'effet amortisseur de la participation aux bénéfices en cas de choc défavorable.
 
-Dans le cadre des projections ALM menées au sein de ce mémoire, l'analyse se concentrera sur l'évaluation précise de ces exigences nettes ($SCR_{x}^{\text{net}}$) pour les modules les plus impactés par notre étude. Ainsi, une attention particulière sera portée aux risques techniques (biométriques et comportementaux) et financiers, à travers l'application des chocs réglementaires suivants au portefeuille :
+Dans le cadre des projections ALM menées au sein de ce mémoire, l'analyse se concentrera sur l'évaluation précise de ces exigences nettes ($SCR_{x}^{\text{net}}$) pour les modules les plus impactés par cette étude. Ainsi, une attention particulière sera portée aux risques techniques (biométriques et comportementaux) et financiers, à travers l'application des chocs réglementaires suivants au portefeuille :
 
 \begin{itemize}
     \item \textbf{Le risque de mortalité et de longévité :} Modélisé par une altération structurelle des probabilités de décès.
@@ -239,11 +235,12 @@ Cette flexibilité est obtenue grâce à un paramètre de retour à la moyenne $
     dr_t = (\theta(t) - a r_t)dt + \sigma dW^{\mathbb{Q}}_t
     \label{eq:hull_white}
 \end{equation}
-où $r_t$ représente le taux d’intérêt court, $a$ la vitesse de retour à la moyenne, $\sigma$ la volatilité et $W^{\mathbb{Q}}_t$ un mouvement brownien sous la mesure risque neutre. Pour des raisons d'implémentation numérique, la solution discrétisée de cette EDS est privilégiée :
+où $r_t$ représente le taux d’intérêt court, $a$ la vitesse de retour à la moyenne, $\sigma$ la volatilité et $W^{\mathbb{Q}}_t$ un mouvement brownien standard sous la mesure de probabilité risque neutre $\mathbb{Q}$. Pour des raisons d'implémentation numérique, la solution discrétisée de cette EDS est privilégiée :
 \begin{equation}
     r_{t+h} = r_t e^{-ah} + \theta(t+h) - \theta(t)e^{-ah} + \sigma \sqrt{\frac{1 - e^{-2ah}}{2a}} Z
     \label{eq:hull_white_discrete}
 \end{equation}
+où $Z$ est une variable aléatoire suivant une loi normale centrée réduite $\mathcal{N}(0,1)$, représentant le choc stochastique sur le pas de temps $h$.
 
 \subsubsection{Modélisation des actions et de l'immobilier : le modèle de Black \& Scholes}
 Pour les actifs risqués tels que les actions ou l'immobilier, le modèle de Black \& Scholes est couramment retenu. Conformément à la logique risque neutre, le rendement espéré correspond au taux sans risque $r_t$. L'EDS régissant la dynamique du prix de l'actif $S_t$ est la suivante :
@@ -251,7 +248,7 @@ Pour les actifs risqués tels que les actions ou l'immobilier, le modèle de Bla
     dS_t = r_t S_t dt + \sigma S_t dW^{\mathbb{Q}}_t
     \label{eq:black_scholes_q}
 \end{equation}
-où $S_t$ désigne le prix de l'actif, $r_t$ le taux sans risque et $\sigma$ la volatilité de l'actif. La solution de cette EDS est donnée par :
+où $S_t$ désigne le prix de l'actif, $r_t$ le taux sans risque, $\sigma$ la volatilité de l'actif et $W^{\mathbb{Q}}_t$ un mouvement brownien standard sous la mesure risque neutre $\mathbb{Q}$. La solution de cette EDS est donnée par :
 \begin{equation}
     S_t = S_0 \exp\left( \int_0^t \left(r_s - \frac{\sigma^2}{2}\right)ds + \int_0^t \sigma dW^{\mathbb{Q}}_s \right)
 \end{equation}
@@ -386,26 +383,26 @@ Afin de refléter fidèlement la réalité économique de la survenance des sini
 
 \begin{enumerate}
     \item \textbf{Vieillissement et mise à jour des statuts :}
-    L'âge et des assurés et l'ancienneté des contrats sont incrémentées, passant de $x$ à $x+1$. Les contrats arrivant à terme sont sortis du stock et le capital constitué est versé.
+    L'âge des assurés et l'ancienneté des contrats sont incrémentés, passant respectivement de $x$ à $x+1$ et de $t$ à $t+1$. Les contrats arrivant à terme sont sortis du stock et le capital constitué est versé.
 
     \item \textbf{Calcul des taux de sortie (Décréments) :}
     Le modèle applique les tables biométriques et comportementales pour déterminer les probabilités de sortie :
     \begin{itemize}
-        \item \textbf{Mortalité ($q_{x+t}$) :} Application des tables réglementaires ou d'expérience (par génération ou par âge atteint).
-        \item \textbf{Rachats ($\alpha_t$) :} Application du taux de rachat total lié à l'ancienneté du contrat.
+        \item \textit{Mortalité} ($q_{x+t}$) : Application des tables réglementaires ou d'expérience, par génération ou par âge atteint.
+        \item \textit{Rachats} ($\alpha_t$) : Application du taux de rachat total lié à l'ancienneté du contrat.
     \end{itemize}
 
     \item \textbf{Valorisation intermédiaire et calcul des prestations :}
-    Le modèle calcule d'abord une provision mathématique revalorisée à mi-période ($t+0.5$) avec un taux de rendement équivalent :
+    Le modèle calcule d'abord une provision mathématique revalorisée à mi-période ($t+0{,}5$) avec un taux de rendement équivalent :
     \begin{equation}
-        PM_{t+0.5} = PM_{t} \times (1 + TMG)^{0.5}
+        PM_{t+0{,}5} = PM_{t} \times (1 + TMG)^{0{,}5}
     \end{equation}
-    Ensuite il traite les événements de manière séquentielle. Les rachats totaux ($RT_t$) sont d'abord prélevés sur l'encours à mi-période, puis les prestations pour cause de décès ($DC_t$) s'appliquent sur l'encours résiduel. Les flux de prestations brutes ($P_{MP,t}$) s'écrivent donc :
+    Où $TMG$ est le Taux Minimum Garanti du contrat. Ensuite, les événements sont traités de manière séquentielle. Les rachats totaux ($RT_t$) sont d'abord prélevés sur l'encours à mi-période, puis les prestations pour cause de décès ($DC_t$) s'appliquent sur l'encours résiduel. Les flux de prestations brutes ($P_{MP,t}$) s'écrivent donc :
     \begin{equation}
-        RT_t = PM_{t+0.5} \times \alpha_t
+        RT_t = PM_{t+0{,}5} \times \alpha_t
     \end{equation}
     \begin{equation}
-        DC_t = (PM_{t+0.5} - RT_t) \times q_{x+t}
+        DC_t = (PM_{t+0{,}5} - RT_t) \times q_{x+t}
     \end{equation}
     \begin{equation}
         P_{MP,t} = RT_t + DC_t
@@ -413,15 +410,14 @@ Afin de refléter fidèlement la réalité économique de la survenance des sini
     Cette approche assure la cohérence entre la valeur de l'épargne acquise au moment du départ et les montants effectivement versés.
 
     \item \textbf{Prélèvement des frais et capitalisation du stock restant :}
-    Dans le cadre de cette modélisation, l'absorption des coûts par le fonds est traduite par un prélèvement direct sur les encours et sur les flux (sans modélisation d'une marge de gestion extracomptable). On distingue les frais de gestion directement prélevés sur l'encours ($FGSE_t$) et les frais généraux ($FGX_t$) qui se décomposent en un taux sur l'encours et un taux sur les prestations brutes :
+    L'absorption des coûts par le fonds est traduite par un prélèvement direct sur les encours et sur les flux. On distingue les frais de gestion prélevés sur l'encours ($FGSE_t$) et les frais généraux ($FGX_t$) se décomposant en un taux sur l'encours et un taux sur les prestations brutes :
     \begin{equation}
-        Frais_{MP,t} = (tx_{fgse} + tx_{fgx\_pm}) \times PM_{t+0.5} + tx_{fgx\_prst} \times P_{MP,t}
+        Frais_{MP,t} = (tx_{fgse} + tx_{fgx\_pm}) \times PM_{t+0{,}5} + tx_{fgx\_prst} \times P_{MP,t}
     \end{equation}
-    Le stock restant continue de capitaliser au TMG sur la seconde moitié de l'année. La PM d'un \textit{Model Point} avant participation aux bénéfices s'écrit alors : 
+    Où $tx_{fgse}$ est le taux de frais de gestion sur encours, $tx_{fgx\_pm}$ le taux de frais généraux sur provision mathématique et $tx_{fgx\_prst}$ le taux de frais généraux sur prestations. Le stock restant continue de capitaliser au $TMG$ sur la seconde moitié de l'année. La PM d'un \textit{Model Point} avant participation aux bénéfices s'écrit alors : 
     \begin{equation}
-        PM_{MP,t+1}^{\text{avant PB}} = PM_{MP,t} \times (1 + TMG_{MP}) - P_{MP,t} \times (1 + TMG_{MP})^{0.5} - Frais_{MP,t}
+        PM_{MP,t+1}^{\text{avant PB}} = PM_{MP,t} \times (1 + TMG_{MP}) - P_{MP,t} \times (1 + TMG_{MP})^{0{,}5} - Frais_{MP,t}
     \end{equation}
-
     \item \textbf{Revalorisation finale et participation aux bénéfices :}
     En fin d'année, l'interaction centrale de l'ALM s'opère via la distribution de la performance financière. Le module détermine le taux de revalorisation global ($Tx_{\text{servi}, t}$) en simulant la stratégie discrétionnaire de l'assureur. Comme illustré à la Figure \ref{fig:mecanique_pb}, ce mécanisme se décompose en plusieurs étapes séquentielles :
     \begin{itemize}
@@ -488,15 +484,15 @@ Pour chaque pas de temps $t$ et chaque scénario, le modèle agrège les flux en
 Dans un souci de restriction du périmètre d'étude, les commissions de distribution et d'acquisition ne sont pas modélisées dans les flux sortants. À noter également que les chargements prélevés sur l'épargne ne constituent pas des flux de trésorerie.
 
 \paragraph{Actualisation et agrégation}
-L'actualisation repose sur l'utilisation de \textbf{déflateurs stochastiques} $D(0,t)$, fournis par le GSE en cohérence avec la courbe des taux sans risque. Le déflateur intègre intrinsèquement le facteur d'actualisation et la mesure de probabilité risque-neutre $\mathbb{Q}$.
+L'actualisation repose sur l'utilisation de \textit{déflateurs stochastiques} $D(0,t)$, fournis par le \textit{Générateur de Scénarios Économiques} ($GSE$) en cohérence avec la courbe des taux sans risque. Le déflateur intègre intrinsèquement le facteur d'actualisation et la mesure de probabilité risque-neutre $\mathbb{Q}$.
 
-En cohérence avec l'hypothèse de sortie à mi-période posée précédemment, l'actualisation des flux s'effectue au temps $t-0.5$. Le Best Estimate est obtenu par la moyenne arithmétique (méthode de Monte-Carlo) sur l'ensemble des $N$ scénarios simulés :
+En cohérence avec l'hypothèse de sortie à mi-période posée précédemment, l'actualisation des flux s'effectue au temps $t-0{,}5$. Le \textit{Best Estimate} est obtenu par la moyenne arithmétique (méthode de \textit{Monte-Carlo}) sur l'ensemble des $N$ scénarios simulés :
 
 \begin{equation}
-    BE = \frac{1}{N} \sum_{s=1}^{N} \left( \sum_{t=1}^{T} CF_{s,t} \times D_{s}(0, t-0.5) \right)
+    BE = \frac{1}{N} \sum_{s=1}^{N} \left( \sum_{t=1}^{T} CF_{s,t} \times D_{s}(0, t-0{,}5) \right)
 \end{equation}
 
-Cette approche par déflateurs permet de valoriser de manière cohérente les options et garanties financières (l'effet cliquet des TMG) qui ne seraient pas capturées par une simple actualisation déterministe.
+Où $N$ représente le nombre de scénarios simulés, $T$ l'horizon de projection, $CF_{s,t}$ le flux de trésorerie net du scénario $s$ à l'année $t$, et $D_{s}(0, t-0{,}5)$ le déflateur stochastique associé. Cette approche par déflateurs permet de valoriser de manière cohérente les options et garanties financières (l'effet cliquet des $TMG$) qui ne seraient pas capturées par une simple actualisation déterministe.
 
 \subsection{Limites actuelles du modèle}
 À date, bien que le modèle projette finement les provisions techniques et les actifs, la dynamique des fonds propres n'est pas entièrement modélisée. Cette limitation empêche le calcul direct d'un ratio de solvabilité projeté, mais n'impacte pas la qualité des sensibilités sur le BE et le SCR, qui constituent le cœur de ce mémoire.

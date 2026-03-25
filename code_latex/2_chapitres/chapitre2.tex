@@ -127,7 +127,7 @@ P(Age = x) = \frac{N_{assures}(x)}{Total_{assures}}
 
 \subsubsection*{Calibration d'une loi usuelle sur la loi empirique}
 
-Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textbf{loi Gamma} et la \textbf{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov\footnote{Le test de Kolmogorov-Smirnov est un test d'adéquation non paramétrique comparant la fonction de répartition empirique d'un échantillon à celle d'une loi théorique. La statistique $D$ représente l'écart maximal absolu entre ces deux fonctions : une valeur faible indique un bon ajustement.}, AIC\footnote{Le critère d'information d'Akaike (AIC) est une mesure de la qualité d'un modèle statistique qui arbitre entre la qualité de l'ajustement et la complexité du modèle. Il pénalise l'ajout de paramètres pour éviter le surapprentissage. Un AIC plus faible indique un meilleur modèle.}, BIC\footnote{Le critère d'information bayésien (BIC) est similaire à l'AIC mais impose une pénalité plus forte pour le nombre de paramètres, dépendant de la taille de l'échantillon. Il tend à favoriser des modèles plus parcimonieux. Comme pour l'AIC, une valeur plus faible est préférable.}\footnote{L'AIC et le BIC servent à comparer deux ajustements, pour savoir quel modèle est le mieux ajusté on va donc regarder le plus faible AIC/BIC}) ont été utilisés. La figure \ref{fig:beta} montre l'ajustement de la loi Beta qui a des meilleurs résultats statistiques et qui épouse mieux la distribution empirique que la loi Gamma (figure \ref{fig:gamma}). 
+Deux lois de probabilité continues ont été sélectionnées comme candidates pour modéliser la distribution empirique : la \textit{loi Gamma} et la \textit{loi Beta}. Les paramètres de ces deux lois ont été estimés par la méthode du maximum de vraisemblance sur un échantillon de 200 000 individus tirés de la loi empirique. Pour déterminer la loi la plus adéquate, des critères visuels et statistiques (Test de Kolmogorov-Smirnov\footnote{Le test de Kolmogorov-Smirnov est un test d'adéquation non paramétrique comparant la fonction de répartition empirique d'un échantillon à celle d'une loi théorique. La statistique $D$ représente l'écart maximal absolu entre ces deux fonctions : une valeur faible indique un bon ajustement.}, AIC\footnote{Le critère d'information d'Akaike (AIC) est une mesure de la qualité d'un modèle statistique qui arbitre entre la qualité de l'ajustement et la complexité du modèle. Il pénalise l'ajout de paramètres pour éviter le surapprentissage. Un AIC plus faible indique un meilleur modèle.}, BIC\footnote{Le critère d'information bayésien (BIC) est similaire à l'AIC mais impose une pénalité plus forte pour le nombre de paramètres, dépendant de la taille de l'échantillon. Il tend à favoriser des modèles plus parcimonieux. Comme pour l'AIC, une valeur plus faible est préférable.}\footnote{L'AIC et le BIC servent à comparer deux ajustements, pour savoir quel modèle est le mieux ajusté on va donc regarder le plus faible AIC/BIC}) ont été utilisés. La figure \ref{fig:beta} montre l'ajustement de la loi Beta qui a des meilleurs résultats statistiques et qui épouse mieux la distribution empirique que la loi Gamma (figure \ref{fig:gamma}). 
 
 \begin{figure}[H]
 \centering
@@ -167,12 +167,31 @@ La distribution de l'âge à la souscription n'a pas été calibrée sur des don
 
 \end{figure}
 
-Plusieurs lois de probabilité ont été testées pour modéliser cette distribution empirique de l'âge à la souscription :
+Les lois de probabilité suivantes ont été testées pour modéliser la distribution empirique de l'âge à la souscription :
 \begin{itemize}
-    \item La \textbf{loi Gamma} : définie sur $\mathbb{R}^+$, elle est souvent utilisée pour modéliser des durées. Sa densité est $f(x; k, \theta) = \frac{x^{k-1}e^{-\frac{x}{\theta}}}{\theta^k\Gamma(k)}$.
-    \item La \textbf{loi Beta} : définie sur un intervalle borné $[a,b]$, elle offre une grande flexibilité de forme. Sa densité standard sur $[0,1]$ est $f(x; \alpha, \beta) = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha, \beta)}$.
-    \item La \textbf{loi de Weibull} : courante en analyse de survie, sa densité est donnée par $f(x; \lambda, k) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}e^{-(x/\lambda)^k}$.
-    \item Le \textbf{modèle de mélange gaussien (GMM)} : il s'agit d'une combinaison linéaire de plusieurs lois normales, permettant de s'ajuster à des distributions multimodales. Sa densité est $f(x) = \sum_{i=1}^{K} w_i \frac{1}{\sigma_i\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu_i}{\sigma_i}\right)^2}$.
+    \item \textit{La loi Gamma} : définie sur $\mathbb{R}^+$, elle est classiquement utilisée pour modéliser des durées ou des grandeurs positives asymétriques. Sa densité est donnée par :
+    \begin{equation}
+        f(x; k, \theta) = \frac{x^{k-1}e^{-\frac{x}{\theta}}}{\theta^k\Gamma(k)}
+    \end{equation}
+    Où $k > 0$ est le paramètre de forme, $\theta > 0$ le paramètre d'échelle, et $\Gamma(k) = \int_{0}^{\infty} t^{k-1} e^{-t} dt$ désigne la fonction Gamma d'Euler.
+
+    \item \textit{La loi Beta} : définie sur un intervalle borné (ici normalisé sur $[0,1]$), elle offre une grande flexibilité pour modéliser des distributions aux supports finis. Sa densité s'écrit :
+    \begin{equation}
+        f(x; \alpha, \beta) = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha, \beta)}
+    \end{equation}
+    Où $\alpha, \beta > 0$ sont les paramètres de forme et $B(\alpha, \beta) = \frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$ est la fonction Beta, agissant comme constante de normalisation.
+
+    \item \textit{La loi de Weibull} : très répandue en analyse de survie pour sa capacité à modéliser des taux de défaillance variables, sa densité est :
+    \begin{equation}
+        f(x; \lambda, k) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}e^{-(x/\lambda)^k}
+    \end{equation}
+    Où $k > 0$ est le paramètre de forme et $\lambda > 0$ le paramètre d'échelle.
+
+    \item \textit{Le modèle de mélange gaussien} (\textit{Gaussian Mixture Model} - GMM) : il consiste en une combinaison linéaire de $K$ densités normales, permettant de capturer des structures multimodales complexes. Sa densité est définie par :
+    \begin{equation}
+        f(x) = \sum_{i=1}^{K} w_i \frac{1}{\sigma_i\sqrt{2\pi}} \exp\left(-\frac{1}{2}\left(\frac{x-\mu_i}{\sigma_i}\right)^2\right)
+    \end{equation}
+    Où $\mu_i$ et $\sigma_i$ sont respectivement la moyenne et l'écart-type de la $i$-ème composante gaussienne, et $w_i$ représente le poids de chaque composante, respectant les contraintes $w_i > 0$ et $\sum_{i=1}^{K} w_i = 1$.
 \end{itemize}
 
 Concernant l'âge à la souscription, la présence d'une bimodalité empirique requiert une modélisation spécifique. Le Tableau \ref{tab:aic_bic_souscription} compare l'ajustement de plusieurs distributions usuelles avec celui d'un modèle de mélange gaussien à deux composantes (GMM). 
@@ -210,11 +229,11 @@ Pour calculer la PM à partir des données marché, une méthode plus complexe a
 L'hypothèse fondamentale est que la PM d'un individu est principalement fonction de son patrimoine, qui lui-même est fortement corrélé à son âge. La modélisation s'est donc déroulée en plusieurs étapes.
 
 
-La première étape a consisté à modéliser la distribution du patrimoine brut en fonction de l'âge, en s'appuyant sur les données de l'INSEE \cite{insee_patrimoine_age}. Plutôt que de calibrer une seule loi pour toute la population, une \textbf{loi Lognormale} a été ajustée pour chaque tranche d'âge. Les paramètres de cette loi, $\mu$ et $\sigma$, ont été estimés par la méthode de \textbf{correspondance des quantiles}. Cette méthode est particulièrement adaptée lorsque les données individuelles ne sont pas disponibles et que seules des statistiques agrégées sont fournies. Elle consiste à déterminer les paramètres qui minimisent l'écart quadratique entre les quantiles théoriques de la loi et les quantiles empiriques observés (ici les déciles) :
+La première étape a consisté à modéliser la distribution du patrimoine brut en fonction de l'âge, en s'appuyant sur les données de l'INSEE \cite{insee_patrimoine_age}. Plutôt que de calibrer une seule loi pour toute la population, une \textit{loi Lognormale} a été ajustée pour chaque tranche d'âge. Les paramètres de cette loi, $\mu$ et $\sigma$, ont été estimés par la méthode de \textit{correspondance des quantiles}. Cette approche est particulièrement adaptée lorsque les données individuelles ne sont pas disponibles et que seules des statistiques agrégées sont fournies. Elle consiste à déterminer les paramètres qui minimisent l'écart quadratique entre les quantiles théoriques de la loi et les quantiles empiriques observés (ici les déciles) :
 \begin{equation}
-    (\hat{\mu}, \hat{\sigma}) = \arg\min_{\mu, \sigma} \sum_{i=1}^{9} \left( F^{-1}(p_i; \mu, \sigma) - Q_{emp}(p_i) \right)^2
+    (\hat{\mu}, \hat{\sigma}) = \arg\min_{\mu, \sigma} \sum_{i=1}^{9} \left( F^{-1}(p_i; \mu, \sigma) - Q_{\text{emp}}(p_i) \right)^2
 \end{equation}
-où $p_i \in \{0.1, \dots, 0.9\}$, $F^{-1}$ est la fonction quantile de la loi Lognormale et $Q_{emp}$ les valeurs fournies par l'INSEE. Cette approche garantit que la distribution ajustée reproduit fidèlement la dispersion de la population réelle. Le tableau \ref{tab:params_patrimoine_age} synthétise les paramètres obtenus.
+Où $p_i \in \{0{,}1; \dots; 0{,}9\}$ désigne les niveaux de probabilité associés aux déciles, $F^{-1}(\cdot; \mu, \sigma)$ représente la fonction quantile de la \textit{loi Lognormale} et $Q_{\text{emp}}(p_i)$ les valeurs de patrimoine observées dans les publications de l'INSEE. Cette méthodologie garantit que la distribution ajustée reproduit fidèlement la dispersion et l'asymétrie de la richesse au sein de la population réelle. Le tableau \ref{tab:params_patrimoine_age} synthétise les paramètres optimaux obtenus pour chaque segment d'âge.
 
 \begin{table}[H]
 \centering
@@ -239,7 +258,9 @@ Moins de 30 ans & 9.9233 & 1.7713 \\
 
 Sur la base des calibrations précédentes, une population synthétique de 1 000 000 de contrats a été générée. Pour chaque individu, un âge a été tiré selon la loi Bêta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation souhaitée.
 
-La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance-vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation n'est pas linéaire. Pour les patrimoines les plus modestes, qui n'ont pas encore la capacité d'investir dans l'immobilier, la part des actifs financiers est relativement élevée. À mesure que le patrimoine augmente, une part significative est allouée à l'immobilier, ce qui diminue mécaniquement la part relative du patrimoine financier. Ce phénomène s'inverse cependant pour les patrimoines les plus élevés, où la diversification vers des actifs financiers redevient prépondérante, entraînant une remontée de leur part dans le patrimoine total, ce n'est pas observable sur le graphique \ref{fig:composition_patrimoine} car les données sont agrégées par décile.
+La deuxième étape consiste à estimer la part du patrimoine de chaque individu allouée à l'assurance vie. Pour ce faire, les données de l'INSEE sur la composition du patrimoine par décile \cite{insee_patrimoine_age} sont utilisées. La figure \ref{fig:composition_patrimoine} illustre la part du patrimoine financier en fonction du patrimoine brut moyen. Cette relation présente une nature non linéaire. Pour les patrimoines les plus modestes, n'ayant pas encore la capacité d'investir dans l'immobilier physique, la part des actifs financiers est relativement élevée. À mesure que le patrimoine croît, une part prépondérante est allouée à la résidence principale, ce qui diminue mécaniquement la part relative du patrimoine financier. 
+
+Ce phénomène tend à s'inverser pour les patrimoines les plus élevés, où la diversification vers des actifs financiers redevient une priorité stratégique, entraînant une remontée de leur poids dans le patrimoine total. Cette inflexion n'est toutefois pas directement observable sur la figure \ref{fig:composition_patrimoine}. En effet, l'agrégation des données par décile induit un effet de lissage qui masque les comportements d'allocation spécifiques aux queues de distribution (les \textit{centiles} les plus élevés), où la part financière redevient majoritaire face à l'immobilier.
 
 \begin{figure}[H]
     \centering
@@ -279,7 +300,6 @@ La deuxième étape consiste à estimer la part du patrimoine de chaque individu
             (559800, 20.2)
             (1487700, 23.2)
         };
-        \legend{Part du patrimoine financier}
         \end{axis}
     \end{tikzpicture}
     \caption{Part du patrimoine financier en fonction du patrimoine brut moyen, par décile \cite{insee_patrimoine_age}.}
@@ -293,7 +313,7 @@ La troisième étape consiste à lier le patrimoine financier à la PM. Il est e
 \end{equation}
 Cette règle permet de transformer la distribution de patrimoine en une distribution de PM, en tenant compte des non-linéarités observées dans la composition du patrimoine.
 
-Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textbf{loi Lognormale}. Bien que les tests d'adéquation classiques rejettent formellement l'hypothèse nulle en raison de la très grande taille de l'échantillon (rendant le test extrêmement sensible aux infimes déviations), l'analyse comparative des critères d'information et de la distance K-S confirme la supériorité de la loi Lognormale sur cet ajustement, comme l'indique le tableau \ref{tab:stats_pm}.
+Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textit{loi Lognormale}. Bien que les tests d'adéquation classiques rejettent formellement l'hypothèse nulle en raison de la très grande taille de l'échantillon (rendant le test extrêmement sensible aux infimes déviations), l'analyse comparative des critères d'information et de la distance K-S confirme la supériorité de la loi Lognormale sur cet ajustement, comme l'indique le tableau \ref{tab:stats_pm}.
 
 \begin{table}[H]
 \centering
@@ -323,6 +343,42 @@ Sur la base de ces éléments réglementaires et de marché, nous construisons u
 \end{itemize}
 
 Le tableau~\ref{tab:TMG_historique} présente la série retenue pour la période 1993--2024.
+
+\begin{table}[H]
+  \centering
+  \caption{Historique du taux technique maximal et du TMG utilisé dans le modèle (1993--2024)}
+  \label{tab:TMG_historique}
+  \begin{tabular}{rcc}
+    \hline
+    Année & $TT^{\max}_t$ & $TMG_t$ \\
+          & (taux technique max) & (taux min. garanti retenu) \\
+    \hline
+    1993 & 0{,}045  & 0{,}045 \\
+    1994 & 0{,}045  & 0{,}045 \\
+    1995 & 0{,}035  & 0{,}035 \\
+    1996 & 0{,}035  & 0{,}035 \\
+    1997 & 0{,}0339 & 0{,}0325 \\
+    1998 & 0{,}0272 & 0{,}025  \\
+    1999 & 0{,}0265 & 0{,}025  \\
+    2000 & 0{,}0329 & 0{,}0325 \\
+    2001 & 0{,}0301 & 0{,}030  \\
+    2002 & 0{,}0292 & 0{,}0275 \\
+    2003 & 0{,}0247 & 0{,}0225 \\
+    2004 & 0{,}0243 & 0{,}0225 \\
+    2005 & 0{,}0207 & 0{,}020  \\
+    2006 & 0{,}0229 & 0{,}0225 \\
+    2007 & 0{,}0260 & 0{,}025  \\
+    2008 & 0{,}0261 & 0{,}025  \\
+    2009 & 0{,}0219 & 0{,}020  \\
+    2010 & 0{,}0189 & 0{,}0175 \\
+    2011 & 0{,}0213 & 0{,}020  \\
+    2012 & 0{,}0153 & 0{,}015  \\
+    2013 & 0{,}0141 & 0{,}0125 \\
+    2014 & 0{,}0099 & 0{,}0075 \\
+    2015 - 2024 & 0{,}0051 & 0{,}0000 \\
+    \hline
+  \end{tabular}
+\end{table}
 
 On observe alors que, jusqu'au milieu des années 1990, les plafonds de taux techniques autorisent des TMG jusqu'à 4{,}5\,\%, ce qui est cohérent avec les niveaux de TMG donnés dans contrats de l'époque tels que décrits dans \cite{acpr66,gvmTMG}. À partir de la fin des années 1990 et des années 2000, la baisse des taux d'intérêt se traduit par une réduction progressive des plafonds réglementaires et des TMG pratiqués, les valeurs retenues $TMG_t$ restant systématiquement inférieures à $TT^{\max}_t$ afin de tenir compte d'un certain conservatisme des assureurs.
 
@@ -473,18 +529,17 @@ Le choix des variables explicatives retenues s'appuie sur les deux principaux fa
     \item \textbf{Le volume de l'épargne ($\log(\text{PM}_i)$)} : Il traduit un effet richesse. Les encours les plus importants présentent souvent une part d'UC plus élevée, traduisant une recherche de diversification et une meilleure capacité à absorber la volatilité. L'utilisation du logarithme s'avère indispensable pour atténuer la forte asymétrie de la distribution des encours et linéariser cet effet.
 \end{itemize}
 
-Par souci de parcimonie, il a été décidé de faire une modélisation restreinte à deux variables explicatives\footnote{L'intégration initiale de l'ancienneté du contrat a été écartée suite aux premiers tests de calibration. Le coefficient obtenu s'avérant proche de zéro et de signe contraire aux attentes, cette variable présentait une trop forte colinéarité avec l'âge de l'assuré. Les détails de cette première calibration sont présentés en Annexe \ref{annexe:anciennete}.}. La combinaison linéaire de ces effets se traduit par l'équation suivante :
+Par souci de parcimonie, il a été décidé de retenir une modélisation restreinte à deux variables explicatives\footnote{L'intégration initiale de l'ancienneté du contrat a été écartée suite aux premiers tests de calibration. Le coefficient obtenu s'avérant proche de zéro et de signe contraire aux attentes, cette variable présentait une trop forte colinéarité avec l'âge de l'assuré. Les détails de cette première calibration sont présentés en Annexe \ref{annexe:anciennete}.}. La combinaison linéaire de ces effets se traduit par le prédicteur linéaire $\eta_i$ suivant :
 \begin{equation}
-    \eta_i = \beta_0 + \beta_{\text{age}} \, \text{Age}_i + \beta_{\text{pm}} \, \log(\text{PM}_i)
+    \eta_i = \beta_0 + \beta_{\text{age}} \times \text{Age}_i + \beta_{\text{pm}} \times \log(\text{PM}_i)
 \end{equation}
+Où $\beta_0$ représente l'ordonnée à l'origine (\textit{intercept}), $\beta_{\text{age}}$ et $\beta_{\text{pm}}$ sont les coefficients de sensibilité associés respectivement à l'âge de l'assuré et au logarithme de la provision mathématique du contrat $i$. 
 
-\newpage
-
-Afin de garantir que la proportion modélisée reste strictement bornée entre 0 et 1, une spécification de type \textit{Logit}\footnote{Le modèle Logit s'appuie sur une fonction de transformation projetant l'ensemble des réels vers l'intervalle $(0,1)$. Il s'agit d'un standard actuariel pour la modélisation des proportions et des probabilités.} a été implémentée. La part investie en unités de compte est ainsi obtenue par la transformation logistique :
+Afin de garantir que la proportion modélisée reste strictement bornée entre $0$ et $1$, une spécification de type \textit{Logit}\footnote{Le modèle \textit{Logit} s'appuie sur une fonction de transformation projetant l'ensemble des réels vers l'intervalle $(0,1)$. Il s'agit d'un standard actuariel pour la modélisation des proportions et des probabilités.} a été implémentée. La part investie en unités de compte est ainsi obtenue par la transformation logistique :
 \begin{equation}
     p_{\text{UC},i} = \frac{1}{1 + \exp(-\eta_i)}
 \end{equation}
-La part investie en fonds en euros s'en déduit naturellement par la relation $p_{\text{Euro},i} = 1 - p_{\text{UC},i}$.
+La part investie en fonds en euros s'en déduit par la relation $p_{\text{Euro},i} = 1 - p_{\text{UC},i}$. Cette structure permet de capturer les comportements de désensibilisation au risque liés au cycle de vie de l'épargnant.
 
 \subsubsection*{Hypothèses économiques et calibration}
 
@@ -551,7 +606,7 @@ L'étape finale de la modélisation consiste à assembler les différentes distr
 
 \subsubsection{Modélisation de la dépendance des âges par copule}
 
-L'analyse des données montre une corrélation mécanique et comportementale entre l'âge de l'assuré et son âge à la souscription. Pour reproduire cette structure de dépendance sans figer les distributions marginales, une \textbf{copule gaussienne bivariée} a été utilisée.
+L'analyse des données montre une corrélation mécanique et comportementale entre l'âge de l'assuré et son âge à la souscription. Pour reproduire cette structure de dépendance sans figer les distributions marginales, une \textit{copule gaussienne bivariée} a été utilisée.
 
 Cette copule permet de générer des paires de rangs corrélés $(u, v) \in [0, 1]^2$ avec un paramètre de corrélation de Spearman fixé à $\rho = 0{,}7$. 
 En l'absence de données individuelles croisées permettant une estimation empirique exacte, ce paramètre a été défini à dire d'expert et calibré de manière itérative. Ce niveau de corrélation forte et positive répond à une double contrainte de modélisation : il permet d'une part de minimiser le taux de rejet algorithmique lors de l'application de la contrainte de cohérence temporelle ($Age_{souscription} \leq Age_{assure}$), et d'autre part de garantir une dispersion réaliste de l'ancienneté des contrats, aboutissant à une maturité moyenne cohérente avec un portefeuille français historique en extinction.
