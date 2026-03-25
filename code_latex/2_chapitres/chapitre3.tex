@@ -222,43 +222,51 @@ Afin d'illustrer la mécanique de cet algorithme, la Figure \ref{fig:theorie_dbs
 
 \begin{figure}[H]
     \centering
+    % Couleurs Accenture déjà définies dans votre préambule
+    % Gris neutre spécifique pour le bruit (hors palette pour distinction)
+    \definecolor{dbscanNoise}{HTML}{A0A0A0}
+    
     \begin{tikzpicture}[scale=1.1,
-        % Styles des points
-        core/.style={circle, draw=accCore3, fill=accCore1, inner sep=2pt, minimum size=6pt},
-        border/.style={circle, draw=accCore2, fill=acc3, inner sep=2pt, minimum size=6pt},
-        noise/.style={circle, draw=gray!80, fill=gray!30, inner sep=2pt, minimum size=6pt},
-        % Styles des zones (pointillés, opaques)
-        core_eps/.style={circle, draw=accCore2, dashed, fill=accCore2, fill opacity=0.1, minimum size=3.5cm},
-        border_eps/.style={circle, draw=acc3, dashed, fill=acc3, fill opacity=0.1, minimum size=3.5cm}]
+        % Styles des points : Utilisation de la charte Accenture
+        % Coeur en violet intense (accCore1) avec contour foncé (accCore3)
+        core/.style={circle, draw=accCore3, fill=accCore1, thick, inner sep=0pt, minimum size=8pt},
+        % Frontière en lavande (acc3) avec contour violet (accCore2)
+        border/.style={circle, draw=accCore2, fill=acc3, thick, inner sep=0pt, minimum size=8pt},
+        % Bruit en gris pour l'aspect "hors cluster"
+        noise/.style={circle, draw=gray!50, fill=dbscanNoise, inner sep=0pt, minimum size=8pt},
+        % Styles des zones epsilon avec opacités différenciées
+        core_eps/.style={circle, draw=accCore1, dashed, fill=accCore1, fill opacity=0.1, minimum size=3.5cm},
+        border_eps/.style={circle, draw=acc3, dashed, fill=acc3, fill opacity=0.08, minimum size=3.5cm}]
         
-        % DESSIN DES CERCLES (en arrière-plan)
-        \node[core_eps] at (-0.8, 0) {};   % Cercle du Cœur Gauche
-        \node[core_eps] at (0.8, 0) {};    % Cercle du Cœur Droit
-        \node[border_eps] at (-2.2, 0) {}; % Cercle du Frontière Gauche
-        \node[border_eps] at (2.2, 0) {};  % Cercle du Frontière Droit
-        % Le point de bruit n'a volontairement pas de cercle
+        % DESSIN DES CERCLES (Arrière-plan)
+        \node[core_eps] at (-0.8, 0) {}; 
+        \node[core_eps] at (0.8, 0) {}; 
+        \node[border_eps] at (-2.2, 0) {}; 
+        \node[border_eps] at (2.2, 0) {}; 
 
-        % DESSIN DES POINTS (au premier plan)
-        % Noyau dense : chaque point au centre a 3 points dans son rayon
+        % DESSIN DES POINTS (Premier plan)
         \node[core] (C1) at (-0.8, 0) {};
         \node[core] (C2) at (0.8, 0) {};
         
-        % Points frontières : ils n'ont que 2 points dans leur rayon, mais touchent un coeur
         \node[border] (B1) at (-2.2, 0) {};
         \node[border] (B2) at (2.2, 0) {};
         
-        % Point de bruit : Totalement isolé
         \node[noise] (N) at (0, 2.2) {}; 
 
-        % LÉGENDE INTÉGRÉE (Très épurée)
-        \draw[rounded corners, draw=accCore2, fill=white, thick] (-6.0, -2.8) rectangle (6.0, -1.8);
+        % LÉGENDE INTÉGRÉE (Épurée aux couleurs Accenture)
+        \draw[rounded corners=2pt, draw=accCore3!30, fill=acc5!20, thick] (-5.5, -3.0) rectangle (5.5, -2.0);
         
-        \node[core] at (-5.2, -2.3) {}; \node[right] at (-5, -2.3) {\small Cœur ($\geq 3$ pts)};
-        \node[border] at (-1.0, -2.3) {}; \node[right] at (-0.8, -2.3) {\small Frontière ($< 3$ pts)};
-        \node[noise] at (3, -2.3) {}; \node[right] at (3.2, -2.3) {\small Bruit (Isolé)};
+        \node[core] at (-4.5, -2.5) {}; 
+        \node[right] at (-4.2, -2.5) {\small \textit{Core Point} ($\geq 3$ pts)};
+        
+        \node[border] at (-0.5, -2.5) {}; 
+        \node[right] at (-0.2, -2.5) {\small \textit{Border Point} ($< 3$ pts)};
+        
+        \node[noise] at (3.5, -2.5) {}; 
+        \node[right] at (3.8, -2.5) {\small \textit{Noise} (Isolé)};
         
     \end{tikzpicture}
-    \caption{Mécanique de l'algorithme DBSCAN ($MinPts = 3$) : Évaluation des densités locales par superposition des voisinages $\epsilon$.}
+    \caption{Mécanique de l'algorithme \textit{DBSCAN} ($MinPts = 3$) : Classification des points par analyse de densité locale dans le voisinage $\epsilon$ (Couleurs charte \textit{Accenture}).}
     \label{fig:theorie_dbscan}
 \end{figure}
 
@@ -506,7 +514,7 @@ Où $PR_{i,t}$ et $PD_{i,t}$ représentent respectivement les montants de presta
 
 Sur le plan opérationnel, l'implémentation de cette méthode exige une adaptation du cœur du modèle ALM. Le module de vieillissement du passif ne doit plus faire évoluer l'âge ou l'ancienneté pour lire une table réglementaire externe, mais est reprogrammé pour lire et appliquer directement les vecteurs de probabilités de sortie ($q_{k,t}$) pré-calculés, rattachés à chaque \textit{Model Point}. Cette approche, en capturant l'intégralité de la cinétique des flux, permet d'atteindre le \textit{Biais Zéro} opérationnel sur l'ensemble des projections.
 
-\section{Conclusion}
+\bigskip
 
 Ce chapitre a permis d'exposer le socle théorique des différentes méthodes d'agrégation envisagées, de la rigidité des approches déterministes classiques à la flexibilité des algorithmes d'apprentissage automatique spatial, jusqu'à la complexité des modèles d'appariement de flux financiers. Chaque méthode présente des compromis distincts entre la précision de la modélisation, le respect des garanties financières et le coût computationnel. 
 

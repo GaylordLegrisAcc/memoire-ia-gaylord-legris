@@ -1,16 +1,14 @@
 \chapter{Application des méthodes d'agrégation et analyse des sensibilités Solvabilité 2}
 \label{chap:application_numerique}
 
-Les chapitres précédents ont détaillé le cadre réglementaire de Solvabilité 2 ainsi que les fondements mathématiques des algorithmes de \textit{clustering} (K-Means, DBSCAN, HDBSCAN), des méthodes empiriques (Banding) et des méthodes associées aux cashflows. L'objectif de cette partie est de calibrer et utiliser ces différentes approches sur le portefeuille de passifs d'assurance vie créé lors du chapitre \ref{chap:generation_passifs}. L'efficacité de ces méthodes sera évaluée à travers une série de tests de sensibilités sur le modèle ALM, visant à mesurer la robustesse des modèles réduits sur différents types de lancements.
-
-La démarche s'articule en trois étapes. La première consiste à définir le portefeuille aggrégé de référence et à valider l'absence de biais lors d'une agrégation déterministe de base. Ensuite, la calibration des hyperparamètres des algorithmes d'agrégation permet de sélectionner les modèles cibles grâce à une étude comparative des résultats. Enfin, la dernière phase soumet les modèles choisis aux différents chocs de sensibilités S2 pour évaluer leur robustesse sur les \textit{Best Estimate}.
-
 \section{Validation du périmètre de référence et neutralité de l'agrégation de base}
 \label{sec:validation_reference}
 
-Avant d'appliquer des algorithmes d'agrégation, un point de comparaison doit être établi afin d'évaluer les résultats sur une base de référence. Le portefeuille initial, généré lors du chapitre \ref{chap:generation_passifs}, est constitué d'un million de contrats. 
+L'objectif de cette étude est de calibrer et de confronter les différents algorithmes de \textit{clustering} (\textit{K-Means}, \textit{DBSCAN}, \textit{HDBSCAN}), méthodes par \textit{Banding} et \textit{Cash-Flow Matching} sur le portefeuille de passifs généré au chapitre \ref{chap:generation_passifs}. Cette phase d'application vise à identifier la méthodologie offrant le meilleur compromis entre gain de temps de calcul et fidélité aux indicateurs prudentiels, notamment par l'évaluation de la robustesse du \textit{Best Estimate} (BE) face aux chocs de sensibilités réglementaires.
 
-Une première étape d'agrégation basique est réalisée en regroupant les polices d'assurance qui présentent des caractéristiques strictement identiques (même âge, même ancienneté, même TMG, etc.). Cette opération permet de réduire la volumétrie à 26 272 \textit{Model Points}.
+Préalablement à l'usage d'algorithmes complexes, l'établissement d'un point de comparaison est nécessaire pour quantifier les biais d'agrégation. Le portefeuille initial, composé de $1\,000\,000$ de polices, présente une redondance dans les caractéristiques de ses contrats. Une première étape d'agrégation déterministe est réalisée en regroupant les polices présentant des caractéristiques strictement identiques : même âge, même ancienneté, même \textit{Taux Minimum Garanti} et structure de frais identique. 
+
+Cette opération permet de réduire la volumétrie à $26\,272$ \textit{Model Points} sans aucune perte d'information pour la projection. Ce portefeuille, dont la neutralité vis-à-vis des provisions mathématiques est totale à l'instant $t=0$, constitue le \textit{portefeuille de référence} pour l'ensemble d'agrégation.
 
 \subsection{Évaluation du Best Estimate central en passif seul}
 
@@ -306,7 +304,7 @@ L'analyse de ces paramétrages illustre les risques de sous-ajustement géométr
 
 La confrontation du taux de compression (axe des abscisses) et de l'erreur absolue de projection (axe des ordonnées en échelle logarithmique) permet de tracer la frontière d'efficience, ou frontière de Pareto, de chaque algorithme. Cette représentation isole les meilleurs compromis : les points situés sur cette courbe minimisent l'erreur pour un volume donné de MP. Mathématiquement, elle regroupe l'ensemble des configurations pour lesquelles aucune alternative n'offre une meilleure précision à volumétrie équivalente. Son tracé permet d'écarter les paramétrages sous-optimaux et d'identifier les zones de rendements décroissants. 
 
-Lors de l'exploration de ces frontières, un critère volumétrique est appliqué : l'objectif est d'isoler pour chaque algorithme un modèle cible générant entre 800 et 1 200 MP. Confronter des modèles présentant des niveaux de compression disparates biaiserait l'interprétation des résultats à périmètre constant. Par ailleurs, une volumétrie avoisinant 1 000 MP constitue un standard de place dans les modèles ALM. Afin de justifier la sélection de ces candidats, la frontière d'efficience de chaque méthode est analysée et complétée par une projection spatiale en trois dimensions du modèle retenu.  \textcolor{blue}{Remplacer toutes les figures suivantes par les bonnes}
+Lors de l'exploration de ces frontières, un critère volumétrique est appliqué : l'objectif est d'isoler pour chaque algorithme un modèle cible générant entre 800 et 1 200 MP. Confronter des modèles présentant des niveaux de compression disparates biaiserait l'interprétation des résultats à périmètre constant. Par ailleurs, une volumétrie avoisinant 1 000 MP constitue un standard de place dans les modèles ALM. Afin de justifier la sélection de ces candidats, la frontière d'efficience de chaque méthode est analysée et complétée par une projection spatiale en trois dimensions du modèle retenu.
 
 % TODO: Penser à remplacer toutes les figures par les versions définitives
 % --- BANDING ---
@@ -316,7 +314,7 @@ L'analyse de la frontière du Banding (Figure \ref{fig:pareto_banding}) confirme
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/pareto_banding.png}
+    \includegraphics[width=0.57\textwidth]{images/2_chapitres/chapitre4/pareto_banding.png}
     \caption{Frontière d'efficience du Banding : décroissance régulière de l'erreur.}
     \label{fig:pareto_banding}
 \end{figure}
@@ -325,7 +323,7 @@ Le candidat retenu (pas d'âge de 5 ans et d'ancienneté de 6 ans, générant 1 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/visu_3d_banding.png}
+    \includegraphics[width=0.57\textwidth]{images/2_chapitres/chapitre4/visu_3d_banding.png}
     \caption{Projection 3D du candidat Banding (1 172 MP) : un découpage en grille stricte de l'espace.}
     \label{fig:visu_3d_banding}
 \end{figure}
@@ -338,7 +336,7 @@ L'algorithme des K-Means offre un contrôle direct sur la volumétrie en sortie,
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre4/pareto_kmeans.png}
+    \includegraphics[width=0.57\textwidth]{images/2_chapitres/chapitre4/pareto_kmeans.png}
     \caption{Frontière d'efficience du K-Means : mise en évidence d'un optimum local de précision.}
     \label{fig:pareto_kmeans}
 \end{figure}
