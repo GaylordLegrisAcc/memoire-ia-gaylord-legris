@@ -33,82 +33,38 @@ Les contrats regroupés possédant des clés d'agrégation strictement identique
 
 Cette égalité parfaite permet de considérer le portefeuille complet et le portefeuille agrégé basique comme identiques d'un point de vue des résultats de projections. Le périmètre de 26 272 MP est ainsi validé comme nouveau modèle de référence (\textit{Baseline}) pour le reste de l'étude. 
 
-\subsection{Évaluation des indicateurs Solvabilité 2 du modèle de référence}
-\label{subsec:evaluation_indicateurs_reference}
+\subsection{Évaluation des indicateurs Solvabilité II du modèle de référence}
 
-L'établissement de la référence réglementaire exige d'analyser le comportement financier du modèle sous différentes configurations de projection. Cette étape est cruciale pour valider la cohérence mécanique des engagements avant toute tentative de réduction de dimension. Dans un premier temps, les projections centrales offrent une lecture directe des sensibilités du portefeuille. La comparaison s'articule autour de trois environnements de calcul :
-\begin{itemize}
-    \item \textbf{Passif seul déterministe :} isole la mécanique pure des flux de passifs, sans interaction avec les rendements d'actifs.
-    \item \textbf{ALM déterministe :} intègre la dynamique de participation aux bénéfices (PB) et le comportement des actifs face aux sorties de trésorerie.
-    \item \textbf{ALM stochastique :} intègre la volatilité des marchés et l'asymétrie des rendements financiers à travers la projection de $1\,000$ scénarios économiques.
-\end{itemize}
+L'évaluation du profil de risque nécessite l'analyse du \textit{Best Estimate} (\textit{BE}) selon l'environnement de projection retenu. Le tableau ci-dessous synthétise les résultats obtenus sur le scénario central.
 
-\begin{table}[H]
+\begin{table}[h!]
     \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|l|r|}
+    \begin{tabular}{lc}
         \hline
-        \textbf{Environnement de projection} & \textbf{Best Estimate de référence (Md\euro{})} \\
+        \textbf{Environnement de projection} & \textbf{\textit{Best Estimate} de référence (Md\texteuro)} \\
         \hline
-        Passif seul déterministe & 263{,}95 \\
-        ALM déterministe & 209{,}82 \\
-        ALM stochastique & 209{,}93 \\
+        Passif seul déterministe & $263{,}95$ \\
+        \textit{ALM} stochastique & $209{,}93$ \\
         \hline
     \end{tabular}
-    \caption{Évolution du Best Estimate central du modèle de référence selon l'environnement de projection.}
-    \label{tab:comparaison_be_environnements}
+    \caption{Évolution du \textit{Best Estimate} central du modèle de référence selon l'environnement de projection.}
+    \label{tab:be_environnements}
 \end{table}
 
-L'analyse du tableau \ref{tab:comparaison_be_environnements} met en évidence l'effet des interactions Actif-Passif sur la valorisation des engagements. Le passage d'une projection en passif seul à un environnement ALM déterministe réduit structurellement le niveau des engagements nets (chute à 209{,}82 Md\euro{}). L'intégration des actifs permet de modéliser les produits financiers qui viennent financer une grande partie des prestations futures et alimenter la revalorisation des contrats.
+L'analyse du Tableau \ref{tab:be_environnements} met en évidence l'impact de la modélisation des interactions actif-passif et de la volatilité des marchés sur la valorisation des engagements. Le passage d'une projection en passif seul à un environnement \textit{ALM} stochastique induit une diminution du niveau des engagements nets, s'établissant à $209{,}93$\,Md\texteuro.
 
-La transition vers l'environnement ALM stochastique isole la Valeur Temps des Options et Garanties (TVOG). Sur ce périmètre, l'écart entre le \textit{Best Estimate} stochastique et déterministe s'établit à +0{,}11 Md\euro{}. Cette quasi-neutralité s'explique par les hypothèses retenues lors de la modélisation du portefeuille :
-\begin{itemize}
-    \item L'absence de rachats conjoncturels ou dynamiques limite l'asymétrie comportementale des assurés. En cas de forte hausse des taux, la fuite de l'encours n'est pas modélisée, linéarisant ainsi le comportement du passif face aux scénarios de taux extrêmes.
-    \item La mécanique de Participation aux Bénéfices est simplifiée (distribution d'un taux cible de 3{,}1 \% sécurisé par un TMG strict en cas de rendement insuffisant). Cette règle limite l'apparition d'une forte convexité et contient le coût moyen des options financières.
-\end{itemize}
-
-\textcolor{blue}{Ajout une distribution des BE sur tous les scénarios pour expliquer cette TVOG très basse. Expliquer que la présence de trop gros TMG en pf empêche de construire de la marge}
-
-Au-delà de l'analyse des scénarios centraux, l'évaluation du profil de risque impose de soumettre ce modèle de référence aux chocs réglementaires en environnement ALM stochastique. L'exigence de capital unitaire ($SCR_x$) pour chaque sous-module de risque, ainsi que le capital global ($BSCR$) agrégé via la matrice de corrélation, sont calculés conformément à la méthodologie de la formule standard. Le tableau \ref{tab:baseline_scr_reference} dresse la cartographie des risques de ce portefeuille de référence.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|l|r|}
-        \hline
-        \textbf{Module de Risque} & \textbf{Exigence de capital (Md\euro{})} \\
-        \hline
-        \textbf{SCR Marché} & \textbf{24{,}28} \\
-        \textit{-- dont Taux} & \textit{15{,}26} \\
-        \textit{-- dont Actions} & \textit{11{,}33} \\
-        \textit{-- dont Immobilier} & \textit{1{,}64} \\
-        \hline
-        \textbf{SCR Vie} & \textbf{7{,}01} \\
-        \textit{-- dont Rachats} & \textit{5{,}43} \\
-        \textit{-- dont Frais} & \textit{2{,}47} \\
-        \textit{-- dont Mortalité} & \textit{0{,}15} \\
-        \hline
-        \textbf{SCR Global (BSCR)} & \textbf{26{,}91} \\
-        \hline
-    \end{tabular}
-    \caption{Décomposition de l'exigence en capital du modèle de référence (Baseline) en scénario central stochastique.}
-    \label{tab:baseline_scr_reference}
-\end{table}
-
-L'analyse des résultats indique une prédominance du risque de marché (24{,}28 Md\euro{}), principalement piloté par le risque de taux et le risque d'actions. Le risque de souscription vie (7{,}01 Md\euro{}) est quant à lui majoritairement constitué par le risque de rachat. Le risque de mortalité génère une exigence de 0{,}15 Md\euro{}. Il est à noter que les sous-modules de longévité et de mortalité catastrophe s'avèrent quasiment nuls sur ce portefeuille, justifiant une absence de SCR pour ces périmètres précis.
-
-Ces indicateurs unitaires et globaux, calculés sur le portefeuille de 26 272 \textit{Model Points}, constituent la base stricte de comparaison pour la suite de l'étude. L'objectif des sections suivantes sera de mesurer à quel point les algorithmes d'agrégation parviennent à restituer fidèlement cette matrice de risques avec un nombre de \textit{Model Points} fortement restreint.
+Cet écart s'explique par la mécanique financière sous-jacente propre aux fonds en euros. D'une part, l'intégration des portefeuilles d'actifs permet de modéliser les produits financiers futurs, lesquels viennent financer une part significative des prestations et alimenter les mécanismes de participation aux bénéfices. D'autre part, la nature stochastique de la projection permet de capturer le coût lié à l'asymétrie des garanties financières (Taux Minimum Garanti) et de modéliser le comportement dynamique des assurés face aux fluctuations des marchés financiers, éléments structurellement ignorés par une approche déterministe en passif seul.
 
 \subsection{Établissement du cadre d'analyse pour la sélection des modèles}
 
-La suite des travaux de calibration s'appuie exclusivement sur ce nouveau portefeuille de référence. Pour sélectionner les meilleures approches algorithmiques candidates, les méthodes de réduction de dimension seront d'abord testées et comparées via des exécutions rapides en passif seul déterministe sur le scénario central. 
+La suite des travaux de calibration s'appuie exclusivement sur le portefeuille de référence de 26 272 \textit{Model Points}. Pour sélectionner les meilleures approches algorithmiques candidates, les méthodes d'agrégation seront d'abord testées et comparées via des exécutions rapides en passif seul déterministe sur le scénario central. 
 
-Ce n'est qu'à l'issue de cette phase de présélection que les modèles les plus performants seront soumis à des projections ALM complètes (en déterministe puis en stochastique), intégrant l'ensemble des chocs réglementaires Solvabilité 2, afin de valider leur robustesse financière et opérationnelle.
+Ce n'est qu'à l'issue de cette phase de présélection que les modèles les plus performants seront soumis à des projections ALM stochastiques complètes, intégrant l'ensemble des chocs réglementaires Solvabilité 2, afin de valider leur robustesse financière et opérationnelle.
 
 \section{Calibration des algorithmes et sélection des modèles candidats}
 \label{sec:calibration_pareto}
 
-L'agrégation de base a permis de définir un périmètre de référence sans perte d'information (26 272 MP pour un BE de 263{,}95 Md\euro{}). Cette phase vise à calibrer les hyperparamètres de chaque méthode de compression. Pour garantir des temps d'exécution compatibles avec des projections stochastiques multi-chocs, un intervalle strict de 800 à 1 200 MP est fixé pour les modèles finaux. Au-delà, les temps de calcul \footnote{Détaillés en annexe \ref{tab:annexe_runtimes}, ces temps dépendent du modèle ALM, de l'infrastructure et du paramétrage (nombre de simulations, MP Actifs/Passifs, etc.).} deviennent inadaptés à une production ALM.
+L'agrégation de base a permis de définir un périmètre de référence sans perte d'information (26 272 MP pour un BE de 263{,}95 Md\euro{}). Cette phase vise à calibrer les hyperparamètres de chaque méthode d'agrégation. Pour garantir des temps d'exécution compatibles avec des projections stochastiques multi-chocs, un intervalle strict de 800 à 1 200 MP est fixé pour les modèles finaux. Au-delà, les temps de calcul \footnote{Détaillés en annexe \ref{tab:annexe_runtimes}, ces temps dépendent du modèle ALM, de l'infrastructure et du paramétrage (nombre de simulations, MP Actifs/Passifs, etc.).} deviennent inadaptés à une production ALM.
 
 \subsection{Protocole \textit{Grid Search} et échantillonnage adaptatif}
 
@@ -294,7 +250,7 @@ La méthode \textit{eom} extrait les clusters les plus denses et géométriqueme
 
 L'analyse du tableau \ref{tab:sensibilite_hdbscan} met en évidence la pertinence de l'approche \textit{leaf} pour l'agrégation de ce passif. À volumétrie comparable (environ 450 à 460 MP), une configuration \textit{leaf} minimise l'erreur d'approximation par rapport à une configuration \textit{eom} ($+0{,}0835\,\%$ contre $+0{,}6097\,\%$). Cette dégradation sous \textit{eom} s'explique par l'agglomération excessive de contrats, lissant des caractéristiques discriminantes telles que le TMG ou l'ancienneté.
 
-Le paramétrage optimal retenu repose sur la méthode \textit{leaf} ($c=10$, $s=5$) combinée à une surpondération de l'axe de taux ($wt=50$). Cette configuration génère 967 MP pour une erreur sur le BE déterministe de $+0{,}0398\,\%$. Elle respecte la cible de compression tout en préservant la stratification des garanties financières du passif.
+Le paramétrage optimal retenu repose sur la méthode \textit{leaf} ($c=10$, $s=5$) combinée à une surpondération de l'axe de taux ($wt=50$). Cette configuration génère 967 MP pour une erreur sur le BE passif seul déterministe de $+0{,}0398\,\%$. Elle respecte la cible de compression tout en préservant la stratification des garanties financières du passif.
 
 % ---------------------------------------------------------
 
@@ -304,31 +260,33 @@ L'analyse de ces paramétrages illustre les risques de sous-ajustement géométr
 
 La confrontation du taux de compression (axe des abscisses) et de l'erreur absolue de projection (axe des ordonnées en échelle logarithmique) permet de tracer la frontière d'efficience, ou frontière de Pareto, de chaque algorithme. Cette représentation isole les meilleurs compromis : les points situés sur cette courbe minimisent l'erreur pour un volume donné de MP. Mathématiquement, elle regroupe l'ensemble des configurations pour lesquelles aucune alternative n'offre une meilleure précision à volumétrie équivalente. Son tracé permet d'écarter les paramétrages sous-optimaux et d'identifier les zones de rendements décroissants. 
 
-Lors de l'exploration de ces frontières, un critère volumétrique est appliqué : l'objectif est d'isoler pour chaque algorithme un modèle cible générant entre 800 et 1 200 MP. Confronter des modèles présentant des niveaux de compression disparates biaiserait l'interprétation des résultats à périmètre constant. Par ailleurs, une volumétrie avoisinant 1 000 MP constitue un standard de place dans les modèles ALM. Afin de justifier la sélection de ces candidats, la frontière d'efficience de chaque méthode est analysée et complétée par une projection spatiale en trois dimensions du modèle retenu.
+Lors de l'exploration de ces frontières, un critère volumétrique est appliqué : l'objectif est d'isoler pour chaque algorithme un modèle cible générant entre 800 et 1\,200 \textit{Model Points}. Confronter des modèles présentant des niveaux de compression disparates biaiserait l'interprétation des résultats à périmètre constant. Par ailleurs, une volumétrie avoisinant 1\,000 \textit{Model Points} constitue un standard de place dans les modèles \textit{Asset Liability Management}. 
 
-% TODO: Penser à remplacer toutes les figures par les versions définitives
+Ce choix est doublement justifié par une analyse de sensibilité relative à la taille du portefeuille agrégé. Des tests préliminaires démontrent qu'en dessous de 800 \textit{Model Points}, la distorsion des flux de passifs s'accentue significativement, dégradant la qualité du \textit{Best Estimate}. Inversement, au-delà de 1\,200 \textit{Model Points}, l'amélioration de la convergence des indicateurs de solvabilité n'est plus significative, tandis que la charge de calcul croît de manière linéaire. Cette fenêtre constitue donc un optimum local, assurant la stabilité des sensibilités tout en respectant les contraintes opérationnelles de production. Afin de justifier la sélection de ces candidats, la frontière d'efficience de chaque méthode est analysée et complétée par une projection spatiale en trois dimensions du modèle retenu.
+
 % --- BANDING ---
-\subsubsection{Le Banding : décroissance linéaire et maillage rigide}
+\subsubsection{Le \textit{Banding} : décroissance linéaire et maillage rigide}
 
-L'analyse de la frontière du Banding (Figure \ref{fig:pareto_banding}) confirme la mécanique empirique de l'approche. La courbe présente une décroissance quasi linéaire de l'erreur sur l'échelle logarithmique. L'amélioration de la précision est proportionnelle à la densification du maillage, sans effet de seuil marqué. 
+L'analyse de la frontière du \textit{Banding} (Figure \ref{fig:pareto_banding}) confirme la mécanique empirique de l'approche. La courbe présente une décroissance quasi linéaire de l'erreur sur l'échelle logarithmique. L'amélioration de la précision est proportionnelle à la densification du maillage, sans effet de seuil marqué. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.57\textwidth]{images/2_chapitres/chapitre4/pareto_banding.png}
-    \caption{Frontière d'efficience du Banding : décroissance régulière de l'erreur.}
+    \caption{Frontière d'efficience du \textit{Banding} : décroissance régulière de l'erreur.}
     \label{fig:pareto_banding}
 \end{figure}
 
-Le candidat retenu (pas d'âge de 5 ans et d'ancienneté de 6 ans, générant 1 172 MP) est visualisé sur la figure \ref{fig:visu_3d_banding}. L'espace est découpé de manière orthogonale. Si cette rigidité garantit une traçabilité métier, elle fragmente des zones de faible densité qui auraient pu être fusionnées par un algorithme statistique.
+Il convient de noter que les variantes de maillage adaptatif précédemment introduites (segmentations par phase d'activité ou par maturité fiscale) présentent une sous-performance relative par rapport aux configurations de \textit{Banding} standard à pas constant. Bien que ces approches ciblent des zones de forte sensibilité locale, leur rigidité structurelle impose une fragmentation excessive dans certains compartiments du portefeuille sans gain compensatoire sur le \textit{Best Estimate}. Cette spécialisation du maillage induit un décentrage du barycentre financier dans les zones délaissées, plaçant ces modèles systématiquement au dessus de la frontière d'efficience pour une volumétrie de \textit{Model Points} équivalente.
+
+Le candidat retenu (pas d'âge de 5 ans et d'ancienneté de 6 ans, générant 1\,172 \textit{Model Points}) est visualisé sur la figure \ref{fig:visu_3d_banding}. L'espace est découpé de manière orthogonale. Si cette rigidité garantit une traçabilité métier, elle fragmente des zones de faible densité qui auraient pu être fusionnées par un algorithme statistique.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.57\textwidth]{images/2_chapitres/chapitre4/visu_3d_banding.png}
-    \caption{Projection 3D du candidat Banding (1 172 MP) : un découpage en grille stricte de l'espace.}
+    \caption{Projection 3D du candidat \textit{Banding} (1\,172 \textit{Model Points}) : un découpage en grille stricte de l'espace.}
     \label{fig:visu_3d_banding}
 \end{figure}
 
-% --- K-MEANS ---
 % --- K-MEANS ---
 \subsubsection{Le K-Means : optimum local et respect des strates}
 
@@ -428,7 +386,7 @@ La figure \ref{fig:visu_3d_cf_matching} projette les trajectoires de flux sur 40
 
 \subsubsection{La méthode de calibration de lois \textit{a posteriori} (Modèle Zéro)}
 
-Contrairement au partitionnement multidimensionnel fondé sur des distances spatiales, la calibration \textit{a posteriori} vise à annuler le biais d'agrégation en substituant la modélisation comportementale classique par une projection déterministe forcée.
+Contrairement au partitionnement multidimensionnel fondé sur des distances spatiales, la calibration \textit{a posteriori} vise à annuler le biais d'agrégation en substituant la modélisation comportementale classique par une projection en passif seul déterministe.
 
 La mécanique s'articule en plusieurs étapes. Une projection préliminaire en passif seul est exécutée sur le portefeuille complet. Les flux de sorties générés sont extraits et regroupés selon un triplet financier strict : (TMG, TAF, TFGSE). À partir de ces données exactes, de nouvelles lois de rachats et de mortalité sur-mesure sont calibrées pour chaque combinaison du triplet. 
 
@@ -436,7 +394,7 @@ Parallèlement, une compression du portefeuille est opérée en agrégeant les p
 
 En projection, le moteur ALM consomme directement ces lois de sorties sur-mesure au lieu des tables standards. Cette substitution reproduit fidèlement la dynamique des flux du portefeuille de référence, affichant par construction mécanique une erreur de $0{,}0000\,\%$ sur le BE central en passif seul.
 
-Bien que cette configuration garantisse une compression forte et une précision exacte en déterministe central, elle constitue un modèle statique. Elle fige les comportements et peine à capturer les interactions financières qui émergent dans un environnement ALM dynamique (hausse/baisse des taux). Elle offre néanmoins une référence de performance théorique pour les évaluations stochastiques.
+Bien que cette configuration garantisse une compression forte et une précision exacte en passif suel déterministe central, elle constitue un modèle statique. Elle fige les comportements et peine à capturer les interactions financières qui émergent dans un environnement ALM dynamique (hausse/baisse des taux). Elle offre néanmoins une référence de performance théorique pour les évaluations stochastiques.
 
 \subsection{Sélection des candidats finaux}
 

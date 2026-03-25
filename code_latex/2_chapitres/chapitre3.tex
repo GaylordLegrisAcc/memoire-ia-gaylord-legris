@@ -8,7 +8,7 @@ L'enjeu sous-jacent consiste à relever un défi majeur d'optimisation : réduir
 
 \begin{itemize}
     \item \textbf{Les approches déterministes classiques :} Méthodes traditionnellement utilisées sur le marché, elles reposent sur une segmentation experte du portefeuille par caractéristiques communes ou par tranches (\textit{Banding}). Elles serviront de référence pour évaluer l'apport des techniques plus complexes.
-    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de \textit{Machine Learning}, tels que les algorithmes de partitionnement (K-Means), basés sur la densité (DBSCAN, HDBSCAN) ou les arbres de décision (CART), sera exploré pour constituer des \textit{Model Points} fondés sur une similarité multidimensionnelle des profils de risque.
+    \item \textbf{Les approches statistiques par apprentissage non supervisé :} L'apport des algorithmes de \textit{Machine Learning}, tels que le partitionnement par centres mobiles (\textit{K-Means}) ou les méthodes basées sur la densité (\textit{DBSCAN}, \textit{HDBSCAN}), sera exploré pour constituer des \textit{Model Points} fondés sur une similarité multidimensionnelle des profils de risque.
     \item \textbf{Les approches dynamiques basées sur les flux financiers :} En rupture avec le regroupement spatial statique, ces méthodes avancées (telles que le \textit{Cash-Flow Matching} et l'approche par calibration \textit{a posteriori}) proposent d'agréger les contrats en fonction de leur comportement projeté et de leur cinétique d'écoulement.
 \end{itemize}
 
@@ -83,22 +83,25 @@ A_{MP_k} = \frac{\sum_{i \in C_k} A_i \cdot PM_i}{\sum_{i \in C_k} PM_i} \quad ;
 
 Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
 
-\subsubsection{Variante Smart Granular et limites (Biais d'agrégation et variance intra-classe)}
-Dans le cadre de l'optimisation, une variante nommée \textbf{Smart Granular} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
+\subsubsection{Variante par segmentation multidimensionnelle optimisée et limites (Biais d'agrégation et variance intra-classe)}
+Dans le cadre de l'optimisation, une variante nommée \textbf{segmentation multidimensionnelle optimisée} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
 \begin{itemize}
-    \item \textbf{Smart Focus Active :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrêmes (pas de 15 ans au-delà de 85 ans).
-    \item \textbf{Smart Focus Young :} Stratégie ultra-fine sur les nouveaux entrants (pas de 1 an jusqu'à 50 ans) pour capturer la dynamique de croissance du portefeuille.       
-    \item \textbf{Smart Focus Fiscal :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscalité des rachats.
-    \item \textbf{Smart Granular (Équilibré) :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
+    \item \textbf{Segmentation par phase d'activité :} Priorise la précision sur la phase de constitution de l'épargne (20-65 ans) avec un pas de 2 ans, tout en compressant fortement les extrêmes (pas de 15 ans au-delà de 85 ans).
+    \item \textbf{Segmentation par ancienneté de souscription :} Stratégie ultra-fine sur les nouveaux entrants (pas de 1 an jusqu'à 50 ans) pour capturer la dynamique de croissance du portefeuille.       
+    \item \textbf{Segmentation par maturité fiscale :} Découpage spécifique autour de l'ancienneté 8 ans (pas de 1 an entre 0 et 12 ans) pour modéliser avec précision le basculement de la fiscalité des rachats.
+    \item \textbf{Segmentation multidimensionnelle optimisée :} Mélange des approches précédentes, resserrant les mailles à la fois sur l'âge et sur le cap fiscal des 8 ans.
 \end{itemize}
 \subsubsection{Limites de l'approche et variance intra-classe}
-Bien que la pondération par la provision mathématique assure la conservation du barycentre financier, le regroupement par tranches (Banding) écrase inévitablement la dispersion au sein de chaque groupe. Mathématiquement, la variance intra-classe (ou inertie) d'une tranche $k$ pour une caractéristique $X$ (comme l'âge) s'exprime par :
+
+Bien que la pondération par la provision mathématique assure la conservation du barycentre financier, le regroupement par tranches (\textit{Banding}) écrase inévitablement la dispersion au sein de chaque groupe. Mathématiquement, la variance intra-classe (ou inertie) d'une tranche $k$ pour une caractéristique $X$ (telle que l'âge) s'exprime par :
 
 \begin{equation}
- Var(X_k) = \frac{1}{\sum_{i \in MP_k} PM_i} \sum_{i \in MP_k} PM_i (X_i - X_{MP_k})^2 
+    Var(X_k) = \frac{1}{\sum_{i \in I_k} \textit{PM}_i} \sum_{i \in I_k} \textit{PM}_i (x_i - \bar{x}_k)^2 
 \end{equation}
-Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle ALM traitant les flux de manière non linéaire (notamment via les probabilités de rachat ou de mortalité), cette perte de dispersion engendre le fameux biais d'agrégation. C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique. Plutôt que de subir une grille d'agrégation statique et arbitraire qui contraint la donnée, il apparaît nécessaire d'adopter des approches où la structure intrinsèque du portefeuille dicte elle-même la formation des groupes. Les méthodes d'apprentissage non supervisé, explorées dans la section suivante, répondent précisément à cet impératif en cherchant à minimiser l'inertie intra-classe de manière algorithmique.
 
+Plus la tranche est large, plus cette variance augmente, ce qui dilue la précision du profil de risque. Le modèle \textit{Asset Liability Management} traitant les flux de manière non linéaire (notamment via les lois de rachat ou de mortalité), cette perte de dispersion engendre un biais d'agrégation. 
+
+C'est cette limitation fondamentale qui justifie le recours à des algorithmes de partitionnement dynamique. Plutôt que de subir une grille d'agrégation statique et arbitraire qui contraint la donnée, il apparaît nécessaire d'adopter des approches où la structure intrinsèque du portefeuille dicte elle-même la formation des groupes. Les méthodes d'apprentissage non supervisé, explorées dans la section suivante, répondent précisément à cet impératif en cherchant à minimiser l'inertie intra-classe de manière algorithmique.
 
 \section{Les approches statistiques spatiales (Apprentissage non supervisé)}
 
@@ -390,50 +393,50 @@ Il convient par ailleurs de souligner qu'en environnement de production, il est 
 
 Bien que les algorithmes de \textit{clustering} spatial offrent des solutions robustes pour regrouper les contrats selon leurs similarités géométriques, ils opèrent de manière non supervisée. Ils structurent l'espace des données sans tenir compte de l'impact financier réel de ces regroupements sur le modèle ALM. Pour pallier cette limite et orienter la construction des \textit{Model Points} autour d'un enjeu actuariel précis, il convient d'explorer une seconde grande famille d'algorithmes : les méthodes supervisées. Celles-ci utilisent une variable cible (telle que la provision mathématique ou un flux de trésorerie) pour guider mathématiquement la partition du portefeuille.
 
-\section{L'approche par segmentation supervisée}
+% \section{L'approche par segmentation supervisée}
 
-Alors que les méthodes d'apprentissage non supervisé (K-Means, HDBSCAN) cherchent à regrouper les contrats selon une similarité globale de leurs caractéristiques, elles ne garantissent pas structurellement l'homogénéité d'un indicateur financier précis. Pour pallier cette limite et forcer la modélisation à se concentrer sur les enjeux de rentabilité (comme le TMG), il convient de se tourner vers des algorithmes d'apprentissage supervisé.
+% Alors que les méthodes d'apprentissage non supervisé (K-Means, HDBSCAN) cherchent à regrouper les contrats selon une similarité globale de leurs caractéristiques, elles ne garantissent pas structurellement l'homogénéité d'un indicateur financier précis. Pour pallier cette limite et forcer la modélisation à se concentrer sur les enjeux de rentabilité (comme le TMG), il convient de se tourner vers des algorithmes d'apprentissage supervisé.
 
-\subsection{Principe des arbres de décision (CART) appliqués au passif}
+% \subsection{Principe des arbres de décision (CART) appliqués au passif}
 
-L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux approches non supervisées qui évaluent une similarité spatiale globale, le modèle CART partitionne l'espace des caractéristiques en cherchant à expliquer au mieux la variance d'une variable cible continue. Il s'agit ici d'un arbre de régression.
+% L'approche par arbres de décision, et plus précisément l'algorithme CART (\textit{Classification and Regression Trees}), introduit une logique d'apprentissage supervisé dans le processus d'agrégation. Contrairement aux approches non supervisées qui évaluent une similarité spatiale globale, le modèle CART partitionne l'espace des caractéristiques en cherchant à expliquer au mieux la variance d'une variable cible continue. Il s'agit ici d'un arbre de régression.
 
-\subsubsection{Formalisation mathématique du critère de partitionnement}
+% \subsubsection{Formalisation mathématique du critère de partitionnement}
 
-L'algorithme procède par séparations binaires successives de l'espace des caractéristiques du contrat : $\{\text{âge},\,\text{ancienneté},\,\text{TMG}\}$. À chaque nœud $m$ de l'arbre, représentant un sous-ensemble $N_m$ de contrats, l'objectif est de trouver la variable de coupe $j$ et le seuil $s$ qui minimisent l'impureté des deux nœuds enfants formés (gauche et droit). 
+% L'algorithme procède par séparations binaires successives de l'espace des caractéristiques du contrat : $\{\text{âge},\,\text{ancienneté},\,\text{TMG}\}$. À chaque nœud $m$ de l'arbre, représentant un sous-ensemble $N_m$ de contrats, l'objectif est de trouver la variable de coupe $j$ et le seuil $s$ qui minimisent l'impureté des deux nœuds enfants formés (gauche et droit). 
 
-Afin de respecter la volumétrie financière du portefeuille, le critère d'impureté $H(m)$ retenu est la variance pondérée par la provision mathématique ($w_i = PM_i$). Pour une variable cible $Y_i$, l'impureté du nœud $m$ s'exprime ainsi :
+% Afin de respecter la volumétrie financière du portefeuille, le critère d'impureté $H(m)$ retenu est la variance pondérée par la provision mathématique ($w_i = PM_i$). Pour une variable cible $Y_i$, l'impureté du nœud $m$ s'exprime ainsi :
 
-\begin{equation}
-    H(m) = \frac{1}{\sum_{i \in N_m} w_i} \sum_{i \in N_m} w_i (Y_i - \bar{Y}_m)^2
-\end{equation}
+% \begin{equation}
+%     H(m) = \frac{1}{\sum_{i \in N_m} w_i} \sum_{i \in N_m} w_i (Y_i - \bar{Y}_m)^2
+% \end{equation}
 
-Où $\bar{Y}_m$ est la moyenne pondérée de la cible au sein du nœud :
-\begin{equation}
-    \bar{Y}_m = \frac{\sum_{i \in N_m} w_i Y_i}{\sum_{i \in N_m} w_i}
-\end{equation}
+% Où $\bar{Y}_m$ est la moyenne pondérée de la cible au sein du nœud :
+% \begin{equation}
+%     \bar{Y}_m = \frac{\sum_{i \in N_m} w_i Y_i}{\sum_{i \in N_m} w_i}
+% \end{equation}
 
-Pour chaque itération, l'algorithme sélectionne le couple $(j, s)$ qui minimise la fonction de coût $G(j, s)$, correspondant à la somme des impuretés pondérées des nœuds enfants :
+% Pour chaque itération, l'algorithme sélectionne le couple $(j, s)$ qui minimise la fonction de coût $G(j, s)$, correspondant à la somme des impuretés pondérées des nœuds enfants :
 
-\begin{equation}
-    G(j, s) = \frac{W_{gauche}}{W_m} H(m_{gauche}) + \frac{W_{droit}}{W_m} H(m_{droit})
-\end{equation}
+% \begin{equation}
+%     G(j, s) = \frac{W_{gauche}}{W_m} H(m_{gauche}) + \frac{W_{droit}}{W_m} H(m_{droit})
+% \end{equation}
 
-Où $W$ représente la somme des poids (PM) des contrats dans le nœud considéré. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) est atteint.
+% Où $W$ représente la somme des poids (PM) des contrats dans le nœud considéré. Le processus s'arrête lorsqu'un nombre maximal de feuilles (correspondant au nombre de Model Points souhaité) est atteint.
 
-\subsection{Définition des variables cibles (refined vs spread focus)}
+% \subsection{Définition des variables cibles (refined vs spread focus)}
 
-La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
+% La puissance de l'arbre CART réside dans le choix de la métrique à optimiser :
 
-\begin{itemize}
-    \item \textbf{Variante refined (Risque mixte) :} Une variable cible d'intérêt $Y_i$ est définie par $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$, avec $\alpha = 10$ défini empiriquement. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
+% \begin{itemize}
+%     \item \textbf{Variante refined (Risque mixte) :} Une variable cible d'intérêt $Y_i$ est définie par $Y_i = PM_i \times (1 + \alpha \cdot TMG_i)$, avec $\alpha = 10$ défini empiriquement. Cette pondération force l'arbre à accorder plus d'importance aux contrats qui pèsent lourd financièrement tout en ayant un coût de garantie élevé. C'est une approche visant l'équilibre entre masse et risque.
     
-    \item \textbf{Variante spread focus (Pureté financière) :} La cible est le TMG pur, défini ici par $Y_i = TMG_i$. Pondéré par la PM, l'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques, car elle isole parfaitement les poches de garanties coûteuses.
-\end{itemize}
+%     \item \textbf{Variante spread focus (Pureté financière) :} La cible est le TMG pur, défini ici par $Y_i = TMG_i$. Pondéré par la PM, l'algorithme cherche alors à créer des groupes où l'hétérogénéité des taux garantis est minimale. Cette approche est privilégiée pour les modèles ALM très sensibles au spread entre taux de marché et taux techniques, car elle isole parfaitement les poches de garanties coûteuses.
+% \end{itemize}
 
-Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par paliers qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
+% Cette méthode présente l'avantage d'identifier automatiquement les interactions non linéaires entre les variables (par exemple, un seuil d'âge qui ne devient critique que pour une certaine ancienneté). Cependant, elle produit une segmentation par paliers qui peut s'avérer trop brutale pour modéliser des phénomènes continus comme la mortalité.
 
-Toutes les méthodes de partitionnement spatial abordées jusqu'ici, qu'elles soient supervisées ou non, partagent une limite conceptuelle commune : elles évaluent la similarité des profils de risque de manière purement statique, à la date d'arrêté. Pour franchir un nouveau cap de fidélité financière, une rupture méthodologique s'impose : agréger les contrats non plus sur ce qu'ils sont, mais sur ce qu'ils vont produire.
+% Toutes les méthodes de partitionnement spatial abordées jusqu'ici, qu'elles soient supervisées ou non, partagent une limite conceptuelle commune : elles évaluent la similarité des profils de risque de manière purement statique, à la date d'arrêté. Pour franchir un nouveau cap de fidélité financière, une rupture méthodologique s'impose : agréger les contrats non plus sur ce qu'ils sont, mais sur ce qu'ils vont produire.
 
 \section{Les approches dynamiques basées sur l'écoulement des flux}
 
