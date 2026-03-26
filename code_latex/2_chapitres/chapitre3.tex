@@ -14,7 +14,7 @@ L'enjeu sous-jacent consiste à relever un défi majeur d'optimisation : réduir
 
 L'exposé détaillé de ces modèles nous permettra de poser le socle théorique nécessaire avant d'aborder, dans le chapitre suivant, le protocole de test standardisé et l'analyse comparative de leurs performances respectives.
 
-\section{Les approches déterministes : Le standard de marché}
+\section{Méthodes de segmentation par regroupement de caractéristiques}
 
 Avant d'explorer les algorithmes statistiques avancés, il est indispensable de définir la méthode de référence classiquement utilisée sur le marché. Les approches déterministes ne s'appuient pas sur une recherche algorithmique de similarités spatiales, mais sur l'application stricte de règles métier pour segmenter le portefeuille. L'objectif de cette première section est de présenter cette méthode historique, qui fera office de base de comparaison pour évaluer objectivement les performances des techniques d'agrégation présentées dans la suite de ce chapitre.
 
@@ -201,7 +201,7 @@ Pour capter ces groupes complexes sans forcer l'homogénéité des volumes ni fi
 
 C'est pour répondre à ce besoin que des méthodes basées sur la densité peuvent être mises en place, à l'image de l'algorithme DBSCAN (\textit{Density-Based Spatial Clustering of Applications with Noise}) et de son extension hiérarchique HDBSCAN.
 
-\subsection{Partitionnement par densité : DBSCAN (introduction du Dithering et gestion du bruit par k-NN)}
+\subsection{Algorithme DBSCAN : approche par densité et traitement du bruit}
 
 \subsubsection{Principes fondamentaux de DBSCAN}
 L'algorithme DBSCAN définit un cluster comme une zone de forte densité séparée par des zones de faible densité. Il repose sur deux paramètres clés : un rayon de voisinage $\varepsilon$ (\textit{epsilon}) et un nombre minimum de points $MinPts$.
@@ -437,7 +437,7 @@ Le fonctionnement de cette approche s'articule autour de quatre étapes successi
 Cette approche s'affranchit des biais de lissage empirique. Elle capte naturellement la complexité de l'interaction Actif-Passif sans qu'il soit nécessaire de spécifier des règles de regroupement métier \textit{a priori}. Bien que cette technique exige un investissement calculatoire initial (la projection du ligne à ligne), ce temps de préparation est amplement rentabilisé lors des évaluations réglementaires. En effet, les \textit{Model Points} ainsi construits sont fidèles à la dynamique de flux du portefeuille, garantissant une bonne précision dans les projections stochastiques ultérieures.
 
 \subsection{Calibration de lois \textit{a posteriori} (agrégation des clés financières)}
-\label{sec:biais_zero}
+\label{sec:calib_a_posteriori}
 
 L'approche par calibration \textit{a posteriori} marque une rupture méthodologique fondamentale avec les techniques de \textit{clustering} traditionnelles. Le paradigme est ici inversé : au lieu de chercher à regrouper des polices démographiquement similaires pour leur appliquer des lois de comportement standards, cette méthode s'autorise à regrouper les contrats selon des critères purement financiers. Elle recalcule ensuite mathématiquement des probabilités de sortie \og sur-mesure \fg{} (taux de rachat et de mortalité induits) pour chaque groupe.
 

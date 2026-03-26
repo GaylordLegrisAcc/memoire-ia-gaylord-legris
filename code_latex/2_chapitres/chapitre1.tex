@@ -28,7 +28,7 @@ L'épargne des assurés peut être investie sur deux principaux types de support
 
 
 
-Le \textbf{fonds en euros} est le support historique et sécuritaire de l'assurance vie française. Le risque financier y est intégralement porté par l'assureur, qui s'appuie sur une politique d'investissement prudente, majoritairement orientée vers des actifs obligataires. La sécurité de ce support repose sur un ensemble de garanties contractuelles et réglementaires :
+Le fonds en euros est le support historique et sécuritaire de l'assurance vie française. Le risque financier y est intégralement porté par l'assureur, qui s'appuie sur une politique d'investissement prudente, majoritairement orientée vers des actifs obligataires. La sécurité de ce support repose sur un ensemble de garanties contractuelles et réglementaires :
 \begin{itemize}
     \item \textbf{La garantie du capital :} Il s'agit de l'engagement contractuel principal de ce type de support. L'assureur garantit à tout moment le capital investi par l'épargnant. Ainsi, indépendamment de la volatilité des marchés financiers, la somme initialement versée, nette de frais, est intégralement préservée.
     % \item \textbf{Le taux technique :} Il s'agit d'un taux de revalorisation minimal garanti sur toute la durée du contrat. Fixé à la souscription, il est aujourd'hui très faible, voire nul, en raison des contraintes réglementaires.
@@ -39,7 +39,7 @@ Le \textbf{fonds en euros} est le support historique et sécuritaire de l'assura
 \end{itemize}
 
 
-Les \textbf{unités de compte (UC)} offrent une exposition directe aux marchés financiers. Contrairement au fonds en euros, le risque d'investissement est entièrement porté par l'assuré. L'assureur ne garantit pas la valeur du capital, mais un nombre de parts d'actifs (OPCVM, actions, SCPI, etc.). La valeur de l'épargne fluctue ainsi en fonction des marchés, offrant un potentiel de rendement supérieur à long terme, mais exposant également à un risque de perte en capital. Pour l'assureur, la gestion de ce support est plus simple dans la mesure où il ne porte pas le risque d'investissement et n'octroie donc aucune garantie financière particulière.
+Les unités de compte (UC) offrent une exposition directe aux marchés financiers. Contrairement au fonds en euros, le risque d'investissement est entièrement porté par l'assuré. L'assureur ne garantit pas la valeur du capital, mais un nombre de parts d'actifs (OPCVM, actions, SCPI, etc.). La valeur de l'épargne fluctue ainsi en fonction des marchés, offrant un potentiel de rendement supérieur à long terme, mais exposant également à un risque de perte en capital. Pour l'assureur, la gestion de ce support est plus simple dans la mesure où il ne porte pas le risque d'investissement et n'octroie donc aucune garantie financière particulière.
 
 
 Ces supports d'investissement s'articulent autour de deux grandes familles de contrats. D'une part, les contrats dits \og monosupports \fg{} ne permettent d'investir que sur le fonds en euros. D'autre part, les contrats \og multisupports \fg{}, qui constituent aujourd'hui le standard du marché, offrent la possibilité de combiner un fonds en euros avec plusieurs types de supports en unités de compte\footnote{Il est intéressant de noter qu'un contrat intégralement investi en unités de compte est considéré techniquement comme un contrat multisupports, bien que cette configuration s'avère rare en pratique.}. Dans le cadre de cette étude, le portefeuille analysé se compose exclusivement de contrats multisupports, présentant une allocation représentative du marché français, soit approximativement 60\,\% en fonds en euros et 40\,\% en unités de compte.
@@ -133,7 +133,7 @@ Le premier terme du Bilan, l'Actif, est évalué à sa valeur de marché (VM). S
 }
 
 
-\subsubsection{Les provisions techniques : Cœur de l'évaluation du passif}
+\subsubsection{Modélisation et évaluation des provisions techniques}
 
 Les provisions techniques (PT) représentent la valeur des engagements de l'assureur envers ses assurés. La valeur des provisions techniques (PT) se décompose de la manière suivante\footnote{Ces deux composantes sont définis de manière détaillée dans les paragraphes suivants.} :
 \begin{equation}
@@ -146,7 +146,7 @@ La valorisation des provisions techniques, au cœur du bilan prudentiel, ne peut
     \item \textbf{L'approche déterministe} (ou équivalent certain) permet de disposer rapidement d'un premières valeurs d'indicateurs tels que le BE. Elle repose sur une projection unique des variables économiques. Toutefois, cette approche ne permet pas de valoriser le coût des Options et Garanties des contrats d'assurance. 
     \item \textbf{L'approche stochastique} est un outil de valorisation. Elle explore un grand nombre de futurs possibles à l'aide d'un générateur de scénarios économiques (\textit{GSE}). Cet outil produit des milliers de simulations respectant les caractéristiques des marchés financiers. La valeur d'un indicateur est alors obtenue en calculant la moyenne des résultats sur l'ensemble de ces scénarios (méthode de Monte-Carlo). Cette exploration est indispensable pour quantifier le coût réel des garanties optionnelles (TMG, etc.).
 \end{itemize}
-La différence de valeur entre ces deux approches est capturée par le concept de \textbf{TVOG (\textit{Time Value of Options and Guarantees})}. En imposant une approche stochastique, Solvabilité II assure une valorisation \textit{market-consistent} des engagements.
+La différence de valeur entre ces deux approches est capturée par le concept de TVOG (\textit{Time Value of Options and Guarantees}). En imposant une approche stochastique, Solvabilité II assure une valorisation \textit{market-consistent} des engagements.
 
 
 Le \textit{Best Estimate} (BE), ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements de l'assureur. Son calcul est réalisé sur un horizon long (40-60 ans) en \textit{run-off} (portefeuille en extinction, pas de nouvelles souscriptions). Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
@@ -157,7 +157,7 @@ Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ l
 
 
 
-La \textbf{marge de risque} (\textit{Risk Margin} - RM) complète le \textit{Best Estimate}. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de coût du capital (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
+La marge de risque (\textit{Risk Margin} - RM) complète le \textit{Best Estimate}. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de coût du capital (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
 \begin{equation}
     RM = \textit{CoC}_{\textit{rate}} \times \sum_{j=0}^{T} \frac{\textit{SCR}_{\text{non-fi}}(j)}{(1+r_{j+1})^{j+1}}
 \end{equation}
@@ -165,13 +165,13 @@ Où $\textit{CoC}_{\textit{rate}}$ est le coût du capital (fixé à $6\,\%$), e
 
 \subsubsection{Les fonds propres et les exigences de capital}
 
-Les fonds propres prudentiels, aussi appelés \textbf{NAV (\textit{Net Asset Value})}, constituent la richesse de l'assureur. Ils sont définis par la différence entre la valeur des actifs et celle des engagements :
+Les fonds propres prudentiels, aussi appelés NAV (\textit{Net Asset Value}), constituent la richesse de l'assureur. Ils sont définis par la différence entre la valeur des actifs et celle des engagements :
 \begin{equation}
     NAV = VM_{Actifs} - (BE + RM)
 \end{equation}
 Ce sont ces fonds propres qui doivent permettre à l'assureur d'absorber des pertes inattendues. 
 
-Le Solvency Capital Requirement \textbf{(SCR)} est le montant de fonds propres nécessaire pour absorber des pertes exceptionnelles. Il est calibré pour correspondre à la Value-at-Risk \textbf{(VaR)} à 99,5\,\% \footnote{La \textit{VaR} est une mesure de risque indiquant la perte potentielle maximale d'un portefeuille sur un horizon temporel donné, pour un niveau de confiance fixé. Dans le référentiel Solvabilité II, le SCR est défini comme la VaR de la variation de l'actif net à l'horizon d'un an, avec un seuil de confiance de 99,5\,\%.} de la NAV sur un horizon d'un an. 
+Le Solvency Capital Requirement (SCR) est le montant de fonds propres nécessaire pour absorber des pertes exceptionnelles. Il est calibré pour correspondre à la Value-at-Risk (VaR) à 99,5\,\% \footnote{La \textit{VaR} est une mesure de risque indiquant la perte potentielle maximale d'un portefeuille sur un horizon temporel donné, pour un niveau de confiance fixé. Dans le référentiel Solvabilité II, le SCR est défini comme la VaR de la variation de l'actif net à l'horizon d'un an, avec un seuil de confiance de 99,5\,\%.} de la NAV sur un horizon d'un an. 
 
 Le calcul du SCR s'effectue le plus souvent via la formule standard définie par la réglementation. Cette dernière est une approche qui décompose le risque total en plusieurs modules (marché, souscription vie, etc.), eux-mêmes divisés en sous-modules. Pour chaque risque élémentaire $x$, le capital requis est calculé comme la perte de NAV consécutive à un choc instantané :
 \begin{equation}
@@ -310,13 +310,13 @@ Une fois cet environnement financier stochastique modélisé et calibré, la sec
 
 Les portefeuilles d'assurance vie comptent souvent des centaines de milliers, voire des millions de polices. Une modélisation "ligne à ligne" est techniquement possible mais informatiquement très chronophage pour des calculs stochastiques complexes comme ceux requis par les modèles ALM, où chaque contrat doit être projeté sur des milliers de scénarios économiques.
 
-La charge de calcul deviendrait excessive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle majeure. La réponse standard à cette contrainte est la création de \textbf{\textit{Model Points}} (MP). Un MP est un contrat synthétique représentant un agrégat de polices partageant des caractéristiques homogènes (âge, ancienneté, type de produit, TMG). L'objectif est de réduire drastiquement le volume de données à traiter tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet.
+La charge de calcul deviendrait excessive. La simplification du portefeuille de passif n'est donc pas un choix, mais une contrainte opérationnelle majeure. La réponse standard à cette contrainte est la création de \textit{Model Points} (MP). Un MP est un contrat synthétique représentant un agrégat de polices partageant des caractéristiques homogènes (âge, ancienneté, type de produit, TMG). L'objectif est de réduire drastiquement le volume de données à traiter tout en préservant les propriétés actuarielles et financières essentielles du portefeuille complet.
 
 \subsection{Cadre réglementaire et exigences de validation}
 
 Si l'agrégation est une nécessité opérationnelle, elle constitue également un risque de modèle. Le remplacement d'un portefeuille réel par une image simplifiée introduit inévitablement un biais d'estimation. Dans le cadre prudentiel de Solvabilité II, ces simplifications sont encadrées strictement.
 
-\subsubsection{Le principe de matérialité et justification des approximations}
+\subsubsection{rincipe de matérialité et cadre des approximations réglementaires}
 
 La directive Solvabilité II et les textes de l'ACPR imposent que les méthodes de simplification soient appropriées et ne conduisent pas à une sous-estimation significative des risques.
 En particulier, la \textit{Notice ACPR sur les modèles internes} (2023) \cite{notice_acpr} rappelle dans son paragraphe 21 que l'entreprise doit \og identifier, documenter et justifier la pertinence des simplifications, des approximations et des hypothèses \fg   utilisées. Bien que ce texte vise les modèles internes, il établit un standard de place : l'erreur introduite par l'agrégation doit rester immatérielle au regard du BEL et du SCR.
@@ -339,7 +339,7 @@ Il s'agit de vérifier, à la date d'arrêté, que le portefeuille agrégé repr
     \item Les encours moyens, l'âge moyen pondéré des assurés, l'ancienneté moyenne ;
     \item La répartition par TMG.
 \end{itemize}
-Des seuils de tolérance stricts (par exemple $<0.5\%$ d'écart sur le BE) sont définis par l'assureur pour valider cette étape.
+Des seuils de tolérance stricts (par exemple $<1\%$ d'écart sur le BE) sont définis par l'assureur pour valider cette étape.
 
 \subsubsection{Contrôles du profil de risque et des queues de distribution}
 L'agrégation ne doit pas lisser les risques extrêmes. Un point d'attention particulier, souligné par les contrôles prudentiels (paragraphe 39 de la notice ACPR), est la bonne représentation des queues de distribution.

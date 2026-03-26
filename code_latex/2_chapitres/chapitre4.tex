@@ -266,7 +266,7 @@ Lors de l'exploration de ces frontières, un critère volumétrique est appliqu�
 Ce choix est doublement justifié par une analyse de sensibilité relative à la taille du portefeuille agrégé. Des tests préliminaires démontrent qu'en dessous de 800 \textit{Model Points}, la distorsion des flux de passifs s'accentue significativement, dégradant la qualité du \textit{Best Estimate}. Inversement, au-delà de 1\,200 \textit{Model Points}, l'amélioration de la convergence des indicateurs de solvabilité n'est plus significative, tandis que la charge de calcul croît de manière linéaire. Cette fenêtre constitue donc un optimum local, assurant la stabilité des sensibilités tout en respectant les contraintes opérationnelles de production. Afin de justifier la sélection de ces candidats, la frontière d'efficience de chaque méthode est analysée et complétée par une projection spatiale en trois dimensions du modèle retenu.
 
 % --- BANDING ---
-\subsubsection{Le \textit{Banding} : décroissance linéaire et maillage rigide}
+\subsubsection{ Le \textit{Banding} : Analyse de la convergence de la méthode par tranches}
 
 L'analyse de la frontière du \textit{Banding} (Figure \ref{fig:pareto_banding}) confirme la mécanique empirique de l'approche. La courbe présente une décroissance quasi linéaire de l'erreur sur l'échelle logarithmique. L'amélioration de la précision est proportionnelle à la densification du maillage, sans effet de seuil marqué. 
 
@@ -467,7 +467,7 @@ Dans un environnement ALM stochastique, les méthodes d'agrégation doivent rest
     \label{tab:resultats_central_alm}
 \end{table}
 
-Les résultats révèlent une première rupture pour la méthode de calibration \textit{a posteriori} (modèle Zéro). Si elle affichait une précision absolue en passif seul, l'erreur atteint ici $-5{,}53\,\%$ sur le BE et provoque une sous-évaluation marquée du SCR ($-28{,}38\,\%$). Figer les lois de rachats et de mortalité sur un scénario initial déterministe rend le modèle inerte face à la volatilité de l'interaction Actif-Passif. Une calibration effectuée directement sur les flux de sorties d'un modèle ALM stochastique, plutôt que sur un modèle passif seul, serait nécessaire pour corriger ce biais.
+Les résultats révèlent une première rupture pour la méthode de calibration \textit{a posteriori}. Si elle affichait une précision absolue en passif seul, l'erreur atteint ici $-5{,}53\,\%$ sur le BE et provoque une sous-évaluation marquée du SCR ($-28{,}38\,\%$). Figer les lois de rachats et de mortalité sur un scénario initial déterministe rend le modèle inerte face à la volatilité de l'interaction Actif-Passif. Une calibration effectuée directement sur les flux de sorties d'un modèle ALM stochastique, plutôt que sur un modèle passif seul, serait nécessaire pour corriger ce biais.
 
 En écartant cette méthode, les autres algorithmes affichent des résultats très homogènes. Les erreurs sur le BE sont contenues sous la barre de $1\,\%$ (allant de $-0{,}42\,\%$ à $-0{,}72\,\%$), confirmant la préservation des garanties financières. L'erreur sur le SCR Global se situe dans une fourchette étroite, comprise entre $+2{,}10\,\%$ et $+2{,}94\,\%$. 
 
@@ -475,7 +475,7 @@ On constate par ailleurs que les deux paramétrages du K-Means (Robuste et \text
 
 À l'issue de cette projection centrale, une première hiérarchie se dessine : le Banding Dynamique et HDBSCAN affichent les meilleures performances globales. Ces deux approches minimisent simultanément l'erreur sur le BE (inférieure à $-0{,}45\,\%$) et sur le SCR Global ($+2{,}10\,\%$). Les méthodes fondées sur les variables statiques restituent ainsi une précision légèrement supérieure à l'approche par les flux (\textit{Cash-Flow Matching}, dont l'erreur globale atteint $+2{,}94\,\%$). Toutefois, cette apparente homogénéité masque des compensations intra-modulaires. L'analyse détaillée est par la suite scindée entre le SCR Marché et le SCR Vie pour en isoler les dynamiques propres.
 
-\subsubsection{Analyse de la déformation du Risque de Marché}
+\subsubsection{Sensibilité des modules de risque de marché à l'agrégation}
 
 Le tableau \ref{tab:resultats_central_marche} isole le comportement des algorithmes face aux chocs financiers, en se concentrant sur les sous-modules du risque de marché : Taux, Actions et Immobilier.
 
@@ -752,4 +752,4 @@ La confrontation des modèles sur des environnements stochastiques asymétriques
     \item \textbf{La calibration \textit{a posteriori} (L'incompatibilité stochastique) :} Les limites de l'optimisation forcée des lois de comportements démontrent le risque d'un sur-ajustement sur une trajectoire déterministe unique. Dépourvu de dynamique propre, ce modèle est incapable de réagir aux variations de rentabilité inhérentes aux interactions Actif-Passif, le rendant inopérant pour l'évaluation prudentielle.
 \end{itemize}
 
-En conclusion, cette étude démontre que l'agrégation dépasse le simple cadre de l'optimisation informatique pour s'imposer comme un véritable levier stratégique en ALM. Dès lors que l'algorithme regroupe les contrats autour de leurs véritables moteurs de rentabilité, à savoir le niveau de garantie, l'âge et l'ancienneté, il devient possible de diviser les temps de projection stochastique par 50 sans sacrifier la précision du bilan prudentiel. La modélisation actuarielle n'est ainsi plus contrainte d'arbitrer entre la fiabilité financière et la rapidité d'exécution. Les perspectives ouvertes par cette méthodologie seront détaillées dans la conclusion générale du mémoire.
+En conclusion, cette étude démontre que l'agrégation dépasse le simple cadre de l'optimisation informatique pour s'imposer comme un levier stratégique en ALM. Dès lors que l'algorithme regroupe les contrats autour de leurs véritables moteurs de rentabilité, à savoir le niveau de garantie, l'âge et l'ancienneté, il devient possible de diviser les temps de projection stochastique par 50 sans sacrifier la précision du bilan prudentiel. La modélisation actuarielle n'est ainsi plus contrainte d'arbitrer entre la fiabilité financière et la rapidité d'exécution. Les perspectives ouvertes par cette méthodologie seront détaillées dans la conclusion générale du mémoire.

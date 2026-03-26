@@ -12,7 +12,7 @@ Le générateur de portefeuille de passifs développé dans le cadre de ce mémo
 L'objectif n'est pas de produire des données aléatoires, mais de générer un portefeuille dont les propriétés statistiques, distributions, corrélations, tendances, sont indiscernables de celles d'un portefeuille réel. Pour cela, toutes les lois et hypothèses ont été calibrées sur des données publiques de marché. Avoir des données fiables est très important pour produire des résultats de qualité dans le cadre d'analyses ou de décisions stratégiques, c'est pourquoi le développement d'un tel outil s'est imposé comme une nécessité.
 
 
-\subsection{Applications métiers : pilotage stratégique et analyse concurrentielle}
+\subsection{Enjeux du pilotage stratégique et de l'analyse comparative}
 
 La modélisation de portefeuilles de passifs constitue un levier de décision quantitatif essentiel. Cette capacité de simulation répond à des enjeux de tarification, d'orientation du \textit{business mix} et de positionnement de marché.
 
@@ -237,24 +237,23 @@ Où $p_i \in \{0{,}1; \dots; 0{,}9\}$ désigne les niveaux de probabilité assoc
 
 \begin{table}[H]
 \centering
+\resizebox{0.55\textwidth}{!}{
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Tranche d'âge} & $\mu$ & $\sigma$ \\
 \midrule
-Moins de 30 ans & 9.9233 & 1.7713 \\
-30 à 39 ans & 11.6750 & 1.8374 \\
-40 à 49 ans & 12.1756 & 2.1221 \\
-50 à 59 ans & 12.3216 & 2.0551 \\
-60 à 69 ans & 12.3579 & 2.0772 \\
-70 ans ou plus & 12.2620 & 1.8199 \\
+Moins de 30 ans & $9{,}9233$ & $1{,}7713$ \\
+30 à 39 ans & $11{,}6750$ & $1{,}8374$ \\
+40 à 49 ans & $12{,}1756$ & $2{,}1221$ \\
+50 à 59 ans & $12{,}3216$ & $2{,}0551$ \\
+60 à 69 ans & $12{,}3579$ & $2{,}0772$ \\
+70 ans ou plus & $12{,}2620$ & $1{,}8199$ \\
 \bottomrule
-\end{tabular}
-\caption{Paramètres de la loi Lognormale du patrimoine brut, calibrés par tranche d'âge.}
+\end{tabular}%
+}
+\caption{Paramètres de la loi Lognormale du patrimoine brut, calibrés par tranche d'âge}
 \label{tab:params_patrimoine_age}
 \end{table}
-
-
-
 
 Sur la base des calibrations précédentes, une population synthétique de 1 000 000 de contrats a été générée. Pour chaque individu, un âge a été tiré selon la loi Bêta déterminée précédemment, puis un patrimoine a été tiré selon la loi Lognormale conditionnelle correspondant à son âge. On obtient ainsi un échantillon de paires (Âge, Patrimoine) respectant la corrélation souhaitée.
 
@@ -330,7 +329,7 @@ Gamma & 7 254 743 & 7 254 774 & 0.145 \\
 \end{table}
 
 
-\subsubsection{Modélisation des variables financières reliées à la revalorisation du passif : TMG, TAF et TFGSE}
+\subsubsection{Modélisation des paramètres de revalorisation contractuelle et technique}
 
 La détermination des taux minimums garantis par année de souscription s'appuie sur les plafonds réglementaires de taux techniques définis par le Code des assurances, tels qu'analysés dans la note \og Le taux technique en assurance vie \fg{} publiée par l'ACPR \cite{acpr66},et les travaux de l'ACPR sur l'assurance vie en environnement de taux bas \cite{acprTauxBas}, complétés par la veille de marché de Good Value for Money sur les caractéristiques des contrats d'assurance vie \cite{gvmTMG}.
 
@@ -619,7 +618,7 @@ Ces rangs sont ensuite transformés en valeurs réelles via les fonctions quanti
 
 Une contrainte métier stricte est appliquée post-génération : l'âge à la souscription doit nécessairement être inférieur ou égal à l'âge actuel de l'assuré ($Age_{souscription} \leq Age_{assure}$). Les paires ne respectant pas cette condition sont rejetées et régénérées, assurant ainsi la cohérence temporelle des contrats.
 
-\subsubsection{Algorithme global de génération en cascade}
+\subsubsection{Processus itératif de génération du portefeuille}
 
 Une fois l'âge et la date de souscription fixés via la copule bivariée, le reste des caractéristiques du contrat est généré de manière conditionnelle. L'algorithme final s'applique contrat par contrat selon les étapes suivantes :
 
@@ -649,7 +648,7 @@ L'exécution de l'algorithme de génération a permis de constituer un portefeui
 
 \subsubsection{Volumétrie, asymétrie extrême et limites de modélisation}
 
-La caractéristique la plus marquante de ce portefeuille est la surreprésentation des contrats avec des gros encours (supérieurs à $500\,k\text{\euro}$). L'analyse par gamme commerciale révèle une véritable asymétrie :
+La caractéristique la plus marquante de ce portefeuille est la surreprésentation des contrats avec des gros encours (supérieurs à $500\,k\text{\euro}$). L'analyse par gamme commerciale révèle une asymétrie :
 
 \begin{figure}[H]
     \centering
