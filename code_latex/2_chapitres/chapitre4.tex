@@ -87,7 +87,7 @@ Le tableau \ref{tab:grid_search_params} synthétise l'architecture de cet espace
         \hline
         \textbf{HDBSCAN} & \textit{min\_cluster\_size} (MCS)\newline \textit{min\_samples} (MS) \newline Poids TMG ($W_{TMG}$) \newline Méthode d'extraction & 8 valeurs (de 10 à 100) \newline \{2, 5, 10\} \newline \{1.0, 10.0, 50.0\} \newline \{\textit{eom}, \textit{leaf}\} & 144 \\
         \hline
-        \multicolumn{3}{|r|}{\textbf{Total des projections (Grid Search initial)}} & \textbf{474} \\
+        \multicolumn{3}{|r|}{\textbf{Total des projections (\textit{Grid Search} initial)}} & \textbf{474} \\
         \hline
     \end{tabular}
     \caption{Synthèse des hyperparamètres testés et de la volumétrie du \textit{Grid Search}.}
@@ -104,9 +104,9 @@ Le choix de la méthode d'extraction pour HDBSCAN (\textit{eom} ou \textit{leaf}
         \hline
         \textbf{Configuration (MCS=30, MS=2, $W_{TMG}$=10)} & \textbf{Méthode d'extraction} & \textbf{Nb MP} & \textbf{Erreur BE} \\
         \hline
-        Run A (Stabilité) & \textit{eom} (Excess of Mass) & 71 & $+0{,}845\,\%$ \\
-        Run B (Granularité) & \textit{leaf} & 312 & $+0{,}122\,\%$ \\
-        Run C (Sous-ajusté - MCS=100) & \textit{eom} & 36 & $+1{,}420\,\%$ \\
+        \textit{Run} A (Stabilité) & \textit{eom} (Excess of Mass) & 71 & $+0{,}845\,\%$ \\
+        \textit{Run} B (Granularité) & \textit{leaf} & 312 & $+0{,}122\,\%$ \\
+        \textit{Run} C (Sous-ajusté - MCS=100) & \textit{eom} & 36 & $+1{,}420\,\%$ \\
         \hline
     \end{tabular}
     \caption{Impact de la méthode d'extraction HDBSCAN sur la compression et la précision.}
@@ -308,7 +308,7 @@ Les figures \ref{fig:visu_3d_kmeans_comparaison} (a) et (b) exposent les project
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/2_chapitres/chapitre4/outlier_949_space_3d.png}
-        \caption{Optimum local (Outlier) à 949 MP.}
+        \caption{Optimum local (\textit{outlier}) à 949 MP.}
     \end{subfigure}
     \hfill % Espacement élastique entre les deux photos
     % --- Sous-figure (b) Robuste ---
@@ -412,7 +412,7 @@ Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèle
         K-Means & $k=1\,039$ & 1 039 & $+0{,}0035\,\%$ \\
         DBSCAN & $\epsilon=0{,}0177$, MS$=5$ & 1 047 & $+0{,}0124\,\%$ \\
         HDBSCAN & $c=10$, $s=5$, \textit{leaf} (wt$=50$) & 967 & $+0{,}0398\,\%$ \\
-        \textit{Cash-Flow Matching} & \textit{Directe sur flux (1 run)} & 1 000 & $-0{,}0049\,\%$ \\
+        \textit{Cash-Flow Matching} & \textit{Directe sur flux (1 \textit{run})} & 1 000 & $-0{,}0049\,\%$ \\
         Calibration \textit{a posteriori} & Triplet (TMG, TAF, TFGSE) & 222 & $0{,}0000\,\%$ \\
         \hline
     \end{tabular}
@@ -425,19 +425,18 @@ Le tableau \ref{tab:synthese_calibration_finale} dresse le bilan des six modèle
 \section{Évaluation de la robustesse financière des modèles sur des projections stochastiques et chocs réglementaires S2}
 \label{sec:evaluation_scr}
 
-Si l'évaluation des modèles candidats s'est jusqu'à présent concentrée sur un environnement déterministe figé, la validité d'un portefeuille agrégé repose sur sa capacité à reproduire la déformation du bilan face aux interactions financières et aux chocs réglementaires. 
+Si l'évaluation des modèles candidats s'est jusqu'à présent concentrée sur un environnement déterministe central, la validité d'un portefeuille agrégé repose sur sa capacité à reproduire fidèlement la déformation du bilan face aux interactions financières et aux chocs réglementaires. 
 
-Pour visualiser la résilience des algorithmes face à la complexification du modèle, la figure \ref{fig:evolution_erreur_modeles} retrace l'évolution de l'erreur relative selon les paliers de projection.
+Pour visualiser la résilience des algorithmes, la figure \ref{fig:evolution_erreur_modeles} retrace l'évolution de l'erreur relative d'approximation à travers les différentes étapes de calcul du $SCR$. Ce suivi permet d'observer comment l'erreur de projection, initialement calibrée sur le $BE$ en passif seul, se propage lors de l'intégration des actifs (\textit{ALM} stochastique) et de l'application des chocs de taux $\pm 100$ \textit{bps}. Par souci de lisibilité, la méthode de calibration \textit{a posteriori} (\textit{Biais Zéro}) a été écartée de cette visualisation en raison de sa dérive structurelle majeure en environnement dynamique.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/2_chapitres/chapitre4/evolution_erreur_modeles.png}
-    \caption{Évolution de l'erreur d'approximation selon la complexité de la projection.}
-    % TODO: A refaire avec les nouvelles données
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/evolution_erreur_modeles.png}
+    \caption{Évolution de l'erreur d'approximation du $BE$ et du $SCR$ global selon la complexité de la projection et les chocs de taux.}
     \label{fig:evolution_erreur_modeles}
 \end{figure}
 
-L'analyse de ces résultats s'articule dans les sous-sections suivantes, en confrontant les algorithmes sur le scénario central stochastique, puis sur les chocs de sensibilités réglementaires (hausse et baisse des taux).
+L'analyse de ces résultats s'articule dans les sous-sections suivantes, en confrontant les algorithmes sur le scénario central stochastique, puis sur la restitution des exigences en capital sous chocs de sensibilités.
 
 \newpage
 
@@ -452,7 +451,7 @@ Dans un environnement ALM stochastique, les méthodes d'agrégation doivent rest
         \hline
         \textbf{Méthode d'agrégation} & \textbf{BE Central} & \textbf{Erreur BE} & \textbf{SCR Global} & \textbf{Erreur SCR} \\
         \hline
-        Baseline (Référence) & 209{,}93 Md\euro{} & \textit{Réf.} & 26{,}91 Md\euro{} & \textit{Réf.} \\
+        \textit{Baseline} (Référence) & 209{,}93 Md\euro{} & \textit{Réf.} & 26{,}91 Md\euro{} & \textit{Réf.} \\
         \textit{Cash-Flow Matching} & 208{,}41 Md\euro{} & $-0{,}72\,\%$ & 27{,}70 Md\euro{} & $+2{,}94\,\%$ \\
         DBSCAN & 208{,}97 Md\euro{} & $-0{,}46\,\%$ & 27{,}49 Md\euro{} & $+2{,}18\,\%$ \\
         HDBSCAN & 209{,}05 Md\euro{} & $-0{,}42\,\%$ & 27{,}47 Md\euro{} & $+2{,}10\,\%$ \\
@@ -549,7 +548,7 @@ Un point d'attention concerne les risques purement biométriques. Sur ce portefe
         \cline{2-3}
         & \textbf{Montant (M\euro{})} & \textbf{Erreur relative} & \\
         \hline
-        Baseline (Référence) & 149{,}07 & \textit{Réf.} & 0{,}06 \\
+        \textit{Baseline} (Référence) & 149{,}07 & \textit{Réf.} & 0{,}06 \\
         \hline
         Banding Dynamique & 159{,}24 & $+6{,}82\,\%$ & 0{,}00 \\
         HDBSCAN & 159{,}48 & $+6{,}98\,\%$ & 0{,}03 \\
@@ -582,7 +581,7 @@ Avant d'évaluer la précision des portefeuilles agrégés, il convient d'analys
     \renewcommand{\arraystretch}{1.4}
     \begin{tabular}{|l|r|r|r|}
         \hline
-        \textbf{Indicateur (Baseline)} & \textbf{EIOPA -100 bps} & \textbf{EIOPA Central} & \textbf{EIOPA +100 bps} \\
+        \textbf{Indicateur (\textit{Baseline})} & \textbf{EIOPA -100 bps} & \textbf{EIOPA Central} & \textbf{EIOPA +100 bps} \\
         \hline
         \textbf{Best Estimate Central} & 225{,}04 Md\euro{} & 209{,}93 Md\euro{} & 195{,}68 Md\euro{} \\
         \hline
@@ -706,9 +705,9 @@ Toutefois, ce qui apparaît ici comme une limite d'usage pour HDBSCAN pourrait s
 
 \subsection{Performance opérationnelle : Analyse des temps de calcul}
 
-Au-delà de la fidélité de restitution des bilans prudentiels, l'apport des algorithmes d'agrégation se mesure grâce aux gains de temps de calcul (\textit{Runtime}). En environnement stochastique, la lourdeur des projections constitue un frein majeur à la production des arrêtés réglementaires et au calcul des indicateurs.
+Au-delà de la fidélité de restitution des bilans prudentiels, l'apport des algorithmes d'agrégation se mesure par les gains de temps d'exécution (\textit{runtime}). En environnement stochastique, la lourdeur des projections constitue un frein majeur à la production des arrêtés réglementaires et au calcul des indicateurs de solvabilité.
 
-La mécanique d'une projection ALM stochastique repose sur l'évaluation de chaque ligne de passif à chaque pas de temps sur les 1000 scénarios économiques issus du GSE. La complexité algorithmique d'un \textit{run} est donc proportionnelle au nombre d'entrées. De plus, les boucles de projections (calcul de la participation aux bénéfices, attribution des taux servis, déclenchement des rachats) exigent d'agréger les flux de l'ensemble des contrats à chaque itération. Réduire le nombre de \textit{Model Points} allège de manière quasi linéaire le volume d'opérations et le coût de ces boucles.
+La mécanique d'une projection \textit{ALM} stochastique repose sur l'évaluation de chaque ligne de passif à chaque pas de temps sur les $1\,000$ scénarios économiques issus du \textit{GSE}. La complexité algorithmique d'un \textit{run} est donc proportionnelle au nombre d'entrées. De plus, les boucles de projections (calcul de la participation aux bénéfices, attribution des taux servis, déclenchement des rachats) exigent d'agréger les flux de l'ensemble des contrats à chaque itération. Réduire le nombre de \textit{Model Points} allège de manière quasi linéaire le volume d'opérations et le coût de ces boucles.
 
 Le tableau \ref{tab:runtimes_comparaison} chiffre cette optimisation opérationnelle sur le scénario central.
 
@@ -719,27 +718,27 @@ Le tableau \ref{tab:runtimes_comparaison} chiffre cette optimisation opérationn
         \hline
         \textbf{Méthode} & \textbf{Volumétrie (MP)} & \textbf{Temps d'exécution} & \textbf{Facteur de réduction} \\
         \hline
-        \textit{Baseline} (Référence) & 26 272 & 28 783 s ($\approx$ 8 h 00) & \textit{Réf.} \\
+        \textit{Baseline} (Référence) & $26\,272$ & $28\,783$\,s ($\approx 8$\,h $00$) & \textit{Réf.} \\
         \hline
-        HDBSCAN & 967 & 600 s ($\approx$ 10 min 00) & $\div$ 48 \\
-        \textit{Cash-Flow Matching} & 1 000 & 627 s ($\approx$ 10 min 27) & $\div$ 46 \\
-        K-Means Robuste & 1 039 & 671 s ($\approx$ 11 min 11) & $\div$ 43 \\
-        Banding Dynamique & 1 172 & 711 s ($\approx$ 11 min 51) & $\div$ 40 \\
+        HDBSCAN & $967$ & $600$\,s ($\approx 10$\,min $00$) & $\div 48$ \\
+        \textit{Cash-Flow Matching} & $1\,000$ & $627$\,s ($\approx 10$\,min $27$) & $\div 46$ \\
+        \textit{K-Means} Robuste & $1\,039$ & $671$\,s ($\approx 11$\,min $11$) & $\div 43$ \\
+        \textit{Banding} Dynamique & $1\,172$ & $711$\,s ($\approx 11$\,min $51$) & $\div 40$ \\
         \hline
     \end{tabular}
     \caption{Temps de calcul comparés pour une projection ALM stochastique (Scénario Central), à volumétrie normalisée ($\approx 1\,000$ MP).}
     \label{tab:runtimes_comparaison}
 \end{table}
 
-La réduction de la dimensionnalité permet de diviser les temps de traitement par des facteurs allant de 40 à 48. Là où le modèle exhaustif requiert 8 heures de traitement continu pour un seul scénario, l'ensemble des modèles d'agrégation ramène ce délai à l'échelle d'une dizaine de minutes. 
+La réduction de la dimensionnalité permet de diviser les temps de traitement par des facteurs compris entre $40$ et $48$. Là où le modèle exhaustif requiert huit heures de traitement continu pour le calcul de tous les scénarios, l'ensemble des modèles d'agrégation ramène ce délai à l'échelle d'une dizaine de minutes. 
 
-À volumétrie constante (environ $1\,000$ \textit{Model Points}), les temps d'exécution se révèlent extrêmement homogènes entre les différentes approches. Les méthodes de partitionnement spatial (HDBSCAN, K-Means, Banding), qui ont prouvé leur supériorité sur l'évaluation des chocs réglementaires asymétriques, s'exécutent dans les mêmes délais que l'approche par \textit{Cash-Flow Matching}. Le choix du modèle peut donc se porter exclusivement sur sa robustesse méthodologique et financière, sans faire de compromis sur la performance opérationnelle.
+À volumétrie constante (environ $1\,000$ \textit{Model Points}), les temps d'exécution se révèlent extrêmement homogènes entre les différentes approches. Les méthodes de partitionnement spatial (\textit{HDBSCAN}, \textit{K-Means}, \textit{Banding}), qui ont prouvé leur supériorité sur l'évaluation des chocs réglementaires asymétriques, s'exécutent dans les mêmes délais que l'approche par \textit{Cash-Flow Matching}. Le choix du modèle peut donc se porter exclusivement sur sa robustesse méthodologique et financière, sans faire de compromis sur la performance opérationnelle.
 
-Il convient de préciser que les temps de calcul bruts présentés dans cette étude dépendent de la complexité de l'actif modélisé et des spécifications matérielles de la machine exécutant les projections. À titre d'illustration, l'exécution de la projection stochastique du modèle de référence (\textit{Baseline}) dans le cadre de ce mémoire a nécessité une infrastructure dotée d'un minimum de 32 Go de mémoire vive pour mener les calculs à leur terme. La compression du passif ne se limite donc pas à un gain de temps d'exécution : elle permet également d'alléger considérablement l'empreinte mémoire allouée aux opérations matricielles, rendant la production d'indicateurs stochastiques réalisable sur des environnements informatiques standards.
+Il convient de préciser que les temps de calcul bruts présentés dans cette étude dépendent de la complexité de l'actif modélisé et des spécifications matérielles de la machine exécutant les projections. À titre d'illustration, l'exécution de la projection stochastique du modèle de référence (\textit{Baseline}) a nécessité une infrastructure dotée d'un minimum de $32$\,Go de mémoire vive. L'agrégation du passif ne se limite donc pas à un gain de temps : elle permet également d'alléger considérablement l'empreinte mémoire, rendant la production d'indicateurs stochastiques réalisable sur des environnements informatiques standards.
 
 \subsection{Conclusion de l'étude comparative}
 
-L'objectif de ce chapitre était d'éprouver la viabilité opérationnelle des algorithmes d'agrégation face aux exigences de la directive Solvabilité 2. L'étude démontre qu'une agrégation drastique de la volumétrie de passif est réalisable, levant un verrou technologique majeur pour accélérer la production des indicateurs de risques, sous réserve d'une sélection rigoureuse de la méthode.
+L'objectif de ce chapitre était d'éprouver la viabilité opérationnelle des algorithmes d'agrégation face aux exigences de la directive Solvabilité 2. L'étude démontre qu'une agrégation significative de la volumétrie de passif est réalisable, levant un verrou technologique majeur pour accélérer la production des indicateurs de risques, sous réserve d'une sélection rigoureuse de la méthode.
 
 La confrontation des modèles sur des environnements stochastiques asymétriques permet d'établir une hiérarchie claire :
 
