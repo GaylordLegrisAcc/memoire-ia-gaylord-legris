@@ -755,20 +755,29 @@ Le TFGSE moyen ressort à $0,67\,\%$. La figure \ref{fig:frais_par_gamme} illust
 
 \bigskip
 
-Afin de synthétiser ces caractéristiques et d'introduire la problématique de l'agrégation qui sera au cœur de la suite de ce mémoire, il convient d'observer la structure du portefeuille de manière visuelle. La figure \ref{fig:espace_3d_structure} illustre la répartition spatiale du million de contrats initiaux selon les trois variables les plus discriminantes pour les flux futurs : l'âge, l'ancienneté et le TMG.
+Afin de synthétiser ces caractéristiques et d'introduire la problématique de l'agrégation, il convient d'observer la structure du portefeuille de manière visuelle. La figure \ref{fig:space_3d_neutre} illustre la répartition spatiale initiale des 1\,000\,000 de contrats selon les trois variables les plus discriminantes pour la projection des flux futurs : l'âge, l'ancienneté et le TMG.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre4/space_3d_structure.png}
-    \caption{Espace des contrats selon l'Âge, l'Ancienneté et le TMG : focus sur des \textit{clusters} basés sur le TMG.}
-    \label{fig:espace_3d_structure}
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre2/space_3d_neutre.png} % Assurez-vous que le chemin et l'extension soient corrects
+    \caption{Espace des contrats selon l'âge, l'ancienneté et le TMG avant partitionnement.}
+    \label{fig:space_3d_neutre}
 \end{figure}
 
 \label{expl:graph_3d}
-Ce premier graphique met en évidence que le TMG (représenté sur l'axe vertical) segmente naturellement le portefeuille en plateaux horizontaux très nets. Ce type de représentation 3D sera utilisé à plusieurs reprises dans la suite du mémoire afin de visualiser la structure du portefeuille et d'évaluer l'impact des différentes méthodes d'agrégation. Il permet notamment de mettre en évidence les différents \textit{clusters}, c'est à dire les contrats qui seront agrégés ensemble. 
+Dans l'ensemble des graphiques 3D présentés tout au long de ce mémoire, la position spatiale des points reste strictement identique : chaque point représente un contrat individuel positionné selon ses caractéristiques propres. La seule variable visuelle modifiée par les algorithmes de \textit{clustering} est la couleur attribuée à ces points. 
 
-Sur cette figure, chaque point représente un contrat individuel dans l'espace défini par l'âge, l'ancienneté et le TMG. Les couleurs, quant à elles, désignent les contrats regroupés au sein d'un même cluster d'agrégation. Ainsi, le point central représentatif du cluster final n'est pas directement observable, ce sont les points individuels qui le composent qui sont mis en évidence. 
+Ainsi, les contrats partageant une même couleur appartiennent à un unique \textit{cluster} et seront agrégés au sein d'un même \textit{Model Point}. Il est important de souligner que le point géométrique représentatif de ce \textit{Model Point} final n'est pas affiché sur ces représentations, seuls les contrats individuels qui le composent sont observables.
 
-À titre illustratif, les couleurs de ce graphique représentent une hypothèse d'agrégation regroupant les contrats ayant le même TMG. C'est la raison pour laquelle une couleur unique par tranche est observable sur l'axe vertical. Les points partageant une même couleur correspondent aux contrats qui seraient agrégés ensemble lors du processus. Cette approche permet de visualiser aisément la manière dont les contrats sont regroupés selon leurs caractéristiques communes et la façon dont les différentes méthodes d'agrégation partitionnent l'espace des contrats.
+À titre purement illustratif, la figure \ref{fig:espace_3d_structure} présente une segmentation d'exemple où les contrats sont regroupés uniquement selon leur TMG.
 
-Dans le prochain chapitre, les différentes méthodes d'agrégations seront présentées puis appliquées dans le chapitre final avec ce genre de représentations 3D. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/2_chapitres/chapitre2/space_3d_structure.png}
+    \caption{Exemple illustratif d'agrégation : \textit{clusters} basés exclusivement sur le TMG.}
+    \label{fig:espace_3d_structure}
+\end{figure}
+
+Cette visualisation met en évidence la structuration naturelle du portefeuille en plateaux horizontaux très nets sur l'axe vertical. Bien que cette méthode d'agrégation spécifique ne soit pas retenue pour les agrégations par la suite, elle permet d'appréhender aisément la mécanique de partitionnement de l'espace. 
+
+Dans le chapitre suivant, les différentes méthodes d'agrégation (\textit{K-Means}, \textit{HDBSCAN}, \textit{Banding}) seront détaillées, avant d'être appliquées et évaluées visuellement au travers de ce même espace tridimensionnel (il conviendra de se référer à la section \ref{subsec:sensi_hyperparam} pour l'analyse détaillée des résultats).
