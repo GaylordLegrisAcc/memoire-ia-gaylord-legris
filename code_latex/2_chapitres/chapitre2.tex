@@ -306,14 +306,14 @@ Ce phénomène tend à s'inverser pour les patrimoines les plus élevés, où la
     \label{fig:composition_patrimoine}
 \end{figure}
 
-La troisième étape consiste à lier le patrimoine financier à la PM. Il est en effet plus réaliste de considérer que l'épargne en assurance-vie (ou la PM du point de vue de l'assureur) constitue une part du patrimoine financier plutôt que du patrimoine brut. Une hypothèse centrale est donc formulée : la PM d'un individu est estimée comme une fraction de son patrimoine financier. Sur la base de données INSEE \cite{insee_patrimoine_age}, cette fraction est fixée à \textbf{40\%}. Ainsi, pour chaque individu de la population simulée, la PM est calculée comme suit :
+La troisième étape consiste à lier le patrimoine financier à la PM. Il est admis que l'épargne en assurance-vie constitue une composante du patrimoine financier global de l'assuré plutôt que de son patrimoine brut. Une hypothèse centrale est donc formulée : la PM d'un individu est estimée comme une fraction de son patrimoine financier. Dans le cadre de ces travaux, ce ratio est fixé uniformément à $40\,\%$. Bien que cette proportion puisse s'avérer trop élevée pour les patrimoines les plus élevés, où la diversification des investissements est généralement plus importante, le recours à une fraction constante permet de stabiliser la variable PM au sein de la population simulée. Ainsi, pour chaque individu, la PM est déterminée selon la relation suivante :
 
 \begin{equation}
  \text{PM} = \text{Patrimoine Brut} \times \text{Part du Patrimoine Financier} \times 40\% 
 \end{equation}
 Cette règle permet de transformer la distribution de patrimoine en une distribution de PM, en tenant compte des non-linéarités observées dans la composition du patrimoine.
 
-Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Une dernière calibration a montré que la distribution de ces PM pouvait être modélisée de manière très satisfaisante par une \textit{loi Lognormale}. Bien que les tests d'adéquation classiques rejettent formellement l'hypothèse nulle en raison de la très grande taille de l'échantillon (rendant le test extrêmement sensible aux infimes déviations), l'analyse comparative des critères d'information et de la distance K-S confirme la supériorité de la loi Lognormale sur cet ajustement, comme l'indique le tableau \ref{tab:stats_pm}.
+Après avoir appliqué ce processus à toute la population simulée, nous obtenons un échantillon réaliste de Provisions Mathématiques. Comme expliqué précédemment, la distribution de ces PM peut être modélisée de manière très satisfaisante par une \textit{loi Lognormale}. Bien que les tests d'adéquation classiques rejettent formellement l'hypothèse nulle en raison de la très grande taille de l'échantillon (rendant le test extrêmement sensible aux infimes déviations), l'analyse comparative des critères d'information et de la distance K-S confirme le choix de la loi Lognormale sur cet ajustement, comme l'indique le tableau \ref{tab:stats_pm}.
 
 \begin{table}[H]
 \centering
@@ -707,7 +707,7 @@ La conséquence directe sur la modélisation ALM est une liquidité écrasante d
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{images/2_chapitres/chapitre2/liquidite_fiscale.png}
+    \includegraphics[width=0.55\textwidth]{images/2_chapitres/chapitre2/liquidite_fiscale.png}
     \caption{Proportion des encours selon la maturité fiscale.}
     \label{fig:liquidite_fiscale}
 \end{figure}

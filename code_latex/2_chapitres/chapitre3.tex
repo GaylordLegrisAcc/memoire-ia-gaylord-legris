@@ -16,7 +16,7 @@ L'exposé détaillé de ces modèles nous permettra de poser le socle théorique
 
 \section{Les approches déterministes : Le standard de marché}
 
-Avant d'explorer les algorithmes statistiques avancés, il est indispensable de définir la méthode de référence classiquement utilisée par les directions actuarielles. Les approches déterministes ne s'appuient pas sur une recherche algorithmique de similarités spatiales, mais sur l'application stricte de règles métier pour segmenter le portefeuille. L'objectif de cette première section est de présenter cette méthode historique, qui fera office de base de comparaison pour évaluer objectivement les performances des techniques d'agrégation présentées dans la suite de ce chapitre.
+Avant d'explorer les algorithmes statistiques avancés, il est indispensable de définir la méthode de référence classiquement utilisée sur le marché. Les approches déterministes ne s'appuient pas sur une recherche algorithmique de similarités spatiales, mais sur l'application stricte de règles métier pour segmenter le portefeuille. L'objectif de cette première section est de présenter cette méthode historique, qui fera office de base de comparaison pour évaluer objectivement les performances des techniques d'agrégation présentées dans la suite de ce chapitre.
 
 \subsection{Segmentation stricte par regroupement de caractéristiques}
 
@@ -25,7 +25,7 @@ La méthode par regroupement de caractéristiques repose sur une segmentation pa
 Le principe fondamental repose sur une partition déterministe du portefeuille. L'objectif est de regrouper les contrats partageant des caractéristiques de risque identiques. Dans un modèle de projection de gestion actif-passif, l'évolution de la PM est influencée par des caractéristiques spécifiques du contrat. La mortalité dépend 
 de la génération, de l'âge et du sexe ; les rachats sont corrélés à l'âge de l'assuré et à l'ancienneté du contrat ; la revalorisation dépend du TMG.
 
-Par conséquent, pour garantir que le Model Point agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une segmentation rigide. Les critères de regroupement retenus pour cette étude sont :
+Par conséquent, pour garantir que le \textit{Model Point} agrégé se comporte comme la somme des contrats individuels, il est impératif de regrouper les polices selon ces axes discriminants. Contrairement aux méthodes statistiques qui cherchent des similarités globales, cette approche applique une segmentation rigide. Les critères de regroupement retenus pour cette étude sont :
 \begin{itemize}
     \item \textbf{Le sexe} : Indispensable pour l'application des tables de mortalité différenciées.
     \item \textbf{Le TMG} : Crucial pour la valorisation des garanties financières.
@@ -33,16 +33,16 @@ Par conséquent, pour garantir que le Model Point agrégé se comporte comme la 
     \item \textbf{L'ancienneté du contrat} : Discrétisée à l'entier inférieur pour modéliser correctement la fiscalité et les rachats structurels.
 \end{itemize}
 
-Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même Model Point $k$ si et seulement si leurs vecteurs de caractéristiques discrétisées sont identiques :
+Mathématiquement, cette méthode définit une relation d'équivalence stricte. Deux contrats $i$ et $j$ appartiennent au même \textit{Model Point} $k$ si et seulement si leurs vecteurs de caractéristiques discrétisées sont identiques :
 \begin{equation}
 (S_i, \lfloor A_i \rfloor, \lfloor Anc_i \rfloor, TMG_i) = (S_j, \lfloor A_j \rfloor, \lfloor Anc_j \rfloor, TMG_j)
 \end{equation}
 
-Où $S_i, A_i$ et $Anc_i$ désignent respectivement le sexe, l'âge et l'ancienneté du contrat $i$. Une fois les groupes constitués, l'agrégation s'opère par la somme des variables extensives. La provision mathématique du Model Point $k$ (associé à la classe d'équivalence $C_k$) est alors la somme des encours des contrats qui le constituent :
+Où $S_i, A_i$ et $Anc_i$ désignent respectivement le sexe, l'âge et l'ancienneté du contrat $i$. Une fois les groupes constitués, l'agrégation s'opère par la somme des variables extensives. La provision mathématique du \textit{Model Point} $k$ (associé à la classe d'équivalence $C_k$) est alors la somme des encours des contrats qui le constituent :
 \begin{equation}
 PM_{MP_k} = \sum_{i \in C_k} PM_i
 \end{equation}
-Les variables intensives du Model Point (dont la valeur est indépendante de la taille du groupe, comme l'âge ou l'ancienneté) prennent alors les valeurs définies par la segmentation (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
+Les variables intensives du \textit{Model Point} (dont la valeur est indépendante de la taille du groupe, comme l'âge ou l'ancienneté) prennent alors les valeurs définies par la segmentation (par exemple, 45 ans et 10 ans), et non une moyenne pondérée, ce qui est cohérent avec la logique de discrétisation à l'entier.
 
 Cette approche présente l'avantage majeur de la simplicité et de la transparence. Elle conserve exactement la volumétrie financière du portefeuille et respecte scrupuleusement les garanties contractuelles (absence de dilution du TMG par moyenne). Elle garantit une homogénéité parfaite des assurés au sein d'un groupe.
 
@@ -55,7 +55,7 @@ Cependant, elle présente des limites intrinsèques :
 \subsection{Approche par tranches (Banding) et pondération financière}
 \label{sec:banding}
 
-Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de Model Points en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
+Cette méthode constitue une évolution de la segmentation par classes présentée précédemment. Elle vise à réduire davantage le nombre de \textit{Model Points} en relâchant la contrainte d'égalité stricte sur les variables continues (âge et ancienneté) au profit d'une logique d'intervalles, ou discrétisation par paliers.
 
 Le principe de regroupement reste déterministe. Les variables catégorielles ou contractuelles majeures (Sexe, TMG) conservent une discrimination stricte. En revanche, l'espace des variables temporelles est découpé en tranches. Dans le cadre de cette implémentation, les intervalles suivants ont été retenus :
 \begin{itemize}
@@ -75,13 +75,13 @@ Anc_i \in [Anc_{min}^k, Anc_{max}^k[
 \end{cases}
 \end{equation}
 
-La spécificité majeure de cette approche réside dans la détermination des caractéristiques du Model Point. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle, il convient de calculer le barycentre financier des contrats regroupés. Ainsi, l'âge ($A_{MP_k}$) et l'ancienneté ($Anc_{MP_k}$) du Model Point $k$ sont calculés comme suit :
+La spécificité majeure de cette approche réside dans la détermination des caractéristiques du \textit{Model Point}. Contrairement à une approche simpliste qui retiendrait le centre de l'intervalle, il convient de calculer le barycentre financier des contrats regroupés. Ainsi, l'âge ($A_{MP_k}$) et l'ancienneté ($Anc_{MP_k}$) du \textit{Model Point} $k$ sont calculés comme suit :
 
 \begin{equation}
 A_{MP_k} = \frac{\sum_{i \in C_k} A_i \cdot PM_i}{\sum_{i \in C_k} PM_i} \quad ; \quad Anc_{MP_k} = \frac{\sum_{i \in C_k} Anc_i \cdot PM_i}{\sum_{i \in C_k} PM_i}
 \end{equation}
 
-Cette pondération par les encours permet de s'assurer que le Model Point est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
+Cette pondération par les encours permet de s'assurer que le \textit{Model Point} est représentatif des contrats les plus significatifs financièrement au sein de la tranche, minimisant ainsi le biais d'agrégation sur les projections de flux futurs.
 
 \subsubsection{Variante par segmentation multidimensionnelle optimisée et limites (Biais d'agrégation et variance intra-classe)}
 Dans le cadre de l'optimisation, une variante nommée \textit{segmentation multidimensionnelle optimisée} a été développée. Contrairement au Banding classique à pas constant, cette approche adapte la finesse des mailles selon la sensibilité locale des risques. Plusieurs profils de découpage ont été implémentés pour répondre à des objectifs d'analyse différents :
@@ -118,7 +118,7 @@ Afin d'éviter des compensations de risques biologiquement ou financièrement ab
     \item \textbf{Le sexe :} Pour garantir le respect des tables de mortalité différenciées.
     \item \textbf{Le TMG :} Pour éviter de diluer la valeur des garanties financières.
 \end{itemize}
-L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamment au sein de chaque strate. Cette approche garantit une pureté minimale des Model Points finaux.
+L'algorithme de clustering (K-Means ou HDBSCAN) est ensuite lancé indépendamment au sein de chaque strate. Cette approche garantit une pureté minimale des \textit{Model Points} finaux.
 
 \subsubsection*{Ingénierie des caractéristiques : Log-PM et poids dimensionnels}
 Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de \textit{Feature Engineering} ont été testées :
@@ -129,9 +129,9 @@ Pour orienter les algorithmes vers les zones à fort enjeux, deux techniques de 
 
 \subsection{Partitionnement par inertie : \textit{k}-moyennes (K-Means) pondéré}
 
-Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y placer les groupes semblables, dans notre cas les Model Points.
+Contrairement aux méthodes déterministes qui segmentent l'espace des risques selon une grille préétablie, les approches par apprentissage non supervisé (Machine Learning) visent à déterminer la structure des données. L'objectif n'est plus d'imposer un regroupement, mais de laisser l'algorithme identifier les zones de forte densité du portefeuille pour y placer les groupes semblables, dans notre cas les \textit{Model Points}.
 
-Parmi les algorithmes de clustering, la méthode des K-Means a été retenue car c'est une méthode robuste et fonctionne très bien pour minimiser l'inertie intra-classe, c'est-à-dire la dispersion des contrats autour de leur Model Point représentatif.
+Parmi les algorithmes de clustering, la méthode des K-Means a été retenue car c'est une méthode robuste et fonctionne très bien pour minimiser l'inertie intra-classe, c'est-à-dire la dispersion des contrats autour de leur \textit{Model Point} représentatif.
 
 \subsubsection{Principe de l'algorithme}
 L'algorithme des \textit{K-Means} vise à partitionner un ensemble de $N$ contrats en $K$ groupes (ou \textit{clusters}) distincts, en minimisant la distance entre chaque contrat et le centre de son groupe, nommé centroïde. Dans le cadre de cette étude, ce centroïde constitue le \textit{Model Point} représentatif.
@@ -177,14 +177,14 @@ L'algorithme utilisé est une variante pondérée des K-Means. Contrairement à 
     \item \textbf{Convergence :} Répétition des étapes 2 et 3 jusqu'à stabilisation des centroïdes.
 \end{enumerate}
 
-\subsubsection{Constitution des Model Points finaux}
-Une fois la convergence atteinte, chaque cluster $j$ est transformé en un Model Point unique.
+\subsubsection{Constitution des \textit{Model Points} finaux}
+Une fois la convergence atteinte, chaque cluster $j$ est transformé en un \textit{Model Point} unique.
 \begin{itemize}
     \item Les variables extensives (PM, nombre de contrats) sont sommées : $PM_{MP_j} = \sum_{i \in S_j} PM_i$.
     \item Les variables intensives (âge, ancienneté, TMG) sont définies par les coordonnées du centroïde final, qui correspondent naturellement à la moyenne pondérée des caractéristiques des contrats du cluster.
 \end{itemize}
 
-Cette méthode permet de définir automatiquement des Model Points situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, offrant ainsi une représentation optimale de la distribution des risques.
+Cette méthode permet de définir automatiquement des \textit{Model Points} situés au cœur des masses financières du portefeuille, comme illustré dans la Figure \ref{fig:kmeans_clusters}, offrant ainsi une représentation optimale de la distribution des risques.
 
 \begin{figure}[H]
     \centering
@@ -382,8 +382,8 @@ Afin de synthétiser visuellement l'apport de cette extension hiérarchique, la 
     \label{fig:hdbscan_comparison}
 \end{figure}
 
-\subsubsection*{Constitution finale des Model Points et approches hybrides}
-Une fois la partition optimale obtenue et le bruit réalloué (par minimisation de la distance aux centroïdes), la construction des \textit{Model Points} doit respecter la conservation stricte des flux financiers. Pour chaque cluster $j$, le profil caractéristique du Model Point ($\mu_j$) est défini par le barycentre pondéré des $i$ contrats le composant, en retenant la Provision Mathématique ($PM$) comme pondération naturelle :
+\subsubsection*{Constitution finale des \textit{Model Points} et approches hybrides}
+Une fois la partition optimale obtenue et le bruit réalloué (par minimisation de la distance aux centroïdes), la construction des \textit{Model Points} doit respecter la conservation stricte des flux financiers. Pour chaque cluster $j$, le profil caractéristique du \textit{Model Point} ($\mu_j$) est défini par le barycentre pondéré des $i$ contrats le composant, en retenant la Provision Mathématique ($PM$) comme pondération naturelle :
 
 \begin{equation}
  \mu_j = \frac{\sum_{i \in C_j} PM_i \cdot x_i}{\sum_{i \in C_j} PM_i}
@@ -430,22 +430,22 @@ Le fonctionnement de cette approche s'articule autour de quatre étapes successi
     \begin{itemize}
         \item Les variables additives (Provisions Mathématiques, nombre de contrats) sont sommées.
         \item Les variables continues (âge, ancienneté, TMG) font l'objet d'une moyenne pondérée par les PM.
-        \item Les variables catégorielles strictes (comme le sexe, qui pilote les tables de mortalité) sont assignées selon la \textit{méthode du profil dominant}. Le \textit{Model Point} hérite de la modalité représentant le poids de PM majoritaire au sein de son cluster. Cette technique permet de forcer le respect de la volumétrie cible de compression (ex: $1\,000$ MP) sans dédoubler mécaniquement les clusters mixtes, acceptant une légère approximation marginale plutôt qu'une modélisation parfaite de la convexité financière.
+        \item Les variables catégorielles strictes (telles que le sexe, qui conditionne le choix des tables de mortalité) sont assignées selon la \textit{méthode du profil dominant}. Le \textit{Model Point} hérite de la modalité représentant le poids de PM majoritaire au sein de son cluster. Cette technique permet de respecter strictement la volumétrie cible de compression (par exemple $1\,000$ MP) sans dédoubler mécaniquement les clusters mixtes. Elle privilégie ainsi la maîtrise du temps de calcul à une modélisation exhaustive de la sensibilité aux tables de sorties.
     \end{itemize}
 \end{enumerate}
 
 Cette approche s'affranchit des biais de lissage empirique. Elle capte naturellement la complexité de l'interaction Actif-Passif sans qu'il soit nécessaire de spécifier des règles de regroupement métier \textit{a priori}. Bien que cette technique exige un investissement calculatoire initial (la projection du ligne à ligne), ce temps de préparation est amplement rentabilisé lors des évaluations réglementaires. En effet, les \textit{Model Points} ainsi construits sont fidèles à la dynamique de flux du portefeuille, garantissant une bonne précision dans les projections stochastiques ultérieures.
 
-\subsection{Calibration de lois \textit{a posteriori} (Méthode \textit{Biais Zéro} et clés financières)}
+\subsection{Calibration de lois \textit{a posteriori} (agrégation des clés financières)}
 \label{sec:biais_zero}
 
-L'approche par calibration \textit{a posteriori}, dénommée \textit{Biais Zéro} dans cette étude, marque une rupture méthodologique fondamentale avec les techniques de \textit{clustering} traditionnelles. Le paradigme est ici inversé : au lieu de chercher à regrouper des polices démographiquement similaires pour leur appliquer des lois de comportement standards, cette méthode s'autorise à regrouper les contrats selon des critères purement financiers. Elle recalcule ensuite mathématiquement des probabilités de sortie \og sur-mesure \fg{} (taux de rachat et de mortalité induits) pour chaque groupe.
+L'approche par calibration \textit{a posteriori} marque une rupture méthodologique fondamentale avec les techniques de \textit{clustering} traditionnelles. Le paradigme est ici inversé : au lieu de chercher à regrouper des polices démographiquement similaires pour leur appliquer des lois de comportement standards, cette méthode s'autorise à regrouper les contrats selon des critères purement financiers. Elle recalcule ensuite mathématiquement des probabilités de sortie \og sur-mesure \fg{} (taux de rachat et de mortalité induits) pour chaque groupe.
 
 Cette méthode modifie la notion même de \textit{Model Point}. Contrairement aux approches déterministes ou spatiales, un \textit{Model Point} issu de cette calibration ne possède plus d'âge moyen, de sexe majoritaire ou d'ancienneté. Il se résume à une pure enveloppe de flux financiers, rattachée à une table de sortie ($q_x$, rachats) qui lui est exclusive et dont l'unique but est d'annuler mécaniquement le biais d'agrégation.
 
 \subsubsection{Définition des clés d'agrégation financières}
 
-Pour que la méthode du \textit{Biais Zéro} fonctionne intégralement, il est nécessaire de garantir une stricte fidélité dans la projection des flux de revalorisation futurs. 
+Pour que la méthode de calibration \textit{a posteriori} fonctionne intégralement, il est nécessaire de garantir une stricte fidélité dans la projection des flux de revalorisation futurs. 
 
 Contrairement aux flux de rachats et de décès qui sont linéaires (et peuvent donc être parfaitement lissés par des taux induits), la mécanique de $PB$ est non linéaire, notamment en raison de la composante optionnelle des garanties financières ($\max(0, Tx_{\text{servi}} - TMG)$). Il est par conséquent mathématiquement impossible d'agréger des contrats aux caractéristiques financières hétérogènes sans créer de biais sur la revalorisation.
 

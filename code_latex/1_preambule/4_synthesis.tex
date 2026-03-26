@@ -15,7 +15,7 @@ Valuation requires the integration of various economic environments. To this end
 \subsection*{Aggregation Principle and Definition of \textit{Model Points}}
 Given the massive volume of individual contracts in the reference portfolio, line-by-line evaluation is technically prohibitive for production-level stochastic calculations. The standard optimization technique consists in grouping policies with similar risk profiles into reduced-size virtual portfolios.
 
-Each grouping forms a \textit{Model Point} (MP), defined as a synthetic contract whose characteristics (such as age, seniority, or technical rate), weighted by mathematical provisions, aim to replicate the financial behavior of all underlying contracts. The major technical challenge lies in the method of selecting and constituting these \textit{Model Points}. Excessive aggregation risks smoothing out specific guarantees, altering the representation of balance sheet convexity facing asymmetric market shocks and ultimately distorting the measurement of the capital requirement.
+Each grouping forms a \textit{Model Point} (MP), defined as a synthetic contract whose characteristics (such as age, policy tenure, or technical rate), weighted by mathematical provisions, aim to replicate the financial behavior of the underlying contracts. The primary technical challenge lies in the method of selecting and constituting these \textit{Model Points}. Excessive aggregation risks smoothing out specific guarantees, thereby altering the representation of the balance sheet's responsiveness to asymmetric market shocks and ultimately distorting the capital requirement measurement.
 
 \subsection*{Stochastic Generation of the Reference Portfolio}
 In the absence of access to unit-level data from a real portfolio for confidentiality reasons, the study relies on the creation of a synthetic portfolio of 1,000,000 contracts. To guarantee the representativeness of this liability portfolio, a stochastic policy generator was developed. The latter is based on the calibration of probability laws using public French market data (ACPR, INSEE, France Assureurs, general conditions of life insurance contracts).
@@ -44,7 +44,7 @@ This baseline is compared to the standard deterministic method of \textit{Bandin
 The protocol for selecting optimal hyperparameters relies on an exhaustive \textit{Grid Search}. For each algorithm, the objective is to identify the configuration offering the Pareto optimum. The latter is defined as the best compromise between a strict operational compression constraint (targeting between 800 and 1,200 \textit{Model Points}) and the minimization of the relative error on the \textit{Best Estimate} evaluated using the liability-only model.
 
 \subsection*{Optimal Parameterization of Aggregation Models}
-The grid search protocol isolated the configurations maximizing projection fidelity while respecting the compression constraint. Table \ref{tab:synthese_calibration_finale} summarizes the hyperparameters selected for each algorithm.
+The grid search protocol isolated the configurations maximizing projection fidelity while respecting the compression constraint. Table \ref{tab:synthese_calibration_finale_en} summarizes the hyperparameters selected for each algorithm.
 
 \begin{table}[H]
     \centering
@@ -62,13 +62,13 @@ The grid search protocol isolated the configurations maximizing projection fidel
         \hline
     \end{tabular}
     \caption{Summary of models selected for sensitivity analysis under Solvency 2 shocks.}
-    \label{tab:synthese_calibration_finale}
+    \label{tab:synthese_calibration_finale_en}
 \end{table}
 
 The liability-only results demonstrate excellent compression capabilities for spatial and dynamic algorithms, maintaining a marginal relative error on pure flow runoff. The \textit{a posteriori} calibration method is also included for comparison, illustrating the naive approach of post-generation averaging.
 
 \subsection*{Results in Stochastic ALM Projection (Central Scenario)}
-The models were transposed into the stochastic ALM environment. Table \ref{tab:resultats_central_alm} presents the relative errors on the \textit{Best Estimate} (BE) and the global SCR.
+The models were transposed into the stochastic ALM environment. Table \ref{tab:resultats_central_alm_en} presents the relative errors on the \textit{Best Estimate} (BE) and the global SCR.
 
 \begin{table}[H]
     \centering
@@ -86,10 +86,10 @@ The models were transposed into the stochastic ALM environment. Table \ref{tab:r
         \hline
     \end{tabular}
     \caption{Global evaluation of liabilities and SCR in stochastic ALM projection.}
-    \label{tab:resultats_central_alm}
+    \label{tab:resultats_central_alm_en}
 \end{table}
 
-The error decomposition across risk modules (Table \ref{tab:resultats_modules}) allows for the identification of the origin of aggregation biases.
+The error decomposition across risk modules (Table \ref{tab:resultats_modules_en}) allows for the identification of the origin of aggregation biases.
 
 \begin{table}[H]
     \centering
@@ -105,13 +105,13 @@ The error decomposition across risk modules (Table \ref{tab:resultats_modules}) 
         \hline
     \end{tabular}
     \caption{Decomposition of the error on the main risk modules.}
-    \label{tab:resultats_modules}
+    \label{tab:resultats_modules_en}
 \end{table}
 
-Spatial approaches (\textit{HDBSCAN}, \textit{K-Means}, \textit{Banding}) faithfully replicate the balance sheet convexity under market shocks (error below $2\%$). By isolating extreme characteristics (notably high MGRs), they prevent the dilution of guarantees. Conversely, \textit{Cash-Flow Matching} displays a stronger deviation in the Life SCR ($+6.50\%$). Based exclusively on the morphology of flows, this approach smooths out information related to tax seniority, generating a mechanical overvaluation of the capital requirement for surrender risk. Finally, \textit{a posteriori} calibration proves unsuitable for stochastic projections: freezing behavioral laws leads to an underestimation of the global SCR by more than $28\%$.
+Spatial approaches (\textit{HDBSCAN}, \textit{K-Means}, \textit{Banding}) faithfully replicate the balance sheet's responsiveness to market shocks, maintaining an error rate below $2\,\%$. By isolating outlier profiles, particularly high Minimum Guaranteed Rates, they prevent the dilution of guarantees within clusters. Conversely, \textit{Cash-Flow Matching} exhibits a more significant deviation in the Life SCR ($+6{,}50\,\%$). Based exclusively on flow morphology, this approach overlooks tax seniority data, leading to a mechanical overvaluation of the capital requirement for surrender risk. Finally, \textit{a posteriori} calibration proves unsuitable for stochastic projections: the static nature of behavioral laws results in a global SCR underestimation of more than $28\,\%$.
 
 \subsection*{Sensitivity Analysis Facing Asymmetric Environments}
-The evaluation was subjected to interest rate curve shocks (EIOPA $\pm 100$ bps) to test the non-linear distortion of surrender risk (Table \ref{tab:sensibilites_scr_synthese}).
+The evaluation was subjected to interest rate curve shocks (EIOPA $\pm 100$ bps) to test the non-linear distortion of surrender risk (Table \ref{tab:sensibilites_scr_synthese_en}).
 
 \begin{table}[H]
     \centering
@@ -129,7 +129,7 @@ The evaluation was subjected to interest rate curve shocks (EIOPA $\pm 100$ bps)
         \hline
     \end{tabular}
     \caption{Relative errors on the Global SCR and Surrender SCR according to curve distortion.}
-    \label{tab:sensibilites_scr_synthese}
+    \label{tab:sensibilites_scr_synthese_en}
 \end{table}
 
 Surrender dynamics are highly asymmetric. In a low-rate environment, asset yields struggle to cover MGRs; an early exit generates little loss of profit, limiting the SCR. During a sudden rate hike, yields far exceed guarantees. A policyholder's exit then deprives the company of significant future margins. It is the realization of this opportunity cost that causes the Surrender SCR to jump.
@@ -137,7 +137,7 @@ Surrender dynamics are highly asymmetric. In a low-rate environment, asset yield
 Spatial methods, by preserving the granularity of MGRs and taxation, assess this risk accurately (global error stabilized around $+1.25\%$ in the "Up" scenario). \textit{Cash-Flow Matching} shows a higher deviation on the Surrender SCR ($+6.23\%$), confirming the limits of approaches purely based on central flows for modeling extreme asymmetric behaviors.
 
 \subsection*{Operational Performance and Conclusion}
-The reduction in dimensionality offers a decisive performance gain, quantified in Table \ref{tab:runtimes_synthese}.
+The reduction in dimensionality offers a decisive performance gain, quantified in Table \ref{tab:runtimes_synthese_en}.
 
 \begin{table}[H]
     \centering
@@ -154,7 +154,7 @@ The reduction in dimensionality offers a decisive performance gain, quantified i
         \hline
     \end{tabular}
     \caption{Comparison of calculation times in full stochastic ALM projection.}
-    \label{tab:runtimes_synthese}
+    \label{tab:runtimes_synthese_en}
 \end{table}
 
 Compression divides processing times by a factor of approximately 48, bringing an 8-hour projection down to about ten minutes. This gain removes a technological bottleneck, allowing for the multiplication of sensitivity calculations on standard infrastructures.
@@ -163,7 +163,7 @@ In conclusion, this study validates the use of unsupervised learning algorithms 
 
 \begin{itemize}
     \item \textbf{The robustness of the empirical approach:} The standard \textit{Banding} method demonstrates excellent resilience facing asymmetric shocks. It confirms that static variables (MGR, seniority) are the optimal grouping axes. However, its rigid mesh limits its maximum compression capabilities.
-    \item \textbf{The industrial optimum through Machine Learning:} To cross this compression threshold, unsupervised algorithms are essential. While \textit{HDBSCAN} displays remarkable theoretical precision through its density management, its mechanics make targeting volume complex. The \textit{K-Means} algorithm thus constitutes the best operational compromise: it guarantees direct control over the number of generated \textit{Model Points} while restoring balance sheet convexity with optimal precision.
+    \item \textbf{The industrial optimum through \textit{Machine Learning}:} To overcome this compression threshold, unsupervised algorithms are essential. While \textit{HDBSCAN} offers remarkable theoretical precision through its density-based approach, its mechanics make it difficult to target a specific number of clusters. The \textit{K-Means} algorithm thus represents the best operational compromise: it provides direct control over the final count of \textit{Model Points} while accurately replicating the balance sheet's responsiveness to economic variations.
     \item \textbf{The limit of dynamic approaches:} The \textit{Cash-Flow Matching} method proves effective for central projections, but its smoothing of seniority penalizes it during the assessment of regulatory surrender shocks.
 \end{itemize}
 

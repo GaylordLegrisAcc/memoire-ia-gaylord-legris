@@ -42,7 +42,7 @@ Le \textbf{fonds en euros} est le support historique et sécuritaire de l'assura
 Les \textbf{unités de compte (UC)} offrent une exposition directe aux marchés financiers. Contrairement au fonds en euros, le risque d'investissement est entièrement porté par l'assuré. L'assureur ne garantit pas la valeur du capital, mais un nombre de parts d'actifs (OPCVM, actions, SCPI, etc.). La valeur de l'épargne fluctue ainsi en fonction des marchés, offrant un potentiel de rendement supérieur à long terme, mais exposant également à un risque de perte en capital. Pour l'assureur, la gestion de ce support est plus simple dans la mesure où il ne porte pas le risque d'investissement et n'octroie donc aucune garantie financière particulière.
 
 
-Ces supports d'investissement s'articulent autour de deux grandes familles de contrats. D'une part, les contrats dits \og monosupports \fg{} ne permettent d'investir que sur le fonds en euros. D'autre part, les contrats \og multisupports \fg{}, qui constituent aujourd'hui le standard du marché, offrent la possibilité de combiner un fonds en euros avec plusieurs types de supports en unités de compte. \footnote{Il est intéressant de noter qu'un contrat intégralement investi en unités de compte est considéré techniquement comme un contrat multisupports, bien que cette configuration s'avère rare en pratique.} Dans le cadre de cette étude, le portefeuille analysé se compose exclusivement de contrats multisupports, présentant une allocation représentative du marché français, soit approximativement 60\,\% en fonds en euros et 40\,\% en unités de compte.
+Ces supports d'investissement s'articulent autour de deux grandes familles de contrats. D'une part, les contrats dits \og monosupports \fg{} ne permettent d'investir que sur le fonds en euros. D'autre part, les contrats \og multisupports \fg{}, qui constituent aujourd'hui le standard du marché, offrent la possibilité de combiner un fonds en euros avec plusieurs types de supports en unités de compte\footnote{Il est intéressant de noter qu'un contrat intégralement investi en unités de compte est considéré techniquement comme un contrat multisupports, bien que cette configuration s'avère rare en pratique.}. Dans le cadre de cette étude, le portefeuille analysé se compose exclusivement de contrats multisupports, présentant une allocation représentative du marché français, soit approximativement 60\,\% en fonds en euros et 40\,\% en unités de compte.
 
 \begin{table}[H]
     \centering
@@ -60,7 +60,7 @@ Ces supports d'investissement s'articulent autour de deux grandes familles de co
         \quad \textit{dont prov. part. bénéfices} & 53,6 & \textit{n.a.} & 53,6 & $-11,1\,\%$ \\
         \bottomrule
     \end{tabular}
-    \caption{Le marché de l'assurance vie en France en 2024 (Évolution par rapport à 2023)}
+    \caption{Le marché de l'assurance vie en France en 2024 (Évolution par rapport à 2023) \cite{france_assureurs}}
     \label{tab:marches_assurance_vie}
 \end{table}
 
@@ -69,7 +69,9 @@ Ces contrats sont soumis à un ensemble de réglementations prudentielles visant
 \section{Le cadre prudentiel Solvabilité II}
 \label{sec:s2}
 
-Entrée en vigueur le 1\textsuperscript{er} janvier 2016, la directive Solvabilité II régit le cadre prudentiel de la quasi-totalité des assureurs et réassureurs de l'Union européenne. Son objectif primaire réside dans la protection optimale des assurés. Afin d'y parvenir, elle instaure un ensemble d'exigences et de bonnes pratiques visant à harmoniser le secteur et à garantir la capacité des compagnies à honorer leurs engagements en toutes circonstances. Ce référentiel s'appuie sur une approche économique et prospective, fondée sur une évaluation juste des risques et structurée autour de trois piliers. Seuls le premier pilier sera détaillé dans cette section, celui-ci s'avère le plus pertinent au regard des travaux de modélisation menés dans ce mémoire.
+Entrée en vigueur le 1\textsuperscript{er} janvier 2016, la directive Solvabilité II régit le cadre prudentiel de la quasi-totalité des assureurs et réassureurs de l'Union européenne. Son objectif primaire réside dans la protection optimale des assurés. Afin d'y parvenir, elle instaure un ensemble d'exigences et de bonnes pratiques visant à harmoniser le secteur et à garantir la capacité des compagnies à honorer leurs engagements en toutes circonstances. Ce référentiel s'appuie sur une approche économique et prospective, fondée sur une évaluation juste des risques et structurée autour de trois piliers. Seul le premier pilier sera détaillé dans cette section, celui-ci s'avère le plus pertinent au regard des travaux de modélisation menés dans ce mémoire.
+
+Le deuxième pilier définit les exigences relatives au système de gouvernance et au processus de gestion des risques. Il impose notamment la réalisation de l'exercice \textit{Own Risk and Solvency Assessment} (ORSA), permettant à l'organisme d'évaluer son besoin global de solvabilité au regard de son profil de risque spécifique. Enfin, le troisième pilier vise à accroître la transparence du marché par des obligations de communication d'informations au public (\textit{Solvency and Financial Condition Report}) et aux autorités de contrôle (\textit{Regular Supervisory Reporting}).
 
 
 \subsection{Le pilier 1 : exigences quantitatives et bilan prudentiel}
@@ -81,7 +83,9 @@ Le Pilier 1 définit les exigences quantitatives, au cœur desquelles se trouve 
 Chaque terme de cette équation sera détaillé successivement.
 \begin{figure}[H]
     \centering
+    % Ajout de scale=0.8 et transform shape pour une réduction homogène
     \begin{tikzpicture}[
+        scale=0.7, transform shape,
         start chain=going above,
         node distance=0pt,
         % Styles des blocs
@@ -94,17 +98,17 @@ Chaque terme de cette équation sera détaillé successivement.
         excess/.style={base, fill=accCore3, minimum height=1.5cm, font=\sffamily\bfseries\small, text=white}
     ]
 
-    % Colonne Actif - On force l'ancrage sur le bas (south) au point 0,0
+    % Colonne Actif
     \node[actif, anchor=south] (ACT) at (0,0) {Valeur de marché \\ des actifs};
 
-    % Colonne Passif - On force l'ancrage sur le bas (south) au point 5,0
+    % Colonne Passif
     \node[be, anchor=south] (BE) at (5,0) {Best Estimate \\ (BE)};
     \node[rm] (RM) {Risk Margin \\ (RM)};
     \node[mcr] (MCR) {MCR};
     \node[scr] (SCR) {SCR};
     \node[excess] (EX) {Capital \\ Excédentaire};
 
-    % En-têtes (positionnés par rapport au haut des colonnes pour être toujours propres)
+    % En-têtes
     \node[font=\sffamily\bfseries\large, color=accCore3, above=0.5cm of ACT.north] {ACTIFS};
     \node[font=\sffamily\bfseries\large, color=accCore3, above=0.5cm of EX.north] {PASSIFS};
 
@@ -135,26 +139,25 @@ Les provisions techniques (PT) représentent la valeur des engagements de l'assu
 \begin{equation}
     \text{PT} = \text{Best Estimate (BE)} + \text{Risk Margin (RM)}
 \end{equation}
-\bigskip
+
 
 La valorisation des provisions techniques, au cœur du bilan prudentiel, ne peut se contenter d'une vision unique et figée du futur. La présence d'options et de garanties dans les contrats d'épargne impose de distinguer deux approches complémentaires :
 \begin{itemize}
     \item \textbf{L'approche déterministe} (ou équivalent certain) permet de disposer rapidement d'un premières valeurs d'indicateurs tels que le BE. Elle repose sur une projection unique des variables économiques. Toutefois, cette approche ne permet pas de valoriser le coût des Options et Garanties des contrats d'assurance. 
-    \item \textbf{L'approche stochastique} est un outil de valorisation. Elle explore un grand nombre de futurs possibles à l'aide d'un \textbf{GSE}. Cet outil produit des milliers de simulations cohérentes des marchés financiers. La valeur d'un indicateur est alors obtenue en calculant la moyenne des résultats sur l'ensemble de ces scénarios (méthode de Monte-Carlo). Cette exploration est indispensable pour quantifier le coût réel des garanties optionnelles (TMG, etc.).
+    \item \textbf{L'approche stochastique} est un outil de valorisation. Elle explore un grand nombre de futurs possibles à l'aide d'un générateur de scénarios économiques (\textit{GSE}). Cet outil produit des milliers de simulations respectant les caractéristiques des marchés financiers. La valeur d'un indicateur est alors obtenue en calculant la moyenne des résultats sur l'ensemble de ces scénarios (méthode de Monte-Carlo). Cette exploration est indispensable pour quantifier le coût réel des garanties optionnelles (TMG, etc.).
 \end{itemize}
 La différence de valeur entre ces deux approches est capturée par le concept de \textbf{TVOG (\textit{Time Value of Options and Guarantees})}. En imposant une approche stochastique, Solvabilité II assure une valorisation \textit{market-consistent} des engagements.
-\bigskip
 
 
-Le \textbf{Best Estimate (BE)}, ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements de l'assureur. Son calcul est réalisé sur un horizon long (40-60 ans) en \textit{run-off} (portefeuille en extinction, pas de nouvelles souscriptions). Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
+Le \textit{Best Estimate} (BE), ou \textit{Best Estimate Liability} (BEL), représente la meilleure estimation de la valeur actuelle des flux de trésorerie futurs liés aux engagements de l'assureur. Son calcul est réalisé sur un horizon long (40-60 ans) en \textit{run-off} (portefeuille en extinction, pas de nouvelles souscriptions). Il est obtenu par la moyenne des flux actualisés sur un grand nombre de simulations économiques stochastiques en univers risque neutre~:
 \begin{equation}
     BE = \mathbb{E}^{\mathbb{Q}} \left[ \sum_{j=1}^{T} CF(j) \cdot e^{-\int_0^j r(s)ds} \right] \approx \frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{T}\frac{CF_{i}(j)}{(1+r_{i,j})^{j}}
 \end{equation}
 Où $N$ est le nombre de simulations, $T$ l'horizon de projection, $CF_{i}(j)$ le flux de trésorerie net de l'année $j$ pour la simulation $i$, et $r_{i,j}$ le taux d'actualisation sans risque pertinent.
-\bigskip
 
 
-La \textbf{marge de risque} (\textit{Risk Margin} - RM) complète le Best Estimate. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de coût du capital (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
+
+La \textbf{marge de risque} (\textit{Risk Margin} - RM) complète le \textit{Best Estimate}. Elle correspond à la rémunération du capital réglementaire qui doit être immobilisé pour couvrir les risques non-financiers (longévité, rachat, etc.) jusqu'à l'extinction du portefeuille. Son calcul repose sur une approche dite de coût du capital (\textit{Cost of Capital} - CoC), qui consiste à actualiser le coût futur de détention de ce capital :
 \begin{equation}
     RM = \textit{CoC}_{\textit{rate}} \times \sum_{j=0}^{T} \frac{\textit{SCR}_{\text{non-fi}}(j)}{(1+r_{j+1})^{j+1}}
 \end{equation}
@@ -168,7 +171,7 @@ Les fonds propres prudentiels, aussi appelés \textbf{NAV (\textit{Net Asset Val
 \end{equation}
 Ce sont ces fonds propres qui doivent permettre à l'assureur d'absorber des pertes inattendues. 
 
-Le Solvency Capital Requirement \textbf{(SCR)} est le montant de fonds propres nécessaire pour absorber des pertes exceptionnelles. Il est calibré pour correspondre à la Value-at-Risk \textbf{(VaR)} à 99,5\,\% de la NAV sur un horizon d'un an. 
+Le Solvency Capital Requirement \textbf{(SCR)} est le montant de fonds propres nécessaire pour absorber des pertes exceptionnelles. Il est calibré pour correspondre à la Value-at-Risk \textbf{(VaR)} à 99,5\,\% \footnote{La \textit{VaR} est une mesure de risque indiquant la perte potentielle maximale d'un portefeuille sur un horizon temporel donné, pour un niveau de confiance fixé. Dans le référentiel Solvabilité II, le SCR est défini comme la VaR de la variation de l'actif net à l'horizon d'un an, avec un seuil de confiance de 99,5\,\%.} de la NAV sur un horizon d'un an. 
 
 Le calcul du SCR s'effectue le plus souvent via la formule standard définie par la réglementation. Cette dernière est une approche qui décompose le risque total en plusieurs modules (marché, souscription vie, etc.), eux-mêmes divisés en sous-modules. Pour chaque risque élémentaire $x$, le capital requis est calculé comme la perte de NAV consécutive à un choc instantané :
 \begin{equation}
@@ -297,7 +300,7 @@ Les figures ci-dessous illustrent, pour chaque environnement de sensibilité cho
 
 À partir de ces trois courbes de référence sans VA (EIOPA, EIOPA $+100$ bps, EIOPA $-100$ bps), le Générateur de Scénarios Économiques est sollicité pour produire trois jeux distincts de 1\,000 scénarios stochastiques qui seront utilisés pour projeter le passif et évaluer les indicateurs de risque (BE, SCR) dans les différents environnements économiques.
 
-\bigskip
+
 
 Une fois cet environnement financier stochastique modélisé et calibré, la seconde brique fondamentale de l'évaluation des sensibilités réside dans la projection du passif. Face à la volumétrie importante des contrats d'assurance vie, une modélisation exhaustive, contrat par contrat, s'avère opérationnellement inenvisageable sur un nombre étendu de scénarios économiques. Il est dès lors impératif de recourir à des techniques de réduction de la taille du portefeuille, concept qui introduit la nécessité d'agréger les données sous forme de \textit{Model Points}.
 \section{La représentation du passif : le concept de \textit{Model Point}}
@@ -320,11 +323,12 @@ En particulier, la \textit{Notice ACPR sur les modèles internes} (2023) \cite{n
 
 Les autorités de contrôle (ACPR, EIOPA) insistent sur deux points majeurs :
 \begin{itemize}
-    \item \textbf{La granularité adaptée (Segmentation) :} Comme précisé dans le paragraphe 38 de la notice, la granularité des facteurs de risque et la segmentation doivent être justifiées en analysant les avantages et les inconvénients. Une segmentation trop grossière (ex: moyenne des âges sur tout le portefeuille) écraserait la convexité des engagements et sous-estimerait la valeur des options et garanties.
-    \item \textbf{La validation quantitative :} L'entreprise doit démontrer, chiffres à l'appui, que le passage du \textit{réel} au \textit{modèle} n'altère pas significativement les indicateurs clés (BEL, SCR).
+    \item \textbf{La granularité adaptée (Segmentation) :} Conformément aux attentes réglementaires, la segmentation retenue doit faire l'objet d'une justification documentée. Une maille trop large (telle que l'utilisation d'un âge moyen unique pour l'ensemble du portefeuille) masquerait les disparités contractuelles et lisserait les effets de seuil. Un tel écrasement des caractéristiques individuelles empêcherait de capturer la pleine valeur des options et garanties, dont la réactivité dépend précisément de la dispersion des profils.
+    \item \textbf{La validation quantitative :} L'organisme doit démontrer, par des analyses d'écarts chiffrées, que le passage du portefeuille réel au portefeuille agrégé n'altère pas significativement les indicateurs clés (\textit{Best Estimate}, SCR).
 \end{itemize}
 
 \subsection{Dispositif de contrôle de la qualité de l'agrégation}
+\label{subsec:seuil_agg}
 
 Pour répondre à ces exigences, la construction des \textit{Model Points} doit s'accompagner d'un dispositif de validation robuste, intégré à la gouvernance des risques. Ce dispositif repose généralement sur trois niveaux de contrôle.
 
@@ -335,7 +339,7 @@ Il s'agit de vérifier, à la date d'arrêté, que le portefeuille agrégé repr
     \item Les encours moyens, l'âge moyen pondéré des assurés, l'ancienneté moyenne ;
     \item La répartition par TMG.
 \end{itemize}
-Des seuils de tolérance stricts (par exemple $<0.1\%$ d'écart sur la PM) sont définis par l'assureur pour valider cette étape.
+Des seuils de tolérance stricts (par exemple $<0.5\%$ d'écart sur le BE) sont définis par l'assureur pour valider cette étape.
 
 \subsubsection{Contrôles du profil de risque et des queues de distribution}
 L'agrégation ne doit pas lisser les risques extrêmes. Un point d'attention particulier, souligné par les contrôles prudentiels (paragraphe 39 de la notice ACPR), est la bonne représentation des queues de distribution.
@@ -345,7 +349,7 @@ Par exemple, un portefeuille contenant quelques très gros contrats ou des contr
 
 La validation la plus importante concerne le comportement du portefeuille agrégé face aux chocs. En effet, un regroupement peut être correct en vision statique ($t=0$) mais s'éloigner de la réalité lors des projections. Il est donc nécessaire de tester la robustesse des \textit{Model Points} de manière dynamique via des tests de sensibilité. Cela consiste à comparer les résultats d'une projection détaillée police à police avec ceux du modèle agrégé, en appliquant les chocs réglementaires (taux, rachats, mortalité) définis précédemment.
 
-L'objectif est de vérifier que l'agrégation préserve bien la convexité du passif et sa sensibilité aux variations économiques, afin de garantir un calcul juste du SCR. C'est pour répondre à ce besoin que ce mémoire compare plusieurs méthodes de regroupement.
+L'objectif est de vérifier que le processus d'agrégation restitue fidèlement le profil de risque du passif ainsi que sa sensibilité aux variations économiques, afin de garantir une évaluation rigoureuse du SCR. C'est pour répondre à cet impératif de représentativité que ce mémoire compare plusieurs méthodes de regroupement.
 
 
 \section{Gestion actif-passif et architecture du modèle de projection}
@@ -365,9 +369,9 @@ Pour quantifier ces risques et répondre aux exigences de Solvabilité II, il es
 La projection repose sur la modélisation des flux financiers et des règles de gestion qui lient l'actif et le passif.
 
 \subsubsection*{L'approche stochastique vs déterministe}
-Si une approche déterministe, reposant sur un unique scénario central, s'avère suffisante pour l'élaboration d'un \textit{Business Plan}, elle demeure incapable de capturer la valeur temps des options et garanties financières (telles que les TMG ou les options de rachat). Le recours à une modélisation stochastique est par conséquent indispensable. Cette méthode consiste à simuler plusieurs milliers de trajectoires économiques (générées via le GSE présenté en section \ref{sec:gse}). L'agrégation de ces simulations permet, d'une part, d'évaluer la moyenne des résultats par la méthode de Monte-Carlo (nécessaire au calcul du \textit{Best Estimate}) et, d'autre part, d'obtenir une distribution empirique complète des résultats. C'est l'analyse des quantiles de cette distribution qui rend possible l'estimation de la \textit{Value-at-Risk}\footnote{La \textit{VAR} est une mesure de risque indiquant la perte potentielle maximale d'un portefeuille sur un horizon temporel donné, pour un niveau de confiance fixé. Dans le référentiel Solvabilité II, le SCR est défini comme la VaR de la variation de l'actif net à l'horizon d'un an, avec un seuil de confiance de 99,5\,\%.} (VaR) et finalement de déterminer le SCR.
+Si une approche déterministe, reposant sur un unique scénario central, s'avère suffisante pour l'élaboration d'un \textit{Business Plan} afin d'assurer la lisibilité opérationnelle des trajectoires de rentabilité. Elle demeure incapable de capturer la valeur temps des options et garanties financières. En effet, seule une vision stochastique permet d'appréhender le coût des taux minimums garantis (TMG) ou l'exercice des options de rachat par les assurés en cas de dérive des taux. Le recours à une modélisation stochastique est par conséquent indispensable pour l'évaluation prudentielle. Cette méthode consiste à simuler plusieurs milliers de trajectoires économiques, générées via le générateur de scénarios économiques présenté en section \ref{sec:gse}. L'agrégation de ces simulations permet, d'une part, d'évaluer la moyenne des résultats par la méthode de Monte-Carlo, nécessaire au calcul du \textit{Best Estimate}, et, d'autre part, d'obtenir une distribution empirique complète des flux. C'est l'analyse des quantiles de cette distribution qui rend possible l'estimation de la \textit{Value-at-Risk} et la détermination du SCR.
 
-\subsection{Algorithmes de projection du passif et valorisation du Best Estimate}
+\subsection{Algorithmes de projection du passif et valorisation du \textit{Best Estimate}}
 \label{subsec:algo_passif_be}
 
 Contrairement aux modèles traditionnels procédant par itération sur chaque contrat (boucle ligne à ligne), ce modèle exploite la vectorisation pour projeter simultanément l'ensemble des \textit{Model Points} sur tous les scénarios.
@@ -471,7 +475,7 @@ Afin de refléter fidèlement la réalité économique de la survenance des sini
     \end{equation}
 \end{enumerate}
 
-\subsubsection*{Méthodologie de calcul du Best Estimate}
+\subsubsection*{Méthodologie de calcul du \textit{Best Estimate}}
 
 Conformément aux exigences de Solvabilité II, le \textit{BE} correspond à la moyenne des valeurs actuelles des flux de trésorerie futurs, pondérée par leur probabilité de réalisation.
 
