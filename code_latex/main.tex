@@ -195,6 +195,20 @@
 
 \include{2_chapitres/conclusion}
 
+\titleformat{\chapter}[display]
+  {\normalfont\Huge\bfseries} 
+  {\chaptertitlename\ \thechapter} 
+  {25pt} 
+  {\Huge} 
+% Suppression du [\vfill\newpage] ici
+% Redéfinition du format de section pour supprimer le saut de page
+\titleformat{\section}
+  {\normalfont\LARGE\bfseries} % Suppression de \cleardoublepage ici
+  {\thesection}
+  {1em}
+  {}
+\titlespacing*{\section}{0pt}{4ex}{3ex}
+
 \include{3_epilogue/annexes}
 \include{3_epilogue/bibliographie}
 
