@@ -131,7 +131,7 @@ Pour appréhender la distribution des contrats au sein des clusters, le comporte
 
 \subsubsection{Les méthodes empiriques : le Banding}
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.4}
     \footnotesize
@@ -169,6 +169,7 @@ L'algorithme des K-Means permet un contrôle strict de la volumétrie en sortie,
     \centering
     \renewcommand{\arraystretch}{1.4}
     \footnotesize
+    \resizebox{0.5\textwidth}{!}{
     \begin{tabular}{|l|r|r|}
         \hline
         \textbf{Configuration (nombre de clusters $k$)} & \textbf{Nb MP} & \textbf{Erreur BE} \\
@@ -178,6 +179,7 @@ L'algorithme des K-Means permet un contrôle strict de la volumétrie en sortie,
         $k = 2\,000$ & 2 000 & $+0{,}0020\,\%$ \\
         \hline
     \end{tabular}
+    }
     \caption{Sensibilité du K-Means au nombre cible de clusters ($k$).}
     \label{tab:sensibilite_kmeans}
 \end{table}
@@ -188,7 +190,7 @@ Comme le montre ce tableau, l'accroissement de la granularité n'apporte qu'un b
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\textwidth]{images/2_chapitres/chapitre4/kmeans_k100.png}
+    \includegraphics[width=0.45\textwidth]{images/2_chapitres/chapitre4/kmeans_k100.png}
     \caption{Dérive algorithmique du K-Means ($k=100$) : lissage des strates et création de \textit{Model Points} hétérogènes.}
     \label{fig:visuel_kmeans_bad}
 \end{figure}
@@ -439,8 +441,6 @@ Pour visualiser la résilience des algorithmes, la figure \ref{fig:evolution_err
 \end{figure}
 
 L'analyse de ces résultats s'articule dans les sous-sections suivantes, en confrontant les algorithmes sur le scénario central stochastique, puis sur la restitution des exigences en capital sous chocs de sensibilités.
-
-\newpage
 
 \subsection{Résultats en projection ALM stochastique (Scénario Central)}
 

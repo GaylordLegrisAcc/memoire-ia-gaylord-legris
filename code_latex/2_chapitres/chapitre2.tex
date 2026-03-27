@@ -36,10 +36,10 @@ La résolution de ces défis repose sur une architecture modulaire permettant de
 
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[node distance=2.6cm, auto, 
+    \begin{tikzpicture}[node distance=1.6cm, auto, 
         % Définition des styles avec la charte Accenture
-        box/.style={rectangle, draw=accCore2, fill=acc5, thick, minimum width=7cm, minimum height=2cm, text centered, rounded corners=3pt, font=\sffamily\small\color{accCore3}},
-        finalbox/.style={rectangle, draw=accCore1, fill=acc3, thick, minimum width=7cm, minimum height=3cm, text centered, rounded corners=3pt, font=\sffamily\small\bfseries\color{black}},
+        box/.style={rectangle, draw=accCore2, fill=acc5, thick, minimum width=7cm, minimum height=1.1cm, text centered, rounded corners=3pt, font=\sffamily\small\color{accCore3}},
+        finalbox/.style={rectangle, draw=accCore1, fill=acc3, thick, minimum width=7cm, minimum height=1.2cm, text centered, rounded corners=3pt, font=\sffamily\small\bfseries\color{black}},
         arrow/.style={thick,->,>=stealth, draw=accCore2}]
         
         % Placement des noeuds en cascade verticale
@@ -237,7 +237,7 @@ Où $p_i \in \{0{,}1; \dots; 0{,}9\}$ désigne les niveaux de probabilité assoc
 
 \begin{table}[H]
 \centering
-\resizebox{0.55\textwidth}{!}{
+\resizebox{0.4\textwidth}{!}{
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Tranche d'âge} & $\mu$ & $\sigma$ \\
@@ -263,6 +263,7 @@ Ce phénomène tend à s'inverser pour les patrimoines les plus élevés, où la
 
 \begin{figure}[H]
     \centering
+    \resizebox{0.75\textwidth}{!}{
     \begin{tikzpicture}
         \begin{axis}[
             xlabel={Patrimoine brut moyen (€)},
@@ -301,6 +302,7 @@ Ce phénomène tend à s'inverser pour les patrimoines les plus élevés, où la
         };
         \end{axis}
     \end{tikzpicture}
+    }
     \caption{Part du patrimoine financier en fonction du patrimoine brut moyen, par décile \cite{insee_patrimoine_age}.}
     \label{fig:composition_patrimoine}
 \end{figure}
@@ -652,18 +654,18 @@ La caractéristique la plus marquante de ce portefeuille est la surreprésentati
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/2_chapitres/chapitre2/pm_totale_gamme.png}
+    \includegraphics[width=0.55\textwidth]{images/2_chapitres/chapitre2/pm_totale_gamme.png}
     \caption{Répartition des encours totaux par Gamme commerciale.}
     \label{fig:pm_totale_gamme}
 \end{figure}
 
 Le segment standard ($\text{PM} \leq 50\,k\text{\euro}$) représente la majorité absolue des polices (57\,\%), mais ne pèse que pour 4,2\,\% des encours totaux. À l'inverse, la clientèle de Gestion Privée ($\text{PM} > 500\,k\text{\euro}$) ne rassemble que 7,9\,\% des assurés mais capte plus de 69\,\% de la PM globale, avec une moyenne avoisinant 1,93 million d'euros par contrat. Ce qui est une concentration extrême pour un portefeuille d'assurance vie classique.
-\newpage
+
 Cette concentration est formellement quantifiée par la courbe de Lorenz \footnote{La courbe de Lorenz est un outil graphique utilisé principalement pour représenter la répartition de la richesse (ici des encours dans un portefeuille).} :
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre2/lorenz_pm.png}
+    \includegraphics[width=0.45\textwidth]{images/2_chapitres/chapitre2/lorenz_pm.png}
     \caption{Courbe de Lorenz de la PM et indice de Gini.}
     \label{fig:lorenz_pm}
 \end{figure}
@@ -693,7 +695,7 @@ Cependant, l'analyse de l'ancienneté des contrats met en lumière une autre sin
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre2/dist_anciennete.png}
+    \includegraphics[width=0.55\textwidth]{images/2_chapitres/chapitre2/dist_anciennete.png}
     \caption{Distribution de l'ancienneté des contrats.}
     \label{fig:dist_anciennete}
 \end{figure}
@@ -706,18 +708,18 @@ La conséquence directe sur la modélisation ALM est une liquidité écrasante d
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\textwidth]{images/2_chapitres/chapitre2/liquidite_fiscale.png}
+    \includegraphics[width=0.45\textwidth]{images/2_chapitres/chapitre2/liquidite_fiscale.png}
     \caption{Proportion des encours selon la maturité fiscale.}
     \label{fig:liquidite_fiscale}
 \end{figure}
 
 Près de $92,8\,\%$ des capitaux ont franchi le cap des 8 ans et sont affranchis de pénalités fiscales. Le frein contractuel à la sortie est donc quasi nul. En cas de choc de taux à la hausse, une fonction de rachat conjoncturel serait alors sollicitée à son maximum.
-\newpage
+
 Pour appréhender la géométrie de ce risque croisé, la visualisation spatiale de l'intensité financière globale (les encours cumulés) selon l'âge et l'ancienneté s'avère extrêmement pertinente :
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/2_chapitres/chapitre2/heatmap_age_anciennete.png}
+    \includegraphics[width=0.65\textwidth]{images/2_chapitres/chapitre2/heatmap_age_anciennete.png}
     \caption{Densité spatiale des encours cumulés selon le couple Âge / Ancienneté (échelle logarithmique).}
     \label{fig:heatmap_age_anciennete}
 \end{figure}
@@ -726,15 +728,13 @@ Cette carte de chaleur met en évidence la concentration hétérogène des capit
 
 Sur le plan de la modélisation ALM et des exigences S2, le couple Âge-Ancienneté est le moteur principal de la dynamique du passif. L'âge pilote à la fois la mortalité et l'allocation Euro/UC. L'ancienneté, quant à elle, régit presque exclusivement la fonction de rachat, en définissant la liquidité fiscale du contrat. Toute erreur de lissage dans ces zones denses déformerait les lois de comportements non-linéaires des assurés, entraînant une mauvaise évaluation du \textit{Best Estimate}.
 
-\newpage
-
 \subsubsection{Comportements financiers : Allocation et politique de frais}
 
 L'exposition aux risques de marché est rythmée par l'allocation des encours. La part globale investie sur les fonds Euro s'élève à 55,88\,\%. L'analyse croisée par âge démontre la pertinence des comportements simulés :
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/2_chapitres/chapitre2/euro_uc_par_age.png}
+    \includegraphics[width=0.55\textwidth]{images/2_chapitres/chapitre2/euro_uc_par_age.png}
     \caption{Évolution de l'allocation entre Fonds Euro et Unités de Compte en fonction de l'âge.}
     \label{fig:euro_uc_par_age}
 \end{figure}

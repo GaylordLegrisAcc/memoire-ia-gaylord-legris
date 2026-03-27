@@ -169,21 +169,9 @@
 \include{1_preambule/5_introduction}
 
 \titleformat{\chapter}[display]
-{\normalfont\Huge\bfseries} % Apparence générale : gras et centré
-{\vspace*{50pt}\chaptertitlename\ \thechapter} % Espace au-dessus + Texte "Chapitre X"
-{25pt} % Espace vertical entre "Chapitre X" et le titre du chapitre
-{\Huge} % Taille de la police pour le titre du chapitre
-[\vfill\newpage] % Reste de la page vide et saut de page
-
-\include{2_chapitres/chapitre1}
-\include{2_chapitres/chapitre2}
-\include{2_chapitres/chapitre3}
-\include{2_chapitres/chapitre4}
-
-\titleformat{\chapter}[display]
   {\normalfont\Huge\bfseries} 
-  {\vspace*{50pt}\chaptertitlename\ \thechapter} 
-  {25pt} 
+  {\vspace*{5pt}\chaptertitlename\ \thechapter} 
+  {5pt} 
   {\Huge} 
 % Suppression du [\vfill\newpage] ici
 % Redéfinition du format de section pour supprimer le saut de page
@@ -193,12 +181,18 @@
   {1em}
   {}
 
+
+\include{2_chapitres/chapitre1}
+\include{2_chapitres/chapitre2}
+\include{2_chapitres/chapitre3}
+\include{2_chapitres/chapitre4}
+
 \include{2_chapitres/conclusion}
 
 \titleformat{\chapter}[display]
   {\normalfont\Huge\bfseries} 
   {\chaptertitlename\ \thechapter} 
-  {25pt} 
+  {5pt} 
   {\Huge} 
 % Suppression du [\vfill\newpage] ici
 % Redéfinition du format de section pour supprimer le saut de page
