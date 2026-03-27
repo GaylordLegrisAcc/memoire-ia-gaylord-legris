@@ -180,13 +180,20 @@
 \include{2_chapitres/chapitre3}
 \include{2_chapitres/chapitre4}
 
-\include{2_chapitres/conclusion}
-
 \titleformat{\chapter}[display]
-{\normalfont\Huge\bfseries} % Apparence générale : gras et centré
-{\vspace*{50pt}\chaptertitlename\ \thechapter} % Espace au-dessus + Texte "Chapitre X"
-{25pt} % Espace vertical entre "Chapitre X" et le titre du chapitre
-{\Huge} % Taille de la police pour le titre du chapitre
+  {\normalfont\Huge\bfseries} 
+  {\vspace*{50pt}\chaptertitlename\ \thechapter} 
+  {25pt} 
+  {\Huge} 
+% Suppression du [\vfill\newpage] ici
+% Redéfinition du format de section pour supprimer le saut de page
+\titleformat{\section}
+  {\normalfont\LARGE\bfseries} % Suppression de \cleardoublepage ici
+  {\thesection}
+  {1em}
+  {}
+
+\include{2_chapitres/conclusion}
 
 \include{3_epilogue/annexes}
 \include{3_epilogue/bibliographie}
