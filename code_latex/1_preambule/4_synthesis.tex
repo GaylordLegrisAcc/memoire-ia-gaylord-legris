@@ -1,74 +1,79 @@
 \chapter*{Synthesis}
-% Ajouter manuellement cette section à la table des matières
 \addcontentsline{toc}{chapter}{Synthesis}
+\label{chap:summary_english}
 
-\subsection*{Introduction and Regulatory Context}
-The Solvency 2 directive requires insurance undertakings to perform a rigorous assessment of their financial liabilities, necessitating the systematic use of stochastic Asset-Liability Management (ALM) models. These projections require considerable computing power, raising major operational challenges related to execution times. The central problem of this study consists in reconciling the reduction of the liability portfolio's dimension, through an aggregation process, with the preservation of the fidelity of regulatory risk indicators during sensitivity analyses. The study is based on a simulated reference portfolio of 1,000,000 policies, generated to faithfully reflect the technical characteristics of the French life insurance market.
+The valuation of financial liabilities under the Solvency II framework requires heavy stochastic projections, generating calculation times that are often incompatible with the operational constraints of insurance companies. This study aims to resolve this dimensionality issue by exploring various aggregation techniques applied to a life insurance liability portfolio. The objective is to aggregate policy information while preserving the accuracy of regulatory risk indicators, specifically the \textit{Best Estimate} (BE) and the Solvency Capital Requirement (SCR).
 
-\subsection*{Modeling Scope and Risk Indicators}
-To measure the impact of aggregation on the risk profile, the analysis focuses primarily on the accuracy of two major regulatory indicators: the \textit{Best Estimate} (BE) and the Solvency Capital Requirement (SCR).
+Faced with the massive volume of life insurance portfolios, the standard aggregation method relies on the creation of \textit{Model Points} (MP). These aggregated portfolios group policies with similar risk profiles. The major technical challenge lies in the calibration of this compression: excessive aggregation leads to a smoothing of guarantees, altering the calculation of the BE and SCR. To align with market operational standards, this study imposes a strict compression constraint, limiting the portfolio size to a volume between 800 and 1,200 \textit{Model Points}.
 
-The evaluation of these metrics is carried out through a progressive complexification of the modeling chain. First, a liability-only model is used to isolate the natural runoff of flows and claims. Next, a deterministic ALM model is introduced to integrate simple financial revaluation, followed by the full stochastic ALM model. The latter is essential for understanding the non-linear interactions between financial returns and policyholder behavior, such as the exercise of surrender options, the de-sensitization of Minimum Guaranteed Rates (MGR), or the activation of profit sharing.
-
-Valuation requires the integration of various economic environments. To this end, the work relies on the risk-free rate curves published by EIOPA, including the Volatility Adjustment (VA). For the measurement of regulatory sensitivities, three distinct economic situations are modeled using the outputs of an Economic Scenario Generator (ESG): the central stochastic trajectory, as well as two parallel shocks applied to the reference rate curve, amounting to $+100$ and $-100$ basis points, respectively.
-
-\subsection*{Aggregation Principle and Definition of \textit{Model Points}}
-Given the massive volume of individual contracts in the reference portfolio, line-by-line evaluation is technically prohibitive for production-level stochastic calculations. The standard optimization technique consists in grouping policies with similar risk profiles into reduced-size virtual portfolios.
-
-Each grouping forms a \textit{Model Point} (MP), defined as a synthetic contract whose characteristics (such as age, policy tenure, or technical rate), weighted by mathematical provisions, aim to replicate the financial behavior of the underlying contracts. The primary technical challenge lies in the method of selecting and constituting these \textit{Model Points}. Excessive aggregation risks smoothing out specific guarantees, thereby altering the representation of the balance sheet's responsiveness to asymmetric market shocks and ultimately distorting the capital requirement measurement.
-
-\subsection*{Stochastic Generation of the Reference Portfolio}
-In the absence of access to unit-level data from a real portfolio for confidentiality reasons, the study relies on the creation of a synthetic portfolio of 1,000,000 contracts. To guarantee the representativeness of this liability portfolio, a stochastic policy generator was developed. The latter is based on the calibration of probability laws using public French market data (ACPR, INSEE, France Assureurs, general conditions of life insurance contracts).
-
-The generation is structured around a generation-based approach, ensuring the temporal and financial consistency of the simulated technical characteristics. For each modeled random variable, a comparative statistical adjustment process was conducted, consisting in calibrating and comparing several theoretical probability distributions. The distributions finally selected are those demonstrating the best fit with empirical market observations:
+To conduct this analysis, a synthetic reference portfolio of 1,000,000 policies was generated, faithfully reflecting the structure of the French market. This stochastic generator is based on a generation-based approach, ensuring temporal and financial consistency of the simulated technical characteristics. The statistical distributions used were calibrated on empirical public data:
 \begin{itemize}
-    \item \textbf{Policyholder age:} Modeled by a Beta distribution, specifically calibrated to reproduce the asymmetric demographic structure of life insurance holders;
-    \item \textbf{Gender:} Generated via a Bernoulli distribution, parameterized according to the observed market distribution;
-    \item \textbf{Contract seniority:} Simulated by a \textit{Gaussian Mixture Model} (GMM). This selection proved essential to faithfully reproduce various historical waves of subscription (underwriting shocks);
-    \item \textbf{Mathematical Provisions (MP):} Outstanding amounts are generated by a Log-Normal distribution, capturing the asymmetry of wealth distribution and the existence of high-capital contracts;
-    \item \textbf{Conditional technical characteristics:} Financial parameters, such as the Minimum Guaranteed Rate (MGR), the proportion of unit-linked (UL) accounts, and fee structures, are not drawn independently. They are assigned conditionally based on the year of subscription, reflecting the historical reality of regulatory technical rates and evolving commercial offers.
+    \item \textbf{Policyholder Age:} Beta distribution, reproducing the demographic asymmetry of life insurance holders;
+    \item \textbf{Gender:} Bernoulli distribution, parameterized according to the observed sector distribution;
+    \item \textbf{Policy Seniority:} Gaussian Mixture Model (GMM), selected to capture different historical waves of inflows;
+    \item \textbf{Mathematical Provisions (MP):} Log-Normal distribution, capturing the asymmetry of wealth distribution and the concentration of assets in high-capital contracts;
+    \item \textbf{Conditional Technical Characteristics:} The minimum guaranteed rate (MGR) and the share of unit-linked (UL) funds are conditioned on the year of subscription to reflect changes in the economic environment.
 \end{itemize}
 
-This simulation methodology allows for the restitution of the strong heterogeneity and structural correlations that a real insurance liability portfolio could have.
-
-\subsection*{Typology of Aggregation Methods}
-To compare different logic for dimension reduction, a typology of the studied models is established. The reference approach (\textit{Baseline}) corresponds to strict aggregation based on identical characteristics, i.e., an exclusive grouping of policies strictly sharing the same technical attributes (age, seniority, MGR, etc.), thus inducing no information loss.
-
-This baseline is compared to the standard deterministic method of \textit{Banding}, which mechanically introduces intra-class discrepancies, as well as unsupervised learning algorithms (\textit{Machine Learning}) and a dynamic method: 
+In order to compare different dimension reduction logics, a strict aggregation based on identical characteristics serves as the \textit{Baseline}. Inducing no loss of information, it is compared to five distinct approaches:
 \begin{itemize}
-    \item \textbf{The \textit{K-Means} algorithm:} Based on centroid partitioning, it aims to minimize the intra-class variance of \textit{Model Points} using the static characteristics of contracts;
-    \item \textbf{The \textit{DBSCAN} and \textit{HDBSCAN} algorithms:} Based on local density estimation, they allow for the isolation of atypical profiles (noise management). Processing discrete variables with these spatial models requires the prior implementation of a \textit{Dithering} technique (adding uniform white noise);
-    \item \textbf{The \textit{Cash-Flow Matching}:} Unlike the previous approaches applied to static characteristics at the closing date, this dynamic technique uses the \textit{K-Means} algorithm to group policies presenting similar future cash flow runoff trajectories.
+    \item \textbf{Banding:} A standard deterministic method segmenting the portfolio according to predefined grids applied to key variables (age, seniority, MGR);
+    \item \textbf{K-Means Algorithm:} An unsupervised learning method using spatial partitioning to minimize the intra-class variance of static attributes;
+    \item \textbf{DBSCAN and HDBSCAN Algorithms:} Spatial approaches based on local density, allowing for the isolation of atypical profiles through noise management. Processing discrete variables requires the prior implementation of uniform white noise (\textit{Dithering});
+    \item \textbf{Cash-Flow Matching:} A dynamic aggregation method applied not to static characteristics at the closing date, but to the morphology of future cash flow run-offs. The \textit{K-Means} algorithm is used to group policies with similar flow trajectories;
+    \item \textbf{A Posteriori Calibration:} An approach consisting of grouping policies according to their financial characteristics. Surrender laws are then calibrated for each group to reproduce the reference portfolio's BE identically in a deterministic liability-only projection.
 \end{itemize}
 
-The protocol for selecting optimal hyperparameters relies on an exhaustive \textit{Grid Search}. For each algorithm, the objective is to identify the configuration offering the Pareto optimum. The latter is defined as the best compromise between a strict operational compression constraint (targeting between 800 and 1,200 \textit{Model Points}) and the minimization of the relative error on the \textit{Best Estimate} evaluated using the liability-only model.
+The hyperparameter selection protocol is based on an exhaustive search (\textit{Grid Search}), aiming to identify the Pareto optimum for each algorithm. The goal is to achieve the best compromise between the imposed operational compression constraint and the minimization of the error on the \textit{Best Estimate} (BE), initially evaluated using a deterministic liability-only model.
 
-\subsection*{Optimal Parameterization of Aggregation Models}
-The grid search protocol isolated the configurations maximizing projection fidelity while respecting the compression constraint. Table \ref{tab:synthese_calibration_finale_en} summarizes the hyperparameters selected for each algorithm.
+Table \ref{tab:synthese_calibration_finale_synthese_english} presents the results obtained on the liability-only model. It shows that all grouping methods prove to be very accurate in this baseline framework, with negligible errors compared to the initial full portfolio.
 
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|l|l|r|r|}
+    \begin{tabular}{|l|r|r|r|}
         \hline
-        \textbf{Method} & \textbf{Optimal Parameterization} & \textbf{MP Nb} & \textbf{Liability-Only Error} \\
+        \textbf{Aggregation Method} & \textbf{Nb MP} & \textbf{Liability-Only BE} & \textbf{Liability-Only Error} \\
         \hline
-        Banding & 5-year / 6-year brackets & 1,172 & $+0.0292\%$ \\
-        K-Means & $k=1,039$ & 1,039 & $+0.0035\%$ \\
-        DBSCAN & $\epsilon=0.0177$, MS$=5$ & 1,047 & $+0.0124\%$ \\
-        HDBSCAN & $c=10$, $s=5$, \textit{leaf} (wt$=50$) & 967 & $+0.0398\%$ \\
-        \textit{Cash-Flow Matching} & \textit{Direct on flows (1 run)} & 1,000 & $-0.0049\%$ \\
-        \textit{A posteriori} calibration & Triplet (MGR, AFM, ESGMF) & 222 & $0.0000\%$ \\
+        \textit{Baseline} (Reference) & 26,272 & €263.95 Bn & \textit{Ref.} \\
+        Dynamic \textit{Banding} & 1,172 & €264.03 Bn & $+0.0292\%$ \\
+        Robust \textit{K-Means} & 1,039 & €263.96 Bn & $+0.0035\%$ \\
+        \textit{DBSCAN} & 1,047 & €263.98 Bn & $+0.0124\%$ \\
+        \textit{HDBSCAN} & 967 & €264.06 Bn & $+0.0398\%$ \\
+        \textit{Cash-Flow Matching} & 1,000 & €263.94 Bn & $-0.0049\%$ \\
+        \textit{A Posteriori} Calibration & 222 & €263.95 Bn & $0.0000\%$ \\
         \hline
     \end{tabular}
-    \caption{Summary of models selected for sensitivity analysis under Solvency 2 shocks.}
-    \label{tab:synthese_calibration_finale_en}
+    \caption{Deterministic liability-only evaluation and associated aggregation errors.}
+    \label{tab:synthese_calibration_finale_synthese_english}
 \end{table}
 
-The liability-only results demonstrate excellent compression capabilities for spatial and dynamic algorithms, maintaining a marginal relative error on pure flow runoff. The \textit{a posteriori} calibration method is also included for comparison, illustrating the naive approach of post-generation averaging.
+The strong compression of the volume, divided by more than twenty-five compared to the reference portfolio, occurs without significant deformation of the BE, with the maximum error peaking at $+0.0398\%$. Furthermore, the perfect restitution of the \textit{a posteriori} calibration stems mechanically from its construction, as the surrender laws are specifically adjusted to replicate the reference deterministic commitment.
 
-\subsection*{Results in Stochastic ALM Projection (Central Scenario)}
-The models were transposed into the stochastic ALM environment. Table \ref{tab:resultats_central_alm_en} presents the relative errors on the \textit{Best Estimate} (BE) and the global SCR.
+Before testing the robustness of these models against regulatory shocks, the analysis of execution times (Table \ref{tab:runtimes_synthese_english}) quantifies the performance gain obtained during the transposition to a full stochastic ALM environment.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Aggregation Method} & \textbf{Volume (MP)} & \textbf{Execution Time} & \textbf{Reduction Factor} \\
+        \hline
+        \textit{Baseline} (Reference) & 26,272 & $\approx$ 8 h 00 (28,783 s) & \textit{Ref.} \\
+        \textit{HDBSCAN} & 967 & $\approx$ 10 min 00 (600 s) & $\div 48$ \\
+        \textit{Cash-Flow Matching} & 1,000 & $\approx$ 10 min 27 (627 s) & $\div 46$ \\
+        \textit{K-Means} Robust & 1,039 & $\approx$ 11 min 11 (671 s) & $\div 43$ \\
+        \textit{Banding} Dynamique & 1,172 & $\approx$ 11 min 51 (711 s) & $\div 40$ \\
+        \textit{A Posteriori} Calibration & 222 & $\approx$ 2 min 38 (158 s) & $\div 182$ \\
+        \hline
+    \end{tabular}
+    \caption{Compared calculation times in stochastic ALM projection (5,000 scenarios).}
+    \label{tab:runtimes_synthese_english}
+\end{table}
+
+The reduction in volume divides processing times by a factor of 46 at 1,000 MP, bringing an exhaustive eight-hour projection down to about ten minutes. This performance gain allows for the multiplication of sensitivity calculations on standard infrastructures.
+
+Validating the aggregation requires analyzing the balance sheet under the central stochastic scenario. The ALM model integrates non-linear interactions between financial returns and policyholder behavior through profit-sharing mechanics. Table \ref{tab:resultats_central_alm_english} shows the BE and SCR evaluation within this study framework.
 
 \begin{table}[H]
     \centering
@@ -77,19 +82,19 @@ The models were transposed into the stochastic ALM environment. Table \ref{tab:r
         \hline
         \textbf{Aggregation Method} & \textbf{Central BE} & \textbf{BE Error} & \textbf{Global SCR} & \textbf{SCR Error} \\
         \hline
-        Baseline (Reference) & 209.93 Bn\euro{} & \textit{Ref.} & 26.91 Bn\euro{} & \textit{Ref.} \\
-        Dynamic Banding & 209.02 Bn\euro{} & $-0.43\%$ & 27.47 Bn\euro{} & $+2.10\%$ \\
-        HDBSCAN & 209.05 Bn\euro{} & $-0.42\%$ & 27.47 Bn\euro{} & $+2.10\%$ \\
-        Robust K-Means & 208.95 Bn\euro{} & $-0.46\%$ & 27.49 Bn\euro{} & $+2.17\%$ \\
-        \textit{Cash-Flow Matching} & 208.41 Bn\euro{} & $-0.72\%$ & 27.70 Bn\euro{} & $+2.94\%$ \\
-        \textit{A posteriori} calibration & 198.31 Bn\euro{} & $-5.53\%$ & 19.27 Bn\euro{} & $-28.38\%$ \\
+        \textit{Baseline} (Reference) & €209.93 Bn & \textit{Ref.} & €26.91 Bn & \textit{Ref.} \\
+        Dynamic \textit{Banding} & €209.02 Bn & $-0.43\%$ & €27.47 Bn & $+2.10\%$ \\
+        \textit{HDBSCAN} & €209.05 Bn & $-0.42\%$ & €27.47 Bn & $+2.10\%$ \\
+        Robust \textit{K-Means} & €208.95 Bn & $-0.46\%$ & €27.49 Bn & $+2.17\%$ \\
+        \textit{Cash-Flow Matching} & €208.41 Bn & $-0.72\%$ & €27.70 Bn & $+2.94\%$ \\
+        \textit{A Posteriori} Calibration & €198.31 Bn & $-5.53\%$ & €19.27 Bn & $-28.38\%$ \\
         \hline
     \end{tabular}
     \caption{Global evaluation of liabilities and SCR in stochastic ALM projection.}
-    \label{tab:resultats_central_alm_en}
+    \label{tab:resultats_central_alm_english}
 \end{table}
 
-The error decomposition across risk modules (Table \ref{tab:resultats_modules_en}) allows for the identification of the origin of aggregation biases.
+Spatial algorithms (\textit{HDBSCAN}, \textit{K-Means}) and \textit{Banding} demonstrate high precision, limiting the global SCR deviation below the $2.20\%$ threshold. To isolate the origin of aggregation biases, the error decomposition across the main risk modules is presented in Table \ref{tab:resultats_modules_english}.
 
 \begin{table}[H]
     \centering
@@ -98,73 +103,55 @@ The error decomposition across risk modules (Table \ref{tab:resultats_modules_en
         \hline
         \textbf{Aggregation Method} & \textbf{Market SCR Error} & \textbf{Life SCR Error} & \textbf{Global SCR Error} \\
         \hline
-        Dynamic Banding & $+1.89\%$ & $+3.55\%$ & $+2.10\%$ \\
-        HDBSCAN & $+1.87\%$ & $+3.71\%$ & $+2.10\%$ \\
-        Robust K-Means & $+1.92\%$ & $+3.87\%$ & $+2.17\%$ \\
+        Dynamic \textit{Banding} & $+1.89\%$ & $+3.55\%$ & $+2.10\%$ \\
+        \textit{HDBSCAN} & $+1.87\%$ & $+3.71\%$ & $+2.10\%$ \\
+        Robust \textit{K-Means} & $+1.92\%$ & $+3.87\%$ & $+2.17\%$ \\
         \textit{Cash-Flow Matching} & $+2.42\%$ & $+6.50\%$ & $+2.94\%$ \\
+        \textit{A Posteriori} Calibration & $-52.82\%$ & $+83.88\%$ & $-28.38\%$ \\
         \hline
     \end{tabular}
-    \caption{Decomposition of the error on the main risk modules.}
-    \label{tab:resultats_modules_en}
+    \caption{Error decomposition across the main risk modules.}
+    \label{tab:resultats_modules_english}
 \end{table}
 
-Spatial approaches (\textit{HDBSCAN}, \textit{K-Means}, \textit{Banding}) faithfully replicate the balance sheet's responsiveness to market shocks, maintaining an error rate below $2\,\%$. By isolating outlier profiles, particularly high Minimum Guaranteed Rates, they prevent the dilution of guarantees within clusters. Conversely, \textit{Cash-Flow Matching} exhibits a more significant deviation in the Life SCR ($+6{,}50\,\%$). Based exclusively on flow morphology, this approach overlooks tax seniority data, leading to a mechanical overvaluation of the capital requirement for surrender risk. Finally, \textit{a posteriori} calibration proves unsuitable for stochastic projections: the static nature of behavioral laws results in a global SCR underestimation of more than $28\,\%$.
+The dynamic approach of \textit{Cash-Flow Matching} shows a marked overestimation of the Life SCR ($+6.50\%$). Based exclusively on the central morphology of flows, this method obscures the heterogeneity of tax seniority within the groups, generating a mechanical over-reaction to structural lapse assumptions. Finally, the \textit{a posteriori} calibration method proves ineffective in a stochastic environment because fixed behavioral laws fail to replicate the reality of the portfolio in a stochastic environment.
 
-\subsection*{Sensitivity Analysis Facing Asymmetric Environments}
-The evaluation was subjected to interest rate curve shocks (EIOPA $\pm 100$ bps) to test the non-linear distortion of surrender risk (Table \ref{tab:sensibilites_scr_synthese_en}).
+Evaluating model resilience requires applying sensitivities to the economic environment. The portfolio is thus subjected to two parallel shifts of the risk-free rate curve published by EIOPA, amounting to $-100$ and $+100$ basis points respectively. This step tests the resistance of grouping methods against different economic environments (Table \ref{tab:sensibilites_scr_synthese_english}).
 
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|l|r|r|r|}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{|l|r|r|r|r|}
         \hline
-        \multirow{2}{*}{\textbf{Aggregation Method}} & \textbf{Down (-100 bps)} & \multicolumn{2}{c|}{\textbf{Up (+100 bps)}} \\
-        \cline{2-4}
-        & \textbf{Global SCR Error} & \textbf{Global SCR Error} & \textbf{incl. Surrender SCR Error} \\
+        \multirow{2}{*}{\textbf{Aggregation Method}} & \multicolumn{2}{c|}{\textbf{Decrease (-100 bps)}} & \multicolumn{2}{c|}{\textbf{Increase (+100 bps)}} \\
+        \cline{2-5}
+        & \textbf{Lapse SCR Error} & \textbf{Global SCR Error} & \textbf{Lapse SCR Error} & \textbf{Global SCR Error} \\
         \hline
-        Dynamic Banding & $+1.17\%$ & $+1.23\%$ & $+4.55\%$ \\
-        HDBSCAN & $+1.16\%$ & $+1.24\%$ & $+4.68\%$ \\
-        Robust K-Means & $+1.21\%$ & $+1.25\%$ & $+4.72\%$ \\
-        \textit{Cash-Flow Matching} & $+1.39\%$ & $+1.27\%$ & $+6.23\%$ \\
-        \hline
-    \end{tabular}
-    \caption{Relative errors on the Global SCR and Surrender SCR according to curve distortion.}
-    \label{tab:sensibilites_scr_synthese_en}
-\end{table}
-
-Surrender dynamics are highly asymmetric. In a low-rate environment, asset yields struggle to cover MGRs; an early exit generates little loss of profit, limiting the SCR. During a sudden rate hike, yields far exceed guarantees. A policyholder's exit then deprives the company of significant future margins. It is the realization of this opportunity cost that causes the Surrender SCR to jump.
-
-Spatial methods, by preserving the granularity of MGRs and taxation, assess this risk accurately (global error stabilized around $+1.25\%$ in the "Up" scenario). \textit{Cash-Flow Matching} shows a higher deviation on the Surrender SCR ($+6.23\%$), confirming the limits of approaches purely based on central flows for modeling extreme asymmetric behaviors.
-
-\subsection*{Operational Performance and Conclusion}
-The reduction in dimensionality offers a decisive performance gain, quantified in Table \ref{tab:runtimes_synthese_en}.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|l|r|r|r|}
-        \hline
-        \textbf{Method} & \textbf{Volume (MP)} & \textbf{Execution Time} & \textbf{Reduction Factor} \\
-        \hline
-        Baseline (Reference) & 26,272 & $\approx$ 8 h 00 (28,783 s) & \textit{Ref.} \\
-        HDBSCAN & 967 & $\approx$ 10 min 00 (600 s) & $\div 48$ \\
-        \textit{Cash-Flow Matching} & 1,000 & $\approx$ 10 min 27 (627 s) & $\div 46$ \\
-        Robust K-Means & 1,039 & $\approx$ 11 min 11 (671 s) & $\div 43$ \\
-        Dynamic Banding & 1,172 & $\approx$ 11 min 51 (711 s) & $\div 40$ \\
+        Dynamic \textit{Banding} & $+7.55\%$ & $+1.17\%$ & $+4.55\%$ & $+1.23\%$ \\
+        \textit{HDBSCAN} & $+8.22\%$ & $+1.16\%$ & $+4.68\%$ & $+1.24\%$ \\
+        Robust \textit{K-Means} & $+11.56\%$ & $+1.21\%$ & $+4.72\%$ & $+1.25\%$ \\
+        \textit{Cash-Flow Matching} & $+1.11\%$ & $+1.39\%$ & $+6.23\%$ & $+1.27\%$ \\
+        \textit{A Posteriori} Calibration & $+1779.84\%$ & $-19.19\%$ & $+0.47\%$ & $-37.16\%$ \\
         \hline
     \end{tabular}
-    \caption{Comparison of calculation times in full stochastic ALM projection.}
-    \label{tab:runtimes_synthese_en}
+    }
+    \caption{Relative errors on Global SCR and Lapse SCR according to interest rate curve shifts.}
+    \label{tab:sensibilites_scr_synthese_english}
 \end{table}
 
-Compression divides processing times by a factor of approximately 48, bringing an 8-hour projection down to about ten minutes. This gain removes a technological bottleneck, allowing for the multiplication of sensitivity calculations on standard infrastructures.
+The capital requirement for lapse risk shows strong asymmetry depending on the financial environment. In a low-rate scenario, asset returns are absorbed by the cost of minimum guaranteed rates (MGR), so future portfolio profitability is limited. Applying a regulatory lapse shock (upward shock or mass lapse) does not decrease the margin much and therefore does not significantly affect the SCR. Conversely, an increase in interest rates restores a very positive return differential. The lapse shock then prevents a significant future margin. It is the materialization of this financial opportunity cost that justifies the sharp increase in the upward Lapse SCR.
 
-In conclusion, this study validates the use of unsupervised learning algorithms for aggregation in the framework of ALM modeling, while providing critical insight into market practices:
+Spatial algorithms, by preserving the granularity of guaranteed rates and static variables driving structural lapse laws (such as seniority), capture this loss of value with an error contained around $+4.70\%$ in the upward scenario. In contrast, the \textit{Cash-Flow Matching} method shows a higher deviation ($+6.23\%$). By smoothing individual characteristics in favor of an aggregation based solely on the morphology of central flows, this approach alters the application of base structural lapse rates, generating a portfolio over-reaction to regulatory shocks.
+
+In conclusion, this study validates the use of unsupervised learning algorithms for aggregation within ALM modeling, while providing critical insight into industry practices:
 
 \begin{itemize}
-    \item \textbf{The robustness of the empirical approach:} The standard \textit{Banding} method demonstrates excellent resilience facing asymmetric shocks. It confirms that static variables (MGR, seniority) are the optimal grouping axes. However, its rigid mesh limits its maximum compression capabilities.
-    \item \textbf{The industrial optimum through \textit{Machine Learning}:} To overcome this compression threshold, unsupervised algorithms are essential. While \textit{HDBSCAN} offers remarkable theoretical precision through its density-based approach, its mechanics make it difficult to target a specific number of clusters. The \textit{K-Means} algorithm thus represents the best operational compromise: it provides direct control over the final count of \textit{Model Points} while accurately replicating the balance sheet's responsiveness to economic variations.
-    \item \textbf{The limit of dynamic approaches:} The \textit{Cash-Flow Matching} method proves effective for central projections, but its smoothing of seniority penalizes it during the assessment of regulatory surrender shocks.
+    \item \textbf{Robustness of the empirical approach:} The \textit{Banding} method demonstrates marked resilience to asymmetric shocks. It confirms that static variables, such as MGR and tax seniority, remain structuring axes for grouping. However, the rigidity of its grid mechanically constrains its maximum compression capabilities.
+    \item \textbf{Industrial optimum via Machine Learning:} To push the limits of compression, unsupervised algorithms stand out. While \textit{HDBSCAN} shows remarkable theoretical precision thanks to its fine management of local density, the nature of its hyperparameters makes targeting a precise volume particularly complex. The \textit{K-Means} algorithm thus emerges as the best operational compromise: it ensures direct control over the number of generated \textit{Model Points} while capturing the deformation of capital requirements with high fidelity.
+    \item \textbf{Limits of dynamic approaches:} The \textit{Cash-Flow Matching} method proves efficient on central projections, but its smoothing of individual characteristics penalizes it during the evaluation of regulatory shocks. This deviation affects not only lapse risk but mechanically extends to all risk modules sensitive to policyholder behavior.
 \end{itemize}
 
-Looking ahead, the integration of individual taxation as an explicit dimension within dynamic models could correct the biases observed during mass surrenders. Furthermore, the intrinsic nature of the \textit{HDBSCAN} algorithm offers a particularly relevant research path: rather than constraining the final volume, this method could allow for the organic determination of the optimal number of \textit{Model Points} required to structure a portfolio. The deep integration of \textit{Machine Learning} algorithms thus opens a new dimension for risk management in life insurance, moving definitively away from arbitrary volumetric standards.
+The scope of these conclusions remains subject to the study's assumptions. On one hand, the use of a stochastic generator, though based on empirical data, necessarily introduces a simplification compared to the complexity of a real portfolio. On the other hand, sensitivity tests were limited only to interest rate risk. An evaluation integrating other changes in projection assumptions would allow for a broader testing of aggregation methods. Furthermore, enriching the ALM model by implementing a more sophisticated profit-sharing algorithm and introducing a dynamic lapse law would constitute a particularly relevant research axis to test the robustness of groupings against highly non-linear behaviors.
+
+This work opens several avenues for improvement in ALM modeling. The mechanics of the \textit{HDBSCAN} algorithm offer a particularly relevant research path. Rather than imposing a defined number of \textit{Model Points}, this algorithm allows for the deduction of optimal volume directly from data density. Unsupervised learning thus allows for exceeding compression targets in favor of modeling driven by the very nature of financial liabilities. On the other hand, dynamic approaches could be enriched and calibrated on ALM projections to better capture Asset-Liability interactions and thus limit aggregation biases during regulatory shock evaluations. Finally, validating these methods on real portfolios would confirm the operational relevance of these aggregation techniques in an industrial context.
